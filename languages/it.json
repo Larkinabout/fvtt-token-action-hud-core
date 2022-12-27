@@ -1,0 +1,177 @@
+{
+  "tokenActionHud": {  
+    "abilities": "Capacità",
+    "accept": "Accetta",
+    "actions": "Azioni",
+    "activate": "Attivato",
+    "active": "Attiva",
+    "addToCombat": "Aggiungi al Combattimento",
+    "advanced": "Avanzate",
+    "advancedCategoryOptions": {
+      "characterCount": "Characters per Word to Display in Compact View (0 for icons only)",
+      "compactView": "Compact View",
+      "customWidth": "Custom Width"
+    },
+    "allowlist": "Allowlist",
+    "armour": "Armatura",
+    "attack": "Attacco",
+    "attacks": "Attacchi",
+    "attribute": {
+      "agility": "Agilità",
+      "intellect": "Intelletto",
+      "perception": "Percezione",
+      "strength": "Forza",
+      "will": "Volontà"
+    },
+    "attributes": "Attributi",
+    "blockList": "Blocklist",
+    "blockListLabel": "blockList: nascondi / allowlist: mostra",
+    "bonusActions": "Azioni Bonus",
+    "book": "Testo",
+    "books": "Libri",
+    "cancel": "Annulla",
+    "cantrips": "Trucchetti",
+    "categoryTagExplanation": "Aggiungi e rimuovi ulteriori categorie personalizzabili.",
+    "categoryTagTitle": "Aggiungi/rimuovi categorie",
+    "characteristics": "Caratteristiche",
+    "checks": "Caratteristiche",
+    "clearButton": "Cancella",
+    "combat": "Combattere",
+    "conditions": "Condizioni",
+    "consumables": "Consumabili",
+    "coreBonus": "Core Bonus",
+    "critical": "Critico",
+    "damage": "Danno",
+    "defenses": "Difesa",
+    "effects": "Effetti",
+    "endTurn": "End Turn",
+    "equipment": "Equipaggiamento",
+    "experimental": "Experimental",
+    "feats": "Talenti",
+    "features": "Privilegi",
+    "filterPlaceholder": "Scelte (diviso con punto e virgola)",
+    "filterTagExplanation": "Aggiungi le categorie qui che vuoi mostrare o nascondere.",
+    "filterTitle": "Filtro",
+    "handlerNotFound": "non trovato, reimposta il gestore dei tiri predefinito.",
+    "healing": "Curare",
+    "initiative": "Iniziativa",
+    "inspiration": "Ispirazione",
+    "inventory": "Inventario",
+    "level": "Livello",
+    "levelAbbreviation": "Lvl",
+    "longRest": "Riposo Lungo",
+    "magic": "Magia",
+    "magicItems": "Oggetti Magici",
+    "makeInvisible": "Rendi Invisibile",
+    "makeVisible": "Rendi Visibile",
+    "melee": "In Mischia",
+    "other": "Altro",
+    "passive": "Passivo",
+    "powers": "Poteri",
+    "profession": "Professione",
+    "push": "Destra",
+    "pushLabelExplanation": "Da che parte vuoi posizionare le Categorie",
+    "ranged": "A Distanza",
+    "reactions": "Reazioni",
+    "recharge": "Ricarica",
+    "removeFromCombat": "Rimuovi dal Combattimento",
+    "rest": "Riposo",
+    "rests": "Riposi",
+    "roll": "Tiro",
+    "rollInitiative": "Tira Iniziativa",
+    "saves": "Tiri Salvezza",
+    "shortRest": "Riposo Breve",
+    "skills": "Abilità",
+    "specialActions": "Azioni Speciali",
+    "spells": "Incantesimi",
+    "subcategoryTagExplanation": "Aggiungi e rimuovi sottocategorie: inserisci il testo per le macro sottocategorie o seleziona i compendi collegati.",
+    "subcategoryTagTitle": "Aggiungi/Rimuovi Sottocategorie",
+    "talents": "Talents",
+    "temporary": "Temporaneo",
+    "title": "Token Action HUD",
+    "toggleCombatState": "Attiva/Disattiva Combattimento",
+    "toggles": "Attiva/Disattiva",
+    "toggleVisibility": "Attiva/Disattiva Visibilità",
+    "token": "Token",
+    "tools": "Strumenti",
+    "traits": "Tratti",
+    "unshift": "Sinistra",
+    "utility": "Utilità",
+    "weapons": "Armi",
+    "settings": {
+      "activeCssAsText": {
+        "name": "Mark Active CSS with Text",
+        "hint": "If enabled, buttons that can be active will also be marked with an asterisk to indicate their activity. Inactive buttons will have no asterisk."
+      },
+      "alwaysShowHud": {
+        "hint": "If the user has an assigned character, the HUD will default to this character when no token is selected.",
+        "name": "Always Display HUD"
+      },
+      "clickOpenCategory": {
+        "hint": "If enabled, categories will open on click instead of hover.",
+        "name": "Click to Open Categories"
+      },
+      "debug": {
+        "hint": "Enable debug logging. (This has sort of fallen by the wayside, don't expect it to be very useful)",
+        "name": "Enable Debugging"
+      },
+      "direction": {
+        "hint": "Imposta la direzione in cui si espanderà l'HUD",
+        "name": "Direzione",
+        "choices": {
+          "down": "Fuori uso",
+          "up": "Su"
+        }
+      },
+      "enable": {
+        "hint": "If enabled, the HUD is active for the user. Does not override the player permission setting.",
+        "name": "Enable HUD for Current User"
+      },
+      "itemMacroReplace": {
+        "showBoth": "Show both original item and item macro item",
+        "showItemMacro": "Show the item macro item",
+        "showOriginal": "Show the original item"
+      },
+      "allow": {
+        "hint": "If enabled, players will be able to use the HUD.",
+        "name": "Enable HUD for Players"
+      },
+      "renderItemOnRightClick": {
+        "hint": "If enabled, right-clicking on an item in the HUD will bring up the item's sheet (possibly conflicts with other settings that use right-click).",
+        "name": "Show Item Sheet on Right-Click"
+      },
+      "rollHandler": {
+        "hint": "Choose which module will receive the HUD's actions.",
+        "name": "HUD Roll Handler"
+      },
+      "scale": {
+        "hint": "Adjust the scale of the HUD in percentage terms (100 being the default)",
+        "name": "HUD Scale"
+      },
+      "background": {
+        "hint": "Imposta il colore di sfondo dell'HUD. Questa impostazione viene ignorata con il Dorako UI",
+        "name": "Colore di sfondo dell'HUD"
+      },
+      "buttonBackgroundColor": {
+        "hint": "Imposta il colore di sfondo dei pulsanti dell'HUD. Questa impostazione viene ignorata con il Dorako",
+        "name": "Colore di sfondo del pulsante"
+      },
+      "buttonBorderColor": {
+        "hint": "Imposta il colore del bordo dei pulsanti dell'HUD. Questa impostazione viene ignorata con il Dorako UI",
+        "name": "Colore bordo pulsante"
+      },
+      "displayCharacterName": {
+        "name": "Show HUD Title",
+        "hint": "Prints a title above the HUD, normally the selected token's alias."
+      },
+      "displayIcons": {
+        "hint": "If enabled, the action image will be displayed on the HUD button where available.",
+        "name": "Show Action Icons"
+      },
+      "style": {
+        "hint": "Set the style of the HUD",
+        "name": "Style"
+      }
+    }
+  }
+}

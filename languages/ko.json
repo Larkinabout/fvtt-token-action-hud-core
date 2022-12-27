@@ -1,0 +1,173 @@
+{
+  "tokenActionHud": {
+    "abilities": "능력치",
+    "accept": "확인",
+    "actions": "액션",
+    "activate": "활성화",
+    "active": "활성화",
+    "addToCombat": "전투에 추가",
+    "advanced": "고급",
+    "allowlist": "허가 목록",
+    "armour": "방어구",
+    "attack": "공격",
+    "attacks": "공격",
+    "attribute": {
+      "agility": "민첩",
+      "intellect": "지능",
+      "perception": "감지",
+      "strength": "근력",
+      "will": "의지"
+    },
+    "attributes": "특성",
+    "blockList": "차단 목록",
+    "blockListLabel": "차단 목록: 숨김 / 허가 목록: 보임",
+    "bonusActions": "보너스 액션",
+    "book": "책",
+    "books": "책",
+    "cancel": "취소",
+    "cantrips": "소마법",
+    "categoryTagTitle": "카테고리 추가/삭제",
+    "categoryTagExplanation": "사용자 지정 가능한 카테고리를 추가/제거한다",
+    "characteristics": "캐릭터성",
+    "checks": "판정",
+    "clearButton": "클리어",
+    "combat": "전투",
+    "conditions": "상태",
+    "consumables": "소모품",
+    "coreBonus": "기본 보너스",
+    "critical": "치명타",
+    "damage": "피해",
+    "defenses": "방어",
+    "effects": "효과",
+    "endTurn": "End Turn",
+    "equipment": "장비",
+    "experimental": "실험적",
+    "feats": "피트",
+    "features": "피처",
+    "filterPlaceholder": "선택 (세미 콜론으로 구분)",
+    "filterTagExplanation": "특정 카테고리 항목을 표시하거나 숨기려면 여기에 항목을 추가한다.",
+    "filterTitle": "필터",
+    "handlerNotFound": "찾을 수 없습니다. 기본 굴림으로 돌아갑니다.",
+    "healing": "회복",
+    "initiative": "우선권",
+    "inspiration": "고양감",
+    "inventory": "소지품",
+    "level": "레벨",
+    "levelAbbreviation": "Lvl",
+    "longRest": "긴 휴식",
+    "magic": "마법",
+    "magicItems": "매직 아이템",
+    "makeInvisible": "보이지 않게 만들기",
+    "makeVisible": "보이게 하기",
+    "melee": "근거리",
+    "other": "기타",
+    "passive": "상시",
+    "powers": "파워",
+    "profession": "Profession",
+    "push": "오른쪽",
+    "pushLabelExplanation": "카테고리를 어느 쪽에 배치하는가?",
+    "ranged": "원거리",
+    "reactions": "리액션",
+    "recharge": "재충전",
+    "religion": "종교",
+    "removeFromCombat": "전투에서 제거",
+    "rest": "Rest",
+    "rests": "휴식",
+    "roll": "굴림",
+    "rollInitiative": "우선권 굴림",
+    "saves": "내성 굴림",
+    "shortRest": "짧은 휴식",
+    "skills": "기술",
+    "specialActions": "특수 행동",
+    "spells": "주문",
+    "subcategoryTagTitle": "하위 카테고리 추가/삭제",
+    "subcategoryTagExplanation": "하위 카테고리 추가/제거: 매크로 하위 카테고리를 자유 입력하거나 연결된 컴펜디움을 선택한다. ",
+    "talents": "탤런트",
+    "temporary": "임시",
+    "title": "Token Action HUD",
+    "toggleCombatState": "전투 상태 전환",
+    "toggles": "전환",
+    "toggleVisibility": "투명화 전환",
+    "token": "토큰",
+    "tools": "도구",
+    "traits": "특성",
+    "unshift": "왼쪽",
+    "utility": "유틸리티",
+    "weapons": "무기",
+    "settings": {
+      "activeCssAsText": {
+        "name": "텍스트로 활성화 CSS 표시",
+        "hint": "활성화시 활성화 버튼에도 활성화 상태를 별표로 표시한다. 비활성화된 버튼엔 표시되지 않는다."
+      },
+      "alwaysShowHud": {
+        "name": "항상 HUD 표시",
+        "hint": "유저에게 할당된 캐릭터가 있을 경우 토큰이 선택되지 않으면 HUD는 기본적으로 해당 캐릭터로 지정된다."
+      },
+      "clickOpenCategory": {
+        "hint": "활성화시 마우스 포인터를 올리는 대신 클릭해야 카테고리가 열린다",
+        "name": "클릭하여 카테고리 열기"
+      },
+      "debug": {
+        "name": "디버깅 활성화",
+        "hint": "디버그 기록을 활성화한다."
+      },
+      "direction": {
+        "hint": "HUD가 확장되는 방향 설정",
+        "name": "방향",
+        "choices": {
+          "down": "아래에",
+          "up": "위로"
+        }
+      },
+      "enable": {
+        "name": "현재 유저에게 HUD를 활성화",
+        "hint": "활성화시 HUD는 유저들에게 활성화 된다. 플레이어 권한 설정을 덮어쓰지 않는다."
+      },
+      "itemMacroReplace": {
+        "showBoth": "원본 아이템과 아이템 매크로를 모두 표시",
+        "showItemMacro": "아이템 매크로 표시",
+        "showOriginal": "원본 아이템 표시"
+      },
+      "allow": {
+        "name": "HUD를 플레이어에게 활성화",
+        "hint": "활성화할 경우 플레이어가 HUD를 사용할 수 있다."
+      },
+      "renderItemOnRightClick": {
+        "name": "오른쪽 클릭으로 아이템 시트 보기",
+        "hint": "활성화된 경우 HUD에서 항목을 마우스 우클릭 시 항목의 시트가 표시된다(우클릭을 사용하는 다른 설정과 충돌 가능성 있음)"
+      },
+      "rollHandler": {
+        "name": "HUD 굴림 처리기",
+        "hint": "HUD의 작업을 받을 모듈을 선택한다."
+      },
+      "scale": {
+        "hint": "백분율 단위로 HUD 크기를 조정한다(기본값 100)",
+        "name": "HUD 크기"
+      },
+      "background": {
+        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI",
+        "name": "HUD Background Color"
+      },
+      "buttonBackgroundColor": {
+        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "name": "Button Background Color"
+      },
+      "buttonBorderColor": {
+        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "name": "Button Border Color"
+      },
+      "displayCharacterName": {
+        "name": "HUD 제목 표시",
+        "hint": "일반적으로 선택된 토큰의 이름을 HUD 상단에 표시한다."
+      },
+      "displayIcons": {
+        "name": "액션 아이콘 표시",
+        "hint": "활성화될 경우 HUD 버튼에 액션 아이콘이 표시된다."
+      },
+      "style": {
+        "hint": "HUD의 스타일 설정",
+        "name": "스타일"
+      }
+    }
+  }
+}

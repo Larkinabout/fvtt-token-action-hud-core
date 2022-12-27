@@ -1,0 +1,176 @@
+{
+  "tokenActionHud": {
+    "abilities": "Atributos",
+    "accept": "Aceitar",
+    "actions": "Ações",
+    "activate": "Ativar",
+    "active": "Ativo",
+    "addToCombat": "Adicionar ao Combate",
+    "advanced": "Avançado",
+    "advancedCategoryOptions": {
+      "characterCount": "Characters per Word to Display in Compact View (0 for icons only)",
+      "compactView": "Compact View",
+      "customWidth": "Custom Width"
+    },
+    "allowlist": "Lista Permitida",
+    "armour": "Armadura",
+    "attack": "Ataque",
+    "attacks": "Ataques",
+    "attribute": {
+      "agility": "Agilidade",
+      "intellect": "Intelecto",
+      "perception": "Percepção",
+      "strength": "Força",
+      "will": "Vontade"     
+    },
+    "attributes": "Atributos",
+    "blockList": "Lista Bloqueada",
+    "blockListLabel": "Lista Bloqueada (somente esconder) ou Lista Permitida (somente exibir)",
+    "book": "Livro",
+    "books": "Livros",
+    "cancel": "Cancelar",
+    "cantrips": "Truques",
+    "categoryTagExplanation": "Adicione e remova categorias customisáveis adicionais.",
+    "categoryTagTitle": "Adicionar/remover categorias",
+    "characteristics": "Caracteristicas",
+    "checks": "Testes",
+    "clearButton": "Limpar",
+    "combat": "Combate",
+    "conditions": "Condições",
+    "consumables": "Consumiveis",
+    "coreBonus": "Core Bonus",
+    "critical": "Crítico",
+    "damage": "Dano",
+    "defenses": "Defesas",
+    "effects": "Efeitos",
+    "endTurn": "End Turn",
+    "equipment": "Equipamento",
+    "experimental": "Experimental",
+    "feats": "Talentos",
+    "features": "Habilidades",
+    "filterPlaceholder": "opções (separar com \";\")",
+    "filterTagExplanation": "Adicione filtros aqui para mostrar/esconder entradas específicas.",
+    "filterTitle": "Filtros",
+    "handlerNotFound": "não encontrado, revertendo ao padrão.",
+    "healing": "Healing",
+    "initiative": "Iniciativa",
+    "inspiration": "Inspiração",
+    "inventory": "Inventário",
+    "level": "Nível",
+    "levelAbbreviation": "Nvl",
+    "longRest": "Descanso Longo",
+    "magic": "Mágica",
+    "magicItems": "Itens Mágicos",
+    "makeInvisible": "Tornar Invisível",
+    "makeVisible": "Tornar Visível",
+    "melee": "Corpo-a-corpo",
+    "other": "Outros",
+    "passive": "Passivo",
+    "powers": "Poderes",
+    "profession": "Profissão",
+    "push": "Direita",
+    "pushLabelExplanation": "Mostrar categorias em qual lado?",
+    "ranged": "Distância",
+    "reactions": "Reações",
+    "recharge": "Recarga",
+    "removeFromCombat": "Remover do Combate",
+    "rest": "Descanso",
+    "rests": "Descansos",
+    "roll": "Jogada",
+    "rollInitiative": "Rolar Iniciativa",
+    "saves": "Salvaguarda",
+    "shortRest": "Descanso curto",
+    "skills": "Pericias",
+    "specialActions": "Special Actions",
+    "spells": "Magias",
+    "subcategoryTagExplanation": "Add and remove subcategories: enter free-text for macro subcategories or select linked compendiums.",
+    "subcategoryTagTitle": "Add/remove subcategories",
+    "talents": "Talentos",
+    "temporary": "Temporário",
+    "title": "Token Action HUD",
+    "toggleCombatState": "Alternar Estado de Combate",
+    "toggles": "Toggles",
+    "toggleVisibility": "Alternar Visibilidade",
+    "token": "Token",
+    "tools": "Ferramentas",
+    "traits": "Traços",
+    "unshift": "Esquerda",
+    "utility": "Utilidade",
+    "weapons": "Armas",
+    "settings": {
+      "activeCssAsText": {
+        "name": "Marcar CSS ativo com texto",
+        "hint": "Os botões ativos também serão marcados com um asterisco para indicar sua atividade."
+      },
+      "alwaysShowHud": {
+        "hint": "Se o usuário tiver um personagem atribuído, o HUD assumirá como padrão esse personagem quando nenhum token for selecionado.",
+        "name": "Sempre exibir HUD"
+      },
+      "clickOpenCategory": {
+        "hint": "As categorias serão abertas clicando sobre elas em vez de passar o mouse.",
+        "name": "Abrir categorias com um clique"
+      },
+      "debug": {
+        "hint": "Ativar registro de depuração.",
+        "name": "Ativar depuração"
+      },
+      "direction": {
+        "hint": "Defina a direção de expansão do HUD",
+        "name": "Direção",
+        "choices": {
+          "down": "Baixa",
+          "up": "Acima"
+        }
+      },
+      "enable": {
+        "hint": "O HUD fica ativo para o usuário. Não substitui a configuração de permissão do jogador.",
+        "name": "Habilitar HUD para usuarios ativos"
+      },
+      "itemMacroReplace": {
+        "showBoth": "Show both original item and item macro item",
+        "showItemMacro": "Show the item macro item",
+        "showOriginal": "Show the original item"
+      },
+      "allow": {
+        "hint": "Os jogadores poderão usar a HUD.",
+        "name": "Habilitar HUD para jogadores"
+      },
+      "renderItemOnRightClick": {
+        "hint": "Clicar com o botão direito em um item no HUD abrirá a ficha do item (pode ser substituído por outras configurações).",
+        "name": "Mostrar ficha do item com botão direito"
+      },
+      "rollHandler": {
+        "hint": "Escolha qual modulo será usado na HUD de ações.",
+        "name": "HUD de manipulação de rolagens"
+      },
+      "scale": {
+        "hint": "Ajuste a escala do HUD em % (sendo 1 o padrão)",
+        "name": "Escala do HUD"
+      },
+      "background": {
+        "hint": "Defina a cor de fundo do HUD. Esta configuração é ignorada com o Dorako UI",
+        "name": "Cor de Fundo do HUD"
+      },
+      "buttonBackgroundColor": {
+        "hint": "Defina a cor de fundo dos botões HUD. Esta configuração é ignorada com o Dorako UI",
+        "name": "Cor de Fundo do Botão"
+      },
+      "buttonBorderColor": {
+        "hint": "Defina a cor da borda dos botões HUD. Esta configuração é ignorada com o Dorako UI",
+        "name": "Cor da Borda do Botão"
+      },
+      "displayCharacterName": {
+        "hint": "Coloca um título acima do HUD, normalmente o nome do token selecionado .",
+        "name": "Mostrar título do HUD"
+      },
+      "displayIcons": {
+        "hint": "Os ícones serão exibidos no botão HUD quando disponível.",
+        "name": "Mostrar ícones nos botões"
+      },
+      "style": {
+        "hint": "Defina o estilo do HUD",
+        "name": "Estilo"
+      }
+    }
+  }
+}
