@@ -204,17 +204,14 @@ export default class ActionHandler {
      * @param {object} subcategoryList The subcategory list
      * @param {string} subcategoryId The subcategory ID
      * @param {object} subcategory The subcategory object
-     * @param {object} actions The actions object
+     * @param {object} [actions = []] The actions object
      */
-    addToSubcategoryList (subcategoryList, subcategoryId, subcategory, actions) {
-        if (!actions) return
-        if (actions.length > 0) {
-            subcategoryList.push({
-                subcategoryId,
-                subcategory,
-                actions
-            })
-        }
+    addToSubcategoryList (subcategoryList, subcategoryId, subcategory, actions = []) {
+        subcategoryList.push({
+            subcategoryId,
+            subcategory,
+            actions
+        })
     }
 
     /**
