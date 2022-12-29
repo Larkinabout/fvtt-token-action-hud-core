@@ -175,10 +175,14 @@
         "hint": "Enable the HUD",
         "name": "Enable HUD for Current User"
       },
-      "itemMacroReplace": {
-        "showBoth": "Show both original item and item macro item",
-        "showItemMacro": "Show the item macro item",
-        "showOriginal": "Show the original item"
+      "itemMacro": {
+        "hint": "Show item macros, denoted by an (M)",
+        "name": "Show Item Macros",
+        "choices": {
+            "both": "Show original item and item macro",
+            "itemMacro": "Show item macro only",
+            "original": "Show original item only"
+        }
       },
       "renderItemOnRightClick": {
         "hint": "When right-clicking an item, open the item's sheet",

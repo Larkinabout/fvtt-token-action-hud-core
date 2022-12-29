@@ -32,7 +32,7 @@ export default class CoreRollHandler {
     }
 
     async handleActionEvent (event, encodedValue) {
-        Logger.debug(encodedValue)
+        Logger.debug(`Handling event for action [${encodedValue}]`, { event })
 
         this.registerKeyPresses(event)
 
@@ -57,7 +57,7 @@ export default class CoreRollHandler {
 
     addPreRollHandler (handler) {
         Logger.debug(
-            `Adding pre-roll handler: ${handler.constructor.name}`
+            `Adding pre-roll handler ${handler.constructor.name}`
         )
         this.preRollHandlers.push(handler)
     }

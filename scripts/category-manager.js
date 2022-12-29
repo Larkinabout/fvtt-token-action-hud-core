@@ -1,5 +1,7 @@
 import Logger from './logger.js'
 
+const namespace = 'token-action-hud-core'
+
 export default class CategoryManager {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
 
@@ -11,10 +13,27 @@ export default class CategoryManager {
     }
 
     /**
-     * Reset categories
+     * Reset actor flags
      */
-    async reset () {
-        await game.user.unsetFlag('token-action-hud-core', 'categories')
+    async resetActorFlags () {
+        Logger.debug('Resetting actor flags...')
+        const actors = game.actors.filter(actor => actor.getFlag(namespace, 'categories'))
+        if (actors) {
+            actors.forEach(actor => {
+                Logger.debug(`Resetting flags for actor [${actor.id}]`, { actor })
+                actor.unsetFlag(namespace, 'categories')
+            })
+        }
+        Logger.debug('Actor flags reset')
+    }
+
+    /**
+     * Reset user flags
+     */
+    async resetUserFlags () {
+        Logger.debug('Resetting user flags...')
+        await game.user.unsetFlag(namespace, 'categories')
+        Logger.debug('User flags reset')
         this._registerDefaultCategories()
     }
 
@@ -22,9 +41,9 @@ export default class CategoryManager {
      * Initialise saved or default categories
      */
     async init () {
-        const savedCategories = this.user.getFlag('token-action-hud-core', 'categories')
+        const savedCategories = this.user.getFlag(namespace, 'categories')
         if (savedCategories) {
-            Logger.debug('Saved categories:', savedCategories)
+            Logger.debug('Retrieved saved categories', { savedCategories })
         } else {
             this._registerDefaultCategories()
         }
@@ -35,13 +54,14 @@ export default class CategoryManager {
      */
     async _registerDefaultCategories () {
         const defaultCategories = this.user.getFlag(
-            'token-action-hud-core',
+            namespace,
             'default.categories'
         )
         if (!defaultCategories) return
         await game.user.update({
-            flags: { 'token-action-hud-core': { categories: defaultCategories } }
+            flags: { [namespace]: { categories: defaultCategories } }
         })
+        Logger.debug('Registered default categories', { defaultCategories })
     }
 
     /**
@@ -50,7 +70,7 @@ export default class CategoryManager {
      */
     async submitCategories (choices) {
         if (!choices) return
-        const categories = this.user.getFlag('token-action-hud-core', 'categories')
+        const categories = this.user.getFlag(namespace, 'categories')
         if (categories) await this.deleteCategoriesFlag()
 
         const chosenCategories = {}
@@ -76,7 +96,7 @@ export default class CategoryManager {
      * @param {object} choices
      */
     async submitSubcategories (categoryId, choices) {
-        const categories = this.user.getFlag('token-action-hud-core', 'categories')
+        const categories = this.user.getFlag(namespace, 'categories')
         const category = Object.values(categories).find(
             (category) => category.id === categoryId
         )
@@ -103,7 +123,7 @@ export default class CategoryManager {
     async updateCategoriesFlag (data) {
         await game.user.update({
             flags: {
-                'token-action-hud-core': {
+                [namespace]: {
                     categories: data
                 }
             }
@@ -118,7 +138,7 @@ export default class CategoryManager {
     async updateSubcategoriesFlag (categoryKey, data) {
         await game.user.update({
             flags: {
-                'token-action-hud-core': {
+                [namespace]: {
                     categories: {
                         [categoryKey]: {
                             subcategories: data
@@ -135,7 +155,7 @@ export default class CategoryManager {
     async deleteCategoriesFlag () {
         await game.user.update({
             flags: {
-                'token-action-hud-core': {
+                [namespace]: {
                     '-=categories': null
                 }
             }
@@ -149,7 +169,7 @@ export default class CategoryManager {
     async deleteSubcategoriesFlag (categoryKey) {
         await game.user.update({
             flags: {
-                'token-action-hud-core': {
+                [namespace]: {
                     categories: {
                         [categoryKey]: {
                             '-=subcategories': null
@@ -166,7 +186,7 @@ export default class CategoryManager {
      */
     async deleteCategoryFlag (categoryId) {
         const categoryKey = categoryId
-        await game.user.setFlag('token-action-hud-core', 'categories', {
+        await game.user.setFlag(namespace, 'categories', {
             [`-=${categoryKey}`]: null
         })
     }
@@ -179,7 +199,7 @@ export default class CategoryManager {
         const subcategoryKey = `${categoryId}_${subcategoryId}`
         if (categoryKey) {
             await game.user.setFlag(
-                'token-action-hud-core',
+                [namespace],
                 `categories.${categoryKey}.subcategories`,
                 { [`-=${subcategoryKey}`]: null }
             )
@@ -189,7 +209,7 @@ export default class CategoryManager {
     // GET CATEGORIES/SUBCATEGORIES
     // GET SELECTED SUBCATEGORIES
     getSelectedCategoriesAsTagifyEntries () {
-        const categories = this.user.getFlag('token-action-hud-core', 'categories')
+        const categories = this.user.getFlag(namespace, 'categories')
         if (!categories) return
         return Object.values(categories).map((category) =>
             this.toTagifyEntry(category)
@@ -197,7 +217,7 @@ export default class CategoryManager {
     }
 
     getSelectedSubcategoriesAsTagifyEntries (categoryId) {
-        const categories = this.user.getFlag('token-action-hud-core', 'categories')
+        const categories = this.user.getFlag(namespace, 'categories')
         const category = Object.values(categories).find(
             (category) => category.id === categoryId
         )
@@ -211,7 +231,7 @@ export default class CategoryManager {
     // GET SUGGESTED SUBCATEGORIES
     getSystemSubcategoriesAsTagifyEntries () {
         const defaultSubcategories = this.user.getFlag(
-            'token-action-hud-core',
+            namespace,
             'default.subcategories'
         )
         return defaultSubcategories.map((subcategory) => this.toTagifyEntry(subcategory))

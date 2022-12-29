@@ -102,12 +102,34 @@
     "weapons": "武器",
     "settings": {
       "activeCssAsText": {
-        "name": "有効化されたCSSをテキストでマーク",
-        "hint": "有効にすると、有効化できるボタンには、その能力値を示すアスタリスクも表示されます。非有効化されたボタンには、アスタリスクが付きません。"
+        "hint": "有効にすると、有効化できるボタンには、その能力値を示すアスタリスクも表示されます。非有効化されたボタンには、アスタリスクが付きません。",
+        "name": "有効化されたCSSをテキストでマーク"
+      },
+      "allow": {
+        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
+        "name": "Allow HUD",
+        "choices" : {
+          "4": "Game Master",
+          "3": "Assistant GM",
+          "2": "Trusted Player",
+          "1": "Player"
+        }
       },
       "alwaysShowHud": {
         "hint": "ユーザーに割り当てられたキャラクターがあり、かつコマが選択されていない場合、HUDはこのキャラクターを標準として表示します。",
         "name": "常にHUDを表示する"
+      },
+      "background": {
+        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI",
+        "name": "HUD Background Color"
+      },
+      "buttonBackgroundColor": {
+        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "name": "Button Background Color"
+      },
+      "buttonBorderColor": {
+        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "name": "Button Border Color"
       },
       "clickOpenCategory": {
         "hint": "有効にすると、ホバーではなくクリックでカテゴリを開きます。",
@@ -125,22 +147,34 @@
           "up": "上"
         }
       },
+      "displayCharacterName": {
+        "hint": "選択されたトークンのエイリアスをHUDの上部に表示します。",
+        "name": "HUDにタイトルを表示する"
+      },
+      "displayIcons": {
+        "hint": "有効にすると、アクションの画像がHUDのボタンに表示されます。",
+        "name": "アクションアイコンを表示"
+      },
       "enable": {
         "hint": "現在のユーザに自動的にホットバーを使用できる状態で初期化します。プレイヤーは設定を変更することで自分の好みに変更することができます。",
         "name": "現在のユーザはホットバーを使用できる"
       },
-      "itemMacroReplace": {
-        "showBoth": "オリジナル･アイテム、アイテムマクロ･アイテム両方表示",
-        "showItemMacro": "アイテムマクロ･アイテムを表示",
-        "showOriginal": "オリジナルアイテムを表示"
-      },
-      "allow": {
-        "hint": "プレイヤーにホットバーを使用するための権限を付与します。",
-        "name": "プレイヤーはホットバーを使用できる"
+      "itemMacro": {
+        "hint": "アイテムマクロを含むマクロはオリジナルを上書きします。それ以外では両方が表示されます。",
+        "name": "アイテムマクロ：オリジナルを上書き",
+        "choices": {
+          "both": "オリジナル･アイテム、アイテムマクロ･アイテム両方表示",
+          "itemMacro": "アイテムマクロ･アイテムを表示",
+          "original": "オリジナルアイテムを表示"
+        }
       },
       "renderItemOnRightClick": {
         "hint": "有効にした場合、HUD内の項目を右クリックすると、その項目のシートが表示されます（右クリックを使用する他の設定と競合する可能性があります）。",
         "name": "右クリックでアイテムシートを表示する"
+      },
+      "reset": {
+        "hint": "WARNING!!! This will reset the hud to its default configuration",
+        "name": "Reset HUD"
       },
       "rollHandler": {
         "hint": "このモジュールの恩恵を受けるシステムを選択します。",
@@ -149,26 +183,6 @@
       "scale": {
         "hint": "HUDのサイズをパーセントで調整します(デフォルトは100)",
         "name": "HUDサイズ"
-      },
-      "background": {
-        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI",
-        "name": "HUD Background Color"
-      },
-      "buttonBackgroundColor": {
-        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI",
-        "name": "Button Background Color"
-      },
-      "buttonBorderColor": {
-        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI",
-        "name": "Button Border Color"
-      },
-      "displayCharacterName": {
-        "name": "HUDにタイトルを表示する",
-        "hint": "選択されたトークンのエイリアスをHUDの上部に表示します。"
-      },
-      "displayIcons": {
-        "hint": "有効にすると、アクションの画像がHUDのボタンに表示されます。",
-        "name": "アクションアイコンを表示"
       },
       "style": {
         "hint": "HUD のスタイルを設定する",

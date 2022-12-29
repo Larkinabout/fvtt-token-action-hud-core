@@ -96,53 +96,22 @@
     "weapons": "무기",
     "settings": {
       "activeCssAsText": {
-        "name": "텍스트로 활성화 CSS 표시",
-        "hint": "활성화시 활성화 버튼에도 활성화 상태를 별표로 표시한다. 비활성화된 버튼엔 표시되지 않는다."
-      },
-      "alwaysShowHud": {
-        "name": "항상 HUD 표시",
-        "hint": "유저에게 할당된 캐릭터가 있을 경우 토큰이 선택되지 않으면 HUD는 기본적으로 해당 캐릭터로 지정된다."
-      },
-      "clickOpenCategory": {
-        "hint": "활성화시 마우스 포인터를 올리는 대신 클릭해야 카테고리가 열린다",
-        "name": "클릭하여 카테고리 열기"
-      },
-      "debug": {
-        "name": "디버깅 활성화",
-        "hint": "디버그 기록을 활성화한다."
-      },
-      "direction": {
-        "hint": "HUD가 확장되는 방향 설정",
-        "name": "방향",
-        "choices": {
-          "down": "아래에",
-          "up": "위로"
-        }
-      },
-      "enable": {
-        "name": "현재 유저에게 HUD를 활성화",
-        "hint": "활성화시 HUD는 유저들에게 활성화 된다. 플레이어 권한 설정을 덮어쓰지 않는다."
-      },
-      "itemMacroReplace": {
-        "showBoth": "원본 아이템과 아이템 매크로를 모두 표시",
-        "showItemMacro": "아이템 매크로 표시",
-        "showOriginal": "원본 아이템 표시"
+        "hint": "활성화시 활성화 버튼에도 활성화 상태를 별표로 표시한다. 비활성화된 버튼엔 표시되지 않는다.",
+        "name": "텍스트로 활성화 CSS 표시"
       },
       "allow": {
-        "name": "HUD를 플레이어에게 활성화",
-        "hint": "활성화할 경우 플레이어가 HUD를 사용할 수 있다."
+        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
+        "name": "Allow HUD",
+        "choices" : {
+          "4": "Game Master",
+          "3": "Assistant GM",
+          "2": "Trusted Player",
+          "1": "Player"
+        }
       },
-      "renderItemOnRightClick": {
-        "name": "오른쪽 클릭으로 아이템 시트 보기",
-        "hint": "활성화된 경우 HUD에서 항목을 마우스 우클릭 시 항목의 시트가 표시된다(우클릭을 사용하는 다른 설정과 충돌 가능성 있음)"
-      },
-      "rollHandler": {
-        "name": "HUD 굴림 처리기",
-        "hint": "HUD의 작업을 받을 모듈을 선택한다."
-      },
-      "scale": {
-        "hint": "백분율 단위로 HUD 크기를 조정한다(기본값 100)",
-        "name": "HUD 크기"
+      "alwaysShowHud": {
+        "hint": "유저에게 할당된 캐릭터가 있을 경우 토큰이 선택되지 않으면 HUD는 기본적으로 해당 캐릭터로 지정된다.",
+        "name": "항상 HUD 표시"
       },
       "background": {
         "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI",
@@ -156,13 +125,58 @@
         "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI",
         "name": "Button Border Color"
       },
+      "clickOpenCategory": {
+        "hint": "활성화시 마우스 포인터를 올리는 대신 클릭해야 카테고리가 열린다",
+        "name": "클릭하여 카테고리 열기"
+      },
+      "debug": {
+        "hint": "디버그 기록을 활성화한다.",
+        "name": "디버깅 활성화"
+      },
+      "direction": {
+        "hint": "HUD가 확장되는 방향 설정",
+        "name": "방향",
+        "choices": {
+          "down": "아래에",
+          "up": "위로"
+        }
+      },
       "displayCharacterName": {
-        "name": "HUD 제목 표시",
-        "hint": "일반적으로 선택된 토큰의 이름을 HUD 상단에 표시한다."
+        "hint": "일반적으로 선택된 토큰의 이름을 HUD 상단에 표시한다.",
+        "name": "HUD 제목 표시"
       },
       "displayIcons": {
-        "name": "액션 아이콘 표시",
-        "hint": "활성화될 경우 HUD 버튼에 액션 아이콘이 표시된다."
+        "hint": "활성화될 경우 HUD 버튼에 액션 아이콘이 표시된다.",
+        "name": "액션 아이콘 표시"
+      },
+      "enable": {
+        "hint": "활성화시 HUD는 유저들에게 활성화 된다. 플레이어 권한 설정을 덮어쓰지 않는다.",
+        "name": "현재 유저에게 HUD를 활성화"
+      },
+      "itemMacro": {
+        "hint": "활성화될 경우 아이템 매크로가 있는 아이템은 원래 아이템을 덮어쓰게 되며 그렇지 않을 경우 두 옵션이 모두 표시된다.",
+        "name": "아이템 매크로: 원항목 덮어쓰기",
+        "choices": {
+          "noth": "원본 아이템과 아이템 매크로를 모두 표시",
+          "itemMacro": "아이템 매크로 표시",
+          "original": "원본 아이템 표시"
+        }
+      },
+      "renderItemOnRightClick": {
+        "hint": "활성화된 경우 HUD에서 항목을 마우스 우클릭 시 항목의 시트가 표시된다(우클릭을 사용하는 다른 설정과 충돌 가능성 있음)",
+        "name": "오른쪽 클릭으로 아이템 시트 보기"
+      },
+      "reset": {
+        "hint": "WARNING!!! This will reset the hud to its default configuration",
+        "name": "Reset HUD"
+      },
+      "rollHandler": {
+        "hint": "HUD의 작업을 받을 모듈을 선택한다.",
+        "name": "HUD 굴림 처리기"
+      },
+      "scale": {
+        "hint": "백분율 단위로 HUD 크기를 조정한다(기본값 100)",
+        "name": "HUD 크기"
       },
       "style": {
         "hint": "HUD의 스타일 설정",

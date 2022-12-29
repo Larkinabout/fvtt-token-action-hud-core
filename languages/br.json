@@ -99,12 +99,34 @@
     "weapons": "Armas",
     "settings": {
       "activeCssAsText": {
-        "name": "Marcar CSS ativo com texto",
-        "hint": "Os botões ativos também serão marcados com um asterisco para indicar sua atividade."
+        "hint": "Os botões ativos também serão marcados com um asterisco para indicar sua atividade.",
+        "name": "Marcar CSS ativo com texto"
+      },
+      "allow": {
+        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
+        "name": "Allow HUD",
+        "choices" : {
+          "4": "Game Master",
+          "3": "Assistant GM",
+          "2": "Trusted Player",
+          "1": "Player"
+        }
       },
       "alwaysShowHud": {
         "hint": "Se o usuário tiver um personagem atribuído, o HUD assumirá como padrão esse personagem quando nenhum token for selecionado.",
         "name": "Sempre exibir HUD"
+      },
+      "background": {
+        "hint": "Defina a cor de fundo do HUD. Esta configuração é ignorada com o Dorako UI",
+        "name": "Cor de Fundo do HUD"
+      },
+      "buttonBackgroundColor": {
+        "hint": "Defina a cor de fundo dos botões HUD. Esta configuração é ignorada com o Dorako UI",
+        "name": "Cor de Fundo do Botão"
+      },
+      "buttonBorderColor": {
+        "hint": "Defina a cor da borda dos botões HUD. Esta configuração é ignorada com o Dorako UI",
+        "name": "Cor da Borda do Botão"
       },
       "clickOpenCategory": {
         "hint": "As categorias serão abertas clicando sobre elas em vez de passar o mouse.",
@@ -122,22 +144,34 @@
           "up": "Acima"
         }
       },
+      "displayCharacterName": {
+        "hint": "Coloca um título acima do HUD, normalmente o nome do token selecionado .",
+        "name": "Mostrar título do HUD"
+      },
+      "displayIcons": {
+        "hint": "Os ícones serão exibidos no botão HUD quando disponível.",
+        "name": "Mostrar ícones nos botões"
+      },
       "enable": {
         "hint": "O HUD fica ativo para o usuário. Não substitui a configuração de permissão do jogador.",
         "name": "Habilitar HUD para usuarios ativos"
       },
-      "itemMacroReplace": {
-        "showBoth": "Show both original item and item macro item",
-        "showItemMacro": "Show the item macro item",
-        "showOriginal": "Show the original item"
-      },
-      "allow": {
-        "hint": "Os jogadores poderão usar a HUD.",
-        "name": "Habilitar HUD para jogadores"
+      "itemMacro": {
+        "hint":"Show item macros, denoted by an (M)",
+        "name": "Show Item Macros",
+        "choices": {
+            "both": "Show original item and item macro",
+            "itemMacro": "Show item macro only",
+            "original": "Show original item only"
+        }
       },
       "renderItemOnRightClick": {
         "hint": "Clicar com o botão direito em um item no HUD abrirá a ficha do item (pode ser substituído por outras configurações).",
         "name": "Mostrar ficha do item com botão direito"
+      },
+      "reset": {
+        "hint": "WARNING!!! This will reset the hud to its default configuration",
+        "name": "Reset HUD"
       },
       "rollHandler": {
         "hint": "Escolha qual modulo será usado na HUD de ações.",
@@ -146,26 +180,6 @@
       "scale": {
         "hint": "Ajuste a escala do HUD em % (sendo 1 o padrão)",
         "name": "Escala do HUD"
-      },
-      "background": {
-        "hint": "Defina a cor de fundo do HUD. Esta configuração é ignorada com o Dorako UI",
-        "name": "Cor de Fundo do HUD"
-      },
-      "buttonBackgroundColor": {
-        "hint": "Defina a cor de fundo dos botões HUD. Esta configuração é ignorada com o Dorako UI",
-        "name": "Cor de Fundo do Botão"
-      },
-      "buttonBorderColor": {
-        "hint": "Defina a cor da borda dos botões HUD. Esta configuração é ignorada com o Dorako UI",
-        "name": "Cor da Borda do Botão"
-      },
-      "displayCharacterName": {
-        "hint": "Coloca um título acima do HUD, normalmente o nome do token selecionado .",
-        "name": "Mostrar título do HUD"
-      },
-      "displayIcons": {
-        "hint": "Os ícones serão exibidos no botão HUD quando disponível.",
-        "name": "Mostrar ícones nos botões"
       },
       "style": {
         "hint": "Defina o estilo do HUD",

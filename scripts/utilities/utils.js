@@ -34,9 +34,9 @@ export function getSetting (key, defaultValue = null) {
  * @param {string} key The key
  * @param {string} value The value
  */
-export function setSetting (key, value) {
+export async function setSetting (key, value) {
     if (game.settings.settings.get(`${namespace}.${key}`)) {
-        value = game.settings.set(namespace, key, value)
+        value = await game.settings.set(namespace, key, value)
         Logger.debug(`Setting '${key}' set to '${value}'`)
     } else {
         Logger.debug(`Setting '${key}' not found`)

@@ -97,17 +97,43 @@
     "utility": "实用项",
     "weapons": "武器",
     "settings": {
+      "activeCssAsText": {
+        "hint":  "Mark active actions with an asterisk",
+        "name": "Mark Active Actions with Asterisk"
+       },
+       "allow": {
+        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
+        "name": "Allow HUD",
+        "choices" : {
+          "4": "Game Master",
+          "3": "Assistant GM",
+          "2": "Trusted Player",
+          "1": "Player"
+        }
+      },
       "alwaysShowHud": {
-        "name": "始终显示HUD",
-        "hint": "如果用户有关联的角色，HUD会在没有选择指示物时默认显示出来该角色的动作。"
+        "hint": "如果用户有关联的角色，HUD会在没有选择指示物时默认显示出来该角色的动作。",
+        "name": "始终显示HUD"
+      },
+      "background": {
+        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI",
+        "name": "HUD Background Color"
+      },
+      "buttonBackgroundColor": {
+        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "name": "Button Background Color"
+      },
+      "buttonBorderColor": {
+        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "name": "Button Border Color"
       },
       "clickOpenCategory": {
-        "name": "点击打开分类",
-        "hint": "启用后，需要点击而非悬浮来展开分类。"
+        "hint": "启用后，需要点击而非悬浮来展开分类。",
+        "name": "点击打开分类"
       },
       "debug": {
-        "name": "启用调试模式",
-        "hint": "启用调试日志记录。（这个功能做一半跑路了，别想着会很有用）。"
+        "hint": "启用调试日志记录。（这个功能做一半跑路了，别想着会很有用）。",
+        "name": "启用调试模式"
       },
       "direction": {
         "hint": "設置 HUD 展開的方向",
@@ -117,29 +143,38 @@
           "up": "向上"
         }
       },
-      "enable": {
-        "name": "为当前用户启用HUD",
-        "hint": "启用后，当前用户HUD激活。不会覆盖玩家的权限设置。"
-      },
-      "allow": {
-        "name": "为玩家启用HUD",
-        "hint": "启用后，玩家可以使用HUD。"
-      },
-      "renderItemOnRightClick": {
-        "name": "右键单击展示物品卡片。",
-        "hint": "启用后，在HUD上右键单击物品会打开该物品的物品卡片（可能与其他使用右键单击的设置冲突）。"
-      },
-      "rollHandler": {
-        "name": "HUD掷骰处理器",
-        "hint": "选择用哪个模组来接手HUD进行的动作。"
-      },
       "displayCharacterName": {
-        "name": "显示HUD标题",
-        "hint": "在HUD上显示标题，通常是受控指示物的别名。"
+        "hint": "在HUD上显示标题，通常是受控指示物的别名。",
+        "name": "显示HUD标题"
       },
       "displayIcons": {
-        "name": "显示动作图标",
-        "hint": "启用后，HUD的动作按钮上在可用时就会显示该动作的图像。"
+        "hint": "启用后，HUD的动作按钮上在可用时就会显示该动作的图像。",
+        "name": "显示动作图标"
+      },
+      "enable": {
+        "hint": "启用后，当前用户HUD激活。不会覆盖玩家的权限设置。",
+        "name": "为当前用户启用HUD"
+      },
+      "itemMacro": {
+        "hint": "启用后，有宏的物品的物品宏将会覆盖原本的物品，否则两个都会显示。",
+        "name": "物品宏：覆盖原有物品",
+        "choices": {
+            "both": "Show original item and item macro",
+            "itemMacro": "Show item macro only",
+            "original": "Show original item only"
+        }
+      },
+      "renderItemOnRightClick": {
+        "hint": "启用后，在HUD上右键单击物品会打开该物品的物品卡片（可能与其他使用右键单击的设置冲突）。",
+        "name": "右键单击展示物品卡片。"
+      },
+      "reset": {
+        "hint": "WARNING!!! This will reset the hud to its default configuration",
+        "name": "Reset HUD"
+      },
+      "rollHandler": {
+        "hint": "选择用哪个模组来接手HUD进行的动作。",
+        "name": "HUD掷骰处理器"
       },
       "style": {
         "hint": "設置 HUD 的樣式",

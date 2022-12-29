@@ -29,6 +29,7 @@ export default class ActionHandler {
      * @returns {object} The action list
      */
     async buildActionList (character) {
+        Logger.debug('Building action list...', { character })
         this.character = character
         this.savedActionList = this.getSavedActionList(character)
         const emptyActionList = this.buildEmptyActionList(character)
@@ -38,6 +39,7 @@ export default class ActionHandler {
         await this._buildMacroActions(this.actionList)
         this.buildFurtherActions(this.actionList, character)
         await this.saveActionList(this.actionList, character)
+        Logger.debug('Action list built', { actionList: this.actionList, character })
         return this.actionList
     }
 
@@ -47,11 +49,13 @@ export default class ActionHandler {
      * @returns {object} The saved action list
      */
     getSavedActionList (character) {
+        Logger.debug('Retrieving saved action list...', { character })
         const actor = character?.actor
         if (!actor) return []
         const categories = actor.getFlag('token-action-hud-core', 'categories')
         if (!categories) return []
         const savedActionList = categories
+        Logger.debug('Saved action list retrieved', { savedActionList, character })
         return savedActionList
     }
 
@@ -61,6 +65,7 @@ export default class ActionHandler {
      * @returns {object} The empty action list
      */
     buildEmptyActionList (character) {
+        Logger.debug('Building empty action list...', { character })
         let hudTitle = ''
         if (getSetting('displayCharacterName')) hudTitle = character?.name ?? 'Multiple'
         const tokenId = character?.token?.id ?? 'multi'
@@ -91,6 +96,7 @@ export default class ActionHandler {
                 }
             }
         }
+        Logger.debug('Empty action list built', { emptyActionList, character })
         return emptyActionList
     }
 
@@ -101,6 +107,7 @@ export default class ActionHandler {
      * @returns {object} The action list with system actions added
      */
     async _buildSystemActions (emptyActionList, character) {
+        Logger.debug('Building system actions...', { emptyActionList, character })
         const actionList = emptyActionList
         const subcategoryIds = Object.values(actionList.categories)
             .filter((category) => category.subcategories)
@@ -110,6 +117,7 @@ export default class ActionHandler {
                     .flatMap((subcategory) => subcategory.id)
             )
         await this.buildSystemActions(actionList, character, subcategoryIds)
+        Logger.debug('System actions built', { actionList, character })
         return actionList
     }
 
@@ -123,7 +131,9 @@ export default class ActionHandler {
      * @param {object} character The actor and/or token
      */
     _buildGenericActions (actionList, character) {
+        Logger.debug('Building generic actions...', { actionList, character })
         this.genericActionHandler.buildGenericActions(actionList, character)
+        Logger.debug('Generic actions built...', { actionList, character })
     }
 
     /**
@@ -132,7 +142,9 @@ export default class ActionHandler {
      * @param {object} actionList The action list
      */
     async _buildCompendiumActions (actionList) {
+        Logger.debug('Building compendium actions...', { actionList })
         await this.compendiumActionHandler.buildCompendiumActions(actionList)
+        Logger.debug('Compendium actions built', { actionList })
     }
 
     /**
@@ -141,7 +153,9 @@ export default class ActionHandler {
      * @param {object} actionList The action list
      */
     async _buildMacroActions (actionList) {
+        Logger.debug('Building macro actions...', { actionList })
         await this.macroActionHandler.buildMacroActions(actionList)
+        Logger.debug('Macro actions built', { actionList })
     }
 
     /**
@@ -274,7 +288,7 @@ export default class ActionHandler {
             // Set 'selected' to saved action 'selected'
             // Reorder actions based on saved action list
             for (const savedAction of savedActions) {
-                const action = actions.find((action) => action.id === savedAction.id)
+                const action = actions.find((action) => action.encodedValue === savedAction.encodedValue)
                 if (action) {
                     const actionClone = structuredClone(action)
                     actionClone.selected = savedAction.selected ?? true
@@ -282,7 +296,7 @@ export default class ActionHandler {
                 }
             }
             for (const action of actions) {
-                const savedAction = savedActions.find((savedAction) => savedAction.id === action.id)
+                const savedAction = savedActions.find((savedAction) => savedAction.encodedValue === action.encodedValue)
                 if (!savedAction) {
                     const actionClone = structuredClone(action)
                     actionClone.selected = true
@@ -301,6 +315,7 @@ export default class ActionHandler {
      * @param {object} character The actor and/or token
      */
     async saveActionList (actionList, character) {
+        Logger.debug('Saving action list...', { actionList, character })
         if (!character?.actor) return
         const actor = character.actor
         await actor.unsetFlag('token-action-hud-core', 'categories')
@@ -309,6 +324,7 @@ export default class ActionHandler {
             'categories',
             actionList.categories
         )
+        Logger.debug('Action list saved', { actionList, character })
     }
 
     /**
@@ -366,9 +382,7 @@ export default class ActionHandler {
      * @param {object} handler The handler
      */
     addFurtherActionHandler (handler) {
-        Logger.debug(
-            `Adding further action handler: ${handler.constructor.name}`
-        )
+        Logger.debug('Adding further action handler...', { handler })
         this.furtherActionHandlers.push(handler)
     }
 

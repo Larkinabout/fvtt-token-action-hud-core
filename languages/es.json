@@ -95,12 +95,34 @@
     "weapons": "Armas",   
     "settings": {
       "activeCssAsText": {
-        "name": "Marcar condiciones activas con texto",
-        "hint": "Si está activado, los botones que se pueden activar también se marcarán con un asterisco para indicar su actividad. Los botones inactivos no tendrán asterisco."
+        "hint": "Si está activado, los botones que se pueden activar también se marcarán con un asterisco para indicar su actividad. Los botones inactivos no tendrán asterisco.",
+        "name": "Marcar condiciones activas con texto"
+      },
+      "allow": {
+        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
+        "name": "Allow HUD",
+        "choices" : {
+          "4": "Game Master",
+          "3": "Assistant GM",
+          "2": "Trusted Player",
+          "1": "Player"
+        }
       },
       "alwaysShowHud": {
         "hint": "Si el usuario tiene un personaje asignado, el HUD lo utilizará por defecto cuando no se seleccione ningún token.",
         "name": "Mostrar siempre el HUD"
+      },
+      "background": {
+        "hint": "Establecer el color de fondo del HUD. Esta configuración se ignora con el Dorako UI",
+        "name": "Color de Fondo de HUD"
+      },
+      "buttonBackgroundColor": {
+        "hint": "Establecer el color de fondo de los botones del HUD. Esta configuración se ignora con el Dorako UI",
+        "name": "Color de Fondo del Botón"
+      },
+      "buttonBorderColor": {
+        "hint": "Establecer el color del borde de los botones del HUD. Esta configuración se ignora con el Dorako UI",
+        "name": "Color del Borde del Botón"
       },
       "clickOpenCategory": {
         "hint": "Si se activa, las categorías se abrirán al hacer clic en lugar de pasar por encima.",
@@ -118,22 +140,34 @@
           "up": "Arriba"
         }
       },
+      "displayCharacterName": {
+        "name": "Mostrar título del HUD",
+        "hint": "Muestra un título sobre el HUD, normalmente el alias del token seleccionado."
+      },
+      "displayIcons": {
+        "hint": "Si se activa, la imagen de la acción se mostrará en el botón del HUD cuando esté disponible.",
+        "name": "Mostrar iconos de las acciones"
+      },
       "enable": {
         "hint": "Si está activado, el HUD se le mostrará al usuario. No reemplaza la configuración de los permisos del jugador.",
         "name": "Habilitar el HUD para el usuario actual"
       },
-      "itemMacroReplace": {
-        "showBoth": "Muestra tanto el objeto original como la macro del objeto.",
-        "showItemMacro": "Mostrar macros de objetos",
-        "showOriginal": "Mostrar original"
-      },
-      "allow": {
-        "hint": "Si se activa, los jugadores podrán utilizar el HUD.",
-        "name": "Habilitar el HUD para los jugadores"
+      "itemMacro": {
+        "hint": "Selecciona qué elementos se mostrarán en el inventario.",
+        "name": "Objeto-Macro: macro del objeto, objeto original, o ambos",
+        "choices": {
+          "both": "Muestra tanto el objeto original como la macro del objeto",
+          "itemMacro": "Mostrar macros de objetos",
+          "original": "Mostrar original"
+        }
       },
       "renderItemOnRightClick": {
         "hint": "Si se activa, al hacer clic con el botón derecho en un elemento del HUD aparecerá la ficha del elemento (posiblemente entre en conflicto con otras configuraciones que utilizan el botón derecho).",
         "name": "Mostrar la ficha del elemento con el clic derecho"
+      },
+      "reset": {
+        "hint": "WARNING!!! This will reset the hud to its default configuration",
+        "name": "Reset HUD"
       },
       "rollHandler": {
         "hint": "Selecciona qué módulo recibirá las acciones del HUD.",
@@ -142,26 +176,6 @@
       "scale": {
         "hint": "Ajustar la escala del HUD de manera porcentual (100 es el valor por defecto)",
         "name": "Escala del HUD"
-      },
-      "background": {
-        "hint": "Establecer el color de fondo del HUD. Esta configuración se ignora con el Dorako UI",
-        "name": "Color de Fondo de HUD"
-      },
-      "buttonBackgroundColor": {
-        "hint": "Establecer el color de fondo de los botones del HUD. Esta configuración se ignora con el Dorako UI",
-        "name": "Color de Fondo del Botón"
-      },
-      "buttonBorderColor": {
-        "hint": "Establecer el color del borde de los botones del HUD. Esta configuración se ignora con el Dorako UI",
-        "name": "Color del Borde del Botón"
-      },
-      "displayCharacterName": {
-        "name": "Mostrar título del HUD",
-        "hint": "Muestra un título sobre el HUD, normalmente el alias del token seleccionado."
-      },
-      "displayIcons": {
-        "hint": "Si se activa, la imagen de la acción se mostrará en el botón del HUD cuando esté disponible.",
-        "name": "Mostrar iconos de las acciones"
       },
       "style": {
         "hint": "Establecer el estilo de la HUD",

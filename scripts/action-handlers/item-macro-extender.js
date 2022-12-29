@@ -43,11 +43,11 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
         if (itemIds.length === 0) return
 
-        const itemMacroSetting = getSetting('itemMacroReplace')
+        const itemMacroSetting = getSetting('itemMacro')
 
-        if (itemMacroSetting === 'showOriginal') return actionList
+        if (itemMacroSetting === 'original') return actionList
 
-        const replace = itemMacroSetting === 'showItemMacro'
+        const replace = itemMacroSetting === 'itemMacro'
 
         actionList.categories.forEach((category) => {
             category.subcategories.forEach((subcategory) => {
@@ -99,7 +99,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         )
         newAction.encodedValue = actionType + keep
         newAction.id = action.id
-        newAction.name = replace ? action.name : `(M) ${action.name}`
+        newAction.name = `(M) ${action.name}`
         newAction.img = action.img
         newAction.icon = action.icon
         newAction.info1 = action.info1

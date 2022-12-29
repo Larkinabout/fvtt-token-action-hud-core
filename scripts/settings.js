@@ -187,6 +187,25 @@ export const registerSettings = function (app, systemManager, rollHandlers) {
         }
     })
 
+    if (game.modules.get('itemacro')?.active) {
+        game.settings.register(appName, 'itemMacro', {
+            name: game.i18n.localize('tokenActionHud.settings.itemMacro.name'),
+            hint: game.i18n.localize('tokenActionHud.settings.itemMacro.hint'),
+            scope: 'client',
+            config: true,
+            type: String,
+            choices: {
+                both: game.i18n.localize('tokenActionHud.settings.itemMacro.choices.both'),
+                itemMacro: game.i18n.localize('tokenActionHud.settings.itemMacro.choices.itemMacro'),
+                original: game.i18n.localize('tokenActionHud.settings.itemMacro.choices.original')
+            },
+            default: 'both',
+            onChange: (value) => {
+                updateFunc(value)
+            }
+        })
+    }
+
     game.settings.register(appName, 'activeCssAsText', {
         name: game.i18n.localize('tokenActionHud.settings.activeCssAsText.name'),
         hint: game.i18n.localize('tokenActionHud.settings.activeCssAsText.hint'),
@@ -229,7 +248,7 @@ export const registerSettings = function (app, systemManager, rollHandlers) {
 
     systemManager.doRegisterSettings(updateFunc)
 
-    Logger.debug('available rollHandlers: ', rollHandlers)
+    Logger.debug('Available roll handlers', { rollHandlers })
 }
 
 export function initColorSettings (appName) {
@@ -435,7 +454,7 @@ function registerColorSettings (appName, module) {
             .querySelector(':root')
             .style.setProperty(
                 '--tah-button-outline',
-                getSetting(appName, 'buttonBorderColor') ?? '#000000ff'
+                getSetting('buttonBorderColor') ?? '#000000ff'
             )
     })
 }

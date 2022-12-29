@@ -97,9 +97,31 @@
         "name": "Mark Active CSS with Text",
         "hint": "If enabled, buttons that can be active will also be marked with an asterisk to indicate their activity. Inactive buttons will have no asterisk."
       },
+      "allow": {
+        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
+        "name": "Allow HUD",
+        "choices" : {
+          "4": "Game Master",
+          "3": "Assistant GM",
+          "2": "Trusted Player",
+          "1": "Player"
+        }
+      },
       "alwaysShowHud": {
         "hint": "If the user has an assigned character, the HUD will default to this character when no token is selected.",
         "name": "Always Display HUD"
+      },
+      "background": {
+        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI",
+        "name": "HUD Background Color"
+      },
+      "buttonBackgroundColor": {
+        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "name": "Button Background Color"
+      },
+      "buttonBorderColor": {
+        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "name": "Button Border Color"
       },
       "clickOpenCategory": {
         "hint": "If enabled, categories will open on click instead of hover.",
@@ -117,22 +139,34 @@
           "up": "W górę"
         }
       },
+      "displayCharacterName": {
+        "name": "Show HUD Title",
+        "hint": "Prints a title above the HUD, normally the selected token's alias."
+      },
+      "displayIcons": {
+        "hint": "If enabled, the action image will be displayed on the HUD button where available.",
+        "name": "Show Action Icons"
+      },
       "enable": {
         "hint": "If enabled, the HUD is active for the user. Does not override the player permission setting.",
         "name": "Enable HUD for Current User"
       },
-      "itemMacroReplace": {
-        "showBoth": "Show both original item and item macro item",
-        "showItemMacro": "Show the item macro item",
-        "showOriginal": "Show the original item"
-      },
-      "allow": {
-        "hint": "If enabled, players will be able to use the HUD.",
-        "name": "Enable HUD for Players"
+      "itemMacro": {
+        "hint":"Show item macros, denoted by an (M)",
+        "name": "Show Item Macros",
+        "choices": {
+            "both": "Show original item and item macro",
+            "itemMacro": "Show item macro only",
+            "original": "Show original item only"
+        }
       },
       "renderItemOnRightClick": {
         "hint": "If enabled, right-clicking on an item in the HUD will bring up the item's sheet (possibly conflicts with other settings that use right-click).",
         "name": "Show Item Sheet on Right-Click"
+      },
+      "reset": {
+        "hint": "WARNING!!! This will reset the hud to its default configuration",
+        "name": "Reset HUD"
       },
       "rollHandler": {
         "hint": "Choose which module will receive the HUD's actions.",
@@ -141,26 +175,6 @@
       "scale": {
         "hint": "Adjust the scale of the HUD in percentage terms (100 being the default)",
         "name": "HUD Scale"
-      },
-      "background": {
-        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI",
-        "name": "HUD Background Color"
-      },
-      "buttonBackgroundColor": {
-        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI",
-        "name": "Button Background Color"
-      },
-      "buttonBorderColor": {
-        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI",
-        "name": "Button Border Color"
-      },
-      "displayCharacterName": {
-        "name": "Show HUD Title",
-        "hint": "Prints a title above the HUD, normally the selected token's alias."
-      },
-      "displayIcons": {
-        "hint": "If enabled, the action image will be displayed on the HUD button where available.",
-        "name": "Show Action Icons"
       },
       "style": {
         "hint": "Ustaw styl HUD",

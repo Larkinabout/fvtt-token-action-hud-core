@@ -102,7 +102,7 @@ export class TokenActionHud extends Application {
         data.id = 'token-action-hud'
         data.scale = this.getScale()
         data.background = getSetting('background') ?? '#00000000'
-        Logger.debug('data', data)
+        Logger.debug('Application data', { data })
 
         for (const category of data.actions.categories) {
             const advancedCategoryOptions = game.user.getFlag(
@@ -550,12 +550,13 @@ export class TokenActionHud extends Application {
      * Reset the hud position to default
      */
     resetPosition () {
+        Logger.debug('Resetting position...')
         game.user.update({
             flags: { 'token-action-hud-core': { position: { top: this.defaultTopPos, left: this.defaultLeftPos } } }
         })
         this.update()
 
-        Logger.debug(`Reset position to x: ${this.defaultTopPos}px, y: ${this.defaultLeftPos}px`)
+        Logger.debug(`Position reset to x: ${this.defaultTopPos}px, y: ${this.defaultLeftPos}px`)
     }
 
     /**
@@ -597,18 +598,24 @@ export class TokenActionHud extends Application {
      * Reset the hud
      */
     async reset () {
-        await this._resetFlags()
+        await this.resetUserFlags()
         this.resetPosition()
+    }
+
+    /**
+     * Reset actor flags
+     */
+    async resetActorFlags () {
+        await this.categoryManager.resetActorFlags()
+        this.update()
     }
 
     /**
      * Reset user flags
      */
-    async _resetFlags () {
-        Logger.debug('Resetting user flags')
-        await this.categoryManager.reset()
+    async resetUserFlags () {
+        await this.categoryManager.resetUserFlags()
         this.update()
-        Logger.debug('User flags reset')
     }
 
     /**
@@ -681,22 +688,22 @@ export class TokenActionHud extends Application {
      */
     isValidActorOrItemUpdate (actor, data) {
         if (data?.flags) {
-            Logger.debug('Flags set, do not update hud')
+            Logger.debug('Flags set, do not update hud', { actor, data })
             return false
         }
 
         if (actor) {
             if (!actor) {
-                Logger.debug('No actor, update hud')
+                Logger.debug('No actor, update hud', { data })
                 return true
             }
 
             if (this.actionList && actor.id === this.actionList.actorId) {
-                Logger.debug('Same actor, update hud')
+                Logger.debug('Same actor, update hud', { actor, data })
                 return true
             }
 
-            Logger.debug('Different actor, do not update hud')
+            Logger.debug('Different actor, do not update hud', { actor, data })
             return false
         }
     }
@@ -712,13 +719,7 @@ export class TokenActionHud extends Application {
         const isAllowed = checkAllow(userRole)
         const isEnabled = getSetting('enable')
 
-        Logger.debug(
-            'isHudEnabled()',
-            `isGM: ${isGM}`,
-            `allow: ${allowRole}`,
-            `checkAllow: ${isAllowed}`,
-            `enable: ${isEnabled}`
-        )
+        Logger.debug('isHudEnabled()', { isGM, userRole, allowRole, isAllowed, isEnabled })
 
         if (!isEnabled) return false
 
@@ -731,7 +732,7 @@ export class TokenActionHud extends Application {
      * @returns {boolean}
      */
     isLinkedCompendium (compendiumKey) {
-        Logger.debug('Compendium hook triggered, checking if compendium is linked')
+        Logger.debug('Compendium hook triggered, checking if compendium is linked...')
         return this.categoryManager.isLinkedCompendium(compendiumKey)
     }
 
