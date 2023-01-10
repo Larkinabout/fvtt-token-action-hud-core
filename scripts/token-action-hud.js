@@ -201,16 +201,20 @@ export class TokenActionHud extends Application {
 
         if (getSetting('clickOpenCategory')) {
             // When a category button is clicked...
-            html.find(titleButton).on('click', toggleCategory)
+            titleButtons.on('click', toggleCategory)
         } else {
             // When a category button is hovered over...
-            html.find(titleButton).on('touchstart', toggleCategory)
+            titleButtons.get().forEach(element => {
+                element.addEventListener('touchstart', toggleCategory, { passive: true })
+            })
             html.find(category).hover(openCategory, closeCategory)
         }
 
         // When a category button is clicked and held...
-        html.find(titleButton).on('mousedown', (event) => this.dragEvent(event))
-        html.find(titleButton).on('touchstart', (event) => this.dragEvent(event))
+        titleButtons.on('mousedown', (event) => this.dragEvent(event))
+        titleButtons.get().forEach(element => {
+            element.addEventListener('touchstart', (event) => this.dragEvent(event), { passive: true })
+        })
 
         // When the Collapse Hud button is clicked...
         html.find(collapseHudButton).on('click', (event) => collapseHud(event))
@@ -220,7 +224,7 @@ export class TokenActionHud extends Application {
 
         // When the Expand Hud button is clicked and held...
         html.find(expandHudButton).on('mousedown', (event) => this.dragEvent(event))
-        html.find(expandHudButton).on('touchstart', (event) => this.dragEvent(event))
+        html.find(expandHudButton).get(0).addEventListener('touchstart', (event) => this.dragEvent(event), { passive: true })
 
         // When the Unlock button is clicked...
         html.find(unlockButton).on('click', (event) => unlockHud(event))
