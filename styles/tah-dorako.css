@@ -265,17 +265,14 @@
   padding-top: 2px;
 }
 
-.tah-subtitle-wrapper {
-  align-items: center;
-  padding-bottom: 2px;
-}
-
 .tah-subtitle {
+  align-items: center;
   color: #ddd;
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   font-size: small;
- position: relative;
+  gap: 5px;
+  margin-bottom: 3px;
   text-shadow: 
     1px 1px 1px rgba(52, 52, 52, 1),
     1px 1px 1px rgba(52, 52, 52, 1), 
@@ -286,13 +283,8 @@
 .tah-subtitle > .fa,
 .tah-subtitle > .fas {
   font-size: 8px;
-  height: auto;
-  left: 2px;
   pointer-events: none;
-  position: relative;
-  top: 2px;
   visibility: hidden;
-  width: auto;
 }
 
 .tah-subtitle:hover:not(.disable-edit) > .fa,
@@ -306,7 +298,8 @@
   flex-flow: row wrap;
   gap: 5px;
   grid-column: 2;
-  width: 400px;
+  margin-bottom: 2px;
+  width: 100%;
 }
 
 .tah-actions .stickLeft {
@@ -341,17 +334,18 @@
 }
 
 .tah-action-name {
-  margin: auto;
+  align-items: center;
+  display: inline-flex;
+  gap: 2px;
   padding: 0 5px 0 5px;
 }
 
 .tah-info1,
 .tah-info2,
 .tah-info3 {
-  display: inline;
   font-size: smaller;
-  margin-left: 2px;
 }
+
 
 .tah-info1 {
   text-shadow: 
@@ -387,7 +381,6 @@
 
 .tah-img {
   border-radius: 3px 0 0 3px;
-  display: inline-flex;
   height: 30px;
   width: 30px;
 }
@@ -444,7 +437,6 @@
   margin: 0;
   min-height: 32px;
   min-width: 50px;
-  width: 100%;
   padding: 0;
   text-decoration: none;
   text-shadow: var(--dorako-text-shadow);

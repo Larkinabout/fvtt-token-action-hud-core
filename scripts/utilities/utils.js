@@ -1,6 +1,22 @@
-import Logger from '../logger.js'
-
 const namespace = 'token-action-hud-core'
+
+/**
+ * Console logger
+ */
+export class Logger {
+    static info (...args) {
+        console.log('Token Action HUD Info |', ...args)
+    }
+
+    static error (...args) {
+        console.error('Token Action HUD Error |', ...args)
+    }
+
+    static debug (...args) {
+        const isDebug = (game.tokenActionHud) ? game.tokenActionHud.isDebug : getSetting('debug')
+        if (isDebug) { console.log('Token Action HUD Debug |', ...args) }
+    }
+}
 
 /**
  * Whether tbe user is allowed to use the HUD
@@ -41,16 +57,6 @@ export async function setSetting (key, value) {
     } else {
         Logger.debug(`Setting '${key}' not found`)
     }
-}
-
-/**
- * Import a default class
- * @param {string} path The path of the file
- */
-export async function importClass (path) {
-    return await import(path).then(module => {
-        return module.default
-    })
 }
 
 /**
@@ -158,13 +164,21 @@ export function getSubcategoriesById (subcategories, id) {
  * @param {string} nestId
  * @returns {object}
  */
-export function getSubcategoryByNestId (subcategories, nestId) {
-    for (const subcategory of subcategories) {
-        if (subcategory.nestId === nestId) {
-            return subcategory
-        } else if (subcategory.subcategories.length > 0) {
-            const result = getSubcategoryByNestId(subcategory.subcategories, nestId)
-            if (result) return result
+export async function getSubcategoryByNestId (subcategories, nestId) {
+    const parts = nestId.split('_')
+    const subcategory = await getSubcategoryByParts(subcategories, parts)
+    return subcategory
+
+    async function getSubcategoryByParts (subcategories, parts) {
+        const subcategory = subcategories.find(subcategory => subcategory.id === parts[0])
+        if (subcategory) {
+            if (parts.length > 1) {
+                parts.shift()
+                return await getSubcategoryByParts(Object.values(subcategory.subcategories), parts)
+            } else {
+                return subcategory
+            }
         }
+        return null
     }
 }

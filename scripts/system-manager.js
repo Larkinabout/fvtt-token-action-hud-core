@@ -1,12 +1,11 @@
 import { registerSettings } from './settings.js'
-import Logger from './logger.js'
 import { ItemMacroActionListExtender } from './action-handlers/item-macro-extender.js'
 import { CompendiumMacroPreHandler } from './roll-handlers/compendium-macro-pre-handler.js'
 import { ItemMacroPreRollHandler } from './roll-handlers/pre-item-macro.js'
-import CompendiumActionHandler from './action-handlers/compendium-action-handler.js'
-import { getSetting, setSetting } from './utilities/utils.js'
+import { CompendiumActionHandler } from './action-handlers/compendium-action-handler.js'
+import { Logger, getSetting, setSetting } from './utilities/utils.js'
 
-export default class SystemManager {
+export class SystemManager {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
 
     appName

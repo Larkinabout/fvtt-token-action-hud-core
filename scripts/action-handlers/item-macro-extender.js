@@ -1,4 +1,4 @@
-import ActionListExtender from './action-list-extender.js'
+import { ActionListExtender } from './action-list-extender.js'
 import { getSetting } from '../utilities/utils.js'
 
 export class ItemMacroActionListExtender extends ActionListExtender {
@@ -28,7 +28,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         if (!actorId) return
 
         const actor = this.getActor(actorId, tokenId)
-        const items = actor.items.filter((item) => item.hasMacro())
+        const items = actor.items.filter((item) => item.flags?.itemacro?.macro?.command)
 
         let itemIds
         if (ItemMacroActionListExtender.isModuleActive('midi-qol')) {

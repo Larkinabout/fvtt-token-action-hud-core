@@ -1,6 +1,6 @@
 import { TagDialog } from './tag-dialog.js'
 
-export default class TagDialogHelper {
+export class TagDialogHelper {
     /** SHOW CATEGORY/SUBCATEGORY/ACTION DIALOGS */
     static showCategoryDialog (categoryManager) {
         TagDialogHelper._showCategoryDialog(categoryManager)
@@ -34,20 +34,11 @@ export default class TagDialogHelper {
         )
     }
 
-    static _showSubcategoryDialog (categoryManager, categoryId, categoryName) {
-        const defaultSubcategories =
-      categoryManager.getSystemSubcategoriesAsTagifyEntries()
-        const compendiumSubcategories =
-      categoryManager.getCompendiumSubcategoriesAsTagifyEntries()
-        const suggestions = []
-        suggestions.push(...defaultSubcategories, ...compendiumSubcategories)
+    static async _showSubcategoryDialog (categoryManager, categoryId, categoryName) {
+        const suggestions = await categoryManager.getSubcategoriesAsTagifyEntries()
+        const selected = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(categoryId)
 
-        const selected =
-      categoryManager.getSelectedSubcategoriesAsTagifyEntries(categoryId)
-
-        const title =
-      game.i18n.localize('tokenActionHud.subcategoryTagTitle') +
-      ` (${categoryName})`
+        const title = game.i18n.localize('tokenActionHud.subcategoryTagTitle') + ` (${categoryName})`
 
         const hbsData = {
             topLabel: game.i18n.localize('tokenActionHud.subcategoryTagExplanation'),
@@ -70,11 +61,6 @@ export default class TagDialogHelper {
                 choice.type = choice.type ?? 'custom'
                 return { id: choice.id, title: choice.title, type: choice.type }
             })
-            await TagDialogHelper.submitSubcategories(
-                categoryManager,
-                categoryId,
-                choices
-            )
 
             const customWidth = parseInt(
                 html.find('input[name="custom-width"]').val()
@@ -90,9 +76,11 @@ export default class TagDialogHelper {
                 compactView,
                 characterCount
             }
-            await game.user.setFlag(
-                'token-action-hud-core',
-                `categories.${categoryId}.advancedCategoryOptions`,
+
+            await TagDialogHelper.submitSubcategories(
+                categoryManager,
+                categoryId,
+                choices,
                 advancedCategoryOptions
             )
         }
@@ -107,13 +95,22 @@ export default class TagDialogHelper {
         )
     }
 
-    static showActionDialog (actionHandler, nestId, subcategoryName) {
-        TagDialogHelper._showActionDialog(actionHandler, nestId, subcategoryName)
+    static async showActionDialog (categoryManager, actionHandler, nestId, subcategoryName) {
+        await TagDialogHelper._showActionDialog(categoryManager, actionHandler, nestId, subcategoryName)
     }
 
-    static _showActionDialog (actionHandler, nestId, subcategoryName) {
-        const suggestions = actionHandler.getActionsAsTagifyEntries(nestId)
-        const selected = actionHandler.getSelectedActionsAsTagifyEntries(nestId)
+    static async _showActionDialog (categoryManager, actionHandler, nestId, subcategoryName) {
+        // Get suggestions
+        const suggestedActions = await actionHandler.getActionsAsTagifyEntries(nestId)
+        const suggestedSubcategories = await categoryManager.getSubcategoriesAsTagifyEntries()
+        const suggestions = []
+        suggestions.push(...suggestedActions, ...suggestedSubcategories)
+
+        // Get selected
+        const selectedActions = await actionHandler.getSelectedActionsAsTagifyEntries(nestId)
+        const selectedSubcategories = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(nestId)
+        const selected = []
+        selected.push(...selectedActions, ...selectedSubcategories)
 
         const title = `${game.i18n.localize('tokenActionHud.filterTitle')} (${subcategoryName})`
 
@@ -127,7 +124,7 @@ export default class TagDialogHelper {
         }
 
         const submitFunc = async (choices) => {
-            await TagDialogHelper.saveActions(actionHandler, nestId, choices)
+            await TagDialogHelper.saveActions(categoryManager, actionHandler, nestId, choices)
         }
 
         TagDialog.showDialog(
@@ -151,8 +148,13 @@ export default class TagDialogHelper {
         Hooks.callAll('forceUpdateTokenActionHud')
     }
 
-    static async saveActions (actionHandler, nestId, choices) {
-        await actionHandler.saveActions(nestId, choices)
+    static async saveActions (categoryManager, actionHandler, nestId, choices) {
+        const selectedSubcategories = choices.filter(choice => choice.level === 'subcategory')
+        await categoryManager.submitSubcategories(nestId, selectedSubcategories)
+
+        const selectedActions = choices.filter(choice => choice.level === 'action')
+        await actionHandler.saveActions(nestId, selectedActions)
+
         Hooks.callAll('forceUpdateTokenActionHud')
     }
 }

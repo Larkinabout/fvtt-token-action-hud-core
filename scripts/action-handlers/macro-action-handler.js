@@ -1,4 +1,4 @@
-export default class MacroActionHandler {
+export class MacroActionHandler {
     baseHandler
 
     constructor (baseHandler) {

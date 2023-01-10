@@ -1,8 +1,8 @@
-import Logger from './logger.js'
+import { Logger, getSubcategoryByNestId } from './utilities/utils.js'
 
 const namespace = 'token-action-hud-core'
 
-export default class CategoryManager {
+export class CategoryManager {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
 
     categories = []
@@ -70,7 +70,7 @@ export default class CategoryManager {
      */
     async submitCategories (choices) {
         if (!choices) return
-        const categories = this.user.getFlag(namespace, 'categories')
+        const categories = game.user.getFlag(namespace, 'categories')
         if (categories) await this.deleteCategoriesFlag()
 
         const chosenCategories = {}
@@ -95,25 +95,26 @@ export default class CategoryManager {
      * @param {string} categoryId
      * @param {object} choices
      */
-    async submitSubcategories (categoryId, choices) {
-        const categories = this.user.getFlag(namespace, 'categories')
-        const category = Object.values(categories).find(
-            (category) => category.id === categoryId
-        )
-        if (!category) return
-
-        const categoryKey = categoryId
-        if (category.subcategories) await this.deleteSubcategoriesFlag(categoryKey)
-
+    async submitSubcategories (nestId, choices, advancedCategoryOptions) {
         if (!choices) return
+        const categories = this.user.getFlag(namespace, 'categories')
+        const categorySubcategory = await getSubcategoryByNestId(Object.values(categories), nestId)
+        if (!categorySubcategory) return
 
         const chosenSubcategories = {}
         for (const choice of choices) {
-            const subcategoryKey = `${categoryId}_${choice.id}`
+            const subcategoryKey = `${nestId}_${choice.id}`
             chosenSubcategories[subcategoryKey] = choice
         }
-        const data = chosenSubcategories
-        await this.updateSubcategoriesFlag(categoryKey, data)
+
+        // Add advanced category options
+        if (advancedCategoryOptions) categorySubcategory.advancedCategoryOptions = advancedCategoryOptions
+
+        // Assign subcategories
+        categorySubcategory.subcategories = chosenSubcategories
+
+        const data = categories
+        if (data) await this.updateCategoriesFlag(data)
     }
 
     /**
@@ -121,32 +122,8 @@ export default class CategoryManager {
      * @param {object} data
      */
     async updateCategoriesFlag (data) {
-        await game.user.update({
-            flags: {
-                [namespace]: {
-                    categories: data
-                }
-            }
-        })
-    }
-
-    /**
-     * Update subcategories flag
-     * @param {*} categoryKey 
-     * @param {*} data 
-     */
-    async updateSubcategoriesFlag (categoryKey, data) {
-        await game.user.update({
-            flags: {
-                [namespace]: {
-                    categories: {
-                        [categoryKey]: {
-                            subcategories: data
-                        }
-                    }
-                }
-            }
-        })
+        await game.user.unsetFlag(namespace, 'categories')
+        await game.user.setFlag(namespace, 'categories', data)
     }
 
     /**
@@ -157,24 +134,6 @@ export default class CategoryManager {
             flags: {
                 [namespace]: {
                     '-=categories': null
-                }
-            }
-        })
-    }
-
-    /**
-     * Delete subcategories flag
-     * @param {string} categoryKey
-     */
-    async deleteSubcategoriesFlag (categoryKey) {
-        await game.user.update({
-            flags: {
-                [namespace]: {
-                    categories: {
-                        [categoryKey]: {
-                            '-=subcategories': null
-                        }
-                    }
                 }
             }
         })
@@ -216,19 +175,28 @@ export default class CategoryManager {
         )
     }
 
-    getSelectedSubcategoriesAsTagifyEntries (categoryId) {
+    async getSelectedSubcategoriesAsTagifyEntries (nestId) {
         const categories = this.user.getFlag(namespace, 'categories')
-        const category = Object.values(categories).find(
-            (category) => category.id === categoryId
-        )
-        if (!category.subcategories) return
-        const subcategories = Object.values(category.subcategories).map(
+        if (!categories) return []
+        const subcategory = await getSubcategoryByNestId(Object.values(categories), nestId)
+        if (!subcategory.subcategories) return []
+
+        const subcategories = Object.values(subcategory.subcategories).map(
             (subcategory) => this.toTagifyEntry(subcategory)
         )
-        return subcategories
+        if (subcategories) return subcategories
+        return []
     }
 
     // GET SUGGESTED SUBCATEGORIES
+    getSubcategoriesAsTagifyEntries () {
+        const systemSubcategories = this.getSystemSubcategoriesAsTagifyEntries()
+        const compendiumSubcategories = this.getCompendiumSubcategoriesAsTagifyEntries()
+        const subcategories = []
+        subcategories.push(...systemSubcategories, ...compendiumSubcategories)
+        return subcategories
+    }
+
     getSystemSubcategoriesAsTagifyEntries () {
         const defaultSubcategories = this.user.getFlag(
             namespace,
@@ -248,7 +216,7 @@ export default class CategoryManager {
             .map((pack) => {
                 const id = pack.metadata.id.replace('.', '-')
                 const value = pack.metadata.label
-                return { id, value, type: 'compendium' }
+                return { id, value, type: 'compendium', level: 'subcategory' }
             })
     }
 
@@ -260,6 +228,10 @@ export default class CategoryManager {
     }
 
     toTagifyEntry (data) {
-        return { id: data.id, value: data.title, type: data.type }
+        const id = data.id
+        const value = data.title
+        const type = data.type
+        const level = 'subcategory'
+        return { id, value, type, level }
     }
 }

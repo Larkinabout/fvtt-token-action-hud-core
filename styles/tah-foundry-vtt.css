@@ -172,7 +172,9 @@
   display: none;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 2px;
+  padding-left: 2px;
+  padding-top: 2px;
+  width: 500px;
 }
 
 .tah-subcategories.expand-up {
@@ -199,20 +201,25 @@
 
 .tah-subcategory {
   cursor: default;
-  padding-top: 3px;
 }
 
-.tah-subtitle-wrapper {
-  align-items: center;
-  display: flex;
+.tah-subcategory:not(:last-child) {
+  border-bottom: 2px groove #4646465e;
   padding-bottom: 3px;
 }
 
+.tah-subcategories > .tah-subcategory > .tah-subtitle {
+  width: 100%;
+}
+
 .tah-subtitle {
+  align-items: center;
   color: #ddd;
+  display: inline-flex;
   flex-wrap: wrap;
   font-size: small;
-  position: relative;
+  gap: 5px;
+  margin-bottom: 3px;
   text-shadow: 
     1px 1px 1px rgba(0, 0, 0, 1)
 }
@@ -220,13 +227,8 @@
 .tah-subtitle > .fa,
 .tah-subtitle > .fas {
   font-size: 8px;
-  height: auto;
-  left: 2px;
   pointer-events: none;
-  position: relative;
-  top: -2px;
   visibility: hidden;
-  width: auto;
 }
 
 .tah-subtitle:hover:not(.disable-edit) > .fa,
@@ -241,7 +243,7 @@
   gap: 5px;
   grid-column: 2;
   margin-bottom: 2px;
-  width: 400px;
+  width: 100%;
 }
 
 .tah-actions .stickLeft {
@@ -276,16 +278,26 @@
 }
 
 .tah-action-name {
-  margin: auto;
+  align-items: center;
+  display: inline-flex;
+  gap: 5px;
   padding: 0 5px 0 5px;
 }
 
 .tah-info1,
 .tah-info2,
 .tah-info3 {
-  display: inline;
   font-size: xx-small;
-  margin-left: 2px;
+  padding-top: 3px;
+}
+
+.tah-subtitle > .tah-info1,
+.tah-subtitle > .tah-info2,
+.tah-subtitle > .tah-info3 {
+  background: #000000cc;
+  border-radius: 15px;
+  height: min-content;
+  padding: 3px;
 }
 
 .tah-info1 {
@@ -300,14 +312,8 @@
   color: var(--tah-info3-color, #ffffff)
 }
 
-.tah-icon {
-  display: inline;
-  margin-right: 2px;
-}
-
 .tah-img {
   border-radius: 3px 0 0 3px;
-  display: inline-flex;
   height: 32px;
   width: 32px;
 }
@@ -320,29 +326,15 @@
 
 .tah-subtitle > .tah-icon > .fa,
 .tah-subtitle > .tah-icon > .fas {
-  text-shadow: 
+  text-shadow:
     1px 1px 1px rgba(0, 0, 0, 1)
 }
 
-.tah-info2:before {
-  content: "(";
-}
-
-.tah-info2:after {
-  content: ")";
-}
-
-.tah-info3:before {
-  content: "[";
-}
-
-.tah-info3:after {
-  content: "]";
-}
-
 .tah-action button {
+  align-items: center;
   color: #ddd;
   display: flex;
+  line-height: 1;
   margin: 0;
   min-height: 32px;
   min-width: 50px;
@@ -407,7 +399,7 @@
     0 0 0 1px var(--tah-button-outline, #000000ff),
     0 0 10px var(--tah-button-outline, #000000ff),
     inset 0 0 10px #ffffff1a;
-	color: var(--tah-button-color, #ddd);
+  color: var(--tah-button-color, #ddd);
 	transition: all 0.1s ease-in-out;
 }
 

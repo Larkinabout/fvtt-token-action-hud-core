@@ -27,7 +27,7 @@ export class TagDialog extends Dialog {
                     callback: async (html) => {
                         const selection = TagDialog.tagify.value.map((c) => {
                             c.id = c.id ?? c.value.slugify({ replacement: '-', strict: true })
-                            return { id: c.id, title: c.value, type: c.type }
+                            return { id: c.id, title: c.value, type: c.type, level: c.level }
                         })
                         await submitFunc(selection, html)
                     }
@@ -60,7 +60,7 @@ export class TagDialog extends Dialog {
                     delimiters: ';',
                     maxTags: 'Infinity',
                     dropdown: {
-                        maxItems: 30, // <- maxumum allowed rendered suggestions
+                        maxItems: 50, // <- maxumum allowed rendered suggestions
                         classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
                         enabled: 0, // <- show suggestions on focus
                         closeOnSelect: false // <- do not hide the suggestions dropdown once an item has been selected

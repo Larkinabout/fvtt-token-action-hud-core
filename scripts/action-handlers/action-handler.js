@@ -1,13 +1,12 @@
 import { ActionList } from '../entities/action-list.js'
 import { ActionCategory } from '../entities/action-category.js'
 import { ActionSubcategory } from '../entities/action-subcategory.js'
-import Logger from '../logger.js'
-import GenericActionHandler from './generic-action-handler.js'
-import CompendiumActionHandler from './compendium-action-handler.js'
-import MacroActionHandler from './macro-action-handler.js'
-import { getSetting, getSubcategoriesById, getSubcategoryByNestId } from '../utilities/utils.js'
+import { GenericActionHandler } from './generic-action-handler.js'
+import { CompendiumActionHandler } from './compendium-action-handler.js'
+import { MacroActionHandler } from './macro-action-handler.js'
+import { Logger, getSetting, getSubcategoriesById, getSubcategoryByNestId } from '../utilities/utils.js'
 
-export default class ActionHandler {
+export class ActionHandler {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
 
     furtherActionHandlers = []
@@ -20,7 +19,9 @@ export default class ActionHandler {
         this.compendiumActionHandler = new CompendiumActionHandler(this)
         this.macroActionHandler = new MacroActionHandler(this)
         this.actionList = []
-        this.savedActionList = []
+        this.savedUserActionList = []
+        this.savedActorActionList = []
+        this.displayIcons = getSetting('displayIcons')
     }
 
     /**
@@ -31,13 +32,17 @@ export default class ActionHandler {
     async buildActionList (character) {
         Logger.debug('Building action list...', { character })
         this.character = character
-        this.savedActionList = this.getSavedActionList(character)
+        this.savedUserActionList = this.getSavedUserActionList(character)
+        this.savedActorActionList = this.getSavedActorActionList(character)
         const emptyActionList = this.buildEmptyActionList(character)
-        this.actionList = await this._buildSystemActions(emptyActionList, character)
-        this._buildGenericActions(this.actionList, character)
-        await this._buildCompendiumActions(this.actionList)
-        await this._buildMacroActions(this.actionList)
-        this.buildFurtherActions(this.actionList, character)
+        this.actionList = emptyActionList
+        await Promise.all([
+            this._buildSystemActions(this.actionList, character),
+            this._buildGenericActions(this.actionList, character),
+            this._buildCompendiumActions(this.actionList),
+            this._buildMacroActions(this.actionList),
+            this.buildFurtherActions(this.actionList, character)
+        ])
         await this.saveActionList(this.actionList, character)
         Logger.debug('Action list built', { actionList: this.actionList, character })
         return this.actionList
@@ -48,15 +53,29 @@ export default class ActionHandler {
      * @param {object} character The actor and token
      * @returns {object} The saved action list
      */
-    getSavedActionList (character) {
-        Logger.debug('Retrieving saved action list...', { character })
+    getSavedUserActionList (character) {
+        Logger.debug('Retrieving saved action list  from user...', { character })
+        const categories = game.user.getFlag('token-action-hud-core', 'categories')
+        if (!categories) return []
+        const savedUserActionList = categories
+        Logger.debug('Saved action list from user retrieved', { savedUserActionList, character })
+        return savedUserActionList
+    }
+
+    /**
+     * Get the saved action list from the user flags
+     * @param {object} character The actor and token
+     * @returns {object} The saved action list
+     */
+    getSavedActorActionList (character) {
+        Logger.debug('Retrieving saved action list from actor...', { character })
         const actor = character?.actor
         if (!actor) return []
         const categories = actor.getFlag('token-action-hud-core', 'categories')
         if (!categories) return []
-        const savedActionList = categories
-        Logger.debug('Saved action list retrieved', { savedActionList, character })
-        return savedActionList
+        const savedActorActionList = categories
+        Logger.debug('Saved action list from actor retrieved', { savedActorActionList, character })
+        return savedActorActionList
     }
 
     /**
@@ -75,24 +94,38 @@ export default class ActionHandler {
         const categories =
             game.user.flags['token-action-hud-core']?.categories ??
             game.user.flags['token-action-hud-core']?.default.categories
-        for (const category of Object.values(categories)) {
+
+        for (const category of Object.entries(categories)) {
+            // Add category
             emptyActionList.categories.push(
-                new ActionCategory(category.id, category.title)
+                new ActionCategory(category[1].id, category[1].title)
             )
 
-            const subcategories = category.subcategories
-            if (subcategories) {
-                for (const subcategory of Object.values(subcategories)) {
-                    emptyActionList.categories
-                        .find((c) => c.id === category.id)
-                        .subcategories.push(
+            const lastIndex = emptyActionList.categories.length - 1
+            const latestCategory = emptyActionList.categories[lastIndex]
+
+            // Add subcategories to category
+            addSubcategories(latestCategory, category[1].subcategories, category[0])
+
+            function addSubcategories (latestCategorySubcategory, subcategories, nestId) {
+                if (subcategories) {
+                    for (const subcategory of Object.entries(subcategories)) {
+                        latestCategorySubcategory.subcategories.push(
                             new ActionSubcategory(
-                                subcategory.id,
-                                category.id,
-                                subcategory.title,
-                                subcategory.type
+                                subcategory[1].id,
+                                subcategory[0],
+                                subcategory[1].title,
+                                subcategory[1].type
                             )
                         )
+
+                        if (subcategory[1].subcategories) {
+                            const lastIndex = latestCategorySubcategory.subcategories.length - 1
+                            const latestSubcategory = latestCategorySubcategory.subcategories[lastIndex]
+
+                            addSubcategories(latestSubcategory, subcategory[1].subcategories, subcategory[0])
+                        }
+                    }
                 }
             }
         }
@@ -175,9 +208,9 @@ export default class ActionHandler {
      * @param {string} nestId The ID of the nested subcategory
      * @returns {array} A list of actions
      */
-    getActionsAsTagifyEntries (nestId) {
+    async getActionsAsTagifyEntries (nestId) {
         if (!this.actionList) return
-        const subcategory = getSubcategoryByNestId(
+        const subcategory = await getSubcategoryByNestId(
             this.actionList.categories,
             nestId
         )
@@ -192,9 +225,9 @@ export default class ActionHandler {
      * @param {string} nestId The ID of the nested subcategory
      * @returns {array} A list of actions
      */
-    getSelectedActionsAsTagifyEntries (nestId) {
+    async getSelectedActionsAsTagifyEntries (nestId) {
         if (!this.actionList) return
-        const subcategory = getSubcategoryByNestId(
+        const subcategory = await getSubcategoryByNestId(
             this.actionList.categories,
             nestId
         )
@@ -211,6 +244,25 @@ export default class ActionHandler {
     async registerDefaultCategories () {}
 
     // ADD SUBCATEGORIES/ACTIONS
+
+    /**
+     * Add info to subcategory
+     * @param {object} actionList The action list
+     * @param {string} subcategoryId The subcategory ID
+     * @param {object} data The data
+     */
+    addSubcategoryInfo (actionList, subcategoryId, data) {
+        const subcategories = Object.values(actionList.categories)
+            .flatMap((category) => category.subcategories)
+
+        const matchingSubcategories = getSubcategoriesById(subcategories, subcategoryId)
+
+        matchingSubcategories.forEach(matchingSubcategory => {
+            matchingSubcategory.info1 = data.info1
+            matchingSubcategory.info2 = data.info2
+            matchingSubcategory.info3 = data.info3
+        })
+    }
 
     /**
      * Add a subcategory and its actions to the subcategory list
@@ -236,17 +288,32 @@ export default class ActionHandler {
      * @param {string} subcategoryId  The subcategory ID
      */
     addSubcategoriesToActionList (actionList, subcategoryList, subcategoryId) {
-        // Clone subcategories
-        const subcategoryListClone = structuredClone(subcategoryList)
-
-        // Add subcategories
-        const subcategories = subcategoryListClone.map(
-            (subcategory) => subcategory.subcategory
-        )
-        Object.values(actionList.categories)
+        const subcategories = Object.values(actionList.categories)
             .flatMap((category) => category.subcategories)
-            .filter((subcategory) => subcategory.id === subcategoryId)
-            .flatMap((subcategory) => (subcategory.subcategories = subcategories))
+
+        const matchingSubcategories = getSubcategoriesById(subcategories, subcategoryId)
+
+        matchingSubcategories.forEach(matchingSubcategory => {
+            const matchingSubcategoryNestId = matchingSubcategory.nestId
+            // Clone subcategories
+            const subcategoryListClone = deepClone(subcategoryList)
+
+            // Add subcategories
+            const subcategoryListSubcategories = subcategoryListClone.map(
+                (subcategory) => subcategory.subcategory
+            )
+
+            // Set nestId
+            subcategoryListSubcategories.forEach(subcategoryListSubcategory => {
+                subcategoryListSubcategory.nestId = `${matchingSubcategoryNestId}_${subcategoryListSubcategory.nestId}`
+            })
+
+            // Set subcategories
+            matchingSubcategory.subcategories.push(...subcategoryListSubcategories)
+        })
+
+        // Clone subcategories
+        const subcategoryListClone = deepClone(subcategoryList)
 
         // Add actions
         for (const subcategory of subcategoryListClone) {
@@ -265,7 +332,7 @@ export default class ActionHandler {
      * @param {object} actions The actions
      * @param {string} subcategoryId The subcategory ID
      */
-    addActionsToActionList (actionList, actions, subcategoryId) {
+    async addActionsToActionList (actionList, actions, subcategoryId) {
         if (actions.length === 0) return
 
         const subcategories = getSubcategoriesById(
@@ -275,8 +342,8 @@ export default class ActionHandler {
 
         for (const subcategory of subcategories) {
             // Get saved subcategory
-            const savedSubcategory = getSubcategoryByNestId(
-                this.savedActionList,
+            const savedSubcategory = await getSubcategoryByNestId(
+                this.savedActorActionList,
                 subcategory.nestId
             )
 
@@ -335,7 +402,7 @@ export default class ActionHandler {
      */
     async saveActions (nestId, selectedActions) {
         // Get nested subcategory
-        const subcategory = getSubcategoryByNestId(
+        const subcategory = await getSubcategoryByNestId(
             this.actionList.categories,
             nestId
         )
@@ -412,7 +479,7 @@ export default class ActionHandler {
      * @returns {object} Tagify entry
      */
     toTagifyEntry (data) {
-        return { id: data.encodedValue, value: data.name, type: data.type }
+        return { id: data.encodedValue, value: data.name, type: 'action', level: 'action' }
     }
 
     /**
@@ -424,7 +491,7 @@ export default class ActionHandler {
     getImage (entity, defaultImages = []) {
         defaultImages.push('icons/svg/mystery-man.svg')
         let result = ''
-        if (getSetting('displayIcons')) result = entity.img ?? ''
+        if (this.displayIcons) result = entity?.img ?? entity?.icon ?? ''
         return !defaultImages.includes(result) ? result : ''
     }
 

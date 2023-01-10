@@ -1,4 +1,4 @@
-export default class GenericActionHandler {
+export class GenericActionHandler {
     baseHandler
 
     constructor (baseHandler) {

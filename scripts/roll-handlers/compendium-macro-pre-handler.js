@@ -1,4 +1,4 @@
-import PreRollHandler from './pre-roll-handler.js'
+import { PreRollHandler } from './pre-roll-handler.js'
 
 export class CompendiumMacroPreHandler extends PreRollHandler {
     /** @override */

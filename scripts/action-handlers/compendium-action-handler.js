@@ -1,4 +1,4 @@
-export default class CompendiumActionHandler {
+export class CompendiumActionHandler {
     baseHandler
 
     constructor (baseHandler) {

@@ -1,5 +1,5 @@
-import PreRollHandler from './pre-roll-handler.js'
-import Logger from '../logger.js'
+import { PreRollHandler } from './pre-roll-handler.js'
+import { Logger } from '../utilities/utils.js'
 
 export class ItemMacroPreRollHandler extends PreRollHandler {
     /** @override */

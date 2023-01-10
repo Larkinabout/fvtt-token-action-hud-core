@@ -1,5 +1,5 @@
-import ActionHandler from './action-handler.js'
+import { ActionHandler } from './action-handler.js'
 
-export default class ActionListExtender extends ActionHandler {
+export class ActionListExtender extends ActionHandler {
     extendActionList (actionList, character) {}
 }

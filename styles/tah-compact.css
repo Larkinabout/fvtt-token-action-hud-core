@@ -74,7 +74,6 @@
   gap: 5px;
   margin-left: 2px;
 }
-
 #tah-collapse-expand:hover {
   cursor: pointer;
 }
@@ -93,7 +92,6 @@
   line-height: unset;
   margin: 0;
   padding: 0;
-  width: auto;
 }
 
 #tah-collapse-hud:hover, 
@@ -124,7 +122,7 @@
 }
 
 #tah-collapse-expand:hover button > i,
-#tah-buttons button:hover > i {
+#tah-edit-categories:hover > i {
   color: #fff;
   text-shadow: 0 0 10px #ff6400;
 }
@@ -179,7 +177,9 @@
   display: none;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 2px;
+  padding-left: 2px;
+  padding-top: 2px;
+  width: 500px;
 }
 
 .tah-subcategories.expand-up {
@@ -199,24 +199,33 @@
 }
 
 .tah-category.hover .tah-subcategories {
+  background: none;
   display: block;
   position: absolute;
 }
 
 .tah-subcategory {
   cursor: default;
-  padding-top: 1.5px;
 }
 
-.tah-subtitle-wrapper {
-  padding-bottom: 1.5px;
+.tah-subcategory:not(:last-child) {
+  border-bottom: 2px groove #4646465e;
+  padding-bottom: 2px;
+}
+
+.tah-subcategories > .tah-subcategory > .tah-subtitle {
+  line-height: 1.5;
+  width: 100%;
 }
 
 .tah-subtitle {
+  align-items: center;
   color: #ddd;
+  display: inline-flex;
   flex-wrap: wrap;
-  font-size: small;
-  position: relative;
+  font-size: var(--font-size-14);
+  gap: 5px;
+  margin-bottom: 1.5px;
   text-shadow: 
     1px 1px 1px rgba(0, 0, 0, 1)
 }
@@ -224,13 +233,8 @@
 .tah-subtitle > .fa,
 .tah-subtitle > .fas {
   font-size: 8px;
-  height: auto;
-  left: 2px;
   pointer-events: none;
-  position: relative;
-  top: -2px;
   visibility: hidden;
-  width: auto;
 }
 
 .tah-subtitle:hover:not(.disable-edit) > .fa,
@@ -245,7 +249,7 @@
   gap: 5px;
   grid-column: 2;
   margin-bottom: 2px;
-  width: 400px;
+  width: 100%;
 }
 
 .tah-actions .stickLeft {
@@ -280,16 +284,26 @@
 }
 
 .tah-action-name {
-  margin: auto;
+  align-items: center;
+  display: inline-flex;
+  gap: 5px;
   padding: 0 5px 0 5px;
 }
 
 .tah-info1,
 .tah-info2,
 .tah-info3 {
-  display: inline;
   font-size: xx-small;
-  margin-left: 2px;
+  padding-top: 3px;
+}
+
+.tah-subtitle > .tah-info1,
+.tah-subtitle > .tah-info2,
+.tah-subtitle > .tah-info3 {
+  background: #000000cc;
+  border-radius: 15px;
+  height: min-content;
+  padding: 1px 2px 1px 2px;
 }
 
 .tah-info1 {
@@ -304,14 +318,8 @@
   color: var(--tah-info3-color, #ffffff)
 }
 
-.tah-icon {
-  display: inline;
-  margin-right: 2px;
-}
-
 .tah-img {
   border-radius: 3px 0 0 3px;
-  display: inline-flex;
   height: 22px;
   width: 22px;
 }
@@ -328,23 +336,8 @@
     1px 1px 1px rgba(0, 0, 0, 1)
 }
 
-.tah-info2:before {
-  content: "(";
-}
-
-.tah-info2:after {
-  content: ")";
-}
-
-.tah-info3:before {
-  content: "[";
-}
-
-.tah-info3:after {
-  content: "]";
-}
-
 .tah-action button {
+  align-items: center;
   color: #ddd;
   display: flex;
   line-height: 1;

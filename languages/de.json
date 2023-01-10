@@ -1,107 +1,37 @@
 {
   "tokenActionHud": {
-    "abilities": "Abilities",
     "accept": "Accept",
-    "actions": "Aktionen",
-    "activate": "Activate",
-    "active": "Aktiv",
     "addToCombat": "Zum Kampf Hinzufügen",
-    "advanced": "Advanced",
     "advancedCategoryOptions": {
-      "characterCount": "Characters per Word to Display in Compact View (0 for icons only)",
+      "title": "Advanced Options",
+      "characterCount": "Characters per Word",
       "compactView": "Compact View",
       "customWidth": "Custom Width"
     },
-    "allowlist": "Allowlist",
-    "armour": "Rüstung",
-    "attack": "Angriff",
-    "attacks": "Angriffe",
-    "attribute": {
-      "agility": "Agility",
-      "intellect": "Intellect",
-      "perception": "Wahrnehmung",
-      "strength": "Strength",
-      "will": "Will"
-    },
-    "attributes": "Attributes",
-    "blockList": "Blocklist",
     "blockListLabel": "blockList: hide / allowlist: show",
-    "book": "Book",
-    "books": "Books",
     "cancel": "Cancel",
-    "cantrips": "Zaubertricks",
     "categoryTagExplanation": "Add and remove additional customisable categories.",
     "categoryTagTitle": "Add/remove categories",
-    "characteristics": "Characteristics",
-    "checks": "Attribute",
     "clearButton": "Clear",
     "combat": "Kampf",
-    "conditions": "Zustände",
-    "consumables": "Consumables",
-    "coreBonus": "Core Bonus",
-    "critical": "Kritisch",
-    "damage": "Schaden",
-    "defenses": "Verteidigung",
-    "effects": "Effects",
     "endTurn": "End Turn",
-    "equipment": "Ausrüstung",
-    "experimental": "Experimental",
-    "feats": "Feats",
-    "features": "Fähigkeiten",
     "filterPlaceholder": "Choices (split with semi-colon)",
     "filterTagExplanation": "Add entries here to show or hide specific category entries.",
     "filterTitle": "Filter",
-    "general": "Allgemein",
     "handlerNotFound": "not found, reverting to core roller.",
-    "healing": "Healing",
-    "initiative": "Initiative",
-    "inspiration": "Inspiration",
-    "inventory": "Inventar",
-    "level": "Stufe",
-    "levelAbbreviation": "Lvl",
-    "longRest": "Long rest",
-    "magic": "Magie",
-    "magicItems": "Magische Gegenstände",
     "makeInvisible": "Unsichtbar Machen",
     "makeVisible": "Sichtbar Machen",
-    "melee": "Nahkampf",
-    "other": "Other",
-    "passive": "Passiv",
-    "powers": "Powers",
-    "profession": "Profession",
-    "push": "Right",
     "pushLabelExplanation": "Show categories on which side?",
-    "ranged": "Entfernung",
-    "reactions": "Reaktionen",
-    "recharge": "Recharge",
     "removeFromCombat": "Aus Kampf Entfernen",
-    "rest": "Rasten",
-    "rests": "Ruhen",
-    "roll": "Roll",
-    "rollInitiative": "Initiativewurf",
-    "saves": "Rettungswürfe",
-    "shortRest": "Short rest",
-    "skills": "Fertigkeiten",
-    "specialActions": "Special Actions",
-    "spells": "Zauber",
     "subcategoryTagExplanation": "Add and remove subcategories: enter free-text for macro subcategories or select linked compendiums.",
     "subcategoryTagTitle": "Add/remove subcategories",
-    "talents": "Talente",
-    "temporary": "Temporary",
     "title": "Token Action HUD",
-    "toggleCombatState": "Toggle Combat State",
-    "toggles": "Umschalter",
-    "toggleVisibility": "Toggle Visibility",
     "token": "Token",
-    "tools": "Tools",
-    "traits": "Traits",
-    "unshift": "Left",
     "utility": "Nützliches",
-    "weapons": "Waffen",
     "settings": {
       "activeCssAsText": {
-        "hint": "If enabled, buttons that can be active will also be marked with an asterisk to indicate their activity. Inactive buttons will have no asterisk.",
-        "name": "Mark Active CSS with Text"
+        "hint":  "Mark active actions with an asterisk",
+        "name": "Mark Active Actions with Asterisk"
       },
       "allow": {
         "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
@@ -114,27 +44,27 @@
         }
       },
       "alwaysShowHud": {
-        "hint": "If the user has an assigned character, the HUD will default to this character when no token is selected.",
-        "name": "Always Display HUD"
+        "hint": "Show the user's assigned character even when no token is selected",
+        "name": "Always Show HUD"
       },
       "background": {
-        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI",
+        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
         "name": "HUD Background Color"
       },
       "buttonBackgroundColor": {
-        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
         "name": "Button Background Color"
       },
       "buttonBorderColor": {
-        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI",
+        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
         "name": "Button Border Color"
       },
       "clickOpenCategory": {
-        "hint": "If enabled, categories will open on click instead of hover.",
+        "hint": "Open categories by clicking instead of hovering",
         "name": "Click to Open Categories"
       },
       "debug": {
-        "hint": "Enable debug logging. (This has sort of fallen by the wayside, don't expect it to be very useful)",
+        "hint": "Enable debug logging in the console",
         "name": "Enable Debugging"
       },
       "direction": {
@@ -146,19 +76,23 @@
         }
       },
       "displayCharacterName": {
-        "hint": "Prints a title above the HUD, normally the selected token's alias.",
-        "name": "Show HUD Title"
+        "hint": "When the 'Direction' setting is set to 'Down', display the character name above the hud",
+        "name": "Display Character Name"
       },
       "displayIcons": {
-        "hint": "If enabled, the action image will be displayed on the HUD button where available.",
-        "name": "Show Action Icons"
+        "hint": "Where available, display icons on the actions",
+        "name": "Display Icons"
+      },
+      "drag": {
+        "hint": "Move the HUD by dragging one of the category buttons",
+        "name": "Enable Dragging"
       },
       "enable": {
-        "hint": "If enabled, the HUD is active for the user. Does not override the player permission setting.",
+        "hint": "Enable the HUD",
         "name": "Enable HUD for Current User"
       },
       "itemMacro": {
-        "hint":"Show item macros, denoted by an (M)",
+        "hint": "Show item macros, denoted by an (M)",
         "name": "Show Item Macros",
         "choices": {
             "both": "Show original item and item macro",
@@ -167,19 +101,19 @@
         }
       },
       "renderItemOnRightClick": {
-        "hint": "If enabled, right-clicking on an item in the HUD will bring up the item's sheet (possibly conflicts with other settings that use right-click).",
-        "name": "Show Item Sheet on Right-Click"
+        "hint": "When right-clicking an item, open the item's sheet",
+        "name": "Open Item Sheet on Right-Click"
       },
       "reset": {
         "hint": "WARNING!!! This will reset the hud to its default configuration",
         "name": "Reset HUD"
       },
       "rollHandler": {
-        "hint": "Choose which module will receive the HUD's actions.",
-        "name": "HUD Roll Handler"
+        "hint": "GM setting: Set the module for the HUD to use for handling rolls",
+        "name": "Roll Handler"
       },
       "scale": {
-        "hint": "Adjust the scale of the HUD in percentage terms (100 being the default)",
+        "hint": "Adjust the scale of the HUD (1 is the default)",
         "name": "HUD Scale"
       },
       "style": {

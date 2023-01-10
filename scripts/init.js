@@ -1,5 +1,5 @@
 import { TokenActionHud } from './token-action-hud.js'
-import { getSetting, importClass, registerHandlebars, setSetting, switchCSS } from './utilities/utils.js'
+import { getSetting, registerHandlebars, setSetting, switchCSS } from './utilities/utils.js'
 
 let systemManager
 const appName = 'token-action-hud-core'
@@ -8,8 +8,8 @@ Hooks.on('ready', async () => {
     const systemId = game.system.id
     const systemModuleId = `token-action-hud-${systemId}`
     const coreModuleVersion = game.modules.get(appName).version
-    const systemModuleConfigFile = `../../${systemModuleId}/scripts/config.js`
-    const systemModuleCoreModuleVersion = await import(systemModuleConfigFile).then((module) => { return module.coreModuleVersion })
+    const systemModuleCoreVersionFile = `../../${systemModuleId}/enums/core-version.js`
+    const systemModuleCoreModuleVersion = await import(systemModuleCoreVersionFile).then((module) => { return module.coreModuleVersion })
 
     if (coreModuleVersion !== systemModuleCoreModuleVersion) {
         ui.notifications.error(
@@ -19,8 +19,9 @@ Hooks.on('ready', async () => {
     }
 
     // Import SystemManager class from the Token Action Hud system module
-    const systemManagerFile = `../../../${systemModuleId}/scripts/system-manager.js`
-    const SystemManager = await importClass(systemManagerFile)
+    const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
+    const systemModule = await import(systemModulePath)
+    const SystemManager = systemModule.SystemManager
 
     // If the Token Action Hud system module is not installed, display an error and abort
     if (!SystemManager) {
@@ -143,7 +144,6 @@ Hooks.on('canvasReady', async () => {
 
         Hooks.on('renderTokenActionHud', () => {
             game.tokenActionHud.applySettings()
-            //game.tokenActionHud.setPosition()
         })
 
         Hooks.on('renderCompendium', (source, html) => {

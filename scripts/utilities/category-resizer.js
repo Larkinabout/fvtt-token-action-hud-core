@@ -1,219 +1,87 @@
-export default class CategoryResizer {
-    static resizeHoveredCategory (catId) {
-        function jq (myid) {
-            return '#' + myid.replace(/(:|\.|\[|\]|,|=|@)/g, '\\$1')
-        }
+export class CategoryResizer {
+    static resizeHoveredCategory (category) {
+        if (!category) return
 
-        const id = jq(catId)
-        const category = $(id)
+        // Get action groups
+        const actionGroups = category.querySelectorAll('.tah-actions')
+        if (actionGroups.length === 0) return
 
-        if (!category[0]) return
+        // Get content
+        const content = category.querySelector('.tah-subcategories')
 
-        const content = category.find('.tah-subcategories')
-        const isOneLineFit = category.hasClass('oneLine')
-        const actions = category.find('.tah-actions')
-
-        if (actions.length === 0) return
-
-        const categoryId = catId.replace('tah-category-', '')
+        // Set custom width
+        const categoryId = category.id.replace('tah-category-', '')
         const customWidth = game.user.getFlag(
             'token-action-hud-core',
             `categories.${categoryId}.advancedCategoryOptions.customWidth`
         )
-        if (customWidth) return CategoryResizer.resizeActions(actions, customWidth)
-
-        // reset content to original width
-        const contentDefaultWidth = 300
-        const minWidth = 200
-        CategoryResizer.resizeActions(actions, contentDefaultWidth)
-
-        const step = 30
-
-        const bottomLimit = $(document).find('#hotbar').offset().top - 20
-        const rightLimit = $(document).find('#sidebar').offset().left - 20
-
-        const maxRequiredWidth = CategoryResizer.calculateMaxRequiredWidth(actions)
-        while (
-            CategoryResizer.shouldIncreaseWidth(
-                content,
-                actions,
-                maxRequiredWidth,
-                bottomLimit,
-                rightLimit,
-                isOneLineFit
-            )
-        ) {
-            const box = actions[0].getBoundingClientRect()
-            const boxWidth = box.width
-            const cssWidth = actions.width()
-
-            if (boxWidth > maxRequiredWidth) return
-
-            const newWidth = cssWidth + step
-
-            CategoryResizer.resizeActions(actions, newWidth)
+        if (customWidth) {
+            content.style.width = `${customWidth}px`
+            return
         }
 
-        while (
-            CategoryResizer.shouldShrinkWidth(
-                content,
-                actions,
-                minWidth,
-                bottomLimit,
-                rightLimit,
-                isOneLineFit
-            )
-        ) {
-            const box = actions[0].getBoundingClientRect()
-            const boxWidth = box.width
-            const cssWidth = actions.width()
+        const sidebar = document.querySelector('#sidebar')
+        const hotbar = document.querySelector('#hotbar')
 
-            if (boxWidth < minWidth) return
+        const windowWidth = canvas.screenDimensions[0]
+        const windowHeight = canvas.screenDimensions[1]
+        const contentRect = content.getBoundingClientRect()
+        const contentComputed = getComputedStyle(content)
+        const contentTop = contentRect.top
+        const contentLeft = contentRect.left
+        const contentPadding =
+            parseInt(contentComputed.paddingLeft) || 0 +
+            parseInt(contentComputed.paddingRight) || 0
+        const sidebarOffsetLeft = sidebar.offsetLeft
+        const sidebarClientWidth = sidebar.clientWidth
+        const sidebarLeft = (sidebarOffsetLeft > 0) ? windowWidth - (sidebarOffsetLeft + sidebarClientWidth) : windowWidth
+        const rightLimit = sidebarLeft - 20
+        const availableWidth = rightLimit - contentLeft
+        const hotbarOffsetTop = hotbar.offsetTop
+        const hotbarTop = (hotbarOffsetTop > 0) ? hotbarOffsetTop : windowHeight
+        const bottomLimit = hotbarTop - 20
 
-            const newWidth = cssWidth - step
-
-            CategoryResizer.resizeActions(actions, newWidth)
+        // Set width
+        let minActions = null
+        let maxGroupWidth = 0
+        let totalWidth = 0
+        let totalLength = 0
+        for (const actionGroup of actionGroups) {
+            const actions = actionGroup.querySelectorAll('.tah-action')
+            if (actions.length > 0) {
+                if (actions.length < minActions || minActions === null) minActions = actions.length
+                totalLength += actions.length
+                let groupWidth = 0
+                for (const action of Array.from(actions)) {
+                    const actionRect = action.getBoundingClientRect()
+                    const actionWidth = Math.ceil(actionRect.width)
+                    groupWidth += actionWidth
+                    totalWidth += actionWidth
+                }
+                const totalGaps = actions.length * 5
+                totalWidth += totalGaps
+                groupWidth += totalGaps
+                if (groupWidth > maxGroupWidth) maxGroupWidth = groupWidth
+            }
         }
+        maxGroupWidth += contentPadding
+        totalWidth += contentPadding
+        const averageWidth = Math.ceil(totalWidth / totalLength)
 
-        // SET MAX-HEIGHT
-        const contentRect = content[0].getBoundingClientRect()
-        const maxHeight =
-      window.innerHeight - contentRect.top - (window.innerHeight - bottomLimit)
+        let cols = 5
+        const maxCols = Math.floor(availableWidth / averageWidth)
+        if (minActions < maxCols && minActions > cols && minActions < 10) cols = minActions
+        if (maxCols < cols) cols = maxCols
+        let width = averageWidth * cols
+        if (width > maxGroupWidth) width = maxGroupWidth
+        if (width < 200) width = 200
+
+        // Set max-height
+        const maxHeight = windowHeight - contentTop - (windowHeight - bottomLimit)
         const newHeight = maxHeight < 100 ? 100 : maxHeight
-        content.css({ 'max-height': newHeight + 'px' })
-    }
 
-    static calculateMaxRequiredWidth (actions) {
-        let maxWidth = 0
-
-        actions.each(function () {
-            const action = $(this)
-            if (action.hasClass('excludeFromWidthCalculation')) return
-
-            let totalWidth = 0
-            Array.from(action.children()).forEach((c) => {
-                const child = $(c)
-                const childWidth = child.width()
-                const marginWidth =
-          parseInt(child.css('marginLeft')) +
-          parseInt(child.css('marginRight'))
-
-                totalWidth += childWidth + marginWidth + 5 // 5 is the gap width on parent element
-            })
-            totalWidth = totalWidth - 5 // Remove the last gap width as gaps only exist between buttons
-            if (totalWidth > maxWidth) maxWidth = totalWidth
-        })
-
-        return maxWidth
-    }
-
-    static shouldIncreaseWidth (
-        content,
-        actions,
-        maxRequiredWidth,
-        bottomLimit,
-        rightLimit,
-        isOneLineFit
-    ) {
-        const contentRect = content[0].getBoundingClientRect()
-        const actionsRect = actions[0].getBoundingClientRect()
-
-        if (actionsRect.right >= rightLimit) return false
-
-        if (actionsRect.width >= maxRequiredWidth) return false
-
-        const actionArray = Array.from(content.find('.tah-action')).sort(
-            (a, b) => $(a).offset().top - $(b).offset().top
-        )
-        const rows = CategoryResizer.calculateRows(actionArray)
-        const columns = CategoryResizer.calculateMaxRowButtons(actionArray)
-        if (contentRect.bottom <= bottomLimit && columns >= rows && !isOneLineFit) { return false }
-
-        return true
-    }
-
-    static shouldShrinkWidth (
-        content,
-        actions,
-        actionsMinWidth,
-        bottomLimit,
-        rightLimit,
-        isOneLineFit
-    ) {
-        const contentRect = content[0].getBoundingClientRect()
-        const actionsRect = actions[0].getBoundingClientRect()
-
-        if (contentRect.bottom >= bottomLimit) return false
-
-        if (actionsRect.width <= actionsMinWidth) return false
-
-        const actionArray = Array.from(content.find('.tah-action')).sort(
-            (a, b) => $(a).offset().top - $(b).offset().top
-        )
-        const rows = CategoryResizer.calculateRows(actionArray)
-        const columns = CategoryResizer.calculateMaxRowButtons(actionArray)
-
-        if (
-            actionsRect.right <= rightLimit &&
-      (rows >= columns - 1 || isOneLineFit)
-        ) { return false }
-
-        return true
-    }
-
-    static calculateRows (actionArray) {
-        let rows = 0
-        let currentTopOffset = 0
-        const closeRange = 5
-
-        actionArray.forEach((a) => {
-            const offset = $(a).offset().top
-
-            if (Math.abs(currentTopOffset - offset) >= closeRange) {
-                rows++
-                currentTopOffset = offset
-            }
-        })
-
-        return rows
-    }
-
-    static calculateMaxRowButtons (actionArray) {
-        if (actionArray.length < 2) return actionArray.length
-
-        const rowButtons = []
-        let currentTopOffset = 0
-        let rowButtonCounter = 0
-        const closeRange = 5
-
-        actionArray.forEach((a) => {
-            const offset = $(a).offset().top
-
-            if (Math.abs(currentTopOffset - offset) >= closeRange) {
-                if (rowButtonCounter >= 1) rowButtons.push(rowButtonCounter)
-
-                currentTopOffset = offset
-                rowButtonCounter = 1
-            } else {
-                rowButtonCounter++
-            }
-
-            // if it's the final object, add counter anyway in case it was missed.
-            if (
-                rowButtonCounter >= 1 &&
-        actionArray.indexOf(a) === actionArray.length - 1
-            ) { rowButtons.push(rowButtonCounter) }
-        })
-
-        return Math.max(...rowButtons)
-    }
-
-    static resizeActions (actions, newWidth) {
-    // resize each action with new width
-        Object.entries(actions)
-            .filter(action => action[0] !== 'length' && action[0] !== 'prevObject')
-            .forEach(action => {
-                $(action[1]).css({ width: newWidth + 'px', 'min-width': newWidth + 'px' })
-            })
+        // Set styles
+        content.style.width = `${width}px`
+        content.style.maxHeight = Math.ceil(newHeight) + 'px'
     }
 }

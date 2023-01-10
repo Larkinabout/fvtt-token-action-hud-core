@@ -1,7 +1,6 @@
-import Logger from './logger.js'
-import TagDialogHelper from './dialogs/tag-dialog-helper.js'
-import CategoryResizer from './utilities/category-resizer.js'
-import { checkAllow, getSetting } from './utilities/utils.js'
+import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
+import { CategoryResizer } from './utilities/category-resizer.js'
+import { Logger, checkAllow, getSetting } from './utilities/utils.js'
 
 export class TokenActionHud extends Application {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
@@ -13,6 +12,7 @@ export class TokenActionHud extends Application {
     defaultLeftPos = 150
     defaultTopPos = 80
     defaultScale = 1
+    isDebug = null
     refreshTimeout = null
     rendering = false
     tokens = null
@@ -27,6 +27,7 @@ export class TokenActionHud extends Application {
      * @param {object} user The user object
      */
     async init (user) {
+        this.isDebug = getSetting('debug')
         await this.systemManager.registerDefaultFlags()
         this.categoryManager = await this.systemManager.getCategoryManager(user)
         this.actionHandler = await this.systemManager.getActionHandler(user)
@@ -144,6 +145,7 @@ export class TokenActionHud extends Application {
     activateListeners (html) {
         const categoriesSection = '#tah-categories'
         const categoryElements = html.find('.tah-category')
+        const subcategoryElements = html.find('.tah-subcategory')
         const editCategoriesButton = '#tah-edit-categories'
         const unlockButton = '#tah-unlock'
         const lockButton = '#tah-lock'
@@ -160,27 +162,14 @@ export class TokenActionHud extends Application {
         // SET CLASSES
         // Set hud to collapsed or expanded
         if (game.user.getFlag('token-action-hud-core', 'isCollapsed')) {
-            html.find(collapseHudButton).addClass('tah-hidden')
-            html.find(expandHudButton).removeClass('tah-hidden')
-            html.find(categoriesSection).addClass('tah-hidden')
-            html.find(buttons).addClass('tah-hidden')
+            collapseHud()
         }
 
         // Set hud to locked or unlocked
         if (game.user.getFlag('token-action-hud-core', 'isUnlocked')) {
-            html.find(unlockButton).addClass('tah-hidden')
-            html.find(lockButton).removeClass('tah-hidden')
-            html.find(editCategoriesButton).removeClass('tah-hidden')
-            categoryElements.removeClass('tah-hidden')
-            titleButtons.removeClass('disable-edit')
-            subtitles.removeClass('disable-edit')
+            unlockHud()
         } else {
-            for (const categoryElement of categoryElements) {
-                const hasActions = (categoryElement.getElementsByClassName('tah-action').length > 0)
-                if (!hasActions) $(categoryElement).addClass('tah-hidden')
-            }
-            titleButtons.addClass('disable-edit')
-            subtitles.addClass('disable-edit')
+            lockHud()
         }
 
         // REGISTER LISTENERS
@@ -220,7 +209,8 @@ export class TokenActionHud extends Application {
         }
 
         // When a category button is clicked and held...
-        html.find(titleButton).on('mousedown touchstart', (event) => this.dragEvent(event))
+        html.find(titleButton).on('mousedown', (event) => this.dragEvent(event))
+        html.find(titleButton).on('touchstart', (event) => this.dragEvent(event))
 
         // When the Collapse Hud button is clicked...
         html.find(collapseHudButton).on('click', (event) => collapseHud(event))
@@ -229,7 +219,8 @@ export class TokenActionHud extends Application {
         html.find(expandHudButton).on('click', (event) => expandHud(event))
 
         // When the Expand Hud button is clicked and held...
-        html.find(expandHudButton).on('mousedown touchstart', (event) => this.dragEvent(event))
+        html.find(expandHudButton).on('mousedown', (event) => this.dragEvent(event))
+        html.find(expandHudButton).on('touchstart', (event) => this.dragEvent(event))
 
         // When the Unlock button is clicked...
         html.find(unlockButton).on('click', (event) => unlockHud(event))
@@ -285,6 +276,7 @@ export class TokenActionHud extends Application {
             const subcategoryName = target.innerText ?? target.outerText
 
             TagDialogHelper.showActionDialog(
+                game.tokenActionHud.categoryManager,
                 game.tokenActionHud.actionHandler,
                 nestId,
                 subcategoryName
@@ -297,9 +289,8 @@ export class TokenActionHud extends Application {
          */
         function closeCategory (event) {
             if (game.tokenActionHud.rendering) return
-            const category = $(this)[0]
-            $(category).removeClass('hover')
-            const id = category.id
+            this.classList.remove('hover')
+            const id = this.id
             game.tokenActionHud.clearHoveredCategory(id)
         }
 
@@ -308,12 +299,10 @@ export class TokenActionHud extends Application {
          * @param {object} event
          */
         function openCategory (event) {
-            const category = $(this)[0]
-            html.find(category).removeClass('hover')
-            $(category).addClass('hover')
-            const id = category.id
+            this.classList.add('hover')
+            const id = this.id
             game.tokenActionHud.setHoveredCategory(id)
-            CategoryResizer.resizeHoveredCategory(id)
+            CategoryResizer.resizeHoveredCategory(this)
         }
 
         /**
@@ -321,14 +310,14 @@ export class TokenActionHud extends Application {
          * @param {object} event
          */
         function toggleCategory (event) {
-            const category = $(this.parentElement)
+            const category = this.parentElement
             let boundClick
-            if ($(category).hasClass('hover')) {
+            if (category.classList.contains('hover')) {
                 boundClick = closeCategory.bind(this.parentElement)
                 boundClick(event)
             } else {
                 for (const categoryElement of categoryElements) {
-                    $(categoryElement).removeClass('hover')
+                    categoryElement.classList.remove('hover')
                 }
                 boundClick = openCategory.bind(this.parentElement)
                 boundClick(event)
@@ -339,15 +328,17 @@ export class TokenActionHud extends Application {
          * Collapse the hud
          * @param {object} event
          */
-        function collapseHud (event) {
-            event.preventDefault()
-            event = event || window.event
-            if (game.user.getFlag('token-action-hud-core', 'isCollapsed')) return
-            $(event.target).addClass('tah-hidden')
+        function collapseHud (event = null) {
+            if (event) {
+                event.preventDefault()
+                event = event || window.event
+            }
+            const target = event?.target || html.find(collapseHudButton)
+            $(target).addClass('tah-hidden')
             html.find(expandHudButton).removeClass('tah-hidden')
             html.find(categoriesSection).addClass('tah-hidden')
             html.find(buttons).addClass('tah-hidden')
-            game.user.setFlag('token-action-hud-core', 'isCollapsed', true)
+            if (event) game.user.setFlag('token-action-hud-core', 'isCollapsed', true)
         }
 
         /**
@@ -368,35 +359,46 @@ export class TokenActionHud extends Application {
          * Unlock the hud
          * @param {object} event
          */
-        function unlockHud (event) {
-            event.preventDefault()
-            event = event || window.event
-            $(event.target).addClass('tah-hidden')
+        async function unlockHud (event = null) {
+            if (event) {
+                event.preventDefault()
+                event = event || window.event
+            }
+            const target = event?.target || html.find(unlockButton)
+            $(target).addClass('tah-hidden')
             html.find(lockButton).removeClass('tah-hidden')
             html.find(editCategoriesButton).removeClass('tah-hidden')
             categoryElements.removeClass('tah-hidden')
+            subcategoryElements.removeClass('tah-hidden')
             titleButtons.removeClass('disable-edit')
             subtitles.removeClass('disable-edit')
-            game.user.setFlag('token-action-hud-core', 'isUnlocked', true)
+            if (event) await game.user.setFlag('token-action-hud-core', 'isUnlocked', true)
         }
 
         /**
          * Lock the hud
          * @param {object} event
          */
-        function lockHud (event) {
-            event.preventDefault()
-            event = event || window.event
-            $(event.target).addClass('tah-hidden')
+        async function lockHud (event = null) {
+            if (event) {
+                event.preventDefault()
+                event = event || window.event
+            }
+            const target = event?.target || html.find(lockButton)
+            $(target).addClass('tah-hidden')
             html.find(unlockButton).removeClass('tah-hidden')
             html.find(editCategoriesButton).addClass('tah-hidden')
             for (const categoryElement of categoryElements) {
                 const hasActions = (categoryElement.getElementsByClassName('tah-action').length > 0)
                 if (!hasActions) $(categoryElement).addClass('tah-hidden')
             }
+            for (const subcategoryElement of subcategoryElements) {
+                const hasActions = (subcategoryElement.getElementsByClassName('tah-action').length > 0)
+                if (!hasActions) $(subcategoryElement).addClass('tah-hidden')
+            }
             titleButtons.addClass('disable-edit')
             subtitles.addClass('disable-edit')
-            game.user.setFlag('token-action-hud-core', 'isUnlocked', false)
+            if (event) await game.user.setFlag('token-action-hud-core', 'isUnlocked', false)
         }
 
         $(document)
@@ -406,7 +408,6 @@ export class TokenActionHud extends Application {
     }
 
     dragEvent (event) {
-        event.preventDefault()
         if (!getSetting('drag')) return
         const element = event.target.parentElement.closest('div#token-action-hud')
         document.onmousemove = mouseMoveEvent
@@ -420,8 +421,10 @@ export class TokenActionHud extends Application {
         let pos2 = 0
         let pos3 = clientX
         let pos4 = clientY
-        let elementTop = element.offsetTop
-        let elementLeft = element.offsetLeft
+        const originalElementTop = element.offsetTop
+        const originalElementLeft = element.offsetLeft
+        let newElementTop = originalElementTop
+        let newElementLeft = originalElementLeft
 
         function mouseMoveEvent (event) {
             event = event || window.event
@@ -431,12 +434,16 @@ export class TokenActionHud extends Application {
             pos2 = pos4 - clientY
             pos3 = clientX
             pos4 = clientY
-            elementTop = element.offsetTop - pos2
-            elementLeft = element.offsetLeft - pos1
+
+            // If the mouse has not moved, do not update
+            if (pos1 === pos3 && pos2 === pos4) return
+
+            newElementTop = newElementTop - pos2
+            newElementLeft = newElementLeft - pos1
 
             // Set the hud to the new position
-            element.style.top = elementTop + 'px'
-            element.style.left = elementLeft + 'px'
+            element.style.top = newElementTop + 'px'
+            element.style.left = newElementLeft + 'px'
             element.style.position = 'fixed'
         }
 
@@ -446,13 +453,16 @@ export class TokenActionHud extends Application {
             element.ontouchmove = null
             element.ontouchend = null
 
+            // If position has not changed, do not update
+            if (newElementTop === originalElementTop && newElementLeft === originalElementLeft) return
+
             game.user.update({
                 flags: {
-                    'token-action-hud-core': { position: { top: elementTop, left: elementLeft } }
+                    'token-action-hud-core': { position: { top: newElementTop, left: newElementLeft } }
                 }
             })
 
-            Logger.debug(`Set position to x: ${elementTop}px, y: ${elementLeft}px`)
+            Logger.debug(`Set position to x: ${newElementTop}px, y: ${newElementLeft}px`)
         }
     }
 
@@ -623,8 +633,10 @@ export class TokenActionHud extends Application {
      */
     update () {
         // Delay refresh because switching tokens could cause a controlToken(false) then controlToken(true) very fast
-        if (this.refreshTimeout) clearTimeout(this.refreshTimeout)
-        this.refreshTimeout = setTimeout(this._updateHud.bind(this), 100)
+        // if (this.refreshTimeout) clearTimeout(this.refreshTimeout)
+        // this.refreshTimeout = setTimeout(this._updateHud.bind(this), 100)
+
+        this._updateHud()
     }
 
     /**

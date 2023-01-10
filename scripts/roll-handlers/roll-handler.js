@@ -1,7 +1,6 @@
-import { getSetting} from '../utilities/utils.js'
-import Logger from '../logger.js'
+import { Logger, getSetting } from '../utilities/utils.js'
 
-export default class CoreRollHandler {
+export class RollHandler {
     preRollHandlers = []
 
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
