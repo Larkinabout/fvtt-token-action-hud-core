@@ -39,7 +39,8 @@ export class TokenActionHud extends Application {
      */
     updateSettings () {
         this.updateRollHandler()
-        this.update()
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud.updateSettings' } }
+        this.update(trigger)
     }
 
     /**
@@ -258,13 +259,13 @@ export class TokenActionHud extends Application {
             const target = event.target
             if (target.value.length === 0) return
 
-            const id = target.value
-            const categoryTitle = target.innerText ?? target.outerText
+            const nestId = target.value
+            const name = target.innerText ?? target.outerText
+            const type = target?.dataset?.type
 
             TagDialogHelper.showSubcategoryDialog(
                 game.tokenActionHud.categoryManager,
-                id,
-                categoryTitle
+                { nestId, name, type }
             )
         }
 
@@ -277,13 +278,13 @@ export class TokenActionHud extends Application {
             if (target.id.length === 0) return
 
             const nestId = target.id
-            const subcategoryName = target.innerText ?? target.outerText
+            const name = target.innerText ?? target.outerText
+            const type = target?.dataset?.type
 
             TagDialogHelper.showActionDialog(
                 game.tokenActionHud.categoryManager,
                 game.tokenActionHud.actionHandler,
-                nestId,
-                subcategoryName
+                { nestId, name, type }
             )
         }
 
@@ -568,8 +569,6 @@ export class TokenActionHud extends Application {
         game.user.update({
             flags: { 'token-action-hud-core': { position: { top: this.defaultTopPos, left: this.defaultLeftPos } } }
         })
-        this.update()
-
         Logger.debug(`Position reset to x: ${this.defaultTopPos}px, y: ${this.defaultLeftPos}px`)
     }
 
@@ -621,7 +620,8 @@ export class TokenActionHud extends Application {
      */
     async resetActorFlags () {
         await this.categoryManager.resetActorFlags()
-        this.update()
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud.resetActorFlags' } }
+        this.update(trigger)
     }
 
     /**
@@ -629,25 +629,25 @@ export class TokenActionHud extends Application {
      */
     async resetUserFlags () {
         await this.categoryManager.resetUserFlags()
-        this.update()
-    }
-
-    /**
-     * Update the hud with a delay
-     */
-    update () {
-        // Delay refresh because switching tokens could cause a controlToken(false) then controlToken(true) very fast
-        // if (this.refreshTimeout) clearTimeout(this.refreshTimeout)
-        // this.refreshTimeout = setTimeout(this._updateHud.bind(this), 100)
-
-        this._updateHud()
+        this.actionHandler.resetActionHandler()
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud.resetUserFlags' } }
+        this.update(trigger)
     }
 
     /**
      * Update the hud
+     * @param {object} trigger The trigger for the update
      */
-    async _updateHud () {
-        Logger.debug('Updating hud...')
+    update (trigger = null) {
+        this._updateHud(trigger)
+    }
+
+    /**
+     * Update the hud
+     * @param {object} trigger The trigger for the update
+     */
+    async _updateHud (trigger) {
+        Logger.debug('Updating hud...', trigger)
         const controlledTokens = this.tokens?.controlled
         const character = this._getCharacter(controlledTokens)
 

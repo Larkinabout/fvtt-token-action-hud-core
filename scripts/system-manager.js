@@ -8,10 +8,7 @@ import { Logger, getSetting, setSetting } from './utilities/utils.js'
 export class SystemManager {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
 
-    appName
-    constructor (appName) {
-        this.appName = appName
-    }
+    namespace = 'token-action-hud-core'
 
     doGetCategoryManager () {}
 
@@ -25,6 +22,7 @@ export class SystemManager {
     async doRegisterDefaultFlags () {}
 
     async registerDefaultFlags () {
+        await game.user.unsetFlag(this.namespace, 'default')
         await this.doRegisterDefaultFlags()
     }
 
@@ -80,7 +78,7 @@ export class SystemManager {
 
     registerSettings () {
         const rollHandlers = this.getAvailableRollHandlers()
-        registerSettings(this.appName, this, rollHandlers)
+        registerSettings(this.namespace, this, rollHandlers)
     }
 
     /** UTILITY */

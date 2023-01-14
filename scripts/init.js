@@ -92,53 +92,61 @@ Hooks.on('canvasReady', async () => {
 
         // Registers hooks to trigger a Token Action Hud update
         Hooks.on('controlToken', (token, controlled) => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'controlToken', data: [token, controlled] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('updateToken', (token, data, diff) => {
             // If it's an X or Y change, assume the token is just moving
-            if (Object.hasOwn(diff, 'y') || Object.hasOwn(diff, 'x')) return
+            if (Object.hasOwn(diff, 'y') || Object.hasOwn('diff', 'x')) return
             if (game.tokenActionHud.isValidTokenChange(token, data)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'updateToken', data: [token, data, diff] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('deleteToken', (scene, token, change, userId) => {
             if (game.tokenActionHud.isValidTokenChange(token)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'deleteToken', data: [scene, token, change, userId] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('updateActor', (actor, data) => {
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor, data)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'updateActor', data: [actor, data] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('deleteActor', (actor, data) => {
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor, data)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'deleteActor', data: [actor, data] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('deleteItem', (item) => {
             const actor = item.actor
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'deleteItem', data: [item] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('createItem', (item) => {
             const actor = item.actor
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'createItem', data: [item] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('updateItem', (item) => {
             const actor = item.actor
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'updateItem', data: [item] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
@@ -149,45 +157,55 @@ Hooks.on('canvasReady', async () => {
         Hooks.on('renderCompendium', (source, html) => {
             const metadata = source?.metadata
             if (game.tokenActionHud.isLinkedCompendium(`${metadata?.package}.${metadata?.name}`)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'renderCompendium', data: [source, html] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('deleteCompendium', (source, html) => {
             const metadata = source?.metadata
             if (game.tokenActionHud.isLinkedCompendium(`${metadata?.package}.${metadata?.name}`)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'deleteCompendium', data: [source, html] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('createCombat', (combat) => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'createCombat', data: [combat] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('deleteCombat', (combat) => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'deleteCombat', data: [combat] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('updateCombat', (combat) => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'updateCombat', data: [combat] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('updateCombatant', (combat, combatant) => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'updateCombatant', data: [combat, combatant] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('forceUpdateTokenActionHud', () => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'forceUpdateTokenActionHud' } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('createActiveEffect', () => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'createActiveEffect' } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('deleteActiveEffect', () => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'deleteActiveEffect' } }
+            game.tokenActionHud.update(trigger)
         })
 
-        game.tokenActionHud.update()
+        const trigger = { trigger: { type: 'hook', name: 'canvasReady' } }
+        game.tokenActionHud.update(trigger)
     })
 })

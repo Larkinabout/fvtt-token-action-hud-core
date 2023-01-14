@@ -15,11 +15,9 @@ export class ItemMacroActionListExtender extends ActionListExtender {
     /**
      * Extend the action list
      * @override
-     * @param {object} actionList The action list
      * @param {object} character The actor and/or token
-     * @returns {object} The action list
      */
-    extendActionList (actionList, character) {
+    extendActionList (character) {
         if (!character) return
 
         const tokenId = character.token?.id
@@ -45,17 +43,13 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
         const itemMacroSetting = getSetting('itemMacro')
 
-        if (itemMacroSetting === 'original') return actionList
+        if (itemMacroSetting === 'original') return
 
         const replace = itemMacroSetting === 'itemMacro'
 
-        actionList.categories.forEach((category) => {
-            category.subcategories.forEach((subcategory) => {
-                this.addSubcategoryActions(itemIds, subcategory, replace)
-            })
+        this.flattenedSubcategories.forEach(subcategory => {
+            this.addSubcategoryActions(itemIds, subcategory, replace)
         })
-
-        return actionList
     }
 
     /**
@@ -101,7 +95,9 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         newAction.id = action.id
         newAction.name = `(M) ${action.name}`
         newAction.img = action.img
-        newAction.icon = action.icon
+        newAction.icon1 = action.icon1
+        newAction.icon2 = action.icon2
+        newAction.icon3 = action.icon3
         newAction.info1 = action.info1
         newAction.info2 = action.info2
         newAction.info3 = action.info3

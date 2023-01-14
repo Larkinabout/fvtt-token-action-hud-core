@@ -8,17 +8,13 @@ export class CompendiumActionHandler {
     /**
      * Build any compendium actions
      * @override
-     * @param {object} actionList The action list
      */
-    async buildCompendiumActions (actionList) {
+    async buildCompendiumActions () {
         // Get compendium subcategories
-        const subcategoryIds = Object.values(actionList.categories)
-            .filter((category) => category.subcategories)
-            .flatMap((category) =>
-                Object.values(category.subcategories)
-                    .filter((subcategory) => subcategory.type === 'compendium')
-                    .flatMap((subcategory) => subcategory.id)
-            )
+        const subcategories = this.baseHandler.getFlattenedSubcategories({ subcategoryType: 'compendium' })
+        const subcategoryIds = subcategories.flatMap(subcategory => subcategory.id)
+
+        if (!subcategoryIds) return
 
         // Get compendium packs
         const packIds = game.packs
@@ -34,11 +30,7 @@ export class CompendiumActionHandler {
             const subcategoryId = packId.replace('.', '-')
             if (subcategoryIds.includes(packId.replace('.', '-'))) {
                 const actions = await this.getCompendiumActions(packId)
-                this.baseHandler.addActionsToActionList(
-                    actionList,
-                    actions,
-                    subcategoryId
-                )
+                this.baseHandler.addActionsToActionList(actions, subcategoryId)
             }
         }
     }

@@ -27,7 +27,7 @@ export class TagDialog extends Dialog {
                     callback: async (html) => {
                         const selection = TagDialog.tagify.value.map((c) => {
                             c.id = c.id ?? c.value.slugify({ replacement: '-', strict: true })
-                            return { id: c.id, title: c.value, type: c.type, level: c.level }
+                            return { id: c.id, name: c.value, type: c.type, level: c.level }
                         })
                         await submitFunc(selection, html)
                     }

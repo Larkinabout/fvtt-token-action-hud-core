@@ -238,9 +238,8 @@ export const registerSettings = function (app, systemManager, rollHandlers) {
         default: false,
         onChange: (value) => {
             if (value) {
-                game.tokenActionHud.reset()
-                game.tokenActionHud.update()
                 setSetting('reset', false)
+                game.tokenActionHud.reset()
             }
         }
     })

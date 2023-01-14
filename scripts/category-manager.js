@@ -33,8 +33,8 @@ export class CategoryManager {
     async resetUserFlags () {
         Logger.debug('Resetting user flags...')
         await game.user.unsetFlag(namespace, 'categories')
+        await this._registerDefaultCategories()
         Logger.debug('User flags reset')
-        this._registerDefaultCategories()
     }
 
     /**
@@ -42,11 +42,8 @@ export class CategoryManager {
      */
     async init () {
         const savedCategories = this.user.getFlag(namespace, 'categories')
-        if (savedCategories) {
-            Logger.debug('Retrieved saved categories', { savedCategories })
-        } else {
-            this._registerDefaultCategories()
-        }
+        if (!savedCategories) return this._registerDefaultCategories()
+        Logger.debug('Retrieved saved categories', { savedCategories })
     }
 
     /**
@@ -58,17 +55,15 @@ export class CategoryManager {
             'default.categories'
         )
         if (!defaultCategories) return
-        await game.user.update({
-            flags: { [namespace]: { categories: defaultCategories } }
-        })
+        await game.user.setFlag(namespace, 'categories', defaultCategories)
         Logger.debug('Registered default categories', { defaultCategories })
     }
 
     /**
-     * Submit Categories
+     * Save Categories
      * @param {{object}} choices
      */
-    async submitCategories (choices) {
+    async saveCategories (choices) {
         if (!choices) return
         const categories = game.user.getFlag(namespace, 'categories')
         if (categories) await this.deleteCategoriesFlag()
@@ -82,7 +77,7 @@ export class CategoryManager {
             const subcategories = category?.subcategories ?? null
             chosenCategories[categoryKey] = {
                 id: choice.id,
-                title: choice.title,
+                name: choice.name,
                 subcategories
             }
         }
@@ -91,15 +86,17 @@ export class CategoryManager {
     }
 
     /**
-     * Submit Subcategories
+     * Save Subcategories
      * @param {string} categoryId
      * @param {object} choices
      */
-    async submitSubcategories (nestId, choices, advancedCategoryOptions) {
+    async saveSubcategories (choices, advancedCategoryOptions = null, subcategoryData) {
         if (!choices) return
-        const categories = this.user.getFlag(namespace, 'categories')
-        const categorySubcategory = await getSubcategoryByNestId(Object.values(categories), nestId)
+        const categories = game.user.getFlag(namespace, 'categories')
+        const categorySubcategory = await getSubcategoryByNestId(Object.values(categories), subcategoryData)
         if (!categorySubcategory) return
+
+        const nestId = subcategoryData.nestId
 
         const chosenSubcategories = {}
         for (const choice of choices) {
@@ -175,10 +172,11 @@ export class CategoryManager {
         )
     }
 
-    async getSelectedSubcategoriesAsTagifyEntries (nestId) {
+    async getSelectedSubcategoriesAsTagifyEntries (subcategoryData) {
         const categories = this.user.getFlag(namespace, 'categories')
         if (!categories) return []
-        const subcategory = await getSubcategoryByNestId(Object.values(categories), nestId)
+        const subcategory = await getSubcategoryByNestId(Object.values(categories), subcategoryData)
+        if (!subcategory) return []
         if (!subcategory.subcategories) return []
 
         const subcategories = Object.values(subcategory.subcategories).map(
@@ -229,7 +227,7 @@ export class CategoryManager {
 
     toTagifyEntry (data) {
         const id = data.id
-        const value = data.title
+        const value = data.name
         const type = data.type
         const level = 'subcategory'
         return { id, value, type, level }

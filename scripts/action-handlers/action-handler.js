@@ -4,7 +4,7 @@ import { ActionSubcategory } from '../entities/action-subcategory.js'
 import { GenericActionHandler } from './generic-action-handler.js'
 import { CompendiumActionHandler } from './compendium-action-handler.js'
 import { MacroActionHandler } from './macro-action-handler.js'
-import { Logger, getSetting, getSubcategoriesById, getSubcategoryByNestId } from '../utilities/utils.js'
+import { Logger, getSetting, getSubcategories, getSubcategoryByNestId } from '../utilities/utils.js'
 
 export class ActionHandler {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
@@ -19,8 +19,22 @@ export class ActionHandler {
         this.compendiumActionHandler = new CompendiumActionHandler(this)
         this.macroActionHandler = new MacroActionHandler(this)
         this.actionList = []
+        this.flattenedSubcategories = []
         this.savedUserActionList = []
         this.savedActorActionList = []
+        this.derivedSubcategories = new Map()
+        this.displayIcons = getSetting('displayIcons')
+    }
+
+    resetActionHandler () {
+        this.genericActionHandler = new GenericActionHandler(this)
+        this.compendiumActionHandler = new CompendiumActionHandler(this)
+        this.macroActionHandler = new MacroActionHandler(this)
+        this.actionList = []
+        this.flattenedSubcategories = []
+        this.savedUserActionList = []
+        this.savedActorActionList = []
+        this.derivedSubcategories = new Map()
         this.displayIcons = getSetting('displayIcons')
     }
 
@@ -34,16 +48,17 @@ export class ActionHandler {
         this.character = character
         this.savedUserActionList = this.getSavedUserActionList(character)
         this.savedActorActionList = this.getSavedActorActionList(character)
-        const emptyActionList = this.buildEmptyActionList(character)
-        this.actionList = emptyActionList
+        this.actionList = this.buildEmptyActionList(character)
+        this.flattenedSubcategories = this.flattenSubcategories()
         await Promise.all([
-            this._buildSystemActions(this.actionList, character),
-            this._buildGenericActions(this.actionList, character),
-            this._buildCompendiumActions(this.actionList),
-            this._buildMacroActions(this.actionList),
-            this.buildFurtherActions(this.actionList, character)
+            this._buildSystemActions(character),
+            this._buildGenericActions(character),
+            this._buildCompendiumActions(),
+            this._buildMacroActions(),
+            this.buildFurtherActions(character)
         ])
-        await this.saveActionList(this.actionList, character)
+        await this.saveActionList(character)
+        await this.saveDerivedSubcategories()
         Logger.debug('Action list built', { actionList: this.actionList, character })
         return this.actionList
     }
@@ -92,13 +107,13 @@ export class ActionHandler {
         const emptyActionList = new ActionList(hudTitle, tokenId, actorId)
 
         const categories =
-            game.user.flags['token-action-hud-core']?.categories ??
-            game.user.flags['token-action-hud-core']?.default.categories
+            game.user.getFlag('token-action-hud-core', 'categories') ??
+            game.user.getFlag('token-action-hud-core', 'default.categories')
 
         for (const category of Object.entries(categories)) {
             // Add category
             emptyActionList.categories.push(
-                new ActionCategory(category[1].id, category[1].title)
+                new ActionCategory(category[1].id, category[1].name)
             )
 
             const lastIndex = emptyActionList.categories.length - 1
@@ -107,16 +122,17 @@ export class ActionHandler {
             // Add subcategories to category
             addSubcategories(latestCategory, category[1].subcategories, category[0])
 
-            function addSubcategories (latestCategorySubcategory, subcategories, nestId) {
+            function addSubcategories (latestCategorySubcategory, subcategories, nestId = null) {
                 if (subcategories) {
                     for (const subcategory of Object.entries(subcategories)) {
+                        const subcategoryData = {
+                            id: subcategory[1].id,
+                            nestId: subcategory[0],
+                            name: subcategory[1].name,
+                            type: subcategory[1].type
+                        }
                         latestCategorySubcategory.subcategories.push(
-                            new ActionSubcategory(
-                                subcategory[1].id,
-                                subcategory[0],
-                                subcategory[1].title,
-                                subcategory[1].type
-                            )
+                            new ActionSubcategory(subcategoryData)
                         )
 
                         if (subcategory[1].subcategories) {
@@ -129,66 +145,59 @@ export class ActionHandler {
                 }
             }
         }
-        Logger.debug('Empty action list built', { emptyActionList, character })
+        Logger.debug('Empty action list built', { emptyActionList: deepClone(emptyActionList), character })
         return emptyActionList
     }
 
     /**
      * Build any system-specific actions
-     * @param {object} emptyActionList The empty action list
      * @param {object} character The actor and/or token
-     * @returns {object} The action list with system actions added
      */
-    async _buildSystemActions (emptyActionList, character) {
-        Logger.debug('Building system actions...', { emptyActionList, character })
-        const actionList = emptyActionList
-        const subcategoryIds = Object.values(actionList.categories)
+    async _buildSystemActions (character) {
+        Logger.debug('Building system actions...', { character })
+        const subcategoryIds = Object.values(this.actionList.categories)
             .filter((category) => category.subcategories)
             .flatMap((category) =>
                 Object.values(category.subcategories)
                     .filter((subcategory) => subcategory.type === 'system')
                     .flatMap((subcategory) => subcategory.id)
             )
-        await this.buildSystemActions(actionList, character, subcategoryIds)
-        Logger.debug('System actions built', { actionList, character })
-        return actionList
+        await this.buildSystemActions(character, subcategoryIds)
+        Logger.debug('System actions built', { actionList: deepClone(this.actionList), character })
     }
 
     /** @public */
-    async buildSystemActions (actionList, character, subcategoryIds) {}
+    async buildSystemActions (character, subcategoryIds) {}
 
     /**
      * Build generic actions
      * @protected
-     * @param {object} actionList The action list
      * @param {object} character The actor and/or token
      */
-    _buildGenericActions (actionList, character) {
-        Logger.debug('Building generic actions...', { actionList, character })
-        this.genericActionHandler.buildGenericActions(actionList, character)
-        Logger.debug('Generic actions built...', { actionList, character })
+    _buildGenericActions (character) {
+        Logger.debug('Building generic actions...', { character })
+        this.genericActionHandler.buildGenericActions(character)
+        Logger.debug('Generic actions built...', { actionList: deepClone(this.actionList), character })
     }
 
     /**
      * Build any compendium-specific actions
      * @protected
-     * @param {object} actionList The action list
      */
-    async _buildCompendiumActions (actionList) {
-        Logger.debug('Building compendium actions...', { actionList })
-        await this.compendiumActionHandler.buildCompendiumActions(actionList)
-        Logger.debug('Compendium actions built', { actionList })
+    async _buildCompendiumActions () {
+        Logger.debug('Building compendium actions...')
+        await this.compendiumActionHandler.buildCompendiumActions()
+        Logger.debug('Compendium actions built', { actionList: deepClone(this.actionList) })
     }
 
     /**
      * Build any macro-specific actions
      * @protected
-     * @param {object} actionList The action list
      */
-    async _buildMacroActions (actionList) {
-        Logger.debug('Building macro actions...', { actionList })
-        await this.macroActionHandler.buildMacroActions(actionList)
-        Logger.debug('Macro actions built', { actionList })
+    async _buildMacroActions () {
+        Logger.debug('Building macro actions...')
+        await this.macroActionHandler.buildMacroActions()
+        Logger.debug('Macro actions built', { actionList: deepClone(this.actionList) })
     }
 
     /**
@@ -197,9 +206,9 @@ export class ActionHandler {
      * @param {object} actionList The action list
      * @param {object} character The actor and/or token
      */
-    buildFurtherActions (actionList, character) {
+    buildFurtherActions (character) {
         this.furtherActionHandlers.forEach((handler) =>
-            handler.extendActionList(actionList, character)
+            handler.extendActionList(character)
         )
     }
 
@@ -208,11 +217,11 @@ export class ActionHandler {
      * @param {string} nestId The ID of the nested subcategory
      * @returns {array} A list of actions
      */
-    async getActionsAsTagifyEntries (nestId) {
+    async getActionsAsTagifyEntries (subcategoryData) {
         if (!this.actionList) return
         const subcategory = await getSubcategoryByNestId(
             this.actionList.categories,
-            nestId
+            subcategoryData
         )
         const actions = subcategory.actions.map((action) =>
             this.toTagifyEntry(action)
@@ -225,11 +234,11 @@ export class ActionHandler {
      * @param {string} nestId The ID of the nested subcategory
      * @returns {array} A list of actions
      */
-    async getSelectedActionsAsTagifyEntries (nestId) {
+    async getSelectedActionsAsTagifyEntries (subcategoryData) {
         if (!this.actionList) return
         const subcategory = await getSubcategoryByNestId(
             this.actionList.categories,
-            nestId
+            subcategoryData
         )
         const actions = subcategory.actions
             .filter((action) => action.selected === true)
@@ -247,33 +256,35 @@ export class ActionHandler {
 
     /**
      * Add info to subcategory
-     * @param {object} actionList The action list
      * @param {string} subcategoryId The subcategory ID
      * @param {object} data The data
      */
-    addSubcategoryInfo (actionList, subcategoryId, data) {
-        const subcategories = Object.values(actionList.categories)
-            .flatMap((category) => category.subcategories)
+    addSubcategoryInfo (subcategoryData = {}) {
+        const subcategoryId = subcategoryData?.subcategoryId
+        const subcategoryType = subcategoryData?.subcategoryType ?? 'system'
+        const subcategoryInfo = subcategoryData?.subcategoryInfo
 
-        const matchingSubcategories = getSubcategoriesById(subcategories, subcategoryId)
+        if (!subcategoryId || !subcategoryInfo) return
+
+        const matchingSubcategories = this.getFlattenedSubcategories({ subcategoryId, subcategoryType })
 
         matchingSubcategories.forEach(matchingSubcategory => {
-            matchingSubcategory.info1 = data.info1
-            matchingSubcategory.info2 = data.info2
-            matchingSubcategory.info3 = data.info3
+            matchingSubcategory.info1 = subcategoryInfo.info1
+            matchingSubcategory.info2 = subcategoryInfo.info2
+            matchingSubcategory.info3 = subcategoryInfo.info3
         })
     }
 
     /**
      * Add a subcategory and its actions to the subcategory list
      * @public
-     * @param {object} subcategoryList The subcategory list
+     * @param {object} flattenedSubcategories The subcategory list
      * @param {string} subcategoryId The subcategory ID
      * @param {object} subcategory The subcategory object
      * @param {object} [actions = []] The actions object
      */
-    addToSubcategoryList (subcategoryList, subcategoryId, subcategory, actions = []) {
-        subcategoryList.push({
+    addToflattenedSubcategories (flattenedSubcategories, subcategoryId, subcategory, actions = []) {
+        flattenedSubcategories.push({
             subcategoryId,
             subcategory,
             actions
@@ -281,71 +292,78 @@ export class ActionHandler {
     }
 
     /**
-     * Add subcategories from the subcategory list to the action list
+     * Add subcategory to the action list
      * @public
-     * @param {object} actionList The action list
-     * @param {object} subcategoryList The subcategory list
-     * @param {string} subcategoryId  The subcategory ID
+     * @param {object} parentSubcategoryId The parent subcategory ID
+     * @param {string} subcategory  The subcategory
      */
-    addSubcategoriesToActionList (actionList, subcategoryList, subcategoryId) {
-        const subcategories = Object.values(actionList.categories)
-            .flatMap((category) => category.subcategories)
+    addSubcategoryToActionList (parentSubcategoryData, subcategoryData) {
+        const subcategoryId = parentSubcategoryData?.id
+        const subcategoryType = parentSubcategoryData?.type ?? 'system'
 
-        const matchingSubcategories = getSubcategoriesById(subcategories, subcategoryId)
+        if (!subcategoryId) return
 
-        matchingSubcategories.forEach(matchingSubcategory => {
+        const matchingSubcategories = this.getFlattenedSubcategories({ subcategoryId, subcategoryType })
+
+        if (!matchingSubcategories) return
+
+        const subcategory = this.initializeSubcategory(subcategoryData)
+
+        for (const matchingSubcategory of matchingSubcategories) {
+            // Exit if subcategory already exists
+            if (matchingSubcategory.subcategories.find(subcategory => subcategory.id === subcategoryData.id)) return
+
             const matchingSubcategoryNestId = matchingSubcategory.nestId
-            // Clone subcategories
-            const subcategoryListClone = deepClone(subcategoryList)
 
-            // Add subcategories
-            const subcategoryListSubcategories = subcategoryListClone.map(
-                (subcategory) => subcategory.subcategory
-            )
+            // Clone subcategory
+            const subcategoryClone = deepClone(subcategory)
 
             // Set nestId
-            subcategoryListSubcategories.forEach(subcategoryListSubcategory => {
-                subcategoryListSubcategory.nestId = `${matchingSubcategoryNestId}_${subcategoryListSubcategory.nestId}`
-            })
+            subcategoryClone.nestId = `${matchingSubcategoryNestId}_${subcategoryClone.id}`
 
             // Set subcategories
-            matchingSubcategory.subcategories.push(...subcategoryListSubcategories)
-        })
+            matchingSubcategory.subcategories.push(subcategoryClone)
 
-        // Clone subcategories
-        const subcategoryListClone = deepClone(subcategoryList)
+            // Add subcategory to derivedSubcategories variable
+            const tagifiedSubcategory = { id: subcategoryClone.id, name: subcategoryClone.name, type: subcategoryClone.type }
 
-        // Add actions
-        for (const subcategory of subcategoryListClone) {
-            if (!subcategory.actions) return
-            this.addActionsToActionList(
-                actionList,
-                subcategory.actions,
-                subcategory.subcategoryId
-            )
+            const mapElement = this.derivedSubcategories.get(matchingSubcategoryNestId)
+            if (mapElement) {
+                mapElement.push(tagifiedSubcategory)
+            } else {
+                this.derivedSubcategories.set(matchingSubcategoryNestId, [tagifiedSubcategory])
+            }
+
+            this.flattenedSubcategories.push(subcategoryClone)
         }
     }
 
     /**
      * Add actions to the action list
-     * @param {object} actionList The action list
      * @param {object} actions The actions
      * @param {string} subcategoryId The subcategory ID
      */
-    async addActionsToActionList (actionList, actions, subcategoryId) {
-        if (actions.length === 0) return
+    async addActionsToActionList (actions, subcategoryData = {}) {
+        // Exit if no actions exist
+        if (!actions.length) return
 
-        const subcategories = getSubcategoriesById(
-            actionList.categories,
-            subcategoryId
-        )
+        // Exit if no subcatgoryId exists
+        const subcategoryId = (typeof subcategoryData === 'string') ? subcategoryData : subcategoryData?.id
+        if (!subcategoryId) return
+
+        const subcategoryType = subcategoryData?.type ?? 'system'
+
+        // Get subcategories
+        const subcategories = this.getFlattenedSubcategories({ subcategoryId, subcategoryType })
+
+        // Exit if no subcategories found
+        if (!subcategories) return
 
         for (const subcategory of subcategories) {
             // Get saved subcategory
-            const savedSubcategory = await getSubcategoryByNestId(
-                this.savedActorActionList,
-                subcategory.nestId
-            )
+            const nestId = subcategory.nestId
+            const type = subcategory.type
+            const savedSubcategory = await getSubcategoryByNestId(this.savedActorActionList, { nestId, type })
 
             // Get saved actions
             const savedActions = savedSubcategory?.actions ?? []
@@ -377,21 +395,35 @@ export class ActionHandler {
     }
 
     /**
-     * Save the action list of user flags
-     * @param {object} actionList The action list
+     * Save custom subcategories to the user flag
+     * @returns {void}
+     */
+    async saveDerivedSubcategories () {
+        if (this.derivedSubcategories.size === 0) return
+        for (const [key, value] of this.derivedSubcategories) {
+            const nestId = key
+            const subcategoryType = 'system-derived'
+            const subcategoryData = { nestId, subcategoryType }
+            const subcategories = value
+            await game.tokenActionHud.categoryManager.saveSubcategories(subcategories, null, subcategoryData)
+        }
+    }
+
+    /**
+     * Save the action list to the actor flag
      * @param {object} character The actor and/or token
      */
-    async saveActionList (actionList, character) {
-        Logger.debug('Saving action list...', { actionList, character })
+    async saveActionList (character) {
+        Logger.debug('Saving action list...', { character })
         if (!character?.actor) return
         const actor = character.actor
         await actor.unsetFlag('token-action-hud-core', 'categories')
         await actor.setFlag(
             'token-action-hud-core',
             'categories',
-            actionList.categories
+            this.actionList.categories
         )
-        Logger.debug('Action list saved', { actionList, character })
+        Logger.debug('Action list saved', { actionList: this.actionList, character })
     }
 
     /**
@@ -400,11 +432,11 @@ export class ActionHandler {
      * @param {string} nestId The nested subcategory ID
      * @param {array} selectedActions The selected actions
      */
-    async saveActions (nestId, selectedActions) {
+    async saveActions (selectedActions, subcategoryData) {
         // Get nested subcategory
         const subcategory = await getSubcategoryByNestId(
             this.actionList.categories,
-            nestId
+            subcategoryData
         )
 
         // Get actions from subcategory
@@ -440,7 +472,7 @@ export class ActionHandler {
         subcategory.actions = reorderedActions
 
         // Save action list
-        await this.saveActionList(this.actionList, this.character)
+        await this.saveActionList(this.character)
     }
 
     /**
@@ -453,6 +485,18 @@ export class ActionHandler {
         this.furtherActionHandlers.push(handler)
     }
 
+    flattenSubcategories () {
+        return getSubcategories(this.actionList.categories)
+    }
+
+    getFlattenedSubcategories (searchCriteria) {
+        const subcategoryId = searchCriteria.subcategoryId
+        const subcategoryType = searchCriteria.subcategoryType
+        return this.flattenedSubcategories.filter(
+            subcategory => subcategory.id === subcategoryId && (!subcategoryType || subcategory.type === subcategoryType)
+        )
+    }
+
     /** @public */
     initializeEmptyCategory (categoryId) {
         const category = new ActionCategory()
@@ -462,14 +506,11 @@ export class ActionHandler {
 
     /**
      * Initialise empty subcategory
-     * @param {string} id The subcategory ID
-     * @param {string} parentNestId The parent nested subcategory ID
-     * @param {string} name The subcategory name
-     * @param {string} type The subcategory type
-     * @returns {object} The empty subcategory
+     * @param {object} subcategoryData The subcategory data
+     * @returns {object} The subcategory
      */
-    initializeEmptySubcategory (id = '', parentNestId = '', name = '', type = '') {
-        const subcategory = new ActionSubcategory(id, parentNestId, name, type)
+    initializeSubcategory (subcategoryData) {
+        const subcategory = new ActionSubcategory(subcategoryData)
         return subcategory
     }
 
@@ -501,8 +542,15 @@ export class ActionHandler {
      * @returns The sorted items
      */
     sortItems (items) {
-        items = Object.values(items)
-        items.sort((a, b) => a.sort - b.sort)
-        return items
+        return new Map([...items.entries()].sort((a, b) => a[1].sort.localeCompare(b[1].sort)))
+    }
+
+    /**
+     * Sort items by name
+     * @param {object} items The items
+     * @returns The sorted items
+     */
+    sortItemsByName (items) {
+        return new Map([...items.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name)))
     }
 }

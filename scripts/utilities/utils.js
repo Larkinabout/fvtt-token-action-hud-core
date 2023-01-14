@@ -125,60 +125,52 @@ export function registerHandlebars () {
 /**
  * Loop nested subcategories and return flattened
  * @param {object} subcategories
+ * @param {object} searchCriteria
  * @returns {object}
  */
-export function getSubcategories (subcategories) {
-    const result = []
-    for (const subcategory of subcategories) {
-        if (subcategory.subcategories.length > 0) {
-            result.push(getSubcategories(subcategory.subcategories).flat())
-        }
-        result.push(subcategory)
-    }
-    return result.flat()
-}
-
-/**
- * Loop nested subcategories, find subcategories matching id, and return flattened
- * @param {object} subcategories
- * @param {string} id
- * @returns {object}
- */
-export function getSubcategoriesById (subcategories, id) {
+export function getSubcategories (subcategories, searchCriteria = {}) {
     if (!subcategories) return
-    const result = []
+    const subcategoryId = searchCriteria?.id
+    const subcategoryType = searchCriteria?.type
+    subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories)
+    let foundSubcategories = []
     for (const subcategory of subcategories) {
-        if (subcategory.subcategories?.length > 0) {
-            result.push(getSubcategoriesById(subcategory.subcategories, id).flat())
-        }
-        if (subcategory.id === id) {
-            result.push(subcategory)
+        if ((!subcategoryId || subcategory.id === subcategoryId) && (!subcategoryType || subcategory.type === subcategoryType)) foundSubcategories.push(subcategory)
+        if (subcategory.subcategories.length > 0) {
+            const subcategories = getSubcategories(subcategory.subcategories, searchCriteria)
+            if (subcategories) foundSubcategories = foundSubcategories.concat(subcategories.filter(subcategory => subcategory !== undefined))
         }
     }
-    return result.flat()
+    return (foundSubcategories.length) ? foundSubcategories : null
 }
 
 /**
  * Loop nested subcategories, find subcategories matching nestId, and return flattened
  * @param {object} subcategories
- * @param {string} nestId
+ * @param {string} searchCriteria
  * @returns {object}
  */
-export async function getSubcategoryByNestId (subcategories, nestId) {
-    const parts = nestId.split('_')
-    const subcategory = await getSubcategoryByParts(subcategories, parts)
-    return subcategory
+export async function getSubcategoryByNestId (subcategories, searchCriteria = {}) {
+    const nestId = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.nestId)
+    const subcategoryType = searchCriteria?.type ?? 'system'
+    if (!nestId) return
 
-    async function getSubcategoryByParts (subcategories, parts) {
-        const subcategory = subcategories.find(subcategory => subcategory.id === parts[0])
-        if (subcategory) {
-            if (parts.length > 1) {
+    const parts = nestId.split('_')
+    return await findSubcategory(subcategories, parts)
+
+    async function findSubcategory (subcategories, parts) {
+        subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories)
+        for (const subcategory of subcategories) {
+            if (subcategory.id === parts[0]) {
+                if (parts.length === 1) {
+                    if (!subcategory.type || subcategory.type === subcategoryType) return subcategory
+                    return
+                }
+                if (subcategory.subcategories.length === 0) return
                 parts.shift()
-                return await getSubcategoryByParts(Object.values(subcategory.subcategories), parts)
-            } else {
-                return subcategory
+                const foundSubcategory = await findSubcategory(subcategory.subcategories, parts)
+                if (foundSubcategory) return foundSubcategory
             }
         }
-        return null
     }
 }
