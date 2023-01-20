@@ -14,9 +14,7 @@ export class TagDialogHelper {
             topLabel: game.i18n.localize('tokenActionHud.categoryTagExplanation'),
             placeholder: game.i18n.localize('tokenActionHud.filterPlaceholder'),
             clearButtonText: game.i18n.localize('tokenActionHud.clearButton'),
-            indexExplanationLabel: game.i18n.localize(
-                'tokenActionHud.pushLabelExplanation'
-            )
+            indexExplanationLabel: game.i18n.localize('tokenActionHud.pushLabelExplanation')
         }
 
         const submitFunc = async (choices) => {
@@ -36,7 +34,7 @@ export class TagDialogHelper {
     static async _showSubcategoryDialog (categoryManager, subcategoryData) {
         const nestId = subcategoryData.nestId
         const categorySubcategoryName = subcategoryData.name
-        const suggestions = await categoryManager.getSubcategoriesAsTagifyEntries()
+        const suggestions = await categoryManager.getSubcategoriesAsTagifyEntries(subcategoryData)
         const selected = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(subcategoryData)
 
         const title = game.i18n.localize('tokenActionHud.subcategoryTagTitle') + ` (${categorySubcategoryName})`
@@ -48,7 +46,8 @@ export class TagDialogHelper {
             advancedCategoryOptions: game.user.getFlag(
                 'token-action-hud-core',
                 `categories.${nestId}.advancedCategoryOptions`
-            )
+            ),
+            level: 'category'
         }
 
         const submitFunc = async (choices, html) => {
@@ -60,7 +59,14 @@ export class TagDialogHelper {
                     strict: true
                 })
                 choice.type = choice.type ?? 'custom'
-                return { id: choice.id, name: choice.name, type: choice.type }
+                choice.hasDerivedSubcategories = choice.hasDerivedSubcategories ?? 'false'
+                return {
+                    id: choice.id,
+                    name: choice.name,
+                    type: choice.type,
+                    hasDerivedSubcategories:
+                    choice.hasDerivedSubcategories
+                }
             })
 
             const customWidth = parseInt(
@@ -105,7 +111,7 @@ export class TagDialogHelper {
         const subcategoryName = subcategoryData?.name
         // Get suggestions
         const suggestedActions = await actionHandler.getActionsAsTagifyEntries(subcategoryData)
-        const suggestedSubcategories = await categoryManager.getSubcategoriesAsTagifyEntries()
+        const suggestedSubcategories = await categoryManager.getSubcategoriesAsTagifyEntries(subcategoryData)
         const suggestions = []
         suggestions.push(...suggestedActions, ...suggestedSubcategories)
 
@@ -121,9 +127,8 @@ export class TagDialogHelper {
             topLabel: game.i18n.localize('tokenActionHud.filterTagExplanation'),
             placeholder: game.i18n.localize('tokenActionHud.filterPlaceholder'),
             clearButtonText: game.i18n.localize('tokenActionHud.clearButton'),
-            indexExplanationLabel: game.i18n.localize(
-                'tokenActionHud.blockListLabel'
-            )
+            indexExplanationLabel: game.i18n.localize('tokenActionHud.blockListLabel'),
+            level: 'subcategory'
         }
 
         const submitFunc = async (choices) => {
@@ -152,7 +157,6 @@ export class TagDialogHelper {
     }
 
     static async saveActions (categoryManager, actionHandler, choices, subcategoryData) {
-        const nestId = subcategoryData.nestId
         const selectedSubcategories = choices.filter(choice => choice.level === 'subcategory')
         await categoryManager.saveSubcategories(selectedSubcategories, '', subcategoryData)
 

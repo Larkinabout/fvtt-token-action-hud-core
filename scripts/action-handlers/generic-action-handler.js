@@ -90,8 +90,15 @@ export class GenericActionHandler {
             actions.push(toggleVisibilityAction)
         }
 
+        const subcategoryId = 'token'
+        const subcategoryType = 'system'
+        const subcategoryData = {
+            id: subcategoryId,
+            type: subcategoryType
+        }
+
         // Add actions to action list
-        this.baseHandler.addActionsToActionList(actions, 'token')
+        this.baseHandler.addActionsToActionList(actions, subcategoryData)
     }
 
     /**
@@ -144,7 +151,14 @@ export class GenericActionHandler {
             actions.push(toggleVisibilityAction)
         }
 
+        const subcategoryId = 'token'
+        const subcategoryType = 'system'
+        const subcategoryData = {
+            id: subcategoryId,
+            type: subcategoryType
+        }
+
         // Add to Action List
-        this.baseHandler.addActionsToActionList(actions, 'token')
+        this.baseHandler.addActionsToActionList(actions, subcategoryData)
     }
 }

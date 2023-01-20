@@ -14,10 +14,12 @@
   </button>
 </div>
 <h2>{{localize "tokenActionHud.advancedCategoryOptions.title"}}</h2>
+{{~#if (eq this.level category) ~}}
 <div class="flexrow" style="justify-content:space-between; align-items: center;">
   <label style="max-width:130px">{{localize "tokenActionHud.advancedCategoryOptions.customWidth"}}</label>
   <input type="number" name="custom-width" value="{{advancedCategoryOptions.customWidth}}" />
 </div>
+{{~/if~}}
 <h3>{{localize "tokenActionHud.advancedCategoryOptions.compactView"}}</h3>
 <div class="flexrow" style="justify-content:space-between; align-items: center;">
   <label style="max-width:130px">{{localize "tokenActionHud.advancedCategoryOptions.compactView"}}</label>

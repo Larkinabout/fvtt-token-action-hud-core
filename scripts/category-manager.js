@@ -1,4 +1,4 @@
-import { Logger, getSubcategoryByNestId } from './utilities/utils.js'
+import { Logger, getSubcategories, getSubcategoryByNestId } from './utilities/utils.js'
 
 const namespace = 'token-action-hud-core'
 
@@ -10,6 +10,14 @@ export class CategoryManager {
 
     constructor (user) {
         this.user = user
+        this.flattenedSubcategories = []
+        this.derivedSubcategories = new Map()
+    }
+
+    // Reset category manager
+    async resetCategoryManager () {
+        this.flattenedSubcategories = []
+        this.derivedSubcategories = new Map()
     }
 
     /**
@@ -33,6 +41,7 @@ export class CategoryManager {
     async resetUserFlags () {
         Logger.debug('Resetting user flags...')
         await game.user.unsetFlag(namespace, 'categories')
+        this.resetCategoryManager()
         await this._registerDefaultCategories()
         Logger.debug('User flags reset')
     }
@@ -59,30 +68,102 @@ export class CategoryManager {
         Logger.debug('Registered default categories', { defaultCategories })
     }
 
+    /** @public */
+    createCategory (categoryData) {
+        const categoryDataClone = deepClone(categoryData)
+        return {
+            id: categoryDataClone.id,
+            nestId: categoryDataClone.nestId ?? this.id,
+            name: categoryDataClone.name,
+            level: 'category',
+            cssClass: '',
+            subcategories: []
+        }
+    }
+
+    /**
+     * Create subcategory
+     * @param {object} subcategoryData The subcategory data
+     * @returns {object} The subcategory
+     */
+    createSubcategory (subcategoryData) {
+        const subcategoryDataClone = deepClone(subcategoryData)
+        return {
+            id: subcategoryDataClone?.id,
+            nestId: subcategoryDataClone?.nestId,
+            name: subcategoryDataClone?.name,
+            type: subcategoryDataClone?.type ?? 'custom',
+            level: 'subcategory',
+            hasDerivedSubcategories: subcategoryDataClone.hasDerivedSubcategories ?? false,
+            isSelected: subcategoryDataClone.isSelected ?? true,
+            info1: subcategoryDataClone?.info1 ?? '',
+            info2: subcategoryDataClone?.info2 ?? '',
+            info3: subcategoryDataClone?.info3 ?? '',
+            actions: [],
+            subcategories: []
+        }
+    }
+
+    /**
+     * Flatten subcategories for easy retrieval
+     * @param {object} actionList The action list
+     */
+    flattenSubcategories (actionList) {
+        this.flattenedSubcategories = getSubcategories(actionList.categories)
+    }
+
+    /**
+     * Get flattened subcategories by search criteria
+     * @param {object} searchCriteria The search criteria
+     * @returns {array} The matching flattened subcategories
+     */
+    getFlattenedSubcategories (searchCriteria) {
+        const subcategoryId = searchCriteria.id
+        const subcategoryNestId = searchCriteria.nestId
+        const subcategoryType = searchCriteria.type
+        const subcategoryLevel = searchCriteria.level
+        return this.flattenedSubcategories.filter(
+            subcategory =>
+                (!subcategoryId || subcategory.id === subcategoryId) &&
+                (!subcategoryNestId || subcategory.nestId.startsWith(subcategoryNestId)) &&
+                (!subcategoryType || subcategory.type === subcategoryType) &&
+                (!subcategoryLevel || subcategory.level === subcategoryLevel)
+        )
+    }
+
+    /**
+     * Add a subcategory to the flattenedSubcategories array
+     * @public
+     * @param {object} subcategoryData The subcategory data
+     */
+    addToFlattenedSubcategories (subcategoryData) {
+        const matchingSubcategory = this.getFlattenedSubcategories(subcategoryData)
+        if (matchingSubcategory.length > 0) return
+        this.flattenedSubcategories.push(subcategoryData)
+    }
+
     /**
      * Save Categories
-     * @param {{object}} choices
+     * @param {object} choices
      */
     async saveCategories (choices) {
         if (!choices) return
-        const categories = game.user.getFlag(namespace, 'categories')
-        if (categories) await this.deleteCategoriesFlag()
+        const categories = game.tokenActionHud.actionHandler.actionList.categories
 
-        const chosenCategories = {}
+        const chosenCategories = []
         for (const choice of choices) {
-            const categoryKey = choice.id
-            const category = Object.values(categories).find(
-                (c) => c.id === categoryKey
-            )
-            const subcategories = category?.subcategories ?? null
-            chosenCategories[categoryKey] = {
+            const categoryNestId = choice.id
+            const category = categories.find(category => category.nestId === categoryNestId)
+            const subcategories = deepClone(category?.subcategories) ?? null
+            chosenCategories.push({
+                nestId: choice.id,
                 id: choice.id,
                 name: choice.name,
                 subcategories
-            }
+            })
         }
-        const data = chosenCategories
-        if (data) await this.updateCategoriesFlag(data)
+
+        if (chosenCategories) await this.saveUserActionList(chosenCategories)
     }
 
     /**
@@ -91,75 +172,73 @@ export class CategoryManager {
      * @param {object} choices
      */
     async saveSubcategories (choices, advancedCategoryOptions = null, subcategoryData) {
+        // Exit if no choices exist
         if (!choices) return
-        const categories = game.user.getFlag(namespace, 'categories')
-        const categorySubcategory = await getSubcategoryByNestId(Object.values(categories), subcategoryData)
-        if (!categorySubcategory) return
+
+        Logger.debug('Saving subcategories...', { choices, advancedCategoryOptions, subcategoryData })
+
+        const categories = game.tokenActionHud.actionHandler.actionList.categories
+
+        // Clone categories
+        const categoriesClone = deepClone(categories)
+
+        // Get subcategory by nestId
+        const subcategory = await getSubcategoryByNestId(categoriesClone, subcategoryData)
+
+        // Exit if no subcategory exists
+        if (!subcategory) return
 
         const nestId = subcategoryData.nestId
 
-        const chosenSubcategories = {}
+        // Loop derived subcategories or choices
+        const chosenSubcategories = []
         for (const choice of choices) {
-            const subcategoryKey = `${nestId}_${choice.id}`
-            chosenSubcategories[subcategoryKey] = choice
+            chosenSubcategories.push(this.createSubcategory({ ...choice, nestId: `${nestId}_${choice.id}`, isSelected: choice.isSelected ?? true }))
         }
+        if (subcategoryData.hasDerivedSubcategories) {
+            for (const subSubcategory of subcategory.subcategories) {
+                const subSubcategoryClone = deepClone(subSubcategory)
+                const choice = choices.find(choice => choice.id === subSubcategoryClone.id)
+                if (!choice) chosenSubcategories.push({ ...subSubcategoryClone, isSelected: false, actions: [] })
+            }
+        }
+
+        subcategory.subcategories = chosenSubcategories
 
         // Add advanced category options
-        if (advancedCategoryOptions) categorySubcategory.advancedCategoryOptions = advancedCategoryOptions
+        if (advancedCategoryOptions) subcategory.advancedCategoryOptions = { ...advancedCategoryOptions }
 
-        // Assign subcategories
-        categorySubcategory.subcategories = chosenSubcategories
+        // Save user action list
+        await this.saveUserActionList(categoriesClone)
 
-        const data = categories
-        if (data) await this.updateCategoriesFlag(data)
+        Logger.debug('Subcategories saved', { actionList: categoriesClone })
+    }
+
+    // Set the derived subcategory to the derivedSubcategories map
+    addToDerivedSubcategories (parentSubcategoryData, subcategory) {
+        const parentSubcategoryNestId = parentSubcategoryData.nestId
+        const subcategoryClone = deepClone(subcategory, { strict: true })
+        if (!this.derivedSubcategories.has(parentSubcategoryNestId)) this.derivedSubcategories.set(parentSubcategoryNestId, [])
+        this.derivedSubcategories.get(parentSubcategoryNestId).push(subcategoryClone)
+    }
+
+    // Save the derived subcategories
+    async saveDerivedSubcategories () {
+        for (const [parentSubcategoryNestId, derivedSubcategories] of this.derivedSubcategories) {
+            const derivedSubcategoriesClone = deepClone(derivedSubcategories, { strict: true })
+            await this.saveSubcategories(derivedSubcategoriesClone, null, { nestId: parentSubcategoryNestId, type: 'system', hasDerivedSubcategories: true })
+        }
     }
 
     /**
-     * Update categories flag
+     * Save user action list
      * @param {object} data
      */
-    async updateCategoriesFlag (data) {
-        await game.user.unsetFlag(namespace, 'categories')
-        await game.user.setFlag(namespace, 'categories', data)
-    }
-
-    /**
-     * Delete categories flag
-     */
-    async deleteCategoriesFlag () {
-        await game.user.update({
-            flags: {
-                [namespace]: {
-                    '-=categories': null
-                }
-            }
-        })
-    }
-
-    /**
-     * Delete category flag
-     * @param {string} categoryId
-     */
-    async deleteCategoryFlag (categoryId) {
-        const categoryKey = categoryId
-        await game.user.setFlag(namespace, 'categories', {
-            [`-=${categoryKey}`]: null
-        })
-    }
-
-    /**
-     * Delete subcategories flag
-     */
-    async deleteSubcategoryFlag (categoryId, subcategoryId) {
-        const categoryKey = categoryId
-        const subcategoryKey = `${categoryId}_${subcategoryId}`
-        if (categoryKey) {
-            await game.user.setFlag(
-                [namespace],
-                `categories.${categoryKey}.subcategories`,
-                { [`-=${subcategoryKey}`]: null }
-            )
-        }
+    async saveUserActionList (categories) {
+        Logger.debug('Saving user action list...')
+        const categoriesClone = deepClone(categories)
+        await game.user.setFlag(namespace, 'categories', categoriesClone)
+        Logger.debug('User action list saved', { actionList: categoriesClone })
     }
 
     // GET CATEGORIES/SUBCATEGORIES
@@ -167,27 +246,27 @@ export class CategoryManager {
     getSelectedCategoriesAsTagifyEntries () {
         const categories = this.user.getFlag(namespace, 'categories')
         if (!categories) return
-        return Object.values(categories).map((category) =>
-            this.toTagifyEntry(category)
-        )
+        return categories.map(category => this.toTagifyEntry(category))
     }
 
     async getSelectedSubcategoriesAsTagifyEntries (subcategoryData) {
-        const categories = this.user.getFlag(namespace, 'categories')
+        const categories = game.tokenActionHud.actionHandler.actionList.categories
         if (!categories) return []
-        const subcategory = await getSubcategoryByNestId(Object.values(categories), subcategoryData)
+        const subcategory = await getSubcategoryByNestId(categories, subcategoryData)
         if (!subcategory) return []
         if (!subcategory.subcategories) return []
 
-        const subcategories = Object.values(subcategory.subcategories).map(
-            (subcategory) => this.toTagifyEntry(subcategory)
-        )
+        const subcategories = subcategory.subcategories
+            .filter(subcategory => subcategory.isSelected)
+            .map(subcategory => this.toTagifyEntry(subcategory))
         if (subcategories) return subcategories
         return []
     }
 
     // GET SUGGESTED SUBCATEGORIES
-    getSubcategoriesAsTagifyEntries () {
+    getSubcategoriesAsTagifyEntries (subcategoryData) {
+        const hasDerivedSubcategories = subcategoryData?.hasDerivedSubcategories
+        if (hasDerivedSubcategories === 'true') return this.getDerivedSubcategoriesAsTagifyEntries(subcategoryData)
         const systemSubcategories = this.getSystemSubcategoriesAsTagifyEntries()
         const compendiumSubcategories = this.getCompendiumSubcategoriesAsTagifyEntries()
         const subcategories = []
@@ -195,12 +274,15 @@ export class CategoryManager {
         return subcategories
     }
 
+    getDerivedSubcategoriesAsTagifyEntries (subcategoryData) {
+        const nestId = subcategoryData.nestId
+        const derivedSubcategories = this.getFlattenedSubcategories({ nestId, type: 'system-derived' })
+        return derivedSubcategories.map(subcategory => this.toTagifyEntry(subcategory))
+    }
+
     getSystemSubcategoriesAsTagifyEntries () {
-        const defaultSubcategories = this.user.getFlag(
-            namespace,
-            'default.subcategories'
-        )
-        return defaultSubcategories.map((subcategory) => this.toTagifyEntry(subcategory))
+        const defaultSubcategories = this.user.getFlag(namespace, 'default.subcategories')
+        return defaultSubcategories.map(subcategory => this.toTagifyEntry(subcategory))
     }
 
     getCompendiumSubcategoriesAsTagifyEntries () {
@@ -220,8 +302,8 @@ export class CategoryManager {
 
     // OTHER
     isLinkedCompendium (id) {
-        return this.categories.some((c) =>
-            c.subcategories?.some((c) => c.compendiumId === id)
+        return this.categories.some(category =>
+            category.subcategories?.some(subcategory => subcategory.compendiumId === id)
         )
     }
 
@@ -230,6 +312,7 @@ export class CategoryManager {
         const value = data.name
         const type = data.type
         const level = 'subcategory'
-        return { id, value, type, level }
+        const hasDerivedSubcategories = data.hasDerivedSubcategories ?? 'false'
+        return { id, value, type, level, hasDerivedSubcategories }
     }
 }

@@ -3,6 +3,7 @@ export class MacroActionHandler {
 
     constructor (baseHandler) {
         this.baseHandler = baseHandler
+        this.categoryManager = baseHandler.categoryManager
     }
 
     /**
@@ -10,8 +11,9 @@ export class MacroActionHandler {
      * @override
      */
     async buildMacroActions () {
+        const subcategoryType = 'custom'
         // Get macro subcategories
-        const subcategories = this.baseHandler.getFlattenedSubcategories({ subcategoryType: 'custom' })
+        const subcategories = this.categoryManager.getFlattenedSubcategories({ type: subcategoryType })
         const subcategoryIds = subcategories.flatMap(subcategory => subcategory.id)
 
         if (!subcategoryIds) return
@@ -21,10 +23,8 @@ export class MacroActionHandler {
 
         // Add actions to action list
         for (const subcategoryId of subcategoryIds) {
-            this.baseHandler.addActionsToActionList(
-                actions,
-                subcategoryId
-            )
+            const subcategoryData = { id: subcategoryId, type: subcategoryType }
+            this.baseHandler.addActionsToActionList(actions, subcategoryData)
         }
     }
 

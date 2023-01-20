@@ -334,7 +334,7 @@
 }
 
 .tah-action-name {
-  align-items: center;
+  align-items: baseline;
   display: inline-flex;
   gap: 2px;
   padding: 0 5px 0 5px;

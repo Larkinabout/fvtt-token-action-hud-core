@@ -9,7 +9,7 @@ Hooks.on('ready', async () => {
     const systemModuleId = `token-action-hud-${systemId}`
     const coreModuleVersion = game.modules.get(appName).version
     const systemModuleCoreVersionFile = `../../${systemModuleId}/enums/core-version.js`
-    const systemModuleCoreModuleVersion = await import(systemModuleCoreVersionFile).then((module) => { return module.coreModuleVersion })
+    const systemModuleCoreModuleVersion = await import(systemModuleCoreVersionFile).then(module => module.coreModuleVersion)
 
     if (coreModuleVersion !== systemModuleCoreModuleVersion) {
         ui.notifications.error(
@@ -19,7 +19,10 @@ Hooks.on('ready', async () => {
     }
 
     // Import SystemManager class from the Token Action Hud system module
+    // For distribution
     const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
+    // For development
+    // const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
     const systemModule = await import(systemModulePath)
     const SystemManager = systemModule.SystemManager
 
@@ -92,8 +95,18 @@ Hooks.on('canvasReady', async () => {
 
         // Registers hooks to trigger a Token Action Hud update
         Hooks.on('controlToken', (token, controlled) => {
-            const trigger = { trigger: { type: 'hook', name: 'controlToken', data: [token, controlled] } }
-            game.tokenActionHud.update(trigger)
+            // Exit if same actor or token
+            const actorId = game.tokenActionHud.actionHandler.actorId
+            if (controlled && actorId === token.document.actor.id) return
+            if (!controlled && actorId === game.user.character.id) return
+
+            async function delayUpdate (token, controlled) {
+                const trigger = { trigger: { type: 'hook', name: 'controlToken', data: [token, controlled] } }
+                if (!controlled) await new Promise(resolve => setTimeout(resolve, 50))
+                if (controlled || (!controlled && !game.canvas.tokens.controlled.length)) game.tokenActionHud.update(trigger)
+            }
+
+            delayUpdate(token, controlled)
         })
 
         Hooks.on('updateToken', (token, data, diff) => {

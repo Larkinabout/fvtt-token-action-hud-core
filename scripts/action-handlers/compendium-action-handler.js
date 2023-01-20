@@ -3,6 +3,7 @@ export class CompendiumActionHandler {
 
     constructor (baseHandler) {
         this.baseHandler = baseHandler
+        this.categoryManager = baseHandler.categoryManager
     }
 
     /**
@@ -11,7 +12,8 @@ export class CompendiumActionHandler {
      */
     async buildCompendiumActions () {
         // Get compendium subcategories
-        const subcategories = this.baseHandler.getFlattenedSubcategories({ subcategoryType: 'compendium' })
+        const subcategoryType = 'compendium'
+        const subcategories = this.categoryManager.getFlattenedSubcategories({ type: subcategoryType })
         const subcategoryIds = subcategories.flatMap(subcategory => subcategory.id)
 
         if (!subcategoryIds) return
@@ -28,9 +30,10 @@ export class CompendiumActionHandler {
         // Add actions to the action list
         for (const packId of packIds) {
             const subcategoryId = packId.replace('.', '-')
+            const subcategoryData = { id: subcategoryId, type: subcategoryType }
             if (subcategoryIds.includes(packId.replace('.', '-'))) {
                 const actions = await this.getCompendiumActions(packId)
-                this.baseHandler.addActionsToActionList(actions, subcategoryId)
+                this.baseHandler.addActionsToActionList(actions, subcategoryData)
             }
         }
     }

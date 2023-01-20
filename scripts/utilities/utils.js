@@ -14,7 +14,10 @@ export class Logger {
 
     static debug (...args) {
         const isDebug = (game.tokenActionHud) ? game.tokenActionHud.isDebug : getSetting('debug')
-        if (isDebug) { console.log('Token Action HUD Debug |', ...args) }
+        if (isDebug) {
+            const argsClone = deepClone(args)
+            console.log('Token Action HUD Debug |', argsClone)
+        }
     }
 }
 
@@ -141,7 +144,7 @@ export function getSubcategories (subcategories, searchCriteria = {}) {
             if (subcategories) foundSubcategories = foundSubcategories.concat(subcategories.filter(subcategory => subcategory !== undefined))
         }
     }
-    return (foundSubcategories.length) ? foundSubcategories : null
+    return (foundSubcategories.length > 0) ? foundSubcategories : null
 }
 
 /**

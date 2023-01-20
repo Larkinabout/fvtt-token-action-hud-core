@@ -9,12 +9,12 @@ export class CategoryResizer {
         const content = category.querySelector('.tah-subcategories')
 
         // Check if category has custom width set
-        const categoryId = category.id.replace('tah-category-', '')
+        /*  const categoryId = category.id.replace('tah-category-', '')
         const customWidth = game.user.getFlag(
             'token-action-hud-core',
             `categories.${categoryId}.advancedCategoryOptions.customWidth`
         )
-        if (customWidth) return (content.style.width = `${customWidth}px`)
+        if (customWidth) return (content.style.width = `${customWidth}px`) */
 
         // Get sidebar, hotbar, window width and height
         const sidebar = document.querySelector('#sidebar')
@@ -23,7 +23,7 @@ export class CategoryResizer {
         const windowHeight = canvas.screenDimensions[1]
 
         // Get available width for content
-        const contentComputed = window.getComputedStyle(content)
+        const contentComputed = getComputedStyle(content)
         const contentPadding =
             parseInt(contentComputed.paddingLeft) || 0 +
             parseInt(contentComputed.paddingRight) || 0
@@ -89,12 +89,9 @@ export class CategoryResizer {
         const maxHeight = windowHeight - contentTop - (windowHeight - bottomLimit)
         const newHeight = maxHeight < 100 ? 100 : maxHeight
 
-        // Set styles for content
-        const styles = {
-            width: `${width}px`,
-            maxHeight: `${Math.ceil(newHeight)}px`
-        }
-
-        Object.assign(content.style, styles)
+        // Apply styles
+        requestAnimationFrame(() => {
+            Object.assign(content.style, { maxHeight: `${Math.ceil(newHeight)}px`, width: `${width}px` })
+        })
     }
 }

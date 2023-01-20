@@ -1,5 +1,8 @@
+{{~#if
+  (ne this.isSelected false)
+~}}
 <div class="tah-subcategory">
-  <div class="tah-subtitle{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}" id="{{this.nestId}}" data-type="{{this.type}}">
+  <div class="tah-subtitle{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}" id="{{this.nestId}}" data-type="{{this.type}}" data-has-derived-subcategories="{{this.hasDerivedSubcategories}}">
     {{~#if img~}}<div class="tah-img" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
     {{~#if icon~}}<div class="tah-icon">{{{icon}}}</div>{{~/if~}}
     {{cap this.name}}
@@ -18,3 +21,4 @@
   {{/each}}
   {{~/if~}}
 </div>
+{{~/if~}}

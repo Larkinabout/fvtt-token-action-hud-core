@@ -206,11 +206,11 @@
 
 .tah-subcategory {
   cursor: default;
+  position: relative;
 }
 
-.tah-subcategory:not(:last-child) {
-  border-bottom: 2px groove #4646465e;
-  padding-bottom: 2px;
+.tah-subcategory > .tah-subcategory:not(:first-child) {
+    padding-left: 10px;
 }
 
 .tah-subcategories > .tah-subcategory > .tah-subtitle {
@@ -284,7 +284,7 @@
 }
 
 .tah-action-name {
-  align-items: center;
+  align-items: baseline;
   display: inline-flex;
   gap: 5px;
   padding: 0 5px 0 5px;
@@ -294,7 +294,6 @@
 .tah-info2,
 .tah-info3 {
   font-size: xx-small;
-  padding-top: 2px;
 }
 
 .tah-subtitle > .tah-info1,

@@ -26,10 +26,8 @@ export class SystemManager {
         await this.doRegisterDefaultFlags()
     }
 
-    async getActionHandler (user) {
-        const actionHandler = this.doGetActionHandler(
-            this.categoryManager
-        )
+    async getActionHandler (categoryManager) {
+        const actionHandler = this.doGetActionHandler(categoryManager)
         this.addActionExtenders(actionHandler)
         return actionHandler
     }
@@ -43,7 +41,6 @@ export class SystemManager {
         if (SystemManager.isModuleActive('itemacro')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender()) }
     }
 
-    categoryManager
     async getCategoryManager (user) {
         const categoryManager = this.doGetCategoryManager(user)
         await categoryManager.init()
@@ -55,9 +52,7 @@ export class SystemManager {
     getRollHandler () {
         let rollHandlerId = getSetting('rollHandler')
 
-        if (
-            !(rollHandlerId === 'core' || SystemManager.isModuleActive(rollHandlerId))
-        ) {
+        if (!(rollHandlerId === 'core' || SystemManager.isModuleActive(rollHandlerId))) {
             Logger.error(rollHandlerId, this.i18n('tokenActionHud.handlerNotFound'))
             rollHandlerId = 'core'
             setSetting('rollHandler', rollHandlerId)
