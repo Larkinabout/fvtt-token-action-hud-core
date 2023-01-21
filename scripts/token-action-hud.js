@@ -19,6 +19,7 @@ export class TokenActionHud extends Application {
     constructor (systemManager) {
         super()
         this.systemManager = systemManager
+        this.direction = 'down'
         this.isAlwaysShow = false
         this.isClickOpen = false
         this.isCollapsed = false
@@ -33,6 +34,7 @@ export class TokenActionHud extends Application {
      * @param {object} user The user object
      */
     async init (user) {
+        this.direction = getSetting('direction')
         this.isAlwaysShow = getSetting('alwaysShowHud')
         this.isClickOpen = getSetting('clickOpenCategory')
         this.isCollapsed = game.user.getFlag(this.namespace, 'isCollapsed')
@@ -51,6 +53,7 @@ export class TokenActionHud extends Application {
      */
     updateSettings () {
         this.updateRollHandler()
+        this.direction = getSetting('direction')
         this.isAlwaysShow = getSetting('alwaysShowHud')
         this.isClickOpen = getSetting('clickOpenCategory')
         this.isDebug = getSetting('debug')
@@ -248,7 +251,7 @@ export class TokenActionHud extends Application {
             category.classList.add('hover')
             const id = category.id
             this.setHoveredCategory(id)
-            CategoryResizer.resizeHoveredCategory(category)
+            CategoryResizer.resizeHoveredCategory(category, this.direction)
         }
 
         const toggleCategory = (event) => {
@@ -507,8 +510,8 @@ export class TokenActionHud extends Application {
      */
     applySettings () {
         if (getSetting('direction') === 'up') {
-            $(document).find('.tah-subcategories').removeClass('expand-down')
-            $(document).find('.tah-subcategories').addClass('expand-up')
+            $(document).find('.tah-subcategories-wrapper').removeClass('expand-down')
+            $(document).find('.tah-subcategories-wrapper').addClass('expand-up')
             $(document).find('#tah-character-name').addClass('tah-hidden')
         }
     }

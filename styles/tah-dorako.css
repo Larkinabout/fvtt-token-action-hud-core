@@ -230,7 +230,7 @@
   visibility: visible;
 }
 
-.tah-subcategories {
+.tah-subcategories-wrapper {
   border-radius: var(--dorako-radius);
   display: none;
   overflow-y: auto;
@@ -238,13 +238,13 @@
   padding: 2px;
 }
 
-.tah-subcategories.expand-up {
+.tah-subcategories-wrapper.expand-up {
   bottom: 32px;
   flex-direction: column-reverse;
   margin-bottom: 2px;
 }
 
-.tah-subcategories.expand-down {
+.tah-subcategories-wrapper.expand-down {
   flex-direction: column;
 }
 
@@ -254,7 +254,7 @@
   position: relative;
 }
 
-.tah-category.hover .tah-subcategories {
+.tah-category.hover .tah-subcategories-wrapper {
   background: none;
   display: block;
   position: absolute;

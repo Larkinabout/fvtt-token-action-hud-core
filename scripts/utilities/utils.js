@@ -113,7 +113,8 @@ export function registerHandlebars () {
         lte: function () { return reduceOp(arguments, (a, b) => a <= b) },
         gte: function () { return reduceOp(arguments, (a, b) => a >= b) },
         and: function () { return reduceOp(arguments, (a, b) => a && b) },
-        or: function () { return reduceOp(arguments, (a, b) => a || b) }
+        or: function () { return reduceOp(arguments, (a, b) => a || b) },
+        tf: function () { return reduceOp(arguments, (a) => a) }
     })
 
     // Add asterisk to toggleable actions

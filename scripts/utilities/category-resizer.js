@@ -1,5 +1,5 @@
 export class CategoryResizer {
-    static resizeHoveredCategory (category) {
+    static resizeHoveredCategory (category, direction) {
         // Exit early if no category element passed in or no action groups within it
         if (!category) return
         const actionGroups = category.querySelectorAll('.tah-actions')
@@ -16,9 +16,11 @@ export class CategoryResizer {
         )
         if (customWidth) return (content.style.width = `${customWidth}px`) */
 
-        // Get sidebar, hotbar, window width and height
-        const sidebar = document.querySelector('#sidebar')
-        const hotbar = document.querySelector('#hotbar')
+        const spacing = 10
+
+        // Get ui-right, ui-top or ui-bottom, window width and height
+        const uiRight = document.querySelector('#ui-right')
+        const uiTopBottom = (direction === 'down') ? document.querySelector('#ui-bottom') : document.querySelector('#ui-top')
         const windowWidth = canvas.screenDimensions[0]
         const windowHeight = canvas.screenDimensions[1]
 
@@ -28,19 +30,21 @@ export class CategoryResizer {
             parseInt(contentComputed.paddingLeft) || 0 +
             parseInt(contentComputed.paddingRight) || 0
         const contentRect = content.getBoundingClientRect()
-        const contentTop = contentRect.top
+        const contentHeight = contentRect.height
         const contentLeft = contentRect.left
-        const sidebarOffsetLeft = sidebar.offsetLeft
-        const sidebarClientWidth = sidebar.clientWidth
+        const contentTop = contentRect.top
+        const uiRightClientWidth = uiRight.clientWidth
         const availableWidth = (
-            sidebarOffsetLeft > 0
-                ? windowWidth - (sidebarOffsetLeft + sidebarClientWidth)
+            uiRightClientWidth > 0
+                ? windowWidth - uiRightClientWidth
                 : windowWidth
-        ) - 20 - contentLeft
+        ) - spacing - contentLeft
 
         // Get the limit for the bottom of the content
-        const hotbarOffsetTop = hotbar.offsetTop
-        const bottomLimit = (hotbarOffsetTop > 0 ? hotbarOffsetTop : windowHeight) - 20
+        const uiTopBottomOffsetHeight = uiTopBottom.offsetHeight
+        const availableHeight = (direction === 'down')
+            ? windowHeight - contentTop - uiTopBottomOffsetHeight - spacing
+            : (contentHeight + contentTop) - uiTopBottomOffsetHeight - spacing
 
         // Initialize variables
         let minActions = null
@@ -56,12 +60,12 @@ export class CategoryResizer {
                 totalLength += actions.length
                 let groupWidth = 0
                 actions.forEach(action => {
-                    const actionRect = action.getBoundingClientRect()
-                    const actionWidth = Math.ceil(actionRect.width)
+                    const actionComputed = getComputedStyle(action)
+                    const actionWidth = Math.ceil(parseInt(actionComputed.width) || 0)
                     groupWidth += actionWidth
                     totalWidth += actionWidth
                 })
-                const totalGaps = actions.length * 5
+                const totalGaps = (actions.length * 5) - 5
                 totalWidth += totalGaps
                 groupWidth += totalGaps
                 if (groupWidth > maxGroupWidth) maxGroupWidth = groupWidth
@@ -86,12 +90,11 @@ export class CategoryResizer {
         if (width < 200) width = 200
 
         // Set max height of content
-        const maxHeight = windowHeight - contentTop - (windowHeight - bottomLimit)
-        const newHeight = maxHeight < 100 ? 100 : maxHeight
+        const maxHeight = availableHeight < 100 ? 100 : availableHeight
 
         // Apply styles
         requestAnimationFrame(() => {
-            Object.assign(content.style, { maxHeight: `${Math.ceil(newHeight)}px`, width: `${width}px` })
+            Object.assign(content.style, { maxHeight: `${Math.ceil(maxHeight)}px`, width: `${width}px` })
         })
     }
 }

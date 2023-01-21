@@ -10,11 +10,15 @@
     {{~#if this.info2~}}<div class="tah-info2">{{this.info2}}</div>{{~/if~}}
     <i class="fa fa-filter" aria-hidden="true"></i>
   </div>
+  {{~#if
+    (tf this.actions.length)
+  ~}}
   <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
     {{#each actions}}
       {{>"modules/token-action-hud-core/templates/action.hbs"}}
     {{/each}}
   </div>
+  {{~/if~}}
   {{~#if this.subcategories~}}
   {{#each subcategories}}
   {{>"modules/token-action-hud-core/templates/subcategory.hbs"}}
