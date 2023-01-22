@@ -127,33 +127,6 @@ export class TokenActionHud extends Application {
         data.background = getSetting('background') ?? '#00000000'
         Logger.debug('Application data', { data })
 
-        /* for (const category of data.actions.categories) {
-            const categories = game.user.getFlag(this.namespace, 'categories')
-            if (!advancedCategoryOptions?.compactView) continue
-
-            const characterCount = advancedCategoryOptions.characterCount ?? 2
-            if (category.subcategories) subcatRecursion(category)
-
-            function subcatRecursion (category) {
-                for (const subcategory of category.subcategories) {
-                    for (const action of subcategory.actions) {
-                        action.title = action.name
-
-                        if (action.name.length < 2) continue
-                        else if (characterCount === 0) action.name = ''
-                        else {
-                            action.name = action.name
-                                .split(' ')
-                                .map((p) => p.slice(0, characterCount))
-                                .join(' ')
-                        }
-                    }
-
-                    if (subcategory.subcategories.length) { subcategory.subcategories.forEach((s) => subcatRecursion(s)) }
-                }
-            }
-        } */
-
         return data
     }
 
@@ -251,7 +224,7 @@ export class TokenActionHud extends Application {
             category.classList.add('hover')
             const id = category.id
             this.setHoveredCategory(id)
-            CategoryResizer.resizeHoveredCategory(category, this.direction)
+            CategoryResizer.resizeHoveredCategory(this.categoryManager, category, this.direction)
         }
 
         const toggleCategory = (event) => {
@@ -319,7 +292,7 @@ export class TokenActionHud extends Application {
         elements.editCategoriesButton.on('click', (event) => {
             event.preventDefault()
             event = event || window.event
-            TagDialogHelper._showCategoryDialog(this.categoryManager)
+            TagDialogHelper.showCategoryDialog(this.categoryManager)
         })
     }
 

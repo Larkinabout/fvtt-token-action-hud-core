@@ -2,29 +2,15 @@
   "tokenActionHud": {
     "accept": "Akceptuj",
     "addToCombat": "Dodaj do Walki",
-    "advancedCategoryOptions": {
-      "title": "Advanced Options",
-      "characterCount": "Characters per Word",
-      "compactView": "Compact View",
-      "customWidth": "Custom Width"
-    },
     "blockListLabel": "Lista zablokowanych: ukryj / Lista odblokowanych: pokaż",
     "cancel": "Przerwij",
-    "categoryTagExplanation": "Doda i usuń dodatkowe, konfigurowalne kategorie.",
-    "categoryTagTitle": "Dodaj/usuń kategorie",
-    "clearButton": "Wyczyść",
     "combat": "Walka",
     "endTurn": "End Turn",
-    "filterPlaceholder": "Wybierz (oddziel średnikiem)",
-    "filterTagExplanation": "Dodaj tu wpisy, aby ukryć lub pokazać kategorie.",
-    "filterTitle": "Filtruj",
     "handlerNotFound": "not found, reverting to core roller.",
     "makeInvisible": "Uczyń Niewidzialnym",
     "makeVisible": "Uczyń Widocznym",
     "pushLabelExplanation": "Po której stronie pokazać kategorie?",
     "removeFromCombat": "Usuń z Walki",
-    "subcategoryTagExplanation": "Dodaj i usuń dodatkowe podkategorie: wpisz dowolną nazwę dla podkategorii makr lub wybierz połączoną bibliotekę.",
-    "subcategoryTagTitle": "Dodaj/usuń podkategorie",
     "title": "Token Action HUD",
     "token": "Znacznik",
     "utility": "Narzędzia",
@@ -120,6 +106,21 @@
         "hint": "Ustaw styl HUD",
         "name": "Styl"
       }
+    },
+    "tagDialog": {
+      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
+      "actionDialogTitle": "Customise Actions",
+      "advancedCategoryOptions": {
+        "title": "Advanced Options",
+        "characterCount": "Characters per Word",
+        "customWidth": "Custom Width (px)"
+      },
+      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
+      "categoryDialogTitle": "Customise Categories",
+      "clearButton": "Wyczyść",
+      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "subcategoryDialogTitle": "Customise Subcategories",
+      "tagPlaceholder": "Wybierz (oddziel średnikiem)"
     }
   }
 }

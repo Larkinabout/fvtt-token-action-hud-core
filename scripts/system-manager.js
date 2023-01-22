@@ -38,7 +38,7 @@ export class SystemManager {
     }
 
     addActionExtenders (actionHandler) {
-        if (SystemManager.isModuleActive('itemacro')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender()) }
+        if (SystemManager.isModuleActive('itemacro')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler)) }
     }
 
     async getCategoryManager (user) {

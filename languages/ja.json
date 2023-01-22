@@ -2,29 +2,15 @@
   "tokenActionHud": {
     "accept": "適用",
     "addToCombat": "戦闘に追加",
-    "advancedCategoryOptions": {
-      "title": "Advanced Options",
-      "characterCount": "Characters per Word",
-      "compactView": "Compact View",
-      "customWidth": "Custom Width"
-    },
     "blockListLabel": "ブロックリスト: 非表示 / 許可リスト: 表示",
     "cancel": "キャンセル",
-    "categoryTagExplanation": "カスタマイズ可能なカテゴリの追加と削除",
-    "categoryTagTitle": "カテゴリーの追加と削除",
-    "clearButton": "消去",
     "combat": "戦闘",
     "endTurn": "End Turn",
-    "filterPlaceholder": "選択（セミコロンで区切る)",
-    "filterTagExplanation": "ここにエントリを追加して、特定のカテゴリのエントリを表示または非表示にします。",
-    "filterTitle": "フィルタ",
+
     "handlerNotFound": "操作が見つかりません、標準のローラーを使用します。",
-    "makeInvisible": "非表示にする",
-    "makeVisible": "見えるようにする",
+    "makeInvisible": "非表示にようにする",
     "pushLabelExplanation": "どちら側にカテゴリを表示しますか？",
     "removeFromCombat": "戦闘から外す",
-    "subcategoryTagExplanation": "サブカテゴリの追加と削除：マクロサブカテゴリにフリーテキストを入力するか、リンクされた辞典を選択します。",
-    "subcategoryTagTitle": "サブカテゴリーの追加と削除",
     "title": "トークン･アクションHUD",
     "token": "トークン",
     "utility": "他",
@@ -120,6 +106,21 @@
         "hint": "HUD のスタイルを設定する",
         "name": "スタイル"
       }
+    },
+    "tagDialog": {
+      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
+      "actionDialogTitle": "Customise Actions",
+      "advancedCategoryOptions": {
+        "title": "Advanced Options",
+        "characterCount": "Characters per Word",
+        "customWidth": "Custom Width (px)"
+      },
+      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
+      "categoryDialogTitle": "Customise Categories",
+      "clearButton": "消去",
+      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "subcategoryDialogTitle": "Customise Subcategories",
+      "tagPlaceholder": "選択（セミコロンで区切る)"
     }
   }
 }

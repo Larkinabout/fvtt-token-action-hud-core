@@ -2,29 +2,15 @@
   "tokenActionHud": {
     "accept": "Aceitar",
     "addToCombat": "Adicionar ao Combate",
-    "advancedCategoryOptions": {
-      "title": "Advanced Options",
-      "characterCount": "Characters per Word",
-      "compactView": "Compact View",
-      "customWidth": "Custom Width"
-    },
     "blockList": "Lista Bloqueada",
     "cancel": "Cancelar",
-    "categoryTagExplanation": "Adicione e remova categorias customisáveis adicionais.",
-    "categoryTagTitle": "Adicionar/remover categorias",
-    "clearButton": "Limpar",
     "combat": "Combate",
     "endTurn": "End Turn",
-    "filterPlaceholder": "opções (separar com \";\")",
-    "filterTagExplanation": "Adicione filtros aqui para mostrar/esconder entradas específicas.",
-    "filterTitle": "Filtros",
     "handlerNotFound": "não encontrado, revertendo ao padrão.",
     "makeInvisible": "Tornar Invisível",
     "makeVisible": "Tornar Visível",
     "pushLabelExplanation": "Mostrar categorias em qual lado?",
     "removeFromCombat": "Remover do Combate",
-    "subcategoryTagExplanation": "Add and remove subcategories: enter free-text for macro subcategories or select linked compendiums.",
-    "subcategoryTagTitle": "Add/remove subcategories",
     "title": "Token Action HUD",
     "token": "Token",
     "utility": "Utilidade",
@@ -120,6 +106,21 @@
         "hint": "Defina o estilo do HUD",
         "name": "Estilo"
       }
+    },
+    "tagDialog": {
+      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
+      "actionDialogTitle": "Customise Actions",
+      "advancedCategoryOptions": {
+        "title": "Advanced Options",
+        "characterCount": "Characters per Word",
+        "customWidth": "Custom Width (px)"
+      },
+      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
+      "categoryDialogTitle": "Customise Categories",
+      "clearButton": "Clear",
+      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "subcategoryDialogTitle": "Customise Subcategories",
+      "tagPlaceholder": "Choices (split with semi-colon)"
     }
   }
 }

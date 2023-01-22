@@ -2,29 +2,15 @@
   "tokenActionHud": {
     "accept": "接受",
     "addToCombat": "添加到战斗",
-    "advancedCategoryOptions": {
-      "title": "Advanced Options",
-      "characterCount": "Characters per Word",
-      "compactView": "Compact View",
-      "customWidth": "Custom Width"
-    },
     "blockListLabel": "黑名单：隐藏 / 白名单：展示",
     "cancel": "取消",
-    "categoryTagExplanation": "添加和移除额外的自定义分类。",
-    "categoryTagTitle": "添加/移除 分类",
-    "clearButton": "清除",
     "combat": "战斗",
     "endTurn": "End Turn",
-    "filterPlaceholder": "选项（分号分隔)",
-    "filterTagExplanation": "在这里添加条目用以展示特定分类。",
-    "filterTitle": "筛选",
     "handlerNotFound": "未找到，还原到核心系统掷骰。",
     "makeInvisible": "使隐形",
     "makeVisible": "使可见",
     "pushLabelExplanation": "分类展示在哪边？",
     "removeFromCombat": "从战斗中移除",
-    "subcategoryTagExplanation": "添加和移除子分类：为宏的子分类输入任意文本或者选择链接的合集。",
-    "subcategoryTagTitle": "添加/移除 子分类",
     "title": "Token Action HUD",
     "token": "指示物",
     "utility": "实用项",
@@ -120,6 +106,21 @@
         "hint": "設置 HUD 的樣式",
         "name": "風格"
       }
+    },
+    "tagDialog": {
+      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
+      "actionDialogTitle": "Customise Actions",
+      "advancedCategoryOptions": {
+        "title": "Advanced Options",
+        "characterCount": "Characters per Word",
+        "customWidth": "Custom Width (px)"
+      },
+      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
+      "categoryDialogTitle": "Customise Categories",
+      "clearButton": "清除",
+      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "subcategoryDialogTitle": "Customise Subcategories",
+      "tagPlaceholder": "选项（分号分隔)"
     }
   }
 }

@@ -13,19 +13,15 @@
     <i class="fa-duotone fa-filter-circle-xmark"></i>{{clearButtonText}}
   </button>
 </div>
-<h2>{{localize "tokenActionHud.advancedCategoryOptions.title"}}</h2>
-{{~#if (eq this.level category) ~}}
+<h3>{{localize "tokenActionHud.tagDialog.advancedCategoryOptions.title"}}</h3>
+{{~#if (eq this.level "category") ~}}
 <div class="flexrow" style="justify-content:space-between; align-items: center;">
-  <label style="max-width:130px">{{localize "tokenActionHud.advancedCategoryOptions.customWidth"}}</label>
+  <label>{{localize "tokenActionHud.tagDialog.advancedCategoryOptions.customWidth"}}</label>
   <input type="number" name="custom-width" value="{{advancedCategoryOptions.customWidth}}" />
 </div>
 {{~/if~}}
-<h3>{{localize "tokenActionHud.advancedCategoryOptions.compactView"}}</h3>
-<div class="flexrow" style="justify-content:space-between; align-items: center;">
-  <label style="max-width:130px">{{localize "tokenActionHud.advancedCategoryOptions.compactView"}}</label>
-  <input type="checkbox" name="compact-view" {{#if advancedCategoryOptions.compactView}}checked{{/if}} />
-</div>
 <div class="flexrow" style="justify-content:space-between; align-items: center; margin-bottom: 5px;">
-  <label style="max-width:200px">{{localize "tokenActionHud.advancedCategoryOptions.characterCount"}}</label>
-  <input type="number" name="character-count" placeholder="2" value="{{advancedCategoryOptions.characterCount}}" />
+  <label>{{localize "tokenActionHud.tagDialog.advancedCategoryOptions.characterCount"}}</label>
+  <input type="number" name="character-count" placeholder="No limit" value="{{advancedCategoryOptions.characterCount}}" />
+</div>
 </div>

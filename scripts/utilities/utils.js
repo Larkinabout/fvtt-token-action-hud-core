@@ -12,11 +12,15 @@ export class Logger {
         console.error('Token Action HUD Error |', ...args)
     }
 
-    static debug (...args) {
+    static debug (message, data) {
         const isDebug = (game.tokenActionHud) ? game.tokenActionHud.isDebug : getSetting('debug')
         if (isDebug) {
-            const argsClone = deepClone(args)
-            console.log('Token Action HUD Debug |', argsClone)
+            if (!data) {
+                console.log(`Token Action HUD Debug | ${message}`)
+                return
+            }
+            const dataClone = deepClone(data)
+            console.log(`Token Action HUD Debug | ${message}`, dataClone)
         }
     }
 }
@@ -124,6 +128,24 @@ export function registerHandlebars () {
         }
         return block.inverse(this)
     })
+}
+
+/**
+ * Get the major, minor and patch parts of the module version
+ * @param {*} moduleVersion
+ * @returns {object}
+ */
+export function getModuleVersionParts (moduleVersion) {
+    if (!moduleVersion) {
+        Logger.debug('Module version not retrieved', { trigger: 'getModuleVersionParts' })
+        return
+    }
+    const moduleVersionParts = moduleVersion.split('.')
+    return {
+        major: moduleVersionParts[0],
+        minor: moduleVersionParts[1],
+        patch: moduleVersionParts[2]
+    }
 }
 
 /**

@@ -51,10 +51,11 @@ export class ActionHandler {
             this._buildSystemActions(character),
             this._buildGenericActions(character),
             this._buildCompendiumActions(),
-            this._buildMacroActions(),
-            this.buildFurtherActions(character)
+            this._buildMacroActions()
         ])
+        await this.buildFurtherActions(character)
         await this.categoryManager.saveDerivedSubcategories()
+        await this.setCharacterLimit()
         await this.saveActorActionList(character)
         Logger.debug('Action list built', { actionList: this.actionList, character })
         return this.actionList
@@ -197,7 +198,7 @@ export class ActionHandler {
      * @protected
      * @param {object} character The actor and/or token
      */
-    buildFurtherActions (character) {
+    async buildFurtherActions (character) {
         this.furtherActionHandlers.forEach(handler => handler.extendActionList(character))
     }
 
@@ -328,20 +329,67 @@ export class ActionHandler {
             for (const savedAction of savedActions) {
                 const action = actions.find((action) => action.encodedValue === savedAction.encodedValue)
                 if (action) {
-                    const actionClone = { ...action, selected: savedAction.selected ?? true }
+                    const actionClone = { ...action, fullName: action.name, selected: savedAction.selected ?? true }
                     reorderedActions.push(actionClone)
                 }
             }
             for (const action of actions) {
                 const savedAction = savedActions.find((savedAction) => savedAction.encodedValue === action.encodedValue)
                 if (!savedAction) {
-                    const actionClone = { ...action, selected: true }
+                    const actionClone = { ...action, fullName: action.name, selected: true }
                     reorderedActions.push(actionClone)
                 }
             }
 
             // Update action list
             subcategory.actions = reorderedActions
+        }
+    }
+
+    /**
+     * Set character limit for action names based on 'Character per Word' advanced category option
+     */
+    async setCharacterLimit () {
+        // Get categories
+        const categories = this.categoryManager.getFlattenedSubcategories({ level: 'category' })
+
+        // Loop categories
+        for (const category of categories) {
+            // Get category character limit
+            const categoryCharacterCount = category?.advancedCategoryOptions?.characterCount
+
+            // Get subcategories within category
+            const subcategories = this.categoryManager.getFlattenedSubcategories({ nestId: category.nestId, level: 'subcategory' })
+
+            // Loop subcategories
+            for (const subcategory of subcategories) {
+                // Get actions
+                const actions = subcategory.actions
+
+                // Exit if no actions exist
+                if (actions.length === 0) continue
+
+                // If subcategory also has a character limit set, use it as the character limit
+                const subcategoryCharacterCount = subcategory?.advancedCategoryOptions?.characterCount
+                const characterCount = (subcategoryCharacterCount >= 0) ? subcategoryCharacterCount : categoryCharacterCount
+
+                // Exit if character limit is not defined
+                if ((!characterCount && characterCount !== 0) || !(characterCount >= 0)) continue
+
+                // Loop actions
+                for (const action of actions) {
+                    if (action.name.length <= characterCount) continue
+                    if (characterCount === 0) {
+                        action.name = ''
+                        continue
+                    }
+                    // Set each word to the character limit
+                    action.name = action.name
+                        .split(' ')
+                        .map(word => word.slice(0, characterCount))
+                        .join(' ')
+                }
+            }
         }
     }
 
@@ -402,7 +450,6 @@ export class ActionHandler {
 
     /**
      * Add further action handler
-     * @public
      * @param {object} handler The handler
      */
     addFurtherActionHandler (handler) {
@@ -416,14 +463,14 @@ export class ActionHandler {
      * @returns {object} Tagify entry
      */
     toTagifyEntry (data) {
-        return { id: data.encodedValue, value: data.name, type: 'action', level: 'action' }
+        return { id: data.encodedValue, value: data.fullName, type: 'action', level: 'action' }
     }
 
     /**
      * Get image from entity
      * @param {object} entity The entity
      * @param {array} defaultImages Any default images
-     * @returns The image
+     * @returns {string} The image
      */
     getImage (entity, defaultImages = []) {
         defaultImages.push('icons/svg/mystery-man.svg')
@@ -435,7 +482,7 @@ export class ActionHandler {
     /**
      * Sort items
      * @param {object} items The items
-     * @returns The sorted items
+     * @returns {object} The sorted items
      */
     sortItems (items) {
         return new Map([...items.entries()].sort((a, b) => a[1].sort.localeCompare(b[1].sort)))
@@ -444,7 +491,7 @@ export class ActionHandler {
     /**
      * Sort items by name
      * @param {object} items The items
-     * @returns The sorted items
+     * @returns {object} The sorted items
      */
     sortItemsByName (items) {
         return new Map([...items.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name)))

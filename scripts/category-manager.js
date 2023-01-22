@@ -14,7 +14,9 @@ export class CategoryManager {
         this.derivedSubcategories = new Map()
     }
 
-    // Reset category manager
+    /**
+     * Reset CategoryManager
+     */
     async resetCategoryManager () {
         this.flattenedSubcategories = []
         this.derivedSubcategories = new Map()
@@ -68,14 +70,19 @@ export class CategoryManager {
         Logger.debug('Registered default categories', { defaultCategories })
     }
 
-    /** @public */
+    /**
+     * Create category
+     * @param {object} categoryData The category data
+     * @returns {object} The category
+     */
     createCategory (categoryData) {
         const categoryDataClone = deepClone(categoryData)
         return {
-            id: categoryDataClone.id,
-            nestId: categoryDataClone.nestId ?? this.id,
-            name: categoryDataClone.name,
+            id: categoryDataClone?.id,
+            nestId: categoryDataClone?.nestId ?? this.id,
+            name: categoryDataClone?.name,
             level: 'category',
+            advancedCategoryOptions: categoryDataClone?.advancedCategoryOptions ?? {},
             cssClass: '',
             subcategories: []
         }
@@ -94,7 +101,8 @@ export class CategoryManager {
             name: subcategoryDataClone?.name,
             type: subcategoryDataClone?.type ?? 'custom',
             level: 'subcategory',
-            hasDerivedSubcategories: subcategoryDataClone.hasDerivedSubcategories ?? false,
+            advancedCategoryOptions: subcategoryDataClone?.advancedCategoryOptions ?? {},
+            hasDerivedSubcategories: subcategoryDataClone?.hasDerivedSubcategories ?? false,
             isSelected: subcategoryDataClone.isSelected ?? true,
             info1: subcategoryDataClone?.info1 ?? '',
             info2: subcategoryDataClone?.info2 ?? '',
@@ -114,10 +122,10 @@ export class CategoryManager {
 
     /**
      * Get flattened subcategories by search criteria
-     * @param {object} searchCriteria The search criteria
+     * @param {object={}} searchCriteria The search criteria
      * @returns {array} The matching flattened subcategories
      */
-    getFlattenedSubcategories (searchCriteria) {
+    getFlattenedSubcategories (searchCriteria = {}) {
         const subcategoryId = searchCriteria.id
         const subcategoryNestId = searchCriteria.nestId
         const subcategoryType = searchCriteria.type
@@ -143,7 +151,7 @@ export class CategoryManager {
     }
 
     /**
-     * Save Categories
+     * Save categories to the user action list
      * @param {object} choices
      */
     async saveCategories (choices) {
@@ -167,7 +175,7 @@ export class CategoryManager {
     }
 
     /**
-     * Save Subcategories
+     * Save subcategories to the user action list
      * @param {string} categoryId
      * @param {object} choices
      */
@@ -241,14 +249,32 @@ export class CategoryManager {
         Logger.debug('User action list saved', { actionList: categoriesClone })
     }
 
-    // GET CATEGORIES/SUBCATEGORIES
-    // GET SELECTED SUBCATEGORIES
-    getSelectedCategoriesAsTagifyEntries () {
+    /**
+     * Get advanced options
+     * @param {string} nestId
+     * @returns {object}
+     */
+    async getAdvancedCategoryOptions (nestId) {
+        const categorySubcategory = await getSubcategoryByNestId(this.flattenedSubcategories, { nestId })
+        const advancedCategoryOptions = categorySubcategory?.advancedCategoryOptions
+        return advancedCategoryOptions ?? null
+    }
+
+    /**
+     * Get selected categories as Tagify entries
+     * @returns {object}
+     */
+    async getSelectedCategoriesAsTagifyEntries () {
         const categories = this.user.getFlag(namespace, 'categories')
         if (!categories) return
         return categories.map(category => this.toTagifyEntry(category))
     }
 
+    /**
+     * Get selected subcategories as Tagify entries
+     * @param {object} subcategoryData
+     * @returns {object}
+     */
     async getSelectedSubcategoriesAsTagifyEntries (subcategoryData) {
         const categories = game.tokenActionHud.actionHandler.actionList.categories
         if (!categories) return []
@@ -263,29 +289,46 @@ export class CategoryManager {
         return []
     }
 
-    // GET SUGGESTED SUBCATEGORIES
-    getSubcategoriesAsTagifyEntries (subcategoryData) {
+    /**
+     * Get available subcategories as Tagify entries
+     * @param {object} subcategoryData
+     * @returns {object}
+     */
+    async getAvailableSubcategoriesAsTagifyEntries (subcategoryData) {
         const hasDerivedSubcategories = subcategoryData?.hasDerivedSubcategories
-        if (hasDerivedSubcategories === 'true') return this.getDerivedSubcategoriesAsTagifyEntries(subcategoryData)
-        const systemSubcategories = this.getSystemSubcategoriesAsTagifyEntries()
-        const compendiumSubcategories = this.getCompendiumSubcategoriesAsTagifyEntries()
+        if (hasDerivedSubcategories === 'true') return await this.getDerivedSubcategoriesAsTagifyEntries(subcategoryData)
+        const systemSubcategories = await this.getSystemSubcategoriesAsTagifyEntries()
+        const compendiumSubcategories = await this.getCompendiumSubcategoriesAsTagifyEntries()
         const subcategories = []
         subcategories.push(...systemSubcategories, ...compendiumSubcategories)
         return subcategories
     }
 
-    getDerivedSubcategoriesAsTagifyEntries (subcategoryData) {
+    /**
+     * Get derived subcategories as Tagify entries
+     * @param {object} subcategoryData
+     * @returns {object}
+     */
+    async getDerivedSubcategoriesAsTagifyEntries (subcategoryData) {
         const nestId = subcategoryData.nestId
         const derivedSubcategories = this.getFlattenedSubcategories({ nestId, type: 'system-derived' })
         return derivedSubcategories.map(subcategory => this.toTagifyEntry(subcategory))
     }
 
-    getSystemSubcategoriesAsTagifyEntries () {
-        const defaultSubcategories = this.user.getFlag(namespace, 'default.subcategories')
+    /**
+     * Get system subcategories as Tagify entries
+     * @returns {object}
+     */
+    async getSystemSubcategoriesAsTagifyEntries () {
+        const defaultSubcategories = await this.user.getFlag(namespace, 'default.subcategories')
         return defaultSubcategories.map(subcategory => this.toTagifyEntry(subcategory))
     }
 
-    getCompendiumSubcategoriesAsTagifyEntries () {
+    /**
+     * Get compendium subcategories as Tagify entries
+     * @returns {object}
+     */
+    async getCompendiumSubcategoriesAsTagifyEntries () {
         const packs = game.packs
         return packs
             .filter((pack) => {
@@ -300,19 +343,29 @@ export class CategoryManager {
             })
     }
 
-    // OTHER
+    /**
+     * Whether the compendium is linked
+     * @param {string} id
+     * @returns {boolean}
+     */
     isLinkedCompendium (id) {
         return this.categories.some(category =>
             category.subcategories?.some(subcategory => subcategory.compendiumId === id)
         )
     }
 
+    /**
+     * Convert data into Tagify entry
+     * @param {object} data
+     * @returns {object}
+     */
     toTagifyEntry (data) {
-        const id = data.id
-        const value = data.name
-        const type = data.type
-        const level = 'subcategory'
-        const hasDerivedSubcategories = data.hasDerivedSubcategories ?? 'false'
-        return { id, value, type, level, hasDerivedSubcategories }
+        return {
+            id: data.id,
+            value: data.name,
+            type: data.type,
+            level: 'subcategory',
+            hasDerivedSubcategories: data.hasDerivedSubcategories ?? 'false'
+        }
     }
 }

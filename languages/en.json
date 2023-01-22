@@ -2,29 +2,15 @@
   "tokenActionHud": {
     "accept": "Accept",
     "addToCombat": "Add to Combat",
-    "advancedCategoryOptions": {
-      "title": "Advanced Options",
-      "characterCount": "Characters per Word",
-      "compactView": "Compact View",
-      "customWidth": "Custom Width"
-    },
     "blockListLabel": "blockList: hide / allowlist: show",
     "cancel": "Cancel",
-    "categoryTagExplanation": "Add and remove categories. Drag categories to change their order.",
-    "categoryTagTitle": "Customise Categories",
-    "clearButton": "Clear",
     "combat": "Combat",
     "endTurn": "End Turn",
-    "filterPlaceholder": "Choices (split with semi-colon)",
-    "filterTagExplanation": "Add and remove actions. Drag actions to change their order.",
-    "filterTitle": "Customise Actions",
     "handlerNotFound": "not found, reverting to core roller.",
     "makeInvisible": "Make Invisible",
     "makeVisible": "Make Visible",
     "pushLabelExplanation": "Show categories on which side?",
     "removeFromCombat": "Remove from Combat",
-    "subcategoryTagExplanation": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
-    "subcategoryTagTitle": "Customise Subcategories",
     "title": "Token Action HUD",
     "token": "Token",
     "utility": "Utility",
@@ -120,6 +106,21 @@
         "hint": "Set the style of the HUD",
         "name": "Style"
       }
+    },
+    "tagDialog": {
+      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
+      "actionDialogTitle": "Customise Actions",
+      "advancedCategoryOptions": {
+        "title": "Advanced Options",
+        "characterCount": "Characters per Word",
+        "customWidth": "Custom Width (in Pixels)"
+      },
+      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
+      "categoryDialogTitle": "Customise Categories",
+      "clearButton": "Clear",
+      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "subcategoryDialogTitle": "Customise Subcategories",
+      "tagPlaceholder": "Choices (split with semi-colon)"
     }
   }
 }

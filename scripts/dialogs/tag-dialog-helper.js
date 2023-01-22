@@ -1,56 +1,68 @@
 import { TagDialog } from './tag-dialog.js'
 
 export class TagDialogHelper {
-    /** SHOW CATEGORY/SUBCATEGORY/ACTION DIALOGS */
-    static showCategoryDialog (categoryManager) {
-        TagDialogHelper._showCategoryDialog(categoryManager)
-    }
+    /**
+     * Show the category dialog
+     * @public
+     */
+    static async showCategoryDialog (categoryManager) {
+        // Set available and selected tags
+        const tags = {}
+        tags.available = []
+        tags.selected = await categoryManager.getSelectedCategoriesAsTagifyEntries()
 
-    static _showCategoryDialog (categoryManager) {
-        const selected = categoryManager.getSelectedCategoriesAsTagifyEntries()
-        const title = game.i18n.localize('tokenActionHud.categoryTagTitle')
-
-        const hbsData = {
-            topLabel: game.i18n.localize('tokenActionHud.categoryTagExplanation'),
-            placeholder: game.i18n.localize('tokenActionHud.filterPlaceholder'),
-            clearButtonText: game.i18n.localize('tokenActionHud.clearButton'),
-            indexExplanationLabel: game.i18n.localize('tokenActionHud.pushLabelExplanation')
+        // Set dialog data
+        const dialogData = {
+            title: game.i18n.localize('tokenActionHud.tagDialog.categoryDialogTitle'),
+            content: {
+                topLabel: game.i18n.localize('tokenActionHud.tagDialog.categoryDialogDescription'),
+                placeholder: game.i18n.localize('tokenActionHud.tagDialog.tagPlaceholder'),
+                clearButtonText: game.i18n.localize('tokenActionHud.tagDialog.clearButton'),
+                indexExplanationLabel: game.i18n.localize('tokenActionHud.pushLabelExplanation')
+            }
         }
 
-        const submitFunc = async (choices) => {
-            await TagDialogHelper.saveCategories(categoryManager, choices)
+        // Set function on submit
+        const dialogSubmit = async (choices) => {
+            await categoryManager.saveCategories(choices)
+            Hooks.callAll('forceUpdateTokenActionHud')
         }
 
-        TagDialog.showDialog(null, null, selected, title, hbsData, submitFunc)
+        // Show dialog
+        TagDialog.showDialog(null, tags, dialogData, dialogSubmit)
     }
 
-    static showSubcategoryDialog (categoryManager, categorySubcategoryData) {
-        TagDialogHelper._showSubcategoryDialog(
-            categoryManager,
-            categorySubcategoryData
-        )
-    }
+    /**
+     * Show subcategory dialog
+     * @public
+     * @param {object} categorySubcategoryData
+     */
+    static async showSubcategoryDialog (categoryManager, categorySubcategoryData) {
+        const { nestId, name } = categorySubcategoryData
 
-    static async _showSubcategoryDialog (categoryManager, subcategoryData) {
-        const nestId = subcategoryData.nestId
-        const categorySubcategoryName = subcategoryData.name
-        const suggestions = await categoryManager.getSubcategoriesAsTagifyEntries(subcategoryData)
-        const selected = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(subcategoryData)
+        // Set available and selected tags
+        const tags = {}
 
-        const title = game.i18n.localize('tokenActionHud.subcategoryTagTitle') + ` (${categorySubcategoryName})`
+        // Get available subcategories
+        tags.available = await categoryManager.getAvailableSubcategoriesAsTagifyEntries(categorySubcategoryData)
 
-        const hbsData = {
-            topLabel: game.i18n.localize('tokenActionHud.subcategoryTagExplanation'),
-            placeholder: game.i18n.localize('tokenActionHud.filterPlaceholder'),
-            clearButtonText: game.i18n.localize('tokenActionHud.clearButton'),
-            advancedCategoryOptions: game.user.getFlag(
-                'token-action-hud-core',
-                `categories.${nestId}.advancedCategoryOptions`
-            ),
-            level: 'category'
+        // Get selected subcategories
+        tags.selected = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(categorySubcategoryData)
+
+        // Set dialog data
+        const dialogData = {
+            title: game.i18n.localize('tokenActionHud.tagDialog.subcategoryDialogTitle') + ` (${name})`,
+            content: {
+                topLabel: game.i18n.localize('tokenActionHud.tagDialog.subcategoryDialogDescription'),
+                placeholder: game.i18n.localize('tokenActionHud.tagDialog.tagPlaceholder'),
+                clearButtonText: game.i18n.localize('tokenActionHud.tagDialog.clearButton'),
+                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(nestId),
+                level: 'category'
+            }
         }
 
-        const submitFunc = async (choices, html) => {
+        // Set function on submit
+        const dialogSubmit = async (choices, html) => {
             choices = choices.map((choice) => {
                 choice.id =
                 choice.id ??
@@ -64,105 +76,97 @@ export class TagDialogHelper {
                     id: choice.id,
                     name: choice.name,
                     type: choice.type,
-                    hasDerivedSubcategories:
-                    choice.hasDerivedSubcategories
+                    hasDerivedSubcategories: choice.hasDerivedSubcategories
                 }
             })
 
-            const customWidth = parseInt(
-                html.find('input[name="custom-width"]').val()
-            )
-            const compactView = html
-                .find('input[name="compact-view"]')
-                .prop('checked')
-            const characterCount = parseInt(
-                html.find('input[name="character-count"]').val()
-            )
-            const advancedCategoryOptions = {
-                customWidth,
-                compactView,
-                characterCount
-            }
+            // Get advanced category options
+            const customWidth = parseInt(html.find('input[name="custom-width"]').val())
+            const characterCount = parseInt(html.find('input[name="character-count"]').val())
+            const advancedCategoryOptions = { customWidth, characterCount }
 
-            await TagDialogHelper.saveSubcategories(
-                categoryManager,
-                choices,
-                advancedCategoryOptions,
-                subcategoryData
-            )
+            // Save selected subcategories to user action list
+            await categoryManager.saveSubcategories(choices, advancedCategoryOptions, categorySubcategoryData)
+
+            Hooks.callAll('forceUpdateTokenActionHud')
         }
 
         TagDialog.showDialog(
             nestId,
-            suggestions,
-            selected,
-            title,
-            hbsData,
-            submitFunc
+            tags,
+            dialogData,
+            dialogSubmit
         )
     }
 
+    /**
+     * Show action dialog
+     * @public
+     * @param {*} subcategoryData
+     */
     static async showActionDialog (categoryManager, actionHandler, subcategoryData) {
-        await TagDialogHelper._showActionDialog(categoryManager, actionHandler, subcategoryData)
-    }
+        const { nestId, name } = subcategoryData
 
-    static async _showActionDialog (categoryManager, actionHandler, subcategoryData) {
-        const nestId = subcategoryData?.nestId
-        const subcategoryName = subcategoryData?.name
-        // Get suggestions
-        const suggestedActions = await actionHandler.getActionsAsTagifyEntries(subcategoryData)
-        const suggestedSubcategories = await categoryManager.getSubcategoriesAsTagifyEntries(subcategoryData)
-        const suggestions = []
-        suggestions.push(...suggestedActions, ...suggestedSubcategories)
+        // Set available and selected tags
+        const tags = {}
 
-        // Get selected
+        // Get available actions and subcategories
+        const availableActions = await actionHandler.getActionsAsTagifyEntries(subcategoryData)
+        const availableSubcategories = await categoryManager.getAvailableSubcategoriesAsTagifyEntries(subcategoryData)
+        tags.available = [...availableActions, ...availableSubcategories]
+
+        // Get selected actions and subcategories
         const selectedActions = await actionHandler.getSelectedActionsAsTagifyEntries(subcategoryData)
         const selectedSubcategories = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(subcategoryData)
-        const selected = []
-        selected.push(...selectedActions, ...selectedSubcategories)
+        tags.selected = [...selectedActions, ...selectedSubcategories]
 
-        const title = `${game.i18n.localize('tokenActionHud.filterTitle')} (${subcategoryName})`
-
-        const hbsData = {
-            topLabel: game.i18n.localize('tokenActionHud.filterTagExplanation'),
-            placeholder: game.i18n.localize('tokenActionHud.filterPlaceholder'),
-            clearButtonText: game.i18n.localize('tokenActionHud.clearButton'),
-            indexExplanationLabel: game.i18n.localize('tokenActionHud.blockListLabel'),
-            level: 'subcategory'
+        // Set dialog data
+        const dialogData = {
+            title: `${game.i18n.localize('tokenActionHud.tagDialog.actionDialogTitle')} (${name})`,
+            content: {
+                topLabel: game.i18n.localize('tokenActionHud.tagDialog.actionDialogDescription'),
+                placeholder: game.i18n.localize('tokenActionHud.tagDialog.tagPlaceholder'),
+                clearButtonText: game.i18n.localize('tokenActionHud.tagDialog.clearButton'),
+                indexExplanationLabel: game.i18n.localize('tokenActionHud.blockListLabel'),
+                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(nestId),
+                level: 'subcategory'
+            }
         }
 
-        const submitFunc = async (choices) => {
-            await TagDialogHelper.saveActions(categoryManager, actionHandler, choices, subcategoryData)
+        // Set function on submit
+        const dialogSubmit = async (choices, html) => {
+            const selectedSubcategories = []
+            const selectedActions = []
+            for (const choice of choices) {
+                switch (choice.level) {
+                case 'subcategory':
+                    selectedSubcategories.push(choice)
+                    break
+                case 'action':
+                    selectedActions.push(choice)
+                    break
+                }
+            }
+
+            // Get advanced category options
+            const customWidth = parseInt(html.find('input[name="custom-width"]').val())
+            const characterCount = parseInt(html.find('input[name="character-count"]').val())
+            const advancedCategoryOptions = { customWidth, characterCount }
+
+            // Save subcategories to user action list
+            await categoryManager.saveSubcategories(selectedSubcategories, advancedCategoryOptions, subcategoryData)
+
+            // Save actions to actor action list
+            await actionHandler.saveActions(selectedActions, subcategoryData)
+
+            Hooks.callAll('forceUpdateTokenActionHud')
         }
 
         TagDialog.showDialog(
             nestId,
-            suggestions,
-            selected,
-            title,
-            hbsData,
-            submitFunc
+            tags,
+            dialogData,
+            dialogSubmit
         )
-    }
-
-    // SUBMIT CATEGORIES/SUBCATEGORIES/ACTIONS
-    static async saveCategories (categoryManager, choices) {
-        await categoryManager.saveCategories(choices)
-        Hooks.callAll('forceUpdateTokenActionHud')
-    }
-
-    static async saveSubcategories (categoryManager, choices, advancedCategoryOptions, subcategoryData) {
-        await categoryManager.saveSubcategories(choices, advancedCategoryOptions, subcategoryData)
-        Hooks.callAll('forceUpdateTokenActionHud')
-    }
-
-    static async saveActions (categoryManager, actionHandler, choices, subcategoryData) {
-        const selectedSubcategories = choices.filter(choice => choice.level === 'subcategory')
-        await categoryManager.saveSubcategories(selectedSubcategories, '', subcategoryData)
-
-        const selectedActions = choices.filter(choice => choice.level === 'action')
-        await actionHandler.saveActions(selectedActions, subcategoryData)
-
-        Hooks.callAll('forceUpdateTokenActionHud')
     }
 }

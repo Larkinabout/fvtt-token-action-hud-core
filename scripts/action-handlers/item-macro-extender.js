@@ -2,6 +2,12 @@ import { ActionListExtender } from './action-list-extender.js'
 import { getSetting } from '../utilities/utils.js'
 
 export class ItemMacroActionListExtender extends ActionListExtender {
+    constructor (actionHandler) {
+        super(actionHandler.categoryManager)
+        this.actionHandler = actionHandler
+        this.categoryManager = actionHandler.categoryManager
+    }
+
     /**
      * Whether the module is active or not
      * @param {string} id The module ID
@@ -47,7 +53,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
         const replace = itemMacroSetting === 'itemMacro'
 
-        this.flattenedSubcategories.forEach(subcategory => {
+        this.categoryManager.flattenedSubcategories.forEach(subcategory => {
             this.addSubcategoryActions(itemIds, subcategory, replace)
         })
     }
@@ -59,14 +65,11 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      * @param {boolean} replace Whether to replace the action or not
      */
     addSubcategoryActions (itemIds, subcategory, replace) {
-        if (subcategory.subcategories && subcategory.subcategories.length > 0) {
-            subcategory.subcategories.forEach((subcategory) =>
-                this.addSubcategoryActions(itemIds, subcategory, replace)
-            )
-        }
+        // Exit if no actions exist
+        if (!subcategory?.actions?.length) return
 
         const macroActions = []
-        subcategory.actions.forEach((action) => {
+        subcategory.actions.forEach(action => {
             if (!itemIds.includes(action.id)) return
 
             const macroAction = this.createItemMacroAction(action, replace)

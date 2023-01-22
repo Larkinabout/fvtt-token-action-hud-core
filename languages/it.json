@@ -2,29 +2,15 @@
   "tokenActionHud": {  
     "accept": "Accetta",
     "addToCombat": "Aggiungi al Combattimento",
-    "advancedCategoryOptions": {
-      "title": "Advanced Options",
-      "characterCount": "Characters per Word",
-      "compactView": "Compact View",
-      "customWidth": "Custom Width"
-    },
     "blockListLabel": "blockList: nascondi / allowlist: mostra",
     "cancel": "Annulla",
-    "categoryTagExplanation": "Aggiungi e rimuovi ulteriori categorie personalizzabili.",
-    "categoryTagTitle": "Aggiungi/rimuovi categorie",
-    "clearButton": "Cancella",
     "combat": "Combattere",
     "endTurn": "End Turn",
-    "filterPlaceholder": "Scelte (diviso con punto e virgola)",
-    "filterTagExplanation": "Aggiungi le categorie qui che vuoi mostrare o nascondere.",
-    "filterTitle": "Filtro",
     "handlerNotFound": "non trovato, reimposta il gestore dei tiri predefinito.",
     "makeInvisible": "Rendi Invisibile",
     "makeVisible": "Rendi Visibile",
     "pushLabelExplanation": "Da che parte vuoi posizionare le Categorie",
     "removeFromCombat": "Rimuovi dal Combattimento",
-    "subcategoryTagExplanation": "Aggiungi e rimuovi sottocategorie: inserisci il testo per le macro sottocategorie o seleziona i compendi collegati.",
-    "subcategoryTagTitle": "Aggiungi/Rimuovi Sottocategorie",
     "title": "Token Action HUD",
     "token": "Token",
     "utility": "Utilità",
@@ -120,6 +106,21 @@
         "hint": "Set the style of the HUD",
         "name": "Style"
       }
+    },
+    "tagDialog": {
+      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
+      "actionDialogTitle": "Customise Actions",
+      "advancedCategoryOptions": {
+        "title": "Advanced Options",
+        "characterCount": "Characters per Word",
+        "customWidth": "Custom Width (px)"
+      },
+      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
+      "categoryDialogTitle": "Customise Categories",
+      "clearButton": "Cancella",
+      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "subcategoryDialogTitle": "Customise Subcategories",
+      "tagPlaceholder": "Scelte (diviso con punto e virgola)"
     }
   }
 }

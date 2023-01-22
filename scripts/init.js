@@ -1,5 +1,5 @@
 import { TokenActionHud } from './token-action-hud.js'
-import { getSetting, registerHandlebars, setSetting, switchCSS } from './utilities/utils.js'
+import { getModuleVersionParts, getSetting, registerHandlebars, setSetting, switchCSS } from './utilities/utils.js'
 
 let systemManager
 const appName = 'token-action-hud-core'
@@ -7,13 +7,13 @@ const appName = 'token-action-hud-core'
 Hooks.on('ready', async () => {
     const systemId = game.system.id
     const systemModuleId = `token-action-hud-${systemId}`
-    const coreModuleVersion = game.modules.get(appName).version
+    const coreModuleVersion = getModuleVersionParts(game.modules.get(appName).version)
     const systemModuleCoreVersionFile = `../../${systemModuleId}/enums/core-version.js`
     const systemModuleCoreModuleVersion = await import(systemModuleCoreVersionFile).then(module => module.coreModuleVersion)
 
-    if (coreModuleVersion !== systemModuleCoreModuleVersion) {
+    if (coreModuleVersion.major !== systemModuleCoreModuleVersion.major || coreModuleVersion.minor !== systemModuleCoreModuleVersion.minor) {
         ui.notifications.error(
-            `The installed Token Action Hud system module requires Token Action Hud core module version ${systemModuleCoreModuleVersion}.`
+            `The installed Token Action Hud system module requires Token Action Hud core module version ${systemModuleCoreModuleVersion.full}.`
         )
         return
     }
@@ -21,8 +21,10 @@ Hooks.on('ready', async () => {
     // Import SystemManager class from the Token Action Hud system module
     // For distribution
     const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
+
     // For development
     // const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
+
     const systemModule = await import(systemModulePath)
     const SystemManager = systemModule.SystemManager
 
@@ -83,7 +85,7 @@ Hooks.on('canvasReady', async () => {
             }
         }
 
-        // If no Token Action Hud application exists, create a new TokenActionHud and initialise
+        // If no Token Action Hud application exists, create a new TokenActionHud and initialise it
         const user = game.user
         if (!game.tokenActionHud) {
             game.tokenActionHud = new TokenActionHud(systemManager)
