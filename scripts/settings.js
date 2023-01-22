@@ -272,7 +272,7 @@ export function initColorSettings (appName) {
                     type: 'color',
                     default: '#00000000'
                 },
-                '--tah-button': {
+                '--tah-button-background': {
                     name: 'tokenActionHud.settings.buttonBackgroundColor.name',
                     hint: 'tokenActionHud.settings.buttonBackgroundColor.hint',
                     type: 'color',
@@ -332,7 +332,7 @@ function registerColorSettings (appName, module) {
         restricted: true,
         default: '#00000080',
         onChange: (value) => {
-            document.querySelector(':root').style.setProperty('--tah-button', value)
+            document.querySelector(':root').style.setProperty('--tah-button-background', value)
             updateFunc(value)
         }
     }
@@ -434,24 +434,22 @@ function registerColorSettings (appName, module) {
         })
     }
 
-    Hooks.once('ready', () => {
-        document
-            .querySelector(':root')
-            .style.setProperty(
-                '--tah-background',
-                getSetting('background') ?? '#00000000'
-            )
-        document
-            .querySelector(':root')
-            .style.setProperty(
-                '--tah-button',
-                getSetting('buttonBackgroundColor') ?? '#00000080'
-            )
-        document
-            .querySelector(':root')
-            .style.setProperty(
-                '--tah-button-outline',
-                getSetting('buttonBorderColor') ?? '#000000ff'
-            )
-    })
+    document
+        .querySelector(':root')
+        .style.setProperty(
+            '--tah-background',
+            getSetting('background') ?? '#00000000'
+        )
+    document
+        .querySelector(':root')
+        .style.setProperty(
+            '--tah-button-background',
+            getSetting('buttonBackgroundColor') ?? '#00000080'
+        )
+    document
+        .querySelector(':root')
+        .style.setProperty(
+            '--tah-button-outline',
+            getSetting('buttonBorderColor') ?? '#000000ff'
+        )
 }
