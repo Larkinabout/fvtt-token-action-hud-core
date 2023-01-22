@@ -1,29 +1,27 @@
 import { TokenActionHud } from './token-action-hud.js'
-import { getModuleVersionParts, getSetting, registerHandlebars, setSetting, switchCSS } from './utilities/utils.js'
+import { checkModuleCompatibility, getSetting, registerHandlebars, setSetting, switchCSS, Timer } from './utilities/utils.js'
 
 let systemManager
 const appName = 'token-action-hud-core'
+let isControlTokenPending = false
+const controlTokenTimer = new Timer(20)
 
 Hooks.on('ready', async () => {
     const systemId = game.system.id
     const systemModuleId = `token-action-hud-${systemId}`
-    const coreModuleVersion = getModuleVersionParts(game.modules.get(appName).version)
     const systemModuleCoreVersionFile = `../../${systemModuleId}/enums/core-version.js`
     const systemModuleCoreModuleVersion = await import(systemModuleCoreVersionFile).then(module => module.coreModuleVersion)
 
-    if (coreModuleVersion.major !== systemModuleCoreModuleVersion.major || coreModuleVersion.minor !== systemModuleCoreModuleVersion.minor) {
-        ui.notifications.error(
-            `The installed Token Action Hud system module requires Token Action Hud core module version ${systemModuleCoreModuleVersion.full}.`
-        )
-        return
-    }
+    // Exit if core module version is not compatible with the system module
+    const isCompatible = checkModuleCompatibility(systemModuleCoreModuleVersion)
+    if (!isCompatible) return
 
     // Import SystemManager class from the Token Action Hud system module
     // For distribution
-    const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
+    // const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
 
     // For development
-    // const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
+    const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
 
     const systemModule = await import(systemModulePath)
     const SystemManager = systemModule.SystemManager
@@ -86,29 +84,31 @@ Hooks.on('canvasReady', async () => {
         }
 
         // If no Token Action Hud application exists, create a new TokenActionHud and initialise it
-        const user = game.user
         if (!game.tokenActionHud) {
             game.tokenActionHud = new TokenActionHud(systemManager)
-            await game.tokenActionHud.init(user)
+            await game.tokenActionHud.init()
         }
 
         // Set tokens variable
         game.tokenActionHud.setTokens(canvas.tokens)
 
         // Registers hooks to trigger a Token Action Hud update
-        Hooks.on('controlToken', (token, controlled) => {
+        Hooks.on('controlToken', async (token, controlled) => {
+            if (isControlTokenPending) await controlTokenTimer.abort()
+            isControlTokenPending = true
+            await controlTokenTimer.start()
+            isControlTokenPending = false
+
             // Exit if same actor or token
             const actorId = game.tokenActionHud.actionHandler.actorId
-            if (controlled && actorId === token.document.actor.id) return
-            if (!controlled && actorId === game.user.character.id) return
-
-            async function delayUpdate (token, controlled) {
-                const trigger = { trigger: { type: 'hook', name: 'controlToken', data: [token, controlled] } }
-                if (!controlled) await new Promise(resolve => setTimeout(resolve, 50))
-                if (controlled || (!controlled && !game.canvas.tokens.controlled.length)) game.tokenActionHud.update(trigger)
+            const controlledCount = game.canvas.tokens.controlled.length
+            if (
+                controlledCount > 1 ||
+                (controlledCount === 1 && actorId !== token.document.actor.id) ||
+                (controlledCount === 0 && actorId !== game.user.character.id)
+            ) {
+                game.tokenActionHud.update(trigger)
             }
-
-            delayUpdate(token, controlled)
         })
 
         Hooks.on('updateToken', (token, data, diff) => {

@@ -1,5 +1,11 @@
 export class CategoryResizer {
-    static async resizeHoveredCategory (categoryManager, category, direction) {
+    /**
+     * Resize the category
+     * @param {CategoryManager} categoryManager The CategoryManager class
+     * @param {obeject} category The category
+     * @param {string} direction The HUD expand direction
+     */
+    static async resizeCategory (categoryManager, category, direction) {
         // Exit early if no category element passed in or no action groups within it
         if (!category) return
         const actionGroups = category.querySelectorAll('.tah-actions')

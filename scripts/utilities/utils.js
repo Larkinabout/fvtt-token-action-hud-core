@@ -26,7 +26,29 @@ export class Logger {
 }
 
 /**
- * Whether tbe user is allowed to use the HUD
+ * Timer for setting and aborting timeouts
+ */
+export class Timer {
+    contructor (milliseconds) {
+        this.milliseconds = milliseconds
+        this.timer = null
+    }
+
+    async start () {
+        if (this.timer) this.abort()
+        return new Promise(resolve => {
+            this.timer = setTimeout(resolve, this.milliseconds)
+        })
+    }
+
+    async abort () {
+        clearTimeout(this.timer)
+        this.timer = null
+    }
+}
+
+/**
+ * Whether the user is allowed to use the HUD
  * @param {number} userRole The user's role
  * @returns {boolean}
  */
@@ -146,6 +168,27 @@ export function getModuleVersionParts (moduleVersion) {
         minor: moduleVersionParts[1],
         patch: moduleVersionParts[2]
     }
+}
+
+/**
+ * Whether the system module is compatible with the core module version
+ * @param {object} systemModuleCoreModuleVersion
+ * @returns {boolean}
+ */
+export async function checkModuleCompatibility (systemModuleCoreModuleVersion) {
+    // Get core module version in parts
+    const coreModuleVersion = getModuleVersionParts(await game.modules.get(namespace).version)
+
+    if (coreModuleVersion.major !== systemModuleCoreModuleVersion.major ||
+        coreModuleVersion.minor !== systemModuleCoreModuleVersion.minor ||
+        (systemModuleCoreModuleVersion.patch && coreModuleVersion.patch !== systemModuleCoreModuleVersion.patch)
+    ) {
+        ui.notifications.error(
+            `The installed Token Action Hud system module requires Token Action Hud core module version ${systemModuleCoreModuleVersion.full}.`
+        )
+        return false
+    }
+    return true
 }
 
 /**

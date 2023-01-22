@@ -6,10 +6,8 @@ export class CategoryManager {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
 
     categories = []
-    user = null
 
-    constructor (user) {
-        this.user = user
+    constructor () {
         this.flattenedSubcategories = []
         this.derivedSubcategories = new Map()
     }
@@ -52,7 +50,7 @@ export class CategoryManager {
      * Initialise saved or default categories
      */
     async init () {
-        const savedCategories = this.user.getFlag(namespace, 'categories')
+        const savedCategories = game.user.getFlag(namespace, 'categories')
         if (!savedCategories) return this._registerDefaultCategories()
         Logger.debug('Retrieved saved categories', { savedCategories })
     }
@@ -61,10 +59,7 @@ export class CategoryManager {
      * Register default categories
      */
     async _registerDefaultCategories () {
-        const defaultCategories = this.user.getFlag(
-            namespace,
-            'default.categories'
-        )
+        const defaultCategories = game.user.getFlag(namespace, 'default.categories')
         if (!defaultCategories) return
         await game.user.setFlag(namespace, 'categories', defaultCategories)
         Logger.debug('Registered default categories', { defaultCategories })
@@ -222,7 +217,11 @@ export class CategoryManager {
         Logger.debug('Subcategories saved', { actionList: categoriesClone })
     }
 
-    // Set the derived subcategory to the derivedSubcategories map
+    /**
+     * Add subcategory to the derivedSubcategories map
+     * @param {object} parentSubcategoryData The parent subcategory data
+     * @param {object} subcategory The subcategory
+     */
     addToDerivedSubcategories (parentSubcategoryData, subcategory) {
         const parentSubcategoryNestId = parentSubcategoryData.nestId
         const subcategoryClone = deepClone(subcategory, { strict: true })
@@ -230,7 +229,9 @@ export class CategoryManager {
         this.derivedSubcategories.get(parentSubcategoryNestId).push(subcategoryClone)
     }
 
-    // Save the derived subcategories
+    /**
+     * Save derived subcategories to the user action list
+     */
     async saveDerivedSubcategories () {
         for (const [parentSubcategoryNestId, derivedSubcategories] of this.derivedSubcategories) {
             const derivedSubcategoriesClone = deepClone(derivedSubcategories, { strict: true })
@@ -265,7 +266,7 @@ export class CategoryManager {
      * @returns {object}
      */
     async getSelectedCategoriesAsTagifyEntries () {
-        const categories = this.user.getFlag(namespace, 'categories')
+        const categories = game.user.getFlag(namespace, 'categories')
         if (!categories) return
         return categories.map(category => this.toTagifyEntry(category))
     }
@@ -320,7 +321,7 @@ export class CategoryManager {
      * @returns {object}
      */
     async getSystemSubcategoriesAsTagifyEntries () {
-        const defaultSubcategories = await this.user.getFlag(namespace, 'default.subcategories')
+        const defaultSubcategories = await game.user.getFlag(namespace, 'default.subcategories')
         return defaultSubcategories.map(subcategory => this.toTagifyEntry(subcategory))
     }
 

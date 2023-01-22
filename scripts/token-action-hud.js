@@ -30,10 +30,9 @@ export class TokenActionHud extends Application {
     }
 
     /**
-     * Initialise the hud
-     * @param {object} user The user object
+     * Initialise the HUD
      */
-    async init (user) {
+    async init () {
         this.direction = getSetting('direction')
         this.isAlwaysShow = getSetting('alwaysShowHud')
         this.isClickOpen = getSetting('clickOpenCategory')
@@ -43,7 +42,7 @@ export class TokenActionHud extends Application {
         this.isEnabled = this.isHudEnabled()
         this.isUnlocked = game.user.getFlag(this.namespace, 'isUnlocked')
         await this.systemManager.registerDefaultFlags()
-        this.categoryManager = await this.systemManager.getCategoryManager(user)
+        this.categoryManager = await this.systemManager.getCategoryManager()
         this.actionHandler = await this.systemManager.getActionHandler(this.categoryManager)
         this.rollHandler = this.systemManager.getRollHandler()
     }
@@ -52,6 +51,7 @@ export class TokenActionHud extends Application {
      * Update Token Action Hud change to module settings
      */
     updateSettings () {
+        Logger.debug('Updating settings...')
         this.updateRollHandler()
         this.direction = getSetting('direction')
         this.isAlwaysShow = getSetting('alwaysShowHud')
@@ -60,7 +60,8 @@ export class TokenActionHud extends Application {
         this.isDraggable = getSetting('drag')
         this.isEnabled = this.isHudEnabled()
         this.actionHandler.displayIcons = getSetting('displayIcons')
-        const trigger = { trigger: { type: 'method', name: 'TokenActionHud.updateSettings' } }
+        Logger.debug('Settings updated')
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
         this.update(trigger)
     }
 
@@ -152,58 +153,10 @@ export class TokenActionHud extends Application {
 
         // Bind event listeners
         this._bindCategoryEvents(elements)
+        this._bindActionEvents(elements)
         this._bindEditCategoriesButton(elements)
         this._bindLockUnlockButtons(elements)
         this._bindCollapseExpandButtons(elements)
-
-        const handleAction = (event) => {
-            let target = event.target
-
-            if (target.tagName !== 'BUTTON') target = event.currentTarget.children[0]
-            const value = target.value
-            try {
-                this.rollHandler.handleActionEvent(event, value)
-                target.blur()
-            } catch (error) {
-                Logger.error(event)
-            }
-        }
-
-        /**
-         * Open the Action dialog
-         * @param {object} event
-         */
-        const openActionDialog = (event) => {
-            const { id, innerText, outerText, dataset } = event.target
-            if (!id) return
-
-            const nestId = id
-            const name = innerText || outerText
-            const type = dataset?.type
-            const hasDerivedSubcategories = dataset?.hasDerivedSubcategories
-
-            TagDialogHelper.showActionDialog(
-                this.categoryManager,
-                this.actionHandler,
-                { nestId, name, type, hasDerivedSubcategories }
-            )
-        }
-
-        // When a subcategory title is clicked or right-clicked...
-        elements.subtitles.on('click contextmenu', (event) => {
-            if (this.isUnlocked) openActionDialog(event)
-        })
-
-        // When an action is clicked or right-clicked...
-        elements.actions.on('click contextmenu', (event) => {
-            event.preventDefault()
-            handleAction(event)
-        })
-
-        $(document)
-            .find('.tah-filterholder')
-            .parents('.tah-subcategory')
-            .css('cursor', 'pointer')
     }
 
     /**
@@ -211,6 +164,10 @@ export class TokenActionHud extends Application {
     * @private
     */
     _bindCategoryEvents (elements) {
+        /**
+         * Close the category
+         * @param {object} event The event
+         */
         const closeCategory = (event) => {
             if (game.tokenActionHud.rendering) return
             const category = (this.isClickOpen) ? event.target.parentElement : event.currentTarget
@@ -219,14 +176,22 @@ export class TokenActionHud extends Application {
             this.clearHoveredCategory(id)
         }
 
+        /**
+         * Open the category
+         * @param {object} event The event
+         */
         const openCategory = (event) => {
             const category = (this.isClickOpen) ? event.target.parentElement : event.currentTarget
             category.classList.add('hover')
             const id = category.id
             this.setHoveredCategory(id)
-            CategoryResizer.resizeHoveredCategory(this.categoryManager, category, this.direction)
+            CategoryResizer.resizeCategory(this.categoryManager, category, this.direction)
         }
 
+        /**
+         * Toggle the category
+         * @param {object} event The event
+         */
         const toggleCategory = (event) => {
             const category = event.target.parentElement
             if (category.classList.contains('hover')) {
@@ -280,6 +245,60 @@ export class TokenActionHud extends Application {
         // When a category button is right-clicked...
         elements.titleButtons.on('contextmenu', (event) => {
             if (this.isUnlocked) openSubcategoryDialog(event)
+        })
+    }
+
+    /**
+     * Bind action events
+     * @param {object} elements The DOM elements
+     */
+    _bindActionEvents (elements) {
+        /**
+         * Handle action event
+         * @param {object} event The event
+         */
+        const handleAction = (event) => {
+            let target = event.target
+
+            if (target.tagName !== 'BUTTON') target = event.currentTarget.children[0]
+            const value = target.value
+            try {
+                this.rollHandler.handleActionEvent(event, value)
+                target.blur()
+            } catch (error) {
+                Logger.error(event)
+            }
+        }
+
+        /**
+         * Open the Action dialog
+         * @param {object} event
+         */
+        const openActionDialog = (event) => {
+            const { id, innerText, outerText, dataset } = event.target
+            if (!id) return
+
+            const nestId = id
+            const name = innerText || outerText
+            const type = dataset?.type
+            const hasDerivedSubcategories = dataset?.hasDerivedSubcategories
+
+            TagDialogHelper.showActionDialog(
+                this.categoryManager,
+                this.actionHandler,
+                { nestId, name, type, hasDerivedSubcategories }
+            )
+        }
+
+        // When a subcategory title is clicked or right-clicked...
+        elements.subtitles.on('click contextmenu', (event) => {
+            if (this.isUnlocked) openActionDialog(event)
+        })
+
+        // When an action is clicked or right-clicked...
+        elements.actions.on('click contextmenu', (event) => {
+            event.preventDefault()
+            handleAction(event)
         })
     }
 
@@ -368,6 +387,10 @@ export class TokenActionHud extends Application {
      * @private
      */
     _bindCollapseExpandButtons (elements) {
+        /**
+         * Collapse the HUD
+         * @param {object} event The event
+         */
         const collapseHud = (event = null) => {
             if (event) {
                 event.preventDefault()
@@ -384,6 +407,10 @@ export class TokenActionHud extends Application {
             }
         }
 
+        /**
+         * Expand the HUD
+         * @param {object} event The event
+         */
         const expandHud = (event) => {
             event.preventDefault()
             event = event || window.event
@@ -411,6 +438,10 @@ export class TokenActionHud extends Application {
         elements.expandHudButton.get(0).addEventListener('touchstart', (event) => this.dragEvent(event), { passive: true })
     }
 
+    /**
+     * Drag event handler
+     * @param {*} event The event
+     */
     dragEvent (event) {
         if (!this.isDraggable) return
 
@@ -430,7 +461,10 @@ export class TokenActionHud extends Application {
         let newElementTop = originalElementTop
         let newElementLeft = originalElementLeft
 
-        // Initialise mouse move and mouse up events
+        /**
+         * Mouse movement event handler
+         * @param {object} event The event
+         */
         const mouseMoveEvent = (event) => {
             const clientX = event.clientX ?? event.changedTouches[0].clientX
             const clientY = event.clientY ?? event.changedTouches[0].clientY
@@ -451,6 +485,9 @@ export class TokenActionHud extends Application {
             })
         }
 
+        /**
+         * Mouse up event handler
+         */
         const mouseUpEvent = () => {
             // Remove the mouse move and touch move events
             document.onmousemove = null

@@ -1,7 +1,6 @@
 import { Logger, getSetting, setSetting, switchCSS } from './utilities/utils.js'
 
 const updateFunc = (value) => {
-    Logger.debug('Settings updated. Refreshing HUD')
     if (game.tokenActionHud) game.tokenActionHud.updateSettings()
 }
 let appName

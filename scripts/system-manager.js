@@ -21,28 +21,39 @@ export class SystemManager {
     doRegisterSettings (updateFunc) {}
     async doRegisterDefaultFlags () {}
 
+    /**
+     * Register default flags
+     */
     async registerDefaultFlags () {
         await game.user.unsetFlag(this.namespace, 'default')
         await this.doRegisterDefaultFlags()
     }
 
+    /**
+     * Initialise the action handler
+     * @param {CategoryManager} categoryManager The CategoryManager class
+     * @returns {ActionHandler}
+     */
     async getActionHandler (categoryManager) {
         const actionHandler = this.doGetActionHandler(categoryManager)
         this.addActionExtenders(actionHandler)
         return actionHandler
     }
 
-    async getCompendiumActionHandler (user) {
-        const compendiumActionHandler = new CompendiumActionHandler(this.categoryManager)
-        return compendiumActionHandler
-    }
-
+    /**
+     * Initialise action list extenders
+     * @param {ActionHandler} actionHandler The ActionHandler class
+     */
     addActionExtenders (actionHandler) {
         if (SystemManager.isModuleActive('itemacro')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler)) }
     }
 
-    async getCategoryManager (user) {
-        const categoryManager = this.doGetCategoryManager(user)
+    /**
+     * Initialise the category manager
+     * @returns {CategoryManager}
+     */
+    async getCategoryManager () {
+        const categoryManager = this.doGetCategoryManager()
         await categoryManager.init()
         return categoryManager
     }

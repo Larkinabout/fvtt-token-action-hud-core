@@ -44,7 +44,7 @@ export class ActionHandler {
         await this.categoryManager.resetCategoryManager()
         this.character = character
         this.savedUserActionList = await this.getSavedUserActionList(character)
-        this.savedActorActionList = await this.getSavedActorActionList(character)
+        if (this.character) this.savedActorActionList = await this.getSavedActorActionList(character)
         this.actionList = await this.buildEmptyActionList(character)
         await this.categoryManager.flattenSubcategories(this.actionList)
         await Promise.all([
@@ -56,7 +56,7 @@ export class ActionHandler {
         await this.buildFurtherActions(character)
         await this.categoryManager.saveDerivedSubcategories()
         await this.setCharacterLimit()
-        await this.saveActorActionList(character)
+        if (this.character) await this.saveActorActionList(character)
         Logger.debug('Action list built', { actionList: this.actionList, character })
         return this.actionList
     }
