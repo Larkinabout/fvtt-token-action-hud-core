@@ -74,7 +74,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
             const macroAction = this.createItemMacroAction(action, replace)
 
-            // if replacing, actions should have already been edited in place, no need to add.
+            // Add action to action list
             if (!replace) macroActions.push(macroAction)
         })
 
@@ -83,30 +83,17 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
     /**
      * Create item macro action
-     * @param {*} action The action
-     * @param {*} replace Whether to replace the action or not
-     * @returns The action
+     * @param {object} action The action
+     * @param {boolean} replace Whether to replace the action or not
+     * @returns {object} The action
      */
     createItemMacroAction (action, replace) {
-        const actionType = 'itemMacro'
-        const newAction = replace ? action : {}
+        const itemMacroAction = (replace) ? action : deepClone(action)
+        itemMacroAction.fullName = `(M) ${itemMacroAction.fullName}`
+        itemMacroAction.name = `(M) ${itemMacroAction.name}`
+        itemMacroAction.encodedValue = `itemMacro ${itemMacroAction.encodedValue.substr(itemMacroAction.encodedValue.indexOf(this.delimiter))}`
 
-        const keep = action.encodedValue.substr(
-            action.encodedValue.indexOf(this.delimiter)
-        )
-        newAction.encodedValue = actionType + keep
-        newAction.id = action.id
-        newAction.name = `(M) ${action.name}`
-        newAction.img = action.img
-        newAction.icon1 = action.icon1
-        newAction.icon2 = action.icon2
-        newAction.icon3 = action.icon3
-        newAction.info1 = action.info1
-        newAction.info2 = action.info2
-        newAction.info3 = action.info3
-        newAction.selected = action.selected
-
-        return newAction
+        return itemMacroAction
     }
 
     /**
@@ -135,7 +122,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      * Get the actor
      * @param {string} actorId The actor ID
      * @param {string} tokenId The token ID
-     * @returns The actor
+     * @returns {object} The actor
      */
     getActor (actorId, tokenId) {
         let token = null

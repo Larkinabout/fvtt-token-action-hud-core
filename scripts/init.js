@@ -2,7 +2,7 @@ import { TokenActionHud } from './token-action-hud.js'
 import { checkModuleCompatibility, getSetting, registerHandlebars, setSetting, switchCSS, Timer } from './utilities/utils.js'
 
 let systemManager
-const appName = 'token-action-hud-core'
+const namespace = 'token-action-hud-core'
 let isControlTokenPending = false
 const controlTokenTimer = new Timer(20)
 
@@ -18,10 +18,10 @@ Hooks.on('ready', async () => {
 
     // Import SystemManager class from the Token Action Hud system module
     // For distribution
-    // const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
+    const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
 
     // For development
-    const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
+    // const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
 
     const systemModule = await import(systemModulePath)
     const SystemManager = systemModule.SystemManager
@@ -44,7 +44,7 @@ Hooks.on('ready', async () => {
     }
 
     // Create new SystemManager and register core and system module settings
-    systemManager = new SystemManager(appName)
+    systemManager = new SystemManager(namespace)
     systemManager.registerSettings()
 
     // Set stylesheet to 'style' core module setting

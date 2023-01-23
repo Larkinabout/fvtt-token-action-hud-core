@@ -16,6 +16,10 @@
   --tah-info3-color: #ddd;
 }
 
+/*
+ * HUD
+ */
+
 #token-action-hud {
   align-items: center;
   background: var(--tah-background, #00000000);
@@ -36,11 +40,6 @@
   width: 100%;
 }
 
-#token-action-hud:hover > #tah-collapse-expand #tah-collapse-hud,
-#token-action-hud:hover > #tah-buttons {
-  display: flex;
-}
-
 #tah-character-name {
   color: #ddd;
   font-size: var(--font-size-16);
@@ -49,15 +48,23 @@
   pointer-events: none;
   position: absolute;
   text-align: left;
-  text-shadow: 
+  text-shadow:
     1px 1px 1px rgb(0 0 0),
     0px 1px 3px rgb(0 0 0);
   top: -20px !important;
 }
 
-#tah-categories {
+.tah-hidden {
+  display: none !important;
+}
+
+/*
+ * BUTTONS
+ */
+
+#token-action-hud:hover > #tah-collapse-expand #tah-collapse-hud,
+#token-action-hud:hover > #tah-buttons {
   display: flex;
-  gap: 2px;
 }
 
 #tah-collapse-hud,
@@ -115,26 +122,6 @@
   font-size: small;
 }
 
-#tah-edit-categories > .fa,
-#tah-edit-categories > .fas {
-  font-size: var(--font-size-16);
-}
-
-#tah-collapse-expand:hover button > i,
-#tah-lock:hover > i,
-#tah-unlock:hover > i,
-#tah-edit-categories:hover > i {
-  color: #fff;
-  text-shadow: 0 0 8px var(--color-shadow-primary);
-}
-
-/* The container <div> - needed to position the dropdown content */
-.tah-category {
-  cursor: default;
-  display: block;
-  position: relative;
-}
-
 #tah-expand-hud {
   position: relative;
   top: 18px;
@@ -169,233 +156,17 @@
   visibility: visible;
 }
 
-/* Dropdown Content (Hidden by Default) */
-.tah-subcategories-wrapper {
-  display: none;
-  position: relative;
+#tah-edit-categories > .fa,
+#tah-edit-categories > .fas {
+  font-size: var(--font-size-16);
 }
 
-.tah-subcategories-wrapper.expand-up {
-  bottom: 20px;
-  flex-direction: column-reverse;
-  left: -20px;
-  padding: 20px;
-}
-
-.tah-subcategories-wrapper.expand-down {
-  flex-direction: column;
-  left: -10px;
-  padding: 10px;
-  top: 25px;
-}
-
-.tah-subcategories {
-  background: var(--tah-background, #00000000);
-  border-radius: 3px;
-  left: -9px;
-  overflow-y: auto;
-  position: relative;
-  width: 500px;
-}
-
-.tah-subcategories-wrapper.expand-up > .tah-subcategories {
-  padding: 10px 10px 2px 10px;
-}
-
-.tah-subcategories-wrapper.expand-down > .tah-subcategories {
-  padding: 2px 10px 10px 10px;
-}
-
-.tah-category {
-  cursor: default;
-  display: block;
-  position: relative;
-}
-
-.tah-category.hover .tah-subcategories-wrapper {
-  background: none;
-  display: block;
-  position: absolute;
-}
-
-.tah-subcategory {
-  cursor: default;
-  position: relative;
-}
-
-.tah-subcategory > .tah-subcategory:not(:first-child) {
-    padding-left: 10px;
-}
-
-.tah-subcategories > .tah-subcategory > .tah-subtitle {
-  width: 100%;
-}
-
-.tah-subtitle {
-  align-items: center;
-  color: #ddd;
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  line-height: 1.5;
-  text-shadow: 
-    1px 1px 1px rgb(0 0 0),
-    0px 1px 3px rgb(0 0 0);
-}
-
-.tah-subtitle > .fa,
-.tah-subtitle > .fas {
-  font-size: 8px;
-  pointer-events: none;
-  visibility: hidden;
-}
-
-.tah-subtitle:hover:not(.disable-edit) > .fa,
-.tah-subtitle:hover:not(.disable-edit) > .fas {
-  visibility: visible;
-}
-
-.tah-actions {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
-  gap: 5px;
-  grid-column: 2;
-  margin-bottom: 2px;
-  margin-top: 2px;
-  width: 100%;
-}
-
-.tah-actions .stickLeft {
-  font-size: small;
-  font-weight: bold;
-  height: 20px;
-  line-height: 0px;
-  margin: 0px;
-  min-width: 20px;
-  padding: 0px;
-  position: relative;
-  text-align: center;
-  width: auto;
-}
-
-.tah-actions .shrink {
-  display: flex;
-  font-size: small;
-  font-weight: bold;
-  justify-content: center;
-  line-height: 0px;
-  min-width: 25px;
-  padding: 0px;
-  width: auto;
-}
-
-/* Links inside the dropdown */
-.tah-action {
-  background: none;
-  flex-basis: auto;
-  flex-grow: 0;
-}
-
-.tah-action-name {
-  align-items: baseline;
-  display: inline-flex;
-  gap: 5px;
-  padding: 0 5px 0 5px;
-}
-
-.tah-info1,
-.tah-info2,
-.tah-info3 {
-  font-size: xx-small;
-}
-
-.tah-subtitle > .tah-info1,
-.tah-subtitle > .tah-info2,
-.tah-subtitle > .tah-info3 {
-  background: #00000080;
-  border-radius: 15px;
-  line-height: 1.5;
-  padding: 2px;
-}
-
-.tah-info1 {
-  color: var(--tah-info1-color, #ffffff)
-}
-
-.tah-info2 {
-  color: var(--tah-info2-color, #ffffff)
-}
-
-.tah-info3 {
-  color: var(--tah-info3-color, #ffffff)
-}
-
-.tah-img {
-  border-radius: 3px 0 0 3px;
-  height: 32px;
-  width: 32px;
-}
-
-.tah-icon > .fa,
-.tah-icon > .fas {
-  font-size: x-small;
-  margin: 0px 2px 0px 0px;
-}
-
-.tah-subtitle > .tah-icon > .fa,
-.tah-subtitle > .tah-icon > .fas {
-  text-shadow:
-    1px 1px 1px rgba(0, 0, 0, 1)
-}
-
-.tah-action button {
-  align-items: center;
-  color: #ddd;
-  display: flex;
-  line-height: 1;
-  margin: 0;
-  min-height: 32px;
-  min-width: 32px;
-  padding: 0;
-  text-decoration: none;
-  text-shadow:
-    0px 0px 2px rgb(0 0 0 / 50%),
-    0px 0px 5px rgb(0 0 0 / 25%);
-  width: 100%;
-}
-
-.tah-action button:hover {
-  border: 0;
-  box-shadow: 0 0 10px #ff6400, 0 2px 0 -1px #ff6400, 0 0 0 1px red;
+#tah-collapse-expand:hover button > i,
+#tah-lock:hover > i,
+#tah-unlock:hover > i,
+#tah-edit-categories:hover > i {
   color: #fff;
-  cursor: pointer;
-  font-weight: inherit;
-}
-
-.tah-action .toggle {
-  background: var(--tah-button-background, #00000080);
-  box-shadow:
-    0 0 0 1px var(--tah-button-outline, #000000ff),
-    inset 0 0 10px #ffffff1a;
-}
-
-.tah-action .active {
-  background: var(--tah-button-toggle-active, #3c0078bf);
-  box-shadow:
-    0 0 0 1px var(--tah-button-toggle-outline-active, #9b8dff),
-    inset 0 0 10px #ffffff1a;
-}
-
-.tah-action .toggle:hover {
-  background: var(--tah-button-toggle-hover, #3c0078bf);
-  box-shadow: 
-    0 0 0 1px var(--tah-button-toggle-outline-hover, 9b8dff),
-    0 0 10px var(--tah-button-toggle-outline-hover-glow, #9b8dff)
-}
-
-.tah-action .activeText:after {
-  content: "*";
+  text-shadow: 0 0 8px var(--color-shadow-primary);
 }
 
 #tah-expand-hud {
@@ -445,9 +216,239 @@
 	color: var(--tah-button-active-contrast, #fff);
 }
 
-.tah-hidden {
-  display: none !important;
+/*
+ * CATEGORY
+ */
+
+#tah-categories {
+  display: flex;
+  gap: 2px;
 }
+
+.tah-category {
+  cursor: default;
+  display: block;
+  position: relative;
+}
+
+/*
+ * SUBCATEGORY
+ */
+
+.tah-category.hover .tah-subcategories-wrapper {
+  background: none;
+  display: block;
+  position: absolute;
+}
+
+.tah-subcategories-wrapper {
+  display: none;
+  position: relative;
+}
+
+.tah-subcategories-wrapper.expand-up {
+  bottom: 10px;
+  flex-direction: column-reverse;
+  left: -10px;
+  padding: 10px;
+}
+
+.tah-subcategories-wrapper.expand-down {
+  flex-direction: column;
+  left: -10px;
+  padding: 10px;
+  top: 25px;
+}
+
+.tah-subcategories-wrapper.expand-up > .tah-subcategories {
+  padding: 10px 10px 2px 10px;
+}
+
+.tah-subcategories-wrapper.expand-down > .tah-subcategories {
+  padding: 2px 10px 10px 10px;
+}
+
+.tah-subcategories {
+  background: var(--tah-background, #00000000);
+  border-radius: 3px;
+  left: -9px;
+  overflow-y: auto;
+  position: relative;
+  width: 500px;
+}
+
+.tah-subcategory {
+  cursor: default;
+  position: relative;
+}
+
+.tah-subcategory > .tah-subcategory:not(:first-child) {
+    padding-left: 10px;
+}
+
+.tah-subcategories > .tah-subcategory > .tah-subtitle {
+  width: 100%;
+}
+
+/*
+ * SUBTITLES
+ */
+
+.tah-subtitle {
+  align-items: center;
+  color: #ddd;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  line-height: 1.5;
+  text-shadow: 
+    1px 1px 1px rgb(0 0 0),
+    0px 1px 3px rgb(0 0 0);
+}
+
+.tah-subtitle > .fa,
+.tah-subtitle > .fas {
+  font-size: 8px;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.tah-subtitle:hover:not(.disable-edit) > .fa,
+.tah-subtitle:hover:not(.disable-edit) > .fas {
+  visibility: visible;
+}
+
+/*
+ * ACTIONS
+ */
+
+.tah-actions {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 5px;
+  grid-column: 2;
+  margin-bottom: 2px;
+  margin-top: 2px;
+  width: 100%;
+}
+
+/* Links inside the dropdown */
+.tah-action {
+  background: none;
+  flex-basis: auto;
+  flex-grow: 0;
+}
+
+.tah-action button {
+  align-items: center;
+  color: #ddd;
+  display: flex;
+  line-height: 1;
+  margin: 0;
+  min-height: 32px;
+  min-width: 32px;
+  padding: 0;
+  text-decoration: none;
+  text-shadow:
+    0px 0px 2px rgb(0 0 0 / 50%),
+    0px 0px 5px rgb(0 0 0 / 25%);
+  width: 100%;
+}
+
+.tah-action button:hover {
+  border: 0;
+  box-shadow: 0 0 10px #ff6400, 0 2px 0 -1px #ff6400, 0 0 0 1px red;
+  color: #fff;
+  cursor: pointer;
+  font-weight: inherit;
+}
+
+.tah-action .toggle {
+  background: var(--tah-button-background, #00000080);
+  box-shadow:
+    0 0 0 1px var(--tah-button-outline, #000000ff),
+    inset 0 0 10px #ffffff1a;
+}
+
+.tah-action .active {
+  background: var(--tah-button-toggle-active, #3c0078bf);
+  box-shadow:
+    0 0 0 1px var(--tah-button-toggle-outline-active, #9b8dff),
+    inset 0 0 10px #ffffff1a;
+}
+
+.tah-action .toggle:hover {
+  background: var(--tah-button-toggle-hover, #3c0078bf);
+  box-shadow: 
+    0 0 0 1px var(--tah-button-toggle-outline-hover, 9b8dff),
+    0 0 10px var(--tah-button-toggle-outline-hover-glow, #9b8dff)
+}
+
+.tah-action .active.activeText:after {
+  content: "*";
+  padding-right: 5px;
+}
+
+.tah-action-name {
+  align-items: baseline;
+  display: inline-flex;
+  gap: 5px;
+  padding: 0 5px 0 5px;
+}
+
+/*
+ * INFO TEXTS
+ */
+
+.tah-info1,
+.tah-info2,
+.tah-info3 {
+  font-size: xx-small;
+}
+
+.tah-subtitle > .tah-info1,
+.tah-subtitle > .tah-info2,
+.tah-subtitle > .tah-info3 {
+  background: #00000080;
+  border-radius: 15px;
+  line-height: 1.5;
+  padding: 2px;
+}
+
+.tah-info1 {
+  color: var(--tah-info1-color, #ffffff)
+}
+
+.tah-info2 {
+  color: var(--tah-info2-color, #ffffff)
+}
+
+.tah-info3 {
+  color: var(--tah-info3-color, #ffffff)
+}
+
+.tah-img {
+  border-radius: 3px 0 0 3px;
+  height: 32px;
+  width: 32px;
+}
+
+.tah-icon > .fa,
+.tah-icon > .fas {
+  font-size: x-small;
+  margin: 0px 2px 0px 0px;
+}
+
+.tah-subtitle > .tah-icon > .fa,
+.tah-subtitle > .tah-icon > .fas {
+  text-shadow:
+    1px 1px 1px rgba(0, 0, 0, 1)
+}
+
+/*
+ * DIALOGS
+ */
 
 .token-action-hud-taginput {
   max-height: 300px;

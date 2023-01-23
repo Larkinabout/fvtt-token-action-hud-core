@@ -302,30 +302,6 @@
   width: 100%;
 }
 
-.tah-actions .stickLeft {
-  font-size: small;
-  font-weight: bold;
-  height: 20px;
-  line-height: 0px;
-  margin: 0px;
-  min-width: 20px;
-  padding: 0px;
-  position: relative;
-  text-align: center;
-  width: auto;
-}
-
-.tah-actions .shrink {
-  display: flex;
-  font-size: small;
-  font-weight: bold;
-  justify-content: center;
-  line-height: 0px;
-  min-width: 25px;
-  padding: 0px;
-  width: auto;
-}
-
 /* Links inside the dropdown */
 .tah-action {
   background: none;
@@ -482,8 +458,9 @@
   box-shadow: 0 0 0 1px var(--tertiary);
 }
 
-.tah-action .activeText:after {
+.tah-action .active.activeText:after {
   content: "*";
+  padding-right: 5px;
 }
 
 .tah-hidden {
