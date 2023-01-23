@@ -22,7 +22,7 @@
     "verified": "10.291"
   },
   "esmodules": [
-    "./scripts/init.js"
+    "./scripts/token-action-hud-core.min.js"
   ],
   "scripts": [
     "./lib/tagify/tagify.min.js", 
