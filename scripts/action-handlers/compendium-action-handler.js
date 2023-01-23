@@ -3,22 +3,20 @@ export class CompendiumActionHandler {
 
     constructor (baseHandler) {
         this.baseHandler = baseHandler
+        this.categoryManager = baseHandler.categoryManager
     }
 
     /**
      * Build any compendium actions
      * @override
-     * @param {object} actionList The action list
      */
-    async buildCompendiumActions (actionList) {
+    async buildCompendiumActions () {
         // Get compendium subcategories
-        const subcategoryIds = Object.values(actionList.categories)
-            .filter((category) => category.subcategories)
-            .flatMap((category) =>
-                Object.values(category.subcategories)
-                    .filter((subcategory) => subcategory.type === 'compendium')
-                    .flatMap((subcategory) => subcategory.id)
-            )
+        const subcategoryType = 'compendium'
+        const subcategories = this.categoryManager.getFlattenedSubcategories({ type: subcategoryType })
+        const subcategoryIds = subcategories.flatMap(subcategory => subcategory.id)
+
+        if (!subcategoryIds) return
 
         // Get compendium packs
         const packIds = game.packs
@@ -32,13 +30,10 @@ export class CompendiumActionHandler {
         // Add actions to the action list
         for (const packId of packIds) {
             const subcategoryId = packId.replace('.', '-')
+            const subcategoryData = { id: subcategoryId, type: subcategoryType }
             if (subcategoryIds.includes(packId.replace('.', '-'))) {
                 const actions = await this.getCompendiumActions(packId)
-                this.baseHandler.addActionsToActionList(
-                    actionList,
-                    actions,
-                    subcategoryId
-                )
+                this.baseHandler.addActionsToActionList(actions, subcategoryData)
             }
         }
     }

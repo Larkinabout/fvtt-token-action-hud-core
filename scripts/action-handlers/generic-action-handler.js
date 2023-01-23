@@ -1,5 +1,5 @@
 export class GenericActionHandler {
-    baseHandler
+    baseHandlers
 
     constructor (baseHandler) {
         this.baseHandler = baseHandler
@@ -7,43 +7,39 @@ export class GenericActionHandler {
 
     /**
      * Build generic actions
-     * @param {object} actionList The action list
      * @param {object} character The actor and/or token
      */
-    buildGenericActions (actionList, character) {
-        this._buildConditions(actionList, character)
-        this._buildUtilities(actionList, character)
+    buildGenericActions (character) {
+        this._buildConditions(character)
+        this._buildUtilities(character)
     }
 
     /**
      * Build conditions
      * @private
-     * @param {object} actionList The action list
      * @param {object} character The actor and/or token
      */
-    _buildConditions (actionList, character) {}
+    _buildConditions (character) {}
 
     /**
      * Build utilities
      * @private
-     * @param {object} actionList The action list
      * @param {object} character The actor and/or token
      */
-    _buildUtilities (actionList, character) {
+    _buildUtilities (character) {
         if (character) {
-            this._buildSingleTokenUtilities(actionList, character)
+            this._buildSingleTokenUtilities(character)
         } else {
-            this._buildMultipleTokenUtilities(actionList)
+            this._buildMultipleTokenUtilities()
         }
     }
 
     /**
      * Build utilities for a single token
      * @private
-     * @param {object} actionList The action list
      * @param {object} character The actor and/or token
      */
-    _buildSingleTokenUtilities (actionList, character) {
+    _buildSingleTokenUtilities (character) {
         const actorId = character.actor?.id
         const tokenId = character.token?.id
         if (!tokenId) return
@@ -94,15 +90,21 @@ export class GenericActionHandler {
             actions.push(toggleVisibilityAction)
         }
 
+        const subcategoryId = 'token'
+        const subcategoryType = 'system'
+        const subcategoryData = {
+            id: subcategoryId,
+            type: subcategoryType
+        }
+
         // Add actions to action list
-        this.baseHandler.addActionsToActionList(actionList, actions, 'token')
+        this.baseHandler.addActionsToActionList(actions, subcategoryData)
     }
 
     /**
      * Build utilities for multiple tokens
-     * @param {object} actionList The action list
      */
-    _buildMultipleTokenUtilities (actionList) {
+    _buildMultipleTokenUtilities () {
         const actionType = 'utility'
         const actorId = 'multi'
         const tokenId = 'multi'
@@ -149,7 +151,14 @@ export class GenericActionHandler {
             actions.push(toggleVisibilityAction)
         }
 
+        const subcategoryId = 'token'
+        const subcategoryType = 'system'
+        const subcategoryData = {
+            id: subcategoryId,
+            type: subcategoryType
+        }
+
         // Add to Action List
-        this.baseHandler.addActionsToActionList(actionList, actions, 'token')
+        this.baseHandler.addActionsToActionList(actions, subcategoryData)
     }
 }

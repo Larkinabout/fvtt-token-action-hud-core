@@ -2,29 +2,15 @@
   "tokenActionHud": {
     "accept": "확인",
     "addToCombat": "전투에 추가",
-    "advancedCategoryOptions": {
-      "title": "Advanced Options",
-      "characterCount": "Characters per Word",
-      "compactView": "Compact View",
-      "customWidth": "Custom Width"
-    },
     "blockListLabel": "차단 목록: 숨김 / 허가 목록: 보임",
     "cancel": "취소",
-    "categoryTagExplanation": "사용자 지정 가능한 카테고리를 추가/제거한다",
-    "categoryTagTitle": "카테고리 추가/삭제",
-    "clearButton": "클리어",
     "combat": "전투",
     "endTurn": "End Turn",
-    "filterPlaceholder": "선택 (세미 콜론으로 구분)",
-    "filterTagExplanation": "특정 카테고리 항목을 표시하거나 숨기려면 여기에 항목을 추가한다.",
-    "filterTitle": "필터",
     "handlerNotFound": "찾을 수 없습니다. 기본 굴림으로 돌아갑니다.",
     "makeInvisible": "보이지 않게 만들기",
     "makeVisible": "보이게 하기",
     "pushLabelExplanation": "카테고리를 어느 쪽에 배치하는가?",
     "removeFromCombat": "전투에서 제거",
-    "subcategoryTagExplanation": "하위 카테고리 추가/제거: 매크로 하위 카테고리를 자유 입력하거나 연결된 컴펜디움을 선택한다. ",
-    "subcategoryTagTitle": "하위 카테고리 추가/삭제",
     "title": "Token Action HUD",
     "token": "토큰",
     "utility": "유틸리티",
@@ -120,6 +106,21 @@
         "hint": "HUD의 스타일 설정",
         "name": "스타일"
       }
+    },
+    "tagDialog": {
+      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
+      "actionDialogTitle": "Customise Actions",
+      "advancedCategoryOptions": {
+        "title": "Advanced Options",
+        "characterCount": "Characters per Word",
+        "customWidth": "Custom Width (px)"
+      },
+      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
+      "categoryDialogTitle": "Customise Categories",
+      "clearButton": "클리어",
+      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "subcategoryDialogTitle": "Customise Subcategories",
+      "tagPlaceholder": "선택 (세미 콜론으로 구분)"
     }
   }
 }

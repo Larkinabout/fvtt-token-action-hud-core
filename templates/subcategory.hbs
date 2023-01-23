@@ -1,5 +1,8 @@
+{{~#if
+  (ne this.isSelected false)
+~}}
 <div class="tah-subcategory">
-  <div class="tah-subtitle{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}" id="{{this.nestId}}">
+  <div class="tah-subtitle{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}" id="{{this.nestId}}" data-type="{{this.type}}" data-has-derived-subcategories="{{this.hasDerivedSubcategories}}">
     {{~#if img~}}<div class="tah-img" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
     {{~#if icon~}}<div class="tah-icon">{{{icon}}}</div>{{~/if~}}
     {{cap this.name}}
@@ -7,14 +10,19 @@
     {{~#if this.info2~}}<div class="tah-info2">{{this.info2}}</div>{{~/if~}}
     <i class="fa fa-filter" aria-hidden="true"></i>
   </div>
+  {{~#if
+    (tf this.actions.length)
+  ~}}
   <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
     {{#each actions}}
       {{>"modules/token-action-hud-core/templates/action.hbs"}}
     {{/each}}
   </div>
+  {{~/if~}}
   {{~#if this.subcategories~}}
   {{#each subcategories}}
   {{>"modules/token-action-hud-core/templates/subcategory.hbs"}}
   {{/each}}
   {{~/if~}}
 </div>
+{{~/if~}}

@@ -3,23 +3,30 @@ export class TagDialog extends Dialog {
     tagify = null
     dragSort = null
 
-    constructor (dialogData, options) {
+    constructor (data, options) {
         super(options)
-        this.data = dialogData
+        this.data = data
         this.categoryId = null
         this.subcategoryId = null
     }
 
-    static showDialog (nestId, suggestions, selected, title, hbsData, submitFunc) {
+    /**
+     * Show dialog
+     * @public
+     * @param {string} nestId
+     * @param {object} tags The available and selected tags
+     * @param {object} dialogData The dialog data
+     * @param {function*} dialogSubmit The dialog submit function
+     */
+    static showDialog (nestId, tags, dialogData, dialogSubmit) {
         this.nestId = nestId
-        TagDialog._prepareHook(suggestions, selected)
+        TagDialog._prepareHook(tags)
 
         const template = Handlebars.compile('{{> modules/token-action-hud-core/templates/tagdialog.hbs}}')
-        const content = template(hbsData)
 
-        const d = new TagDialog({
-            title,
-            content,
+        const dialog = new TagDialog({
+            title: dialogData.title,
+            content: template(dialogData.content),
             buttons: {
                 accept: {
                     icon: '<i class="fas fa-check"></i>',
@@ -27,9 +34,15 @@ export class TagDialog extends Dialog {
                     callback: async (html) => {
                         const selection = TagDialog.tagify.value.map((c) => {
                             c.id = c.id ?? c.value.slugify({ replacement: '-', strict: true })
-                            return { id: c.id, title: c.value, type: c.type, level: c.level }
+                            return {
+                                id: c.id,
+                                name: c.value,
+                                type: c.type,
+                                level: c.level,
+                                hasDerivedSubcategories: c.hasDerivedSubcategories
+                            }
                         })
-                        await submitFunc(selection, html)
+                        await dialogSubmit(selection, html)
                     }
                 },
                 cancel: {
@@ -40,10 +53,14 @@ export class TagDialog extends Dialog {
             default: 'accept'
         })
 
-        d.render(true)
+        dialog.render(true)
     }
 
-    static _prepareHook (choices, selection) {
+    /**
+     * Prepare dialog hook
+     * @param {*} tags 
+     */
+    static _prepareHook (tags) {
         Hooks.once('renderTagDialog', (app, html, options) => {
             html.css('height', 'auto')
 
@@ -60,14 +77,14 @@ export class TagDialog extends Dialog {
                     delimiters: ';',
                     maxTags: 'Infinity',
                     dropdown: {
-                        maxItems: 50, // <- maxumum allowed rendered suggestions
+                        maxItems: 50, // <- maximum allowed rendered suggestions
                         classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
                         enabled: 0, // <- show suggestions on focus
                         closeOnSelect: false // <- do not hide the suggestions dropdown once an item has been selected
                     }
                 }
 
-                if (choices) options.whitelist = choices
+                if (tags.available) options.whitelist = tags.available
 
                 TagDialog.tagify = new Tagify($tagFilter[0], options)
 
@@ -85,7 +102,7 @@ export class TagDialog extends Dialog {
                 $tagifyBox.css('background', '#fff')
                 $tagifyBox.css('color', '#000')
 
-                if (selection) TagDialog.tagify.addTags(selection)
+                if (tags.selected) TagDialog.tagify.addTags(tags.selected)
 
                 // "remove all tags" button event listener
                 const clearBtn = html.find('button[class="tags--removeAllBtn"]')

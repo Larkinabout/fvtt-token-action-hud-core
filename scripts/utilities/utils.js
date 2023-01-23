@@ -12,14 +12,43 @@ export class Logger {
         console.error('Token Action HUD Error |', ...args)
     }
 
-    static debug (...args) {
+    static debug (message, data) {
         const isDebug = (game.tokenActionHud) ? game.tokenActionHud.isDebug : getSetting('debug')
-        if (isDebug) { console.log('Token Action HUD Debug |', ...args) }
+        if (isDebug) {
+            if (!data) {
+                console.log(`Token Action HUD Debug | ${message}`)
+                return
+            }
+            const dataClone = deepClone(data)
+            console.log(`Token Action HUD Debug | ${message}`, dataClone)
+        }
     }
 }
 
 /**
- * Whether tbe user is allowed to use the HUD
+ * Timer for setting and aborting timeouts
+ */
+export class Timer {
+    contructor (milliseconds) {
+        this.milliseconds = milliseconds
+        this.timer = null
+    }
+
+    async start () {
+        if (this.timer) this.abort()
+        return new Promise(resolve => {
+            this.timer = setTimeout(resolve, this.milliseconds)
+        })
+    }
+
+    async abort () {
+        clearTimeout(this.timer)
+        this.timer = null
+    }
+}
+
+/**
+ * Whether the user is allowed to use the HUD
  * @param {number} userRole The user's role
  * @returns {boolean}
  */
@@ -110,7 +139,8 @@ export function registerHandlebars () {
         lte: function () { return reduceOp(arguments, (a, b) => a <= b) },
         gte: function () { return reduceOp(arguments, (a, b) => a >= b) },
         and: function () { return reduceOp(arguments, (a, b) => a && b) },
-        or: function () { return reduceOp(arguments, (a, b) => a || b) }
+        or: function () { return reduceOp(arguments, (a, b) => a || b) },
+        tf: function () { return reduceOp(arguments, (a) => a) }
     })
 
     // Add asterisk to toggleable actions
@@ -123,62 +153,93 @@ export function registerHandlebars () {
 }
 
 /**
- * Loop nested subcategories and return flattened
- * @param {object} subcategories
+ * Get the major, minor and patch parts of the module version
+ * @param {*} moduleVersion
  * @returns {object}
  */
-export function getSubcategories (subcategories) {
-    const result = []
-    for (const subcategory of subcategories) {
-        if (subcategory.subcategories.length > 0) {
-            result.push(getSubcategories(subcategory.subcategories).flat())
-        }
-        result.push(subcategory)
+export function getModuleVersionParts (moduleVersion) {
+    if (!moduleVersion) {
+        Logger.debug('Module version not retrieved', { trigger: 'getModuleVersionParts' })
+        return
     }
-    return result.flat()
+    const moduleVersionParts = moduleVersion.split('.')
+    return {
+        major: moduleVersionParts[0],
+        minor: moduleVersionParts[1],
+        patch: moduleVersionParts[2]
+    }
 }
 
 /**
- * Loop nested subcategories, find subcategories matching id, and return flattened
+ * Whether the system module is compatible with the core module version
+ * @param {object} systemModuleCoreModuleVersion
+ * @returns {boolean}
+ */
+export async function checkModuleCompatibility (systemModuleCoreModuleVersion) {
+    // Get core module version in parts
+    const coreModuleVersion = getModuleVersionParts(await game.modules.get(namespace).version)
+
+    if (coreModuleVersion.major !== systemModuleCoreModuleVersion.major ||
+        coreModuleVersion.minor !== systemModuleCoreModuleVersion.minor ||
+        (systemModuleCoreModuleVersion.patch && coreModuleVersion.patch !== systemModuleCoreModuleVersion.patch)
+    ) {
+        ui.notifications.error(
+            `The installed Token Action Hud system module requires Token Action Hud core module version ${systemModuleCoreModuleVersion.full}.`
+        )
+        return false
+    }
+    return true
+}
+
+/**
+ * Loop nested subcategories and return flattened
  * @param {object} subcategories
- * @param {string} id
+ * @param {object} searchCriteria
  * @returns {object}
  */
-export function getSubcategoriesById (subcategories, id) {
+export function getSubcategories (subcategories, searchCriteria = {}) {
     if (!subcategories) return
-    const result = []
+    const subcategoryId = searchCriteria?.id
+    const subcategoryType = searchCriteria?.type
+    subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories)
+    let foundSubcategories = []
     for (const subcategory of subcategories) {
-        if (subcategory.subcategories?.length > 0) {
-            result.push(getSubcategoriesById(subcategory.subcategories, id).flat())
-        }
-        if (subcategory.id === id) {
-            result.push(subcategory)
+        if ((!subcategoryId || subcategory.id === subcategoryId) && (!subcategoryType || subcategory.type === subcategoryType)) foundSubcategories.push(subcategory)
+        if (subcategory.subcategories.length > 0) {
+            const subcategories = getSubcategories(subcategory.subcategories, searchCriteria)
+            if (subcategories) foundSubcategories = foundSubcategories.concat(subcategories.filter(subcategory => subcategory !== undefined))
         }
     }
-    return result.flat()
+    return (foundSubcategories.length > 0) ? foundSubcategories : null
 }
 
 /**
  * Loop nested subcategories, find subcategories matching nestId, and return flattened
  * @param {object} subcategories
- * @param {string} nestId
+ * @param {string} searchCriteria
  * @returns {object}
  */
-export async function getSubcategoryByNestId (subcategories, nestId) {
-    const parts = nestId.split('_')
-    const subcategory = await getSubcategoryByParts(subcategories, parts)
-    return subcategory
+export async function getSubcategoryByNestId (subcategories, searchCriteria = {}) {
+    const nestId = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.nestId)
+    const subcategoryType = searchCriteria?.type ?? 'system'
+    if (!nestId) return
 
-    async function getSubcategoryByParts (subcategories, parts) {
-        const subcategory = subcategories.find(subcategory => subcategory.id === parts[0])
-        if (subcategory) {
-            if (parts.length > 1) {
+    const parts = nestId.split('_')
+    return await findSubcategory(subcategories, parts)
+
+    async function findSubcategory (subcategories, parts) {
+        subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories)
+        for (const subcategory of subcategories) {
+            if (subcategory.id === parts[0]) {
+                if (parts.length === 1) {
+                    if (!subcategory.type || subcategory.type === subcategoryType) return subcategory
+                    return
+                }
+                if (subcategory.subcategories.length === 0) return
                 parts.shift()
-                return await getSubcategoryByParts(Object.values(subcategory.subcategories), parts)
-            } else {
-                return subcategory
+                const foundSubcategory = await findSubcategory(subcategory.subcategories, parts)
+                if (foundSubcategory) return foundSubcategory
             }
         }
-        return null
     }
 }

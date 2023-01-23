@@ -5,7 +5,9 @@
     <button value="{{encodedValue}}" {{~#if cssClass~}}class="{{cssClass}}{{#activeText}} activeText{{/activeText}}"{{~/if~}}>
         {{~#if img~}}<div class="tah-img" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
         <span class="tah-action-name">
-            {{~#if icon~}}<div class="tah-icon">{{{icon}}}</div>{{~/if~}}
+            {{~#if icon1~}}<div class="tah-icon1">{{{icon1}}}</div>{{~/if~}}
+            {{~#if icon2~}}<div class="tah-icon1">{{{icon2}}}</div>{{~/if~}}
+            {{~#if icon3~}}<div class="tah-icon1">{{{icon3}}}</div>{{~/if~}}
             {{~#if useRawHtmlName}}
               {{{name}}}
             {{~else~}}

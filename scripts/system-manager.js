@@ -8,10 +8,7 @@ import { Logger, getSetting, setSetting } from './utilities/utils.js'
 export class SystemManager {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
 
-    appName
-    constructor (appName) {
-        this.appName = appName
-    }
+    namespace = 'token-action-hud-core'
 
     doGetCategoryManager () {}
 
@@ -24,30 +21,39 @@ export class SystemManager {
     doRegisterSettings (updateFunc) {}
     async doRegisterDefaultFlags () {}
 
+    /**
+     * Register default flags
+     */
     async registerDefaultFlags () {
+        await game.user.unsetFlag(this.namespace, 'default')
         await this.doRegisterDefaultFlags()
     }
 
-    async getActionHandler (user) {
-        const actionHandler = this.doGetActionHandler(
-            this.categoryManager
-        )
+    /**
+     * Initialise the action handler
+     * @param {CategoryManager} categoryManager The CategoryManager class
+     * @returns {ActionHandler}
+     */
+    async getActionHandler (categoryManager) {
+        const actionHandler = this.doGetActionHandler(categoryManager)
         this.addActionExtenders(actionHandler)
         return actionHandler
     }
 
-    async getCompendiumActionHandler (user) {
-        const compendiumActionHandler = new CompendiumActionHandler(this.categoryManager)
-        return compendiumActionHandler
-    }
-
+    /**
+     * Initialise action list extenders
+     * @param {ActionHandler} actionHandler The ActionHandler class
+     */
     addActionExtenders (actionHandler) {
-        if (SystemManager.isModuleActive('itemacro')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender()) }
+        if (SystemManager.isModuleActive('itemacro')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler)) }
     }
 
-    categoryManager
-    async getCategoryManager (user) {
-        const categoryManager = this.doGetCategoryManager(user)
+    /**
+     * Initialise the category manager
+     * @returns {CategoryManager}
+     */
+    async getCategoryManager () {
+        const categoryManager = this.doGetCategoryManager()
         await categoryManager.init()
         return categoryManager
     }
@@ -57,9 +63,7 @@ export class SystemManager {
     getRollHandler () {
         let rollHandlerId = getSetting('rollHandler')
 
-        if (
-            !(rollHandlerId === 'core' || SystemManager.isModuleActive(rollHandlerId))
-        ) {
+        if (!(rollHandlerId === 'core' || SystemManager.isModuleActive(rollHandlerId))) {
             Logger.error(rollHandlerId, this.i18n('tokenActionHud.handlerNotFound'))
             rollHandlerId = 'core'
             setSetting('rollHandler', rollHandlerId)
@@ -80,7 +84,7 @@ export class SystemManager {
 
     registerSettings () {
         const rollHandlers = this.getAvailableRollHandlers()
-        registerSettings(this.appName, this, rollHandlers)
+        registerSettings(this.namespace, this, rollHandlers)
     }
 
     /** UTILITY */

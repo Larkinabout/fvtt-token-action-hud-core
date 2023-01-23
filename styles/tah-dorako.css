@@ -230,7 +230,7 @@
   visibility: visible;
 }
 
-.tah-subcategories {
+.tah-subcategories-wrapper {
   border-radius: var(--dorako-radius);
   display: none;
   overflow-y: auto;
@@ -238,13 +238,13 @@
   padding: 2px;
 }
 
-.tah-subcategories.expand-up {
+.tah-subcategories-wrapper.expand-up {
   bottom: 32px;
   flex-direction: column-reverse;
   margin-bottom: 2px;
 }
 
-.tah-subcategories.expand-down {
+.tah-subcategories-wrapper.expand-down {
   flex-direction: column;
 }
 
@@ -254,7 +254,7 @@
   position: relative;
 }
 
-.tah-category.hover .tah-subcategories {
+.tah-category.hover .tah-subcategories-wrapper {
   background: none;
   display: block;
   position: absolute;
@@ -302,30 +302,6 @@
   width: 100%;
 }
 
-.tah-actions .stickLeft {
-  font-size: small;
-  font-weight: bold;
-  height: 20px;
-  line-height: 0px;
-  margin: 0px;
-  min-width: 20px;
-  padding: 0px;
-  position: relative;
-  text-align: center;
-  width: auto;
-}
-
-.tah-actions .shrink {
-  display: flex;
-  font-size: small;
-  font-weight: bold;
-  justify-content: center;
-  line-height: 0px;
-  min-width: 25px;
-  padding: 0px;
-  width: auto;
-}
-
 /* Links inside the dropdown */
 .tah-action {
   background: none;
@@ -334,7 +310,7 @@
 }
 
 .tah-action-name {
-  align-items: center;
+  align-items: baseline;
   display: inline-flex;
   gap: 2px;
   padding: 0 5px 0 5px;
@@ -436,7 +412,7 @@
   display: flex;
   margin: 0;
   min-height: 32px;
-  min-width: 50px;
+  min-width: 32px;
   padding: 0;
   text-decoration: none;
   text-shadow: var(--dorako-text-shadow);
@@ -482,8 +458,9 @@
   box-shadow: 0 0 0 1px var(--tertiary);
 }
 
-.tah-action .activeText:after {
+.tah-action .active.activeText:after {
   content: "*";
+  padding-right: 5px;
 }
 
 .tah-hidden {

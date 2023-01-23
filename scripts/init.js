@@ -1,25 +1,28 @@
 import { TokenActionHud } from './token-action-hud.js'
-import { getSetting, registerHandlebars, setSetting, switchCSS } from './utilities/utils.js'
+import { checkModuleCompatibility, getSetting, registerHandlebars, setSetting, switchCSS, Timer } from './utilities/utils.js'
 
 let systemManager
-const appName = 'token-action-hud-core'
+const namespace = 'token-action-hud-core'
+let isControlTokenPending = false
+const controlTokenTimer = new Timer(20)
 
 Hooks.on('ready', async () => {
     const systemId = game.system.id
     const systemModuleId = `token-action-hud-${systemId}`
-    const coreModuleVersion = game.modules.get(appName).version
     const systemModuleCoreVersionFile = `../../${systemModuleId}/enums/core-version.js`
-    const systemModuleCoreModuleVersion = await import(systemModuleCoreVersionFile).then((module) => { return module.coreModuleVersion })
+    const systemModuleCoreModuleVersion = await import(systemModuleCoreVersionFile).then(module => module.coreModuleVersion)
 
-    if (coreModuleVersion !== systemModuleCoreModuleVersion) {
-        ui.notifications.error(
-            `The installed Token Action Hud system module requires Token Action Hud core module version ${systemModuleCoreModuleVersion}.`
-        )
-        return
-    }
+    // Exit if core module version is not compatible with the system module
+    const isCompatible = checkModuleCompatibility(systemModuleCoreModuleVersion)
+    if (!isCompatible) return
 
     // Import SystemManager class from the Token Action Hud system module
+    // For distribution
     const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
+
+    // For development
+    // const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
+
     const systemModule = await import(systemModulePath)
     const SystemManager = systemModule.SystemManager
 
@@ -41,7 +44,7 @@ Hooks.on('ready', async () => {
     }
 
     // Create new SystemManager and register core and system module settings
-    systemManager = new SystemManager(appName)
+    systemManager = new SystemManager(namespace)
     systemManager.registerSettings()
 
     // Set stylesheet to 'style' core module setting
@@ -80,65 +83,85 @@ Hooks.on('canvasReady', async () => {
             }
         }
 
-        // If no Token Action Hud application exists, create a new TokenActionHud and initialise
-        const user = game.user
+        // If no Token Action Hud application exists, create a new TokenActionHud and initialise it
         if (!game.tokenActionHud) {
             game.tokenActionHud = new TokenActionHud(systemManager)
-            await game.tokenActionHud.init(user)
+            await game.tokenActionHud.init()
         }
 
         // Set tokens variable
         game.tokenActionHud.setTokens(canvas.tokens)
 
         // Registers hooks to trigger a Token Action Hud update
-        Hooks.on('controlToken', (token, controlled) => {
-            game.tokenActionHud.update()
+        Hooks.on('controlToken', async (token, controlled) => {
+            if (isControlTokenPending) await controlTokenTimer.abort()
+            isControlTokenPending = true
+            await controlTokenTimer.start()
+            isControlTokenPending = false
+
+            // Exit if same actor or token
+            const actorId = game.tokenActionHud.actionHandler.actorId
+            const controlledCount = game.canvas.tokens.controlled.length
+            if (
+                controlledCount > 1 ||
+                (controlledCount === 1 && actorId !== token.document.actor.id) ||
+                (controlledCount === 0 && actorId !== game.user.character.id)
+            ) {
+                game.tokenActionHud.update(trigger)
+            }
         })
 
         Hooks.on('updateToken', (token, data, diff) => {
             // If it's an X or Y change, assume the token is just moving
-            if (Object.hasOwn(diff, 'y') || Object.hasOwn(diff, 'x')) return
+            if (Object.hasOwn(diff, 'y') || Object.hasOwn('diff', 'x')) return
             if (game.tokenActionHud.isValidTokenChange(token, data)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'updateToken', data: [token, data, diff] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('deleteToken', (scene, token, change, userId) => {
             if (game.tokenActionHud.isValidTokenChange(token)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'deleteToken', data: [scene, token, change, userId] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('updateActor', (actor, data) => {
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor, data)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'updateActor', data: [actor, data] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('deleteActor', (actor, data) => {
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor, data)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'deleteActor', data: [actor, data] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('deleteItem', (item) => {
             const actor = item.actor
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'deleteItem', data: [item] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('createItem', (item) => {
             const actor = item.actor
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'createItem', data: [item] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('updateItem', (item) => {
             const actor = item.actor
             if (game.tokenActionHud.isValidActorOrItemUpdate(actor)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'updateItem', data: [item] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
@@ -149,45 +172,55 @@ Hooks.on('canvasReady', async () => {
         Hooks.on('renderCompendium', (source, html) => {
             const metadata = source?.metadata
             if (game.tokenActionHud.isLinkedCompendium(`${metadata?.package}.${metadata?.name}`)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'renderCompendium', data: [source, html] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('deleteCompendium', (source, html) => {
             const metadata = source?.metadata
             if (game.tokenActionHud.isLinkedCompendium(`${metadata?.package}.${metadata?.name}`)) {
-                game.tokenActionHud.update()
+                const trigger = { trigger: { type: 'hook', name: 'deleteCompendium', data: [source, html] } }
+                game.tokenActionHud.update(trigger)
             }
         })
 
         Hooks.on('createCombat', (combat) => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'createCombat', data: [combat] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('deleteCombat', (combat) => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'deleteCombat', data: [combat] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('updateCombat', (combat) => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'updateCombat', data: [combat] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('updateCombatant', (combat, combatant) => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'updateCombatant', data: [combat, combatant] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('forceUpdateTokenActionHud', () => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'forceUpdateTokenActionHud' } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('createActiveEffect', () => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'createActiveEffect' } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('deleteActiveEffect', () => {
-            game.tokenActionHud.update()
+            const trigger = { trigger: { type: 'hook', name: 'deleteActiveEffect' } }
+            game.tokenActionHud.update(trigger)
         })
 
-        game.tokenActionHud.update()
+        const trigger = { trigger: { type: 'hook', name: 'canvasReady' } }
+        game.tokenActionHud.update(trigger)
     })
 })
