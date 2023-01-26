@@ -122,10 +122,11 @@ export class CategoryManager {
         const subcategoryNestId = searchCriteria.nestId
         const subcategoryType = searchCriteria.type
         const subcategoryLevel = searchCriteria.level
+        console.log(searchCriteria)
         return this.flattenedSubcategories.filter(
             subcategory =>
                 (!subcategoryId || subcategory.id === subcategoryId) &&
-                (!subcategoryNestId || subcategory.nestId.startsWith(subcategoryNestId)) &&
+                (!subcategoryNestId || subcategory?.nestId?.startsWith(subcategoryNestId)) &&
                 (!subcategoryType || subcategory.type === subcategoryType) &&
                 (!subcategoryLevel || subcategory.level === subcategoryLevel)
         )
@@ -359,7 +360,7 @@ export class CategoryManager {
             id: data.id,
             value: data.name,
             type: data.type,
-            level: SUBCATEGORY_TYPE.SUBCATEGORY,
+            level: SUBCATEGORY_LEVEL.SUBCATEGORY,
             hasDerivedSubcategories: data.hasDerivedSubcategories ?? 'false'
         }
     }
