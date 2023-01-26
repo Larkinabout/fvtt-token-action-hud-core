@@ -122,7 +122,6 @@ export class CategoryManager {
         const subcategoryNestId = searchCriteria.nestId
         const subcategoryType = searchCriteria.type
         const subcategoryLevel = searchCriteria.level
-        console.log(searchCriteria)
         return this.flattenedSubcategories.filter(
             subcategory =>
                 (!subcategoryId || subcategory.id === subcategoryId) &&
