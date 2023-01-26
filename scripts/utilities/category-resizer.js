@@ -57,46 +57,40 @@ export class CategoryResizer {
             ) - spacing - contentLeft
 
             // Initialize variables
-            let minActions = null
-            let maxActions = null
+            let maxActions = 0
             let maxGroupWidth = 0
-            let maxAverageGroupWidth = 0
-
             // Iterate through action groups, calculating dimensions and counts
             for (const actionGroup of actionGroups) {
                 const actions = actionGroup.querySelectorAll('.tah-action')
                 if (actions.length > 0) {
-                    if (actions.length < minActions || minActions === null) minActions = actions.length
-                    if (actions.length > maxActions || maxActions === null) maxActions = actions.length
                     let groupWidth = 0
                     actions.forEach(action => {
                         const actionComputed = getComputedStyle(action)
                         const actionWidth = Math.ceil(parseFloat(actionComputed.width) + 1 || 0)
                         groupWidth += actionWidth
                     })
-                    const totalGaps = (actions.length * 5) - 5
-                    groupWidth += totalGaps
-                    if (groupWidth > maxGroupWidth) maxGroupWidth = groupWidth
-                    const averageGroupWidth = groupWidth / actions.length
-                    if (averageGroupWidth > maxAverageGroupWidth) maxAverageGroupWidth = averageGroupWidth
+                    if (groupWidth > maxGroupWidth) {
+                        maxGroupWidth = groupWidth
+                        maxActions = actions.length
+                    }
                 }
             }
-            // Add padding to  maxAverageGroupWidth and maxGroupWidth
-            maxAverageGroupWidth += contentPadding
+            // Add padding to  maxAvgGroupWidth and maxGroupWidth
+
+            maxGroupWidth += (maxActions * 5) - 5
             maxGroupWidth += contentPadding
+            const avgWidthPerAction = maxGroupWidth / maxActions
 
             // Determine number of columns
             const defaultCols = 5
-            const oneAndHalfDefaultCols = defaultCols / 2 + defaultCols
             let cols = defaultCols
-            const maxCols = Math.floor(availableWidth / maxAverageGroupWidth)
-            if (minActions < maxCols && minActions > Math.floor(oneAndHalfDefaultCols)) cols = minActions
-            if (maxActions < maxCols && maxActions < Math.ceil(oneAndHalfDefaultCols)) cols = maxActions
-            if (maxCols < cols) cols = maxCols
+            const maxCols = Math.floor(availableWidth / avgWidthPerAction)
+            const sqrtActionsPerGroup = Math.ceil(Math.sqrt(maxActions))
+            if (sqrtActionsPerGroup > cols && sqrtActionsPerGroup <= maxCols) cols = sqrtActionsPerGroup
 
             // Determine width of content
-            width = maxAverageGroupWidth * cols
-            if (width > maxGroupWidth) width = maxGroupWidth
+            width = avgWidthPerAction * cols
+            if (width > availableWidth) width = availableWidth
             if (width < 200) width = 200
         }
 

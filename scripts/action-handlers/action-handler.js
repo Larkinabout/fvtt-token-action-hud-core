@@ -1,13 +1,15 @@
 import { GenericActionHandler } from './generic-action-handler.js'
 import { CompendiumActionHandler } from './compendium-action-handler.js'
 import { MacroActionHandler } from './macro-action-handler.js'
-import { Logger, getSetting, getSubcategoryByNestId } from '../utilities/utils.js'
+import { DELIMITER, MODULE, SUBCATEGORY_LEVEL } from '../constants.js'
+import { Logger, Utils } from '../utilities/utils.js'
 
+/**
+ * Handler for building the HUD's action list.
+ */
 export class ActionHandler {
-    i18n = (toTranslate) => game.i18n.localize(toTranslate)
-
     furtherActionHandlers = []
-    delimiter = '|'
+    delimiter = DELIMITER
 
     constructor (categoryManager) {
         this.categoryManager = categoryManager
@@ -20,7 +22,7 @@ export class ActionHandler {
         this.userActionList = []
         this.savedUserActionList = []
         this.savedActorActionList = []
-        this.displayIcons = getSetting('displayIcons')
+        this.displayIcons = Utils.getSetting('displayIcons')
     }
 
     resetActionHandler () {
@@ -31,13 +33,13 @@ export class ActionHandler {
         this.userActionList = []
         this.savedUserActionList = []
         this.savedActorActionList = []
-        this.displayIcons = getSetting('displayIcons')
+        this.displayIcons = Utils.getSetting('displayIcons')
     }
 
     /**
      * Build the action list
      * @param {object} character The actor and token
-     * @returns {object} The action list
+     * @returns {object}         The action list
      */
     async buildActionList (character) {
         Logger.debug('Building action list...', { character })
@@ -49,7 +51,7 @@ export class ActionHandler {
         await this.categoryManager.flattenSubcategories(this.actionList)
         await Promise.all([
             this._buildSystemActions(character),
-            this._buildGenericActions(character),
+            this._buildCoreActions(character),
             this._buildCompendiumActions(),
             this._buildMacroActions()
         ])
@@ -64,13 +66,13 @@ export class ActionHandler {
     /**
      * Get the saved action list from the user flags
      * @param {object} character The actor and token
-     * @returns {object} The saved action list
+     * @returns {object}         The saved action list
      */
     getSavedUserActionList (character) {
         Logger.debug('Retrieving saved action list from user...', { character })
-        const categories = game.user.getFlag('token-action-hud-core', 'categories')
+        const categories = Utils.getUserFlag('categories')
         if (!categories) return []
-        const savedUserActionList = deepClone(categories)
+        const savedUserActionList = Utils.deepClone(categories)
         Logger.debug('Action list from user retrieved', { savedUserActionList, character })
         return savedUserActionList
     }
@@ -78,15 +80,15 @@ export class ActionHandler {
     /**
      * Get the saved action list from the user flags
      * @param {object} character The actor and token
-     * @returns {object} The saved action list
+     * @returns {object}         The saved action list
      */
     getSavedActorActionList (character) {
         Logger.debug('Retrieving saved action list from actor...', { character })
         const actor = character?.actor
         if (!actor) return []
-        const categories = actor.getFlag('token-action-hud-core', 'categories')
+        const categories = actor.getFlag(MODULE.ID, 'categories')
         if (!categories) return []
-        const savedActorActionList = deepClone(categories)
+        const savedActorActionList = Utils.deepClone(categories)
         Logger.debug('Action list from actor retrieved', { savedActorActionList, character })
         return savedActorActionList
     }
@@ -94,12 +96,12 @@ export class ActionHandler {
     /**
      * Build an empty action list
      * @param {object} character The actor and token
-     * @returns {object} The empty action list
+     * @returns {object}         The empty action list
      */
     buildEmptyActionList (character) {
         Logger.debug('Building empty action list...', { character })
         let hudTitle = ''
-        if (getSetting('displayCharacterName')) hudTitle = character?.name ?? 'Multiple'
+        if (Utils.getSetting('displayCharacterName')) hudTitle = character?.name ?? 'Multiple'
         const tokenId = character?.token?.id ?? 'multi'
         const actorId = character?.actor?.id ?? 'multi'
         const emptyActionList = {
@@ -109,7 +111,7 @@ export class ActionHandler {
             categories: []
         }
 
-        const categories = this.savedUserActionList ?? game.user.getFlag('token-action-hud-core', 'default.categories')
+        const categories = this.savedUserActionList ?? Utils.getUserFlag('default.categories')
 
         for (const category of categories) {
             // Add category
@@ -148,13 +150,8 @@ export class ActionHandler {
      */
     async _buildSystemActions (character) {
         Logger.debug('Building system actions...', { character })
-        const subcategoryIds = this.actionList.categories
-            .filter(category => category.subcategories)
-            .flatMap(category =>
-                category.subcategories
-                    .filter(subcategory => subcategory.type === 'system')
-                    .flatMap(subcategory => subcategory.id)
-            )
+        const subcategories = this.categoryManager.getFlattenedSubcategories({ level: 'subcategory' })
+        const subcategoryIds = subcategories.map(subcategory => subcategory.id)
         await this.buildSystemActions(character, subcategoryIds)
         Logger.debug('System actions built', { actionList: this.actionList, character })
     }
@@ -167,7 +164,7 @@ export class ActionHandler {
      * @protected
      * @param {object} character The actor and/or token
      */
-    _buildGenericActions (character) {
+    _buildCoreActions (character) {
         Logger.debug('Building generic actions...', { character })
         this.genericActionHandler.buildGenericActions(character)
         Logger.debug('Generic actions built', { actionList: this.actionList, character })
@@ -205,11 +202,11 @@ export class ActionHandler {
     /**
      * Get actions as Tagify entries for dialogs
      * @param {object} nestId The subcategory data
-     * @returns {array} A list of actions
+     * @returns {array}       The actions
      */
     async getActionsAsTagifyEntries (subcategoryData) {
         if (!this.actionList) return
-        const subcategory = await getSubcategoryByNestId(this.actionList.categories, subcategoryData)
+        const subcategory = await Utils.getSubcategoryByNestId(this.actionList.categories, subcategoryData)
         const actions = subcategory.actions.map(action => this.toTagifyEntry(action))
         return actions
     }
@@ -217,11 +214,11 @@ export class ActionHandler {
     /**
      * Get selected actions as Tagify entries for dialogs
      * @param {object} subcategoryData The subcategory data
-     * @returns {array} A list of actions
+     * @returns {array}                The actions
      */
     async getSelectedActionsAsTagifyEntries (subcategoryData) {
         if (!this.actionList) return
-        const subcategory = await getSubcategoryByNestId(this.actionList.categories, subcategoryData)
+        const subcategory = await Utils.getSubcategoryByNestId(this.actionList.categories, subcategoryData)
         const actions = subcategory.actions
             .filter(action => action.selected === true)
             .map(action => this.toTagifyEntry(action))
@@ -233,8 +230,6 @@ export class ActionHandler {
      * @public
      */
     async registerDefaultCategories () {}
-
-    // ADD SUBCATEGORIES/ACTIONS
 
     /**
      * Add info to subcategory
@@ -259,7 +254,7 @@ export class ActionHandler {
      * Add subcategory to the action list
      * @public
      * @param {object} parentSubcategoryData The parent subcategory data
-     * @param {object} subcategoryData  The subcategory data
+     * @param {object} subcategoryData       The subcategory data
      */
     async addSubcategoryToActionList (parentSubcategoryData, subcategoryData) {
         const parentSubcategoryId = parentSubcategoryData?.id
@@ -267,7 +262,7 @@ export class ActionHandler {
         // Exit if no parentSubcategoryId exists
         if (!parentSubcategoryId) return
 
-        const parentSubcategories = this.categoryManager.getFlattenedSubcategories({ ...parentSubcategoryData, level: 'subcategory' })
+        const parentSubcategories = this.categoryManager.getFlattenedSubcategories({ ...parentSubcategoryData, level: SUBCATEGORY_LEVEL.SUBCATEGORY })
 
         // Exit if no parent subcategories exist
         if (!parentSubcategories) return
@@ -297,7 +292,7 @@ export class ActionHandler {
 
     /**
      * Add actions to the action list
-     * @param {object} actions The actions
+     * @param {object} actions         The actions
      * @param {object} subcategoryData The subcategory data
      */
     async addActionsToActionList (actions, subcategoryData) {
@@ -317,7 +312,7 @@ export class ActionHandler {
             // Get saved subcategory
             const nestId = subcategory.nestId
             const type = subcategory.type
-            const savedSubcategory = await getSubcategoryByNestId(this.savedActorActionList, { nestId, type })
+            const savedSubcategory = await Utils.getSubcategoryByNestId(this.savedActorActionList, { nestId, type })
 
             // Get saved actions
             const savedActions = savedSubcategory?.actions ?? []
@@ -401,20 +396,20 @@ export class ActionHandler {
         Logger.debug('Saving actor action list...', { character })
         if (!character?.actor) return
         const actor = character.actor
-        const categories = deepClone(this.actionList.categories)
-        await actor.setFlag('token-action-hud-core', 'categories', categories)
+        const categories = Utils.deepClone(this.actionList.categories)
+        await actor.setFlag(MODULE.ID, 'categories', categories)
         Logger.debug('Actor action list saved', { actionList: this.actionList, character })
     }
 
     /**
      * Save selected actions from dialog
      * @public
-     * @param {array} selectedActions The selected actions
+     * @param {array} selectedActions  The selected actions
      * @param {object} subcategoryData The subcategory data
      */
     async saveActions (selectedActions, subcategoryData) {
         // Get nested subcategory
-        const subcategory = await getSubcategoryByNestId(this.actionList.categories, subcategoryData)
+        const subcategory = await Utils.getSubcategoryByNestId(this.actionList.categories, subcategoryData)
 
         // Get actions from subcategory
         const actions = subcategory.actions
@@ -460,7 +455,7 @@ export class ActionHandler {
     /**
      * Convert into Tagify entry
      * @param {object} data The data
-     * @returns {object} Tagify entry
+     * @returns {object}    Tagify entry
      */
     toTagifyEntry (data) {
         return { id: data.encodedValue, value: data.fullName, type: 'action', level: 'action' }
@@ -468,9 +463,9 @@ export class ActionHandler {
 
     /**
      * Get image from entity
-     * @param {object} entity The entity
+     * @param {object} entity       The entity
      * @param {array} defaultImages Any default images
-     * @returns {string} The image
+     * @returns {string}            The image URL
      */
     getImage (entity, defaultImages = []) {
         defaultImages.push('icons/svg/mystery-man.svg')
@@ -482,7 +477,7 @@ export class ActionHandler {
     /**
      * Sort items
      * @param {object} items The items
-     * @returns {object} The sorted items
+     * @returns {object}     The sorted items
      */
     sortItems (items) {
         return new Map([...items.entries()].sort((a, b) => a[1].sort.localeCompare(b[1].sort)))
@@ -491,7 +486,7 @@ export class ActionHandler {
     /**
      * Sort items by name
      * @param {object} items The items
-     * @returns {object} The sorted items
+     * @returns {object}     The sorted items
      */
     sortItemsByName (items) {
         return new Map([...items.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name)))

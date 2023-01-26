@@ -6,8 +6,8 @@
     {{~#if img~}}<div class="tah-img" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
     {{~#if icon~}}<div class="tah-icon">{{{icon}}}</div>{{~/if~}}
     {{cap this.name}}
-    {{~#if this.info1~}}<div class="tah-info1">{{this.info1}}</div>{{~/if~}}
-    {{~#if this.info2~}}<div class="tah-info2">{{this.info2}}</div>{{~/if~}}
+    {{~#if info1.text~}}<div class="tah-info1{{~#if info1.class}} {{info1.class}}{{~/if~}}" title="{{~#if info1.title}}{{info1.title}}{{~else~}}{{info1.text}}{{~/if}}">{{info1.text}}</div>{{~/if~}}
+    {{~#if info2.text~}}<div class="tah-info2{{~#if info2.class}} {{info2.class}}{{~/if~}}" title="{{~#if info2.title}}{{info2.title}}{{~else~}}{{info2.text}}{{~/if}}">{{info2.text}}</div>{{~/if~}}
     <i class="fa fa-filter" aria-hidden="true"></i>
   </div>
   {{~#if

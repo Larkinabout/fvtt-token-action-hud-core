@@ -1,28 +1,11 @@
-import { Logger, getSetting } from '../utilities/utils.js'
+import { DELIMITER } from '../constants.js'
+import { Logger, Utils } from '../utilities/utils.js'
 
+/**
+ * Resolves core actions triggered from the HUD
+ */
 export class RollHandler {
     preRollHandlers = []
-
-    i18n = (toTranslate) => game.i18n.localize(toTranslate)
-
-    getActor (actorId, tokenId) {
-        let token = null
-        if (tokenId) {
-            token = canvas.tokens.placeables.find((token) => token.id === tokenId)
-        }
-        if (token) {
-            return token.actor
-        }
-        return game.actors.get(actorId)
-    }
-
-    getItem (actor, itemId) {
-        return actor.items.get(itemId)
-    }
-
-    getToken (tokenId) {
-        return canvas.tokens.placeables.find((token) => token.id === tokenId)
-    }
 
     throwInvalidValueErr (err) {
         throw new Error(
@@ -69,16 +52,16 @@ export class RollHandler {
     }
 
     doRenderItem (actorId, tokenId, actionId) {
-        const actor = this.getActor(actorId, tokenId)
-        const item = this.getItem(actor, actionId)
+        const actor = Utils.getActor(actorId, tokenId)
+        const item = Utils.getItem(actor, actionId)
         item.sheet.render(true)
     }
 
     isRenderItem () {
         return (
-            getSetting('renderItemOnRightClick') &&
-      this.rightClick &&
-      !(this.alt || this.ctrl || this.shift)
+            Utils.getSetting('renderItemOnRightClick') &&
+            this.rightClick &&
+            !(this.alt || this.ctrl || this.shift)
         )
     }
 
@@ -102,7 +85,7 @@ export class RollHandler {
 
     /** @private */
     _isMultiGenericAction (encodedValue) {
-        const payload = encodedValue.split('|')
+        const payload = encodedValue.split(DELIMITER)
 
         const actionType = payload[0]
         const actionId = payload[3]
@@ -112,16 +95,13 @@ export class RollHandler {
 
     /** @private */
     async _doMultiGenericAction (encodedValue) {
-        const payload = encodedValue.split('|')
+        const payload = encodedValue.split(DELIMITER)
         const actionId = payload[3]
 
-        if (actionId === 'toggleVisibility') {
-            await canvas.tokens.controlled[0].toggleVisibility()
-        }
+        const firstControlledToken = Utils.getFirstControlledToken()
 
-        if (actionId === 'toggleCombat') {
-            await canvas.tokens.controlled[0].toggleCombat()
-        }
+        if (actionId === 'toggleVisibility') firstControlledToken.toggleVisibility()
+        if (actionId === 'toggleCombat') firstControlledToken.toggleCombat()
 
         Hooks.callAll('forceUpdateTokenActionHud')
     }

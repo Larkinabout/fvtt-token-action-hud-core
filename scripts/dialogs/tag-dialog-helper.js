@@ -1,8 +1,10 @@
 import { TagDialog } from './tag-dialog.js'
+import { Utils } from '../utilities/utils.js'
 
 export class TagDialogHelper {
     /**
      * Show the category dialog
+     * @param {CategoryManager} categoryManager The CategoryManager class
      * @public
      */
     static async showCategoryDialog (categoryManager) {
@@ -13,12 +15,12 @@ export class TagDialogHelper {
 
         // Set dialog data
         const dialogData = {
-            title: game.i18n.localize('tokenActionHud.tagDialog.categoryDialogTitle'),
+            title: Utils.i18n('tokenActionHud.tagDialog.categoryDialogTitle'),
             content: {
-                topLabel: game.i18n.localize('tokenActionHud.tagDialog.categoryDialogDescription'),
-                placeholder: game.i18n.localize('tokenActionHud.tagDialog.tagPlaceholder'),
-                clearButtonText: game.i18n.localize('tokenActionHud.tagDialog.clearButton'),
-                indexExplanationLabel: game.i18n.localize('tokenActionHud.pushLabelExplanation')
+                topLabel: Utils.i18n('tokenActionHud.tagDialog.categoryDialogDescription'),
+                placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
+                clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
+                indexExplanationLabel: Utils.i18n('tokenActionHud.pushLabelExplanation')
             }
         }
 
@@ -35,7 +37,7 @@ export class TagDialogHelper {
     /**
      * Show subcategory dialog
      * @public
-     * @param {object} categorySubcategoryData
+     * @param {object} categorySubcategoryData The category/subcategory data
      */
     static async showSubcategoryDialog (categoryManager, categorySubcategoryData) {
         const { nestId, name } = categorySubcategoryData
@@ -51,11 +53,11 @@ export class TagDialogHelper {
 
         // Set dialog data
         const dialogData = {
-            title: game.i18n.localize('tokenActionHud.tagDialog.subcategoryDialogTitle') + ` (${name})`,
+            title: Utils.i18n('tokenActionHud.tagDialog.subcategoryDialogTitle') + ` (${name})`,
             content: {
-                topLabel: game.i18n.localize('tokenActionHud.tagDialog.subcategoryDialogDescription'),
-                placeholder: game.i18n.localize('tokenActionHud.tagDialog.tagPlaceholder'),
-                clearButtonText: game.i18n.localize('tokenActionHud.tagDialog.clearButton'),
+                topLabel: Utils.i18n('tokenActionHud.tagDialog.subcategoryDialogDescription'),
+                placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
+                clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
                 advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(nestId),
                 level: 'category'
             }
@@ -102,7 +104,7 @@ export class TagDialogHelper {
     /**
      * Show action dialog
      * @public
-     * @param {*} subcategoryData
+     * @param {object} subcategoryData The subcategory data
      */
     static async showActionDialog (categoryManager, actionHandler, subcategoryData) {
         const { nestId, name } = subcategoryData
@@ -122,12 +124,12 @@ export class TagDialogHelper {
 
         // Set dialog data
         const dialogData = {
-            title: `${game.i18n.localize('tokenActionHud.tagDialog.actionDialogTitle')} (${name})`,
+            title: `${Utils.i18n('tokenActionHud.tagDialog.actionDialogTitle')} (${name})`,
             content: {
-                topLabel: game.i18n.localize('tokenActionHud.tagDialog.actionDialogDescription'),
-                placeholder: game.i18n.localize('tokenActionHud.tagDialog.tagPlaceholder'),
-                clearButtonText: game.i18n.localize('tokenActionHud.tagDialog.clearButton'),
-                indexExplanationLabel: game.i18n.localize('tokenActionHud.blockListLabel'),
+                topLabel: Utils.i18n('tokenActionHud.tagDialog.actionDialogDescription'),
+                placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
+                clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
+                indexExplanationLabel: Utils.i18n('tokenActionHud.blockListLabel'),
                 advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(nestId),
                 level: 'subcategory'
             }

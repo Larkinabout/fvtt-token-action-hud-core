@@ -1,21 +1,12 @@
 import { ActionListExtender } from './action-list-extender.js'
-import { getSetting } from '../utilities/utils.js'
+import { DELIMITER } from '../constants.js'
+import { Utils } from '../utilities/utils.js'
 
 export class ItemMacroActionListExtender extends ActionListExtender {
     constructor (actionHandler) {
         super(actionHandler.categoryManager)
         this.actionHandler = actionHandler
         this.categoryManager = actionHandler.categoryManager
-    }
-
-    /**
-     * Whether the module is active or not
-     * @param {string} id The module ID
-     * @returns {boolean}
-     */
-    static isModuleActive (id) {
-        const module = game.modules.get(id)
-        return module && module.active
     }
 
     /**
@@ -31,11 +22,11 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
         if (!actorId) return
 
-        const actor = this.getActor(actorId, tokenId)
+        const actor = Utils.getActor(actorId, tokenId)
         const items = actor.items.filter((item) => item.flags?.itemacro?.macro?.command)
 
         let itemIds
-        if (ItemMacroActionListExtender.isModuleActive('midi-qol')) {
+        if (Utils.isModuleActive('midi-qol')) {
             itemIds = items
                 .filter(this.isUnsupportedByMidiQoL)
                 .map((item) => item.id)
@@ -47,7 +38,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
         if (itemIds.length === 0) return
 
-        const itemMacroSetting = getSetting('itemMacro')
+        const itemMacroSetting = Utils.getSetting('itemMacro')
 
         if (itemMacroSetting === 'original') return
 
@@ -60,9 +51,9 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
     /**
      * Add subcategory actions
-     * @param {array} itemIds The list of item IDs
+     * @param {array} itemIds      The list of item IDs
      * @param {object} subcategory The subcategory
-     * @param {boolean} replace Whether to replace the action or not
+     * @param {boolean} replace    Whether to replace the action or not
      */
     addSubcategoryActions (itemIds, subcategory, replace) {
         // Exit if no actions exist
@@ -83,22 +74,22 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
     /**
      * Create item macro action
-     * @param {object} action The action
+     * @param {object} action   The action
      * @param {boolean} replace Whether to replace the action or not
-     * @returns {object} The action
+     * @returns {object}        The action
      */
     createItemMacroAction (action, replace) {
-        const itemMacroAction = (replace) ? action : deepClone(action)
+        const itemMacroAction = (replace) ? action : Utils.deepClone(action)
         itemMacroAction.fullName = `(M) ${itemMacroAction.fullName}`
         itemMacroAction.name = `(M) ${itemMacroAction.name}`
-        itemMacroAction.encodedValue = `itemMacro ${itemMacroAction.encodedValue.substr(itemMacroAction.encodedValue.indexOf(this.delimiter))}`
+        itemMacroAction.encodedValue = `itemMacro ${itemMacroAction.encodedValue.substr(itemMacroAction.encodedValue.indexOf(DELIMITER))}`
 
         return itemMacroAction
     }
 
     /**
      * Add actions to the subcategory
-     * @param {object} subcategory The subcategory
+     * @param {object} subcategory  The subcategory
      * @param {object} macroActions The actions
      */
     addActionsToSubcategory (subcategory, macroActions) {
@@ -116,22 +107,5 @@ export class ItemMacroActionListExtender extends ActionListExtender {
     isUnsupportedByMidiQoL (item) {
         const flag = item.getFlag('midi-qol', 'onUseMacroName')
         return !flag
-    }
-
-    /**
-     * Get the actor
-     * @param {string} actorId The actor ID
-     * @param {string} tokenId The token ID
-     * @returns {object} The actor
-     */
-    getActor (actorId, tokenId) {
-        let token = null
-        if (tokenId) {
-            token = canvas.tokens.placeables.find((token) => token.id === tokenId)
-        }
-        if (token) {
-            return token.actor
-        }
-        return game.actors.get(actorId)
     }
 }

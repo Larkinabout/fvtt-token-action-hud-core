@@ -63,6 +63,10 @@
     --dorako-radius: 3px;
 }
 
+/*
+ * HUD
+ */
+
 #token-action-hud {
   align-items: center;
   background: none;
@@ -83,14 +87,9 @@
   width: 100%;
 }
 
-#token-action-hud:hover > #tah-collapse-expand #tah-collapse-hud,
-#token-action-hud:hover > #tah-buttons {
-  display: flex;
-}
-
 #tah-character-name {
   color: #fff;
-  left: 4px;
+  font-size: var(--font-size-16);
   margin: 0;
   padding: 0;
   pointer-events: none;
@@ -104,9 +103,17 @@
   top: -20px !important;
 }
 
-#tah-categories {
+.tah-hidden {
+  display: none !important;
+}
+
+/*
+ * BUTTONS
+ */
+
+#token-action-hud:hover > #tah-collapse-expand #tah-collapse-hud,
+#token-action-hud:hover > #tah-buttons {
   display: flex;
-  gap: 2px;
 }
 
 #tah-collapse-hud,
@@ -114,6 +121,8 @@
   display: none;
   font-style: normal;
   font-weight: normal;
+  position: relative;
+  z-index: 1;
 }
 
 #tah-collapse-expand:hover {
@@ -165,87 +174,84 @@
   font-size: small;
 }
 
+#tah-expand-hud {
+  display: flex;
+  position: relative;
+  top: 14px;
+  left: -2px;
+}
+
+#tah-expand-hud,
+.tah-category-button {
+  height: auto;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  text-shadow: 
+    1px 1px 1px rgb(0 0 0),
+    0px 1px 3px rgb(0 0 0);
+  width: auto;
+  z-index: 1;
+}
+
+.tah-category-button-content > .fa,
+.tah-category-button-content > .fas {
+  font-size: 8px;
+  pointer-events: none;
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  visibility: hidden;
+}
+
+.tah-category-button:hover:not(.disable-edit) .tah-category-button-content > .fa,
+.tah-category-button:hover:not(.disable-edit) .tah-category-button-content > .fas {
+  visibility: visible;
+}
+
 #tah-edit-categories > .fa,
 #tah-edit-categories > .fas {
-  font-size: large;
+  font-size: var(--font-size-16);
 }
 
 #tah-collapse-expand:hover button > i,
+#tah-lock:hover > i,
+#tah-unlock:hover > i,
 #tah-edit-categories:hover > i {
   color: #fff;
 }
 
-/* The container <div> - needed to position the dropdown content */
-.tah-category {
-  cursor: default;
-  display: block;
-  position: relative;
-}
-
-#tah-expand-hud {
-  position: relative;
-  top: 18px;
-  left: -6px;
-}
-
 #tah-expand-hud,
-.tah-title-button {
+.tah-category-button {
   backdrop-filter: var(--dorako-vibrancy);
   background-color: var(--dorako-bg-current);
   border: none;
   box-shadow: var(--glassy);
   color: #ddd;
   height: auto;
-  padding: 3px;
   text-align: center;
   text-shadow: var(--dorako-text-shadow);
-  width: auto;
 }
 
 #tah-expand-hud:hover,
-.tah-title-button:hover {
+.tah-category-button:hover {
   box-shadow: var(--glassy);
   color: #fff;
   cursor: pointer;
   font-weight: normal;
 }
 
-.tah-title-button:focus {
+.tah-category-button:focus {
   box-shadow: var(--glassy);
 }
 
-.tah-title-button > .fa,
-.tah-title-button > .fas {
-  font-size: 8px;
-  pointer-events: none;
-  position: absolute;
-  right: 1px;
-  top: 2px;
-  visibility: hidden;
-}
+/*
+ * CATEGORY
+ */
 
-.tah-title-button:hover:not(.disable-edit) > .fa,
-.tah-title-button:hover:not(.disable-edit) > .fas {
-  cursor: pointer;
-  visibility: visible;
-}
-
-.tah-subcategories-wrapper {
-  border-radius: var(--dorako-radius);
-  display: none;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 2px;
-}
-
-.tah-subcategories-wrapper.expand-up {
-  bottom: 32px;
-  flex-direction: column-reverse;
-  margin-bottom: 2px;
-}
-
-.tah-subcategories-wrapper.expand-down {
-  flex-direction: column;
+#tah-categories {
+  display: flex;
+  gap: 3px;
 }
 
 .tah-category {
@@ -253,6 +259,14 @@
   display: block;
   position: relative;
 }
+
+.tah-category-button-content {
+  padding: 0 10px 0 10px;
+}
+
+/*
+ * SUBCATEGORY
+ */
 
 .tah-category.hover .tah-subcategories-wrapper {
   background: none;
@@ -260,9 +274,60 @@
   position: absolute;
 }
 
+.tah-subcategories-wrapper {
+  display: none;
+  position: relative;
+}
+
+.tah-subcategories-wrapper.expand-up {
+  bottom: 19px;
+  flex-direction: column-reverse;
+  left: -10px;
+  padding: 10px;
+}
+
+.tah-subcategories-wrapper.expand-down {
+  flex-direction: column;
+  left: -10px;
+  padding: 10px;
+  top: 19px;
+}
+
+.tah-subcategories-wrapper.expand-up > .tah-subcategories {
+  flex-direction: column-reverse;
+  padding: 10px 10px 3px 10px;
+}
+
+.tah-subcategories-wrapper.expand-down > .tah-subcategories {
+  flex-direction: column;
+  padding: 0px 10px 10px 10px;
+}
+
+.tah-subcategories {
+  background: none;
+  border-radius: var(--dorako-radius);
+  display: inline-flex;
+  left: -9px;
+  overflow-y: auto;
+  position: relative;
+  width: 500px;
+}
+
 .tah-subcategory {
   cursor: default;
-  padding-top: 2px;
+  position: relative;
+}
+
+.tah-subcategory > .tah-subcategory:not(:first-child) {
+  padding-left: 10px;
+}
+
+/*
+ * SUBTITLES
+ */
+
+ .tah-subcategories > .tah-subcategory > .tah-subtitle {
+  width: 100%;
 }
 
 .tah-subtitle {
@@ -270,9 +335,8 @@
   color: #ddd;
   display: inline-flex;
   flex-wrap: wrap;
-  font-size: small;
   gap: 5px;
-  margin-bottom: 3px;
+  padding: 3px 0 1px 0;
   text-shadow: 
     1px 1px 1px rgba(52, 52, 52, 1),
     1px 1px 1px rgba(52, 52, 52, 1), 
@@ -289,8 +353,20 @@
 
 .tah-subtitle:hover:not(.disable-edit) > .fa,
 .tah-subtitle:hover:not(.disable-edit) > .fas {
+  color: #fff;
+  cursor: pointer;
   visibility: visible;
 }
+
+.tah-subtitle:hover:not(.disable-edit),
+.tah-subtitle:hover:not(.disable-edit) {
+  color: #fff;
+  cursor: pointer;
+}
+
+/*
+ * ACTIONS
+ */
 
 .tah-actions {
   align-items: center;
@@ -299,6 +375,7 @@
   gap: 5px;
   grid-column: 2;
   margin-bottom: 2px;
+  margin-top: 2px;
   width: 100%;
 }
 
@@ -309,12 +386,77 @@
   flex-grow: 0;
 }
 
-.tah-action-name {
+.tah-action button {
+  align-items: center;
+  backdrop-filter: var(--dorako-vibrancy);
+  background-color: var(--dorako-bg-current);
+  border: none;
+  border-radius: var(--dorako-radius);
+  box-shadow: var(--glassy);
+  color: #ddd;
+  display: flex;
+  margin: 0;
+  min-height: 30px;
+  min-width: 30px;
+  padding: 0;
+  text-decoration: none;
+  text-shadow: var(--dorako-text-shadow);
+  width: 100%;
+}
+
+.tah-action button[value*="toggle"]:hover {
+  background-color: var(--paizo-blue);
+}
+
+.tah-action.active,
+.tah-action.active button[value*="toggle"] {
+  background-color: var(--paizo-blue-bright) !important;
+}
+
+#tah-expand-hud:hover,
+.tah-category-button:hover,
+.tah-action button:hover {
+  background-color: var(--paizo-red);
+  border: none;
+  box-shadow: var(--glassy);
+  transition: backdrop-filter 0.15s ease-out;
+  transition: background-color 0.15s ease-out;
+}
+
+
+.tah-action button:hover {
+  color: #fff;
+  cursor: pointer;
+  font-weight: inherit;
+}
+
+.tah-action button[value^="toggle"]:hover {
+  background-color: var(--paizo-blue);
+  border: none;
+  box-shadow: var(--glassy);
+  transition: backdrop-filter 0.15s ease-out;
+  transition: background-color 0.15s ease-out;
+}
+
+.tah-action .tah-img {
+  border: none;
+  box-shadow: 0 0 0 1px var(--tertiary);
+}
+
+.tah-action .active.activeText > .tah-action-button-content:after {
+  content: "*";
+}
+
+.tah-action-button-content {
   align-items: baseline;
   display: inline-flex;
   gap: 2px;
   padding: 0 5px 0 5px;
 }
+
+/*
+ * INFO TEXTS
+ */
 
 .tah-info1,
 .tah-info2,
@@ -367,6 +509,10 @@
   margin: 0px 2px 0px 0px;
 }
 
+.tah-icon-disabled {
+  color: var(--tah-icon-disabled-color);
+}
+
 .tah-subtitle > .tah-icon > .fa,
 .tah-subtitle > .tah-icon > .fas {
   text-shadow:
@@ -401,71 +547,9 @@
   content: "}";
 }
 
-.tah-action button {
-  align-items: center;
-  backdrop-filter: var(--dorako-vibrancy);
-  background-color: var(--dorako-bg-current);
-  border: none;
-  border-radius: var(--dorako-radius);
-  box-shadow: var(--glassy);
-  color: #ddd;
-  display: flex;
-  margin: 0;
-  min-height: 32px;
-  min-width: 32px;
-  padding: 0;
-  text-decoration: none;
-  text-shadow: var(--dorako-text-shadow);
-}
-
-.tah-action button[value*="toggle"]:hover {
-  background-color: var(--paizo-blue);
-}
-
-.tah-action.active,
-.tah-action.active button[value*="toggle"] {
-  background-color: var(--paizo-blue-bright) !important;
-}
-
-#tah-expand-hud:hover,
-.tah-title-button:hover,
-.tah-action button:hover {
-  background-color: var(--paizo-red);
-  border: none;
-  box-shadow: var(--glassy);
-  transition: backdrop-filter 0.15s ease-out;
-  transition: background-color 0.15s ease-out;
-}
-
-
-.tah-action button:hover {
-  color: #fff;
-  cursor: pointer;
-  font-weight: inherit;
-}
-
-.tah-action button[value^="toggle"]:hover {
-  background-color: var(--paizo-blue);
-  border: none;
-  box-shadow: var(--glassy);
-  transition: backdrop-filter 0.15s ease-out;
-  transition: background-color 0.15s ease-out;
-}
-
-.tah-action .tah-img {
-  border: none;
-  box-shadow: none;
-  box-shadow: 0 0 0 1px var(--tertiary);
-}
-
-.tah-action .active.activeText:after {
-  content: "*";
-  padding-right: 5px;
-}
-
-.tah-hidden {
-  display: none !important;
-}
+/*
+ * DIALOGS
+ */
 
 .token-action-hud-taginput {
   max-height: 300px;

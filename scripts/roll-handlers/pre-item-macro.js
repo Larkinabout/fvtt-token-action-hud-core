@@ -1,12 +1,13 @@
 import { PreRollHandler } from './pre-roll-handler.js'
-import { Logger } from '../utilities/utils.js'
+import { DELIMITER } from '../constants.js'
+import { Logger, Utils } from '../utilities/utils.js'
 
 export class ItemMacroPreRollHandler extends PreRollHandler {
     /** @override */
     prehandleActionEvent (event, encodedValue) {
         this.registerKeyPresses(event)
 
-        const payload = encodedValue.split('|')
+        const payload = encodedValue.split(DELIMITER)
 
         if (payload.length !== 4) return false
 
@@ -26,13 +27,13 @@ export class ItemMacroPreRollHandler extends PreRollHandler {
     }
 
     _tryExecuteItemMacro (event, actorId, tokenId, actionId) {
-        const actor = super.getActor(actorId, tokenId)
-        const item = super.getItem(actor, actionId)
+        const actor = Utils.getActor(actorId, tokenId)
+        const item = Utils.getItem(actor, actionId)
 
         try {
             item.executeMacro()
         } catch (e) {
-            Logger.error('ItemMacro error: ', e)
+            Logger.debug('ItemMacro Error', e)
             return false
         }
 

@@ -1,16 +1,10 @@
 import { PreRollHandler } from './pre-roll-handler.js'
+import { COMPENDIUM_ACTION_TYPES, DELIMITER } from '../constants.js'
 
 export class CompendiumMacroPreHandler extends PreRollHandler {
     /** @override */
     prehandleActionEvent (event, encodedValue) {
-        const delimiter = game.tokenActionHud.actionHandler.delimiter
-        const types = [
-            'compendiumEntry',
-            'compendiumMacro',
-            'compendiumPlaylist',
-            'macro'
-        ]
-        const payload = encodedValue.split(delimiter)
+        const payload = encodedValue.split(DELIMITER)
 
         if (payload.length < 2) return false
 
@@ -28,7 +22,7 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
             actionId = payload[2]
         }
 
-        if (!types.includes(actionType)) return false
+        if (!COMPENDIUM_ACTION_TYPES.includes(actionType)) return false
 
         switch (actionType) {
         case 'compendiumEntry':
