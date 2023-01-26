@@ -1,14 +1,10 @@
-import { Logger, getSetting, setSetting, switchCSS } from './utilities/utils.js'
+import { MODULE } from './constants.js'
+import { Logger, Utils } from './utilities/utils.js'
 
-const updateFunc = (value) => {
-    if (game.tokenActionHud) game.tokenActionHud.updateSettings()
-}
-let appName
+function onChangeFunction (value) { if (game.tokenActionHud) game.tokenActionHud.updateSettings() }
 
-export const registerSettings = function (app, systemManager, rollHandlers) {
-    appName = app
-
-    game.settings.register(appName, 'startup', {
+export const registerSettings = function (systemManager, rollHandlers) {
+    game.settings.register(MODULE.ID, 'startup', {
         name: 'One-Time Startup Prompt',
         scope: 'world',
         config: false,
@@ -16,22 +12,22 @@ export const registerSettings = function (app, systemManager, rollHandlers) {
         default: false
     })
 
-    game.settings.register(appName, 'rollHandler', {
-        name: game.i18n.localize('tokenActionHud.settings.rollHandler.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.rollHandler.hint'),
+    game.settings.register(MODULE.ID, 'rollHandler', {
+        name: Utils.i18n('tokenActionHud.settings.rollHandler.name'),
+        hint: Utils.i18n('tokenActionHud.settings.rollHandler.hint'),
         scope: 'world',
         config: true,
         type: String,
         choices: rollHandlers,
         default: 'core',
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'style', {
-        name: game.i18n.localize('tokenActionHud.settings.style.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.style.hint'),
+    game.settings.register(MODULE.ID, 'style', {
+        name: Utils.i18n('tokenActionHud.settings.style.name'),
+        hint: Utils.i18n('tokenActionHud.settings.style.hint'),
         scope: 'client',
         config: true,
         type: String,
@@ -42,29 +38,29 @@ export const registerSettings = function (app, systemManager, rollHandlers) {
             dorakoUI: 'Dorako UI'
         },
         onChange: (value) => {
-            switchCSS(value)
+            Utils.switchCSS(value)
         }
     })
 
-    game.settings.register(appName, 'direction', {
-        name: game.i18n.localize('tokenActionHud.settings.direction.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.direction.hint'),
+    game.settings.register(MODULE.ID, 'direction', {
+        name: Utils.i18n('tokenActionHud.settings.direction.name'),
+        hint: Utils.i18n('tokenActionHud.settings.direction.hint'),
         scope: 'client',
         config: true,
         type: String,
         default: 'down',
         choices: {
-            up: game.i18n.localize('tokenActionHud.settings.direction.choices.up'),
-            down: game.i18n.localize('tokenActionHud.settings.direction.choices.down')
+            up: Utils.i18n('tokenActionHud.settings.direction.choices.up'),
+            down: Utils.i18n('tokenActionHud.settings.direction.choices.down')
         },
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'scale', {
-        name: game.i18n.localize('tokenActionHud.settings.scale.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.scale.hint'),
+    game.settings.register(MODULE.ID, 'scale', {
+        name: Utils.i18n('tokenActionHud.settings.scale.name'),
+        hint: Utils.i18n('tokenActionHud.settings.scale.hint'),
         scope: 'client',
         config: true,
         type: Number,
@@ -75,180 +71,176 @@ export const registerSettings = function (app, systemManager, rollHandlers) {
         },
         default: 1,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'drag', {
-        name: game.i18n.localize('tokenActionHud.settings.drag.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.drag.hint'),
+    game.settings.register(MODULE.ID, 'drag', {
+        name: Utils.i18n('tokenActionHud.settings.drag.name'),
+        hint: Utils.i18n('tokenActionHud.settings.drag.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: true,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    initColorSettings(appName)
+    initColorSettings(MODULE.ID)
 
-    game.settings.register(appName, 'enable', {
-        name: game.i18n.localize('tokenActionHud.settings.enable.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.enable.hint'),
+    game.settings.register(MODULE.ID, 'enable', {
+        name: Utils.i18n('tokenActionHud.settings.enable.name'),
+        hint: Utils.i18n('tokenActionHud.settings.enable.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: true,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'allow', {
-        name: game.i18n.localize('tokenActionHud.settings.allow.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.allow.hint'),
+    game.settings.register(MODULE.ID, 'allow', {
+        name: Utils.i18n('tokenActionHud.settings.allow.name'),
+        hint: Utils.i18n('tokenActionHud.settings.allow.hint'),
         scope: 'world',
         config: true,
         type: String,
         choices: {
-            4: game.i18n.localize('tokenActionHud.settings.allow.choices.4'),
-            3: game.i18n.localize('tokenActionHud.settings.allow.choices.3'),
-            2: game.i18n.localize('tokenActionHud.settings.allow.choices.2'),
-            1: game.i18n.localize('tokenActionHud.settings.allow.choices.1')
+            4: Utils.i18n('tokenActionHud.settings.allow.choices.4'),
+            3: Utils.i18n('tokenActionHud.settings.allow.choices.3'),
+            2: Utils.i18n('tokenActionHud.settings.allow.choices.2'),
+            1: Utils.i18n('tokenActionHud.settings.allow.choices.1')
         },
         default: 1,
-        onChange: foundry.utils.debounce(() => window.location.reload(), 100)
+        requiresReload: true
     })
 
-    game.settings.register(appName, 'alwaysShowHud', {
-        name: game.i18n.localize('tokenActionHud.settings.alwaysShowHud.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.alwaysShowHud.hint'),
+    game.settings.register(MODULE.ID, 'alwaysShowHud', {
+        name: Utils.i18n('tokenActionHud.settings.alwaysShowHud.name'),
+        hint: Utils.i18n('tokenActionHud.settings.alwaysShowHud.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: true,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'displayCharacterName', {
-        name: game.i18n.localize('tokenActionHud.settings.displayCharacterName.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.displayCharacterName.hint'),
+    game.settings.register(MODULE.ID, 'displayCharacterName', {
+        name: Utils.i18n('tokenActionHud.settings.displayCharacterName.name'),
+        hint: Utils.i18n('tokenActionHud.settings.displayCharacterName.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: true,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'displayIcons', {
-        name: game.i18n.localize('tokenActionHud.settings.displayIcons.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.displayIcons.hint'),
+    game.settings.register(MODULE.ID, 'displayIcons', {
+        name: Utils.i18n('tokenActionHud.settings.displayIcons.name'),
+        hint: Utils.i18n('tokenActionHud.settings.displayIcons.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: true,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'clickOpenCategory', {
-        name: game.i18n.localize('tokenActionHud.settings.clickOpenCategory.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.clickOpenCategory.hint'),
+    game.settings.register(MODULE.ID, 'clickOpenCategory', {
+        name: Utils.i18n('tokenActionHud.settings.clickOpenCategory.name'),
+        hint: Utils.i18n('tokenActionHud.settings.clickOpenCategory.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: false,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'renderItemOnRightClick', {
-        name: game.i18n.localize(
-            'tokenActionHud.settings.renderItemOnRightClick.name'
-        ),
-        hint: game.i18n.localize(
-            'tokenActionHud.settings.renderItemOnRightClick.hint'
-        ),
+    game.settings.register(MODULE.ID, 'renderItemOnRightClick', {
+        name: Utils.i18n('tokenActionHud.settings.renderItemOnRightClick.name'),
+        hint: Utils.i18n('tokenActionHud.settings.renderItemOnRightClick.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: true,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
     if (game.modules.get('itemacro')?.active) {
-        game.settings.register(appName, 'itemMacro', {
-            name: game.i18n.localize('tokenActionHud.settings.itemMacro.name'),
-            hint: game.i18n.localize('tokenActionHud.settings.itemMacro.hint'),
+        game.settings.register(MODULE.ID, 'itemMacro', {
+            name: Utils.i18n('tokenActionHud.settings.itemMacro.name'),
+            hint: Utils.i18n('tokenActionHud.settings.itemMacro.hint'),
             scope: 'client',
             config: true,
             type: String,
             choices: {
-                both: game.i18n.localize('tokenActionHud.settings.itemMacro.choices.both'),
-                itemMacro: game.i18n.localize('tokenActionHud.settings.itemMacro.choices.itemMacro'),
-                original: game.i18n.localize('tokenActionHud.settings.itemMacro.choices.original')
+                both: Utils.i18n('tokenActionHud.settings.itemMacro.choices.both'),
+                itemMacro: Utils.i18n('tokenActionHud.settings.itemMacro.choices.itemMacro'),
+                original: Utils.i18n('tokenActionHud.settings.itemMacro.choices.original')
             },
             default: 'both',
             onChange: (value) => {
-                updateFunc(value)
+                onChangeFunction(value)
             }
         })
     }
 
-    game.settings.register(appName, 'activeCssAsText', {
-        name: game.i18n.localize('tokenActionHud.settings.activeCssAsText.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.activeCssAsText.hint'),
+    game.settings.register(MODULE.ID, 'activeCssAsText', {
+        name: Utils.i18n('tokenActionHud.settings.activeCssAsText.name'),
+        hint: Utils.i18n('tokenActionHud.settings.activeCssAsText.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: false,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'debug', {
-        name: game.i18n.localize('tokenActionHud.settings.debug.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.debug.hint'),
+    game.settings.register(MODULE.ID, 'debug', {
+        name: Utils.i18n('tokenActionHud.settings.debug.name'),
+        hint: Utils.i18n('tokenActionHud.settings.debug.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: false,
         onChange: (value) => {
-            updateFunc(value)
+            onChangeFunction(value)
         }
     })
 
-    game.settings.register(appName, 'reset', {
-        name: game.i18n.localize('tokenActionHud.settings.reset.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.reset.hint'),
+    game.settings.register(MODULE.ID, 'reset', {
+        name: Utils.i18n('tokenActionHud.settings.reset.name'),
+        hint: Utils.i18n('tokenActionHud.settings.reset.hint'),
         scope: 'client',
         config: true,
         type: Boolean,
         default: false,
         onChange: (value) => {
             if (value) {
-                setSetting('reset', false)
+                Utils.setSetting('reset', false)
                 game.tokenActionHud.reset()
             }
         }
     })
 
-    systemManager.doRegisterSettings(updateFunc)
+    systemManager.doRegisterSettings(onChangeFunction)
 
     Logger.debug('Available roll handlers', { rollHandlers })
 }
 
-export function initColorSettings (appName) {
+function initColorSettings () {
     // Determine color picker module
     let module = null
     if (game.modules.get('lib-themer')?.active) {
@@ -264,8 +256,8 @@ export function initColorSettings (appName) {
     case 'lib-themer':
         Hooks.once('lib-themer.Ready', (API) => {
             API.register({
-                id: appName,
-                title: game.modules.get(appName).title,
+                id: MODULE.ID,
+                title: game.modules.get(MODULE.ID).title,
                 '--tah-background': {
                     name: 'tokenActionHud.settings.background.name',
                     hint: 'tokenActionHud.settings.background.hint',
@@ -286,10 +278,10 @@ export function initColorSettings (appName) {
         break
     case 'color-picker':
         if (typeof ColorPicker === 'object') {
-            registerColorSettings(appName, module)
+            registerColorSettings(module)
         } else {
             Hooks.once('colorPickerReady', () => {
-                registerColorSettings(appName, module)
+                registerColorSettings(module)
             })
         }
         break
@@ -297,18 +289,18 @@ export function initColorSettings (appName) {
         Hooks.once('ready', () => {
             try {
                 window.Ardittristan.ColorSetting.tester
-                registerColorSettings(appName, module)
+                registerColorSettings(module)
             } catch {}
         })
         break
     }
 }
 
-function registerColorSettings (appName, module) {
+function registerColorSettings (module) {
     const backgroundColor = {
         key: 'background',
-        name: game.i18n.localize('tokenActionHud.settings.background.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.background.hint'),
+        name: Utils.i18n('tokenActionHud.settings.background.name'),
+        hint: Utils.i18n('tokenActionHud.settings.background.hint'),
         scope: 'client',
         restricted: false,
         default: '#00000000',
@@ -316,31 +308,27 @@ function registerColorSettings (appName, module) {
             document
                 .querySelector(':root')
                 .style.setProperty('--tah-background', value)
-            updateFunc(value)
+            onChangeFunction(value)
         }
     }
 
     const buttonBackgroundColor = {
         key: 'buttonBackgroundColor',
-        name: game.i18n.localize(
-            'tokenActionHud.settings.buttonBackgroundColor.name'
-        ),
-        hint: game.i18n.localize(
-            'tokenActionHud.settings.buttonBackgroundColor.hint'
-        ),
+        name: Utils.i18n('tokenActionHud.settings.buttonBackgroundColor.name'),
+        hint: Utils.i18n('tokenActionHud.settings.buttonBackgroundColor.hint'),
         scope: 'client',
         restricted: true,
         default: '#00000080',
         onChange: (value) => {
             document.querySelector(':root').style.setProperty('--tah-button-background', value)
-            updateFunc(value)
+            onChangeFunction(value)
         }
     }
 
     const buttonBorderColor = {
         key: 'buttonBorderColor',
-        name: game.i18n.localize('tokenActionHud.settings.buttonBorderColor.name'),
-        hint: game.i18n.localize('tokenActionHud.settings.buttonBorderColor.hint'),
+        name: Utils.i18n('tokenActionHud.settings.buttonBorderColor.name'),
+        hint: Utils.i18n('tokenActionHud.settings.buttonBorderColor.hint'),
         scope: 'client',
         restricted: true,
         default: '#000000ff',
@@ -348,7 +336,7 @@ function registerColorSettings (appName, module) {
             document
                 .querySelector(':root')
                 .style.setProperty('--tah-button-outline', value)
-            updateFunc(value)
+            onChangeFunction(value)
         }
     }
 
@@ -360,7 +348,7 @@ function registerColorSettings (appName, module) {
         }
 
         ColorPicker.register(
-            appName,
+            MODULE.ID,
             backgroundColor.key,
             {
                 name: backgroundColor.name,
@@ -374,7 +362,7 @@ function registerColorSettings (appName, module) {
         )
 
         ColorPicker.register(
-            appName,
+            MODULE.ID,
             buttonBackgroundColor.key,
             {
                 name: buttonBackgroundColor.name,
@@ -388,7 +376,7 @@ function registerColorSettings (appName, module) {
         )
 
         ColorPicker.register(
-            appName,
+            MODULE.ID,
             buttonBorderColor.key,
             {
                 name: buttonBorderColor.name,
@@ -403,34 +391,34 @@ function registerColorSettings (appName, module) {
 
     // Color Settings module
     } else if (module === 'colorsettings') {
-        new window.Ardittristan.ColorSetting(appName, backgroundColor.key, {
+        new window.Ardittristan.ColorSetting(MODULE.ID, backgroundColor.key, {
             name: backgroundColor.name,
             hint: backgroundColor.hint,
             scope: backgroundColor.scope,
             restricted: backgroundColor.restricted,
             defaultColor: backgroundColor.default,
             onChange: backgroundColor.onChange,
-            insertAfter: `${appName}.scale`
+            insertAfter: `${MODULE.ID}.scale`
         })
 
-        new window.Ardittristan.ColorSetting(appName, buttonBackgroundColor.key, {
+        new window.Ardittristan.ColorSetting(MODULE.ID, buttonBackgroundColor.key, {
             name: buttonBackgroundColor.name,
             hint: buttonBackgroundColor.hint,
             scope: buttonBackgroundColor.scope,
             restricted: buttonBackgroundColor.restricted,
             defaultColor: buttonBackgroundColor.default,
             onChange: buttonBackgroundColor.onChange,
-            insertAfter: `${appName}.${backgroundColor.key}`
+            insertAfter: `${MODULE.ID}.${backgroundColor.key}`
         })
 
-        new window.Ardittristan.ColorSetting(appName, buttonBorderColor.key, {
+        new window.Ardittristan.ColorSetting(MODULE.ID, buttonBorderColor.key, {
             name: buttonBorderColor.name,
             hint: buttonBorderColor.hint,
             scope: buttonBorderColor.scope,
             restricted: buttonBorderColor.restricted,
             defaultColor: buttonBorderColor.default,
             onChange: buttonBorderColor.onChange,
-            insertAfter: `${appName}.${buttonBackgroundColor.key}`
+            insertAfter: `${MODULE.ID}.${buttonBackgroundColor.key}`
         })
     }
 
@@ -438,18 +426,18 @@ function registerColorSettings (appName, module) {
         .querySelector(':root')
         .style.setProperty(
             '--tah-background',
-            getSetting('background') ?? '#00000000'
+            Utils.getSetting('background') ?? '#00000000'
         )
     document
         .querySelector(':root')
         .style.setProperty(
             '--tah-button-background',
-            getSetting('buttonBackgroundColor') ?? '#00000080'
+            Utils.getSetting('buttonBackgroundColor') ?? '#000000b3'
         )
     document
         .querySelector(':root')
         .style.setProperty(
             '--tah-button-outline',
-            getSetting('buttonBorderColor') ?? '#000000ff'
+            Utils.getSetting('buttonBorderColor') ?? '#000000ff'
         )
 }

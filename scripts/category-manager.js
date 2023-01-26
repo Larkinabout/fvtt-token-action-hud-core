@@ -1,10 +1,7 @@
-import { Logger, getSubcategories, getSubcategoryByNestId } from './utilities/utils.js'
-
-const namespace = 'token-action-hud-core'
+import { COMPENDIUM_PACK_TYPES, MODULE, SUBCATEGORY_LEVEL, SUBCATEGORY_TYPE } from './constants.js'
+import { Logger, Utils } from './utilities/utils.js'
 
 export class CategoryManager {
-    i18n = (toTranslate) => game.i18n.localize(toTranslate)
-
     categories = []
 
     constructor () {
@@ -25,11 +22,11 @@ export class CategoryManager {
      */
     async resetActorFlags () {
         Logger.debug('Resetting actor flags...')
-        const actors = game.actors.filter(actor => actor.getFlag(namespace, 'categories'))
+        const actors = game.actors.filter(actor => actor.getFlag(MODULE.ID, 'categories'))
         if (actors) {
             actors.forEach(actor => {
                 Logger.debug(`Resetting flags for actor [${actor.id}]`, { actor })
-                actor.unsetFlag(namespace, 'categories')
+                actor.unsetFlag(MODULE.ID, 'categories')
             })
         }
         Logger.debug('Actor flags reset')
@@ -40,7 +37,7 @@ export class CategoryManager {
      */
     async resetUserFlags () {
         Logger.debug('Resetting user flags...')
-        await game.user.unsetFlag(namespace, 'categories')
+        await Utils.unsetUserFlag('categories')
         this.resetCategoryManager()
         await this._registerDefaultCategories()
         Logger.debug('User flags reset')
@@ -50,7 +47,7 @@ export class CategoryManager {
      * Initialise saved or default categories
      */
     async init () {
-        const savedCategories = game.user.getFlag(namespace, 'categories')
+        const savedCategories = Utils.getUserFlag('categories')
         if (!savedCategories) return this._registerDefaultCategories()
         Logger.debug('Retrieved saved categories', { savedCategories })
     }
@@ -59,24 +56,24 @@ export class CategoryManager {
      * Register default categories
      */
     async _registerDefaultCategories () {
-        const defaultCategories = game.user.getFlag(namespace, 'default.categories')
+        const defaultCategories = Utils.getUserFlag('default.categories')
         if (!defaultCategories) return
-        await game.user.setFlag(namespace, 'categories', defaultCategories)
+        await Utils.setUserFlag('categories', defaultCategories)
         Logger.debug('Registered default categories', { defaultCategories })
     }
 
     /**
      * Create category
      * @param {object} categoryData The category data
-     * @returns {object} The category
+     * @returns {object}            The category
      */
     createCategory (categoryData) {
-        const categoryDataClone = deepClone(categoryData)
+        const categoryDataClone = Utils.deepClone(categoryData)
         return {
             id: categoryDataClone?.id,
             nestId: categoryDataClone?.nestId ?? this.id,
             name: categoryDataClone?.name,
-            level: 'category',
+            level: SUBCATEGORY_LEVEL.CATEGORY,
             advancedCategoryOptions: categoryDataClone?.advancedCategoryOptions ?? {},
             cssClass: '',
             subcategories: []
@@ -86,19 +83,19 @@ export class CategoryManager {
     /**
      * Create subcategory
      * @param {object} subcategoryData The subcategory data
-     * @returns {object} The subcategory
+     * @returns {object}               The subcategory
      */
     createSubcategory (subcategoryData) {
-        const subcategoryDataClone = deepClone(subcategoryData)
+        const subcategoryDataClone = Utils.deepClone(subcategoryData)
         return {
             id: subcategoryDataClone?.id,
             nestId: subcategoryDataClone?.nestId,
             name: subcategoryDataClone?.name,
-            type: subcategoryDataClone?.type ?? 'custom',
-            level: 'subcategory',
+            type: subcategoryDataClone?.type ?? SUBCATEGORY_TYPE.CUSTOM,
+            level: SUBCATEGORY_LEVEL.SUBCATEGORY,
             advancedCategoryOptions: subcategoryDataClone?.advancedCategoryOptions ?? {},
             hasDerivedSubcategories: subcategoryDataClone?.hasDerivedSubcategories ?? false,
-            isSelected: subcategoryDataClone.isSelected ?? true,
+            isSelected: subcategoryDataClone?.isSelected ?? true,
             info1: subcategoryDataClone?.info1 ?? '',
             info2: subcategoryDataClone?.info2 ?? '',
             info3: subcategoryDataClone?.info3 ?? '',
@@ -112,7 +109,7 @@ export class CategoryManager {
      * @param {object} actionList The action list
      */
     flattenSubcategories (actionList) {
-        this.flattenedSubcategories = getSubcategories(actionList.categories)
+        this.flattenedSubcategories = Utils.getSubcategories(actionList.categories)
     }
 
     /**
@@ -157,7 +154,7 @@ export class CategoryManager {
         for (const choice of choices) {
             const categoryNestId = choice.id
             const category = categories.find(category => category.nestId === categoryNestId)
-            const subcategories = deepClone(category?.subcategories) ?? null
+            const subcategories = Utils.deepClone(category?.subcategories) ?? null
             chosenCategories.push({
                 nestId: choice.id,
                 id: choice.id,
@@ -183,10 +180,10 @@ export class CategoryManager {
         const categories = game.tokenActionHud.actionHandler.actionList.categories
 
         // Clone categories
-        const categoriesClone = deepClone(categories)
+        const categoriesClone = Utils.deepClone(categories)
 
         // Get subcategory by nestId
-        const subcategory = await getSubcategoryByNestId(categoriesClone, subcategoryData)
+        const subcategory = await Utils.getSubcategoryByNestId(categoriesClone, subcategoryData)
 
         // Exit if no subcategory exists
         if (!subcategory) return
@@ -200,7 +197,7 @@ export class CategoryManager {
         }
         if (subcategoryData.hasDerivedSubcategories) {
             for (const subSubcategory of subcategory.subcategories) {
-                const subSubcategoryClone = deepClone(subSubcategory)
+                const subSubcategoryClone = Utils.deepClone(subSubcategory)
                 const choice = choices.find(choice => choice.id === subSubcategoryClone.id)
                 if (!choice) chosenSubcategories.push({ ...subSubcategoryClone, isSelected: false, actions: [] })
             }
@@ -224,7 +221,7 @@ export class CategoryManager {
      */
     addToDerivedSubcategories (parentSubcategoryData, subcategory) {
         const parentSubcategoryNestId = parentSubcategoryData.nestId
-        const subcategoryClone = deepClone(subcategory, { strict: true })
+        const subcategoryClone = Utils.deepClone(subcategory, { strict: true })
         if (!this.derivedSubcategories.has(parentSubcategoryNestId)) this.derivedSubcategories.set(parentSubcategoryNestId, [])
         this.derivedSubcategories.get(parentSubcategoryNestId).push(subcategoryClone)
     }
@@ -234,8 +231,8 @@ export class CategoryManager {
      */
     async saveDerivedSubcategories () {
         for (const [parentSubcategoryNestId, derivedSubcategories] of this.derivedSubcategories) {
-            const derivedSubcategoriesClone = deepClone(derivedSubcategories, { strict: true })
-            await this.saveSubcategories(derivedSubcategoriesClone, null, { nestId: parentSubcategoryNestId, type: 'system', hasDerivedSubcategories: true })
+            const derivedSubcategoriesClone = Utils.deepClone(derivedSubcategories, { strict: true })
+            await this.saveSubcategories(derivedSubcategoriesClone, null, { nestId: parentSubcategoryNestId, type: SUBCATEGORY_TYPE.SYSTEM, hasDerivedSubcategories: true })
         }
     }
 
@@ -245,8 +242,8 @@ export class CategoryManager {
      */
     async saveUserActionList (categories) {
         Logger.debug('Saving user action list...')
-        const categoriesClone = deepClone(categories)
-        await game.user.setFlag(namespace, 'categories', categoriesClone)
+        const categoriesClone = Utils.deepClone(categories)
+        await Utils.setUserFlag('categories', categoriesClone)
         Logger.debug('User action list saved', { actionList: categoriesClone })
     }
 
@@ -256,7 +253,7 @@ export class CategoryManager {
      * @returns {object}
      */
     async getAdvancedCategoryOptions (nestId) {
-        const categorySubcategory = await getSubcategoryByNestId(this.flattenedSubcategories, { nestId })
+        const categorySubcategory = await Utils.getSubcategoryByNestId(this.flattenedSubcategories, { nestId })
         const advancedCategoryOptions = categorySubcategory?.advancedCategoryOptions
         return advancedCategoryOptions ?? null
     }
@@ -266,7 +263,7 @@ export class CategoryManager {
      * @returns {object}
      */
     async getSelectedCategoriesAsTagifyEntries () {
-        const categories = game.user.getFlag(namespace, 'categories')
+        const categories = Utils.getUserFlag('categories')
         if (!categories) return
         return categories.map(category => this.toTagifyEntry(category))
     }
@@ -279,7 +276,7 @@ export class CategoryManager {
     async getSelectedSubcategoriesAsTagifyEntries (subcategoryData) {
         const categories = game.tokenActionHud.actionHandler.actionList.categories
         if (!categories) return []
-        const subcategory = await getSubcategoryByNestId(categories, subcategoryData)
+        const subcategory = await Utils.getSubcategoryByNestId(categories, subcategoryData)
         if (!subcategory) return []
         if (!subcategory.subcategories) return []
 
@@ -312,7 +309,7 @@ export class CategoryManager {
      */
     async getDerivedSubcategoriesAsTagifyEntries (subcategoryData) {
         const nestId = subcategoryData.nestId
-        const derivedSubcategories = this.getFlattenedSubcategories({ nestId, type: 'system-derived' })
+        const derivedSubcategories = this.getFlattenedSubcategories({ nestId, type: SUBCATEGORY_TYPE.SYSTEM_DERIVED })
         return derivedSubcategories.map(subcategory => this.toTagifyEntry(subcategory))
     }
 
@@ -321,7 +318,7 @@ export class CategoryManager {
      * @returns {object}
      */
     async getSystemSubcategoriesAsTagifyEntries () {
-        const defaultSubcategories = await game.user.getFlag(namespace, 'default.subcategories')
+        const defaultSubcategories = Utils.getUserFlag('default.subcategories')
         return defaultSubcategories.map(subcategory => this.toTagifyEntry(subcategory))
     }
 
@@ -332,15 +329,12 @@ export class CategoryManager {
     async getCompendiumSubcategoriesAsTagifyEntries () {
         const packs = game.packs
         return packs
-            .filter((pack) => {
-                const packTypes = ['JournalEntry', 'Macro', 'RollTable', 'Playlist']
-                return packTypes.includes(pack.documentName)
-            })
-            .filter((pack) => game.user.isGM || !pack.private)
+            .filter(pack => COMPENDIUM_PACK_TYPES.includes(pack.documentName))
+            .filter(pack => game.user.isGM || !pack.private)
             .map((pack) => {
                 const id = pack.metadata.id.replace('.', '-')
                 const value = pack.metadata.label
-                return { id, value, type: 'compendium', level: 'subcategory' }
+                return { id, value, type: SUBCATEGORY_TYPE.COMPENDIUM, level: SUBCATEGORY_TYPE.SUBCATEGORY }
             })
     }
 
@@ -365,7 +359,7 @@ export class CategoryManager {
             id: data.id,
             value: data.name,
             type: data.type,
-            level: 'subcategory',
+            level: SUBCATEGORY_TYPE.SUBCATEGORY,
             hasDerivedSubcategories: data.hasDerivedSubcategories ?? 'false'
         }
     }

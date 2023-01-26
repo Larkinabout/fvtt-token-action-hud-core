@@ -1,3 +1,5 @@
+import { MODULE } from '../constants.js'
+
 export class TagDialog extends Dialog {
     i18n = (toTranslate) => game.i18n.localize(toTranslate)
     tagify = null
@@ -13,16 +15,16 @@ export class TagDialog extends Dialog {
     /**
      * Show dialog
      * @public
-     * @param {string} nestId
-     * @param {object} tags The available and selected tags
-     * @param {object} dialogData The dialog data
+     * @param {string} nestId          The nested subcategory ID
+     * @param {object} tags            The available and selected tags
+     * @param {object} dialogData      The dialog data
      * @param {function*} dialogSubmit The dialog submit function
      */
     static showDialog (nestId, tags, dialogData, dialogSubmit) {
         this.nestId = nestId
         TagDialog._prepareHook(tags)
 
-        const template = Handlebars.compile('{{> modules/token-action-hud-core/templates/tagdialog.hbs}}')
+        const template = Handlebars.compile(`{{> modules/${MODULE.ID}/templates/tagdialog.hbs}}`)
 
         const dialog = new TagDialog({
             title: dialogData.title,
@@ -58,7 +60,7 @@ export class TagDialog extends Dialog {
 
     /**
      * Prepare dialog hook
-     * @param {*} tags 
+     * @param {object} tags The tags
      */
     static _prepareHook (tags) {
         Hooks.once('renderTagDialog', (app, html, options) => {

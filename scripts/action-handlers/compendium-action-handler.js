@@ -1,9 +1,11 @@
-export class CompendiumActionHandler {
-    baseHandler
+import { COMPENDIUM_PACK_TYPES, DELIMITER } from '../constants.js'
 
-    constructor (baseHandler) {
-        this.baseHandler = baseHandler
-        this.categoryManager = baseHandler.categoryManager
+export class CompendiumActionHandler {
+    actionHandler
+
+    constructor (actionHandler) {
+        this.actionHandler = actionHandler
+        this.categoryManager = actionHandler.categoryManager
     }
 
     /**
@@ -21,8 +23,7 @@ export class CompendiumActionHandler {
         // Get compendium packs
         const packIds = game.packs
             .filter((pack) => {
-                const packTypes = ['JournalEntry', 'Macro', 'RollTable', 'Playlist']
-                return packTypes.includes(pack.documentName)
+                return COMPENDIUM_PACK_TYPES.includes(pack.documentName)
             })
             .filter((pack) => game.user.isGM || !pack.private)
             .map((pack) => pack.metadata.id)
@@ -33,7 +34,7 @@ export class CompendiumActionHandler {
             const subcategoryData = { id: subcategoryId, type: subcategoryType }
             if (subcategoryIds.includes(packId.replace('.', '-'))) {
                 const actions = await this.getCompendiumActions(packId)
-                this.baseHandler.addActionsToActionList(actions, subcategoryData)
+                this.actionHandler.addActionsToActionList(actions, subcategoryData)
             }
         }
     }
@@ -41,7 +42,7 @@ export class CompendiumActionHandler {
     /**
      * Get compendium actions
      * @param {string} packKey The compendium pack key
-     * @returns {object} The actions
+     * @returns {object}       The actions
      */
     async getCompendiumActions (packKey) {
         const entries = await this.getCompendiumEntries(packKey)
@@ -49,10 +50,8 @@ export class CompendiumActionHandler {
         return entries.map((entry) => {
             const id = entry._id
             const name = entry.name
-            const encodedValue = [actionType, packKey, entry._id].join(
-                this.baseHandler.delimiter
-            )
-            const img = this.baseHandler.getImage(entry)
+            const encodedValue = [actionType, packKey, entry._id].join(DELIMITER)
+            const img = this.actionHandler.getImage(entry)
             const selected = true
             return {
                 id,
@@ -67,7 +66,7 @@ export class CompendiumActionHandler {
     /**
      * Get compendium entries
      * @param {string} packKey The compendium pack key
-     * @returns The compendium entries
+     * @returns                The compendium entries
      */
     async getCompendiumEntries (packKey) {
         const pack = game.packs.get(packKey)
@@ -87,7 +86,7 @@ export class CompendiumActionHandler {
      * Get playlist entries
      * @private
      * @param {object} pack The compendium pack
-     * @returns {array} The playlist entries
+     * @returns {array}     The playlist entries
      */
     async _getPlaylistEntries (pack) {
         const playlists = await pack.getContent()
@@ -102,7 +101,7 @@ export class CompendiumActionHandler {
     /**
      * Get the compendium action type
      * @param {string} key The compendium pack key
-     * @returns {string} The action type
+     * @returns {string}   The action type
      */
     getCompendiumActionType (key) {
         const pack = game?.packs?.get(key)

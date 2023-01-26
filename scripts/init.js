@@ -1,64 +1,62 @@
+import { MigrationManager } from './migration-manager.js'
 import { TokenActionHud } from './token-action-hud.js'
-import { checkModuleCompatibility, getSetting, registerHandlebars, setSetting, switchCSS, Timer } from './utilities/utils.js'
+import { MODULE } from './constants.js'
+import { Timer, Utils } from './utilities/utils.js'
 
 let systemManager
-const namespace = 'token-action-hud-core'
 let isControlTokenPending = false
 const controlTokenTimer = new Timer(20)
 
 Hooks.on('ready', async () => {
     const systemId = game.system.id
     const systemModuleId = `token-action-hud-${systemId}`
-    const systemModuleCoreVersionFile = `../../${systemModuleId}/enums/core-version.js`
-    const systemModuleCoreModuleVersion = await import(systemModuleCoreVersionFile).then(module => module.coreModuleVersion)
+    const systemModuleCoreVersionFile = `../../${systemModuleId}/scripts/constants.js`
+    const requiredCoreModuleVersion = await import(systemModuleCoreVersionFile).then(module => module.REQUIRED_CORE_MODULE_VERSION)
 
     // Exit if core module version is not compatible with the system module
-    const isCompatible = checkModuleCompatibility(systemModuleCoreModuleVersion)
+    const isCompatible = Utils.checkModuleCompatibility(requiredCoreModuleVersion)
     if (!isCompatible) return
 
     // Import SystemManager class from the Token Action Hud system module
     // For distribution
-    const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
+    // const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
 
     // For development
-    // const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
+    const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
 
     const systemModule = await import(systemModulePath)
     const SystemManager = systemModule.SystemManager
 
     // If the Token Action Hud system module is not installed, display an error and abort
-    if (!SystemManager) {
-        ui.notifications.error(
-            'Token Action Hud system module not found.'
-        )
-        return
-    }
+    if (!SystemManager) return ui.notifications.error('Token Action Hud system module not found.')
 
     // If the Token Action Hud system module is not enabled, display an error and abort
     const tokenActionHudSystemModuleId = `token-action-hud-${systemId}`
     if (!game.modules.get(tokenActionHudSystemModuleId)?.active) {
-        ui.notifications.error(
-            'Token Action Hud system module is not active.'
-        )
+        ui.notifications.error('Token Action Hud system module is not active.')
         return
     }
 
     // Create new SystemManager and register core and system module settings
-    systemManager = new SystemManager(namespace)
+    systemManager = new SystemManager(MODULE.ID)
     systemManager.registerSettings()
 
+    // Initialise MigrationManager
+    const migrationManager = new MigrationManager(systemModuleId)
+    await migrationManager.init()
+
     // Set stylesheet to 'style' core module setting
-    switchCSS(getSetting('style'))
+    Utils.switchCSS(Utils.getSetting('style'))
 
     // Register Handlebar helpers
-    registerHandlebars()
+    Utils.registerHandlebars()
 
     // Load templates
     loadTemplates([
-        'modules/token-action-hud-core/templates/category.hbs',
-        'modules/token-action-hud-core/templates/subcategory.hbs',
-        'modules/token-action-hud-core/templates/action.hbs',
-        'modules/token-action-hud-core/templates/tagdialog.hbs'
+        `modules/${MODULE.ID}/templates/category.hbs`,
+        `modules/${MODULE.ID}/templates/subcategory.hbs`,
+        `modules/${MODULE.ID}/templates/action.hbs`,
+        `modules/${MODULE.ID}/templates/tagdialog.hbs`
     ])
 
     Hooks.callAll('tokenActionHudInitialized')
@@ -73,12 +71,12 @@ Hooks.on('canvasReady', async () => {
                 !(game.modules.get('color-picker')?.active ?? false) &&
                 !(game.modules.get('colorsettings')?.active ?? false)
             ) {
-                const firstStartup = getSetting('startup') === false
+                const firstStartup = Utils.getSetting('startup') === false
                 if (firstStartup) {
                     ui.notifications.notify(
                         "Token Action Hud: To set colors within this module's settings, install and enable one of the following 'Color Picker', 'Color Settings' or 'libThemer' modules."
                     )
-                    setSetting('startup', true)
+                    Utils.setSetting('startup', true)
                 }
             }
         }
@@ -101,7 +99,8 @@ Hooks.on('canvasReady', async () => {
 
             // Exit if same actor or token
             const actorId = game.tokenActionHud.actionHandler.actorId
-            const controlledCount = game.canvas.tokens.controlled.length
+            const controlledTokens = Utils.getControlledTokens()
+            const controlledCount = controlledTokens?.length ?? 0
             if (
                 controlledCount > 1 ||
                 (controlledCount === 1 && actorId !== token.document.actor.id) ||

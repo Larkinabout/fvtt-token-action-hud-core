@@ -1,9 +1,11 @@
-export class MacroActionHandler {
-    baseHandler
+import { DELIMITER } from '../constants.js'
 
-    constructor (baseHandler) {
-        this.baseHandler = baseHandler
-        this.categoryManager = baseHandler.categoryManager
+export class MacroActionHandler {
+    actionHandler
+
+    constructor (actionHandler) {
+        this.actionHandler = actionHandler
+        this.categoryManager = actionHandler.categoryManager
     }
 
     /**
@@ -24,7 +26,7 @@ export class MacroActionHandler {
         // Add actions to action list
         for (const subcategoryId of subcategoryIds) {
             const subcategoryData = { id: subcategoryId, type: subcategoryType }
-            this.baseHandler.addActionsToActionList(actions, subcategoryData)
+            this.actionHandler.addActionsToActionList(actions, subcategoryData)
         }
     }
 
@@ -42,8 +44,8 @@ export class MacroActionHandler {
         return macros.map((macro) => {
             const id = macro.id
             const name = macro.name
-            const encodedValue = [actionType, macro.id].join(this.baseHandler.delimiter)
-            const img = this.baseHandler.getImage(macro)
+            const encodedValue = [actionType, macro.id].join(DELIMITER)
+            const img = this.actionHandler.getImage(macro)
             const selected = true
             return {
                 id,

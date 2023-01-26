@@ -3,12 +3,13 @@ import { ItemMacroActionListExtender } from './action-handlers/item-macro-extend
 import { CompendiumMacroPreHandler } from './roll-handlers/compendium-macro-pre-handler.js'
 import { ItemMacroPreRollHandler } from './roll-handlers/pre-item-macro.js'
 import { CompendiumActionHandler } from './action-handlers/compendium-action-handler.js'
-import { Logger, getSetting, setSetting } from './utilities/utils.js'
+import { MODULE } from './constants.js'
+import { Logger, Utils } from './utilities/utils.js'
 
 export class SystemManager {
-    i18n = (toTranslate) => game.i18n.localize(toTranslate)
-
-    namespace = 'token-action-hud-core'
+    constructor () {
+        this.coreModuleId = MODULE.ID
+    }
 
     doGetCategoryManager () {}
 
@@ -25,7 +26,7 @@ export class SystemManager {
      * Register default flags
      */
     async registerDefaultFlags () {
-        await game.user.unsetFlag(this.namespace, 'default')
+        await Utils.unsetUserFlag('default')
         await this.doRegisterDefaultFlags()
     }
 
@@ -45,12 +46,12 @@ export class SystemManager {
      * @param {ActionHandler} actionHandler The ActionHandler class
      */
     addActionExtenders (actionHandler) {
-        if (SystemManager.isModuleActive('itemacro')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler)) }
+        if (Utils.isModuleActive('itemacro')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler)) }
     }
 
     /**
      * Initialise the category manager
-     * @returns {CategoryManager}
+     * @returns {CategoryManager} The CategoryManager class
      */
     async getCategoryManager () {
         const categoryManager = this.doGetCategoryManager()
@@ -61,12 +62,12 @@ export class SystemManager {
     /** ROLL HANDLERS */
 
     getRollHandler () {
-        let rollHandlerId = getSetting('rollHandler')
+        let rollHandlerId = Utils.getSetting('rollHandler')
 
-        if (!(rollHandlerId === 'core' || SystemManager.isModuleActive(rollHandlerId))) {
-            Logger.error(rollHandlerId, this.i18n('tokenActionHud.handlerNotFound'))
+        if (!(rollHandlerId === 'core' || Utils.isModuleActive(rollHandlerId))) {
+            Logger.error(rollHandlerId, Utils.i18n('tokenActionHud.handlerNotFound'))
             rollHandlerId = 'core'
-            setSetting('rollHandler', rollHandlerId)
+            Utils.setSetting('rollHandler', rollHandlerId)
         }
 
         const rollHandler = this.doGetRollHandler(rollHandlerId)
@@ -77,31 +78,22 @@ export class SystemManager {
     addPreHandlers (rollHandler) {
         rollHandler.addPreRollHandler(new CompendiumMacroPreHandler())
 
-        if (SystemManager.isModuleActive('itemacro')) { rollHandler.addPreRollHandler(new ItemMacroPreRollHandler()) }
+        if (Utils.isModuleActive('itemacro')) { rollHandler.addPreRollHandler(new ItemMacroPreRollHandler()) }
     }
 
     /** SETTINGS */
 
     registerSettings () {
         const rollHandlers = this.getAvailableRollHandlers()
-        registerSettings(this.namespace, this, rollHandlers)
+        registerSettings(this, rollHandlers)
     }
 
     /** UTILITY */
 
     static addHandler (choices, id) {
-        if (SystemManager.isModuleActive(id)) {
-            const title = SystemManager.getModuleTitle(id)
+        if (Utils.isModuleActive(id)) {
+            const title = Utils.getModuleTitle(id)
             mergeObject(choices, { [id]: title })
         }
-    }
-
-    static isModuleActive (id) {
-        const module = game.modules.get(id)
-        return module && module.active
-    }
-
-    static getModuleTitle (id) {
-        return game.modules.get(id)?.title ?? ''
     }
 }

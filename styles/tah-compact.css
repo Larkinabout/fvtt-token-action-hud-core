@@ -1,5 +1,6 @@
 :root {
-  --tah-background: #00000000;
+  --tah-background: #000000b3;
+  --tah-border-radius: 3px;
   --tah-button-color: #ddd;
   --tah-button-background: #000000b3;
   --tah-button-outline: #000000ff;
@@ -11,9 +12,11 @@
   --tah-button-toggle-outline-active: #9b8dff;
   --tah-button-toggle-outline-hover: #9b8dff;
   --tah-button-toggle-outline-hover-glow: #9b8dff;
-  --tah-info1-color: #ff6400;
-  --tah-info2-color: #ddd;
-  --tah-info3-color: #ddd;
+  --tah-icon-disabled-color: #dddddd80;
+  --tah-info-spotlight-color: #ff6400;
+  --tah-info-color: #dddddd80;
+  --tah-text-color: #ddd;
+  --tah-text-highlight-color: #ddd;
 }
 
 /*
@@ -41,7 +44,7 @@
 }
 
 #tah-character-name {
-  color: #ddd;
+  color: var(--tah-text-color);
   font-size: var(--font-size-16);
   margin: 0;
   padding: 0;
@@ -111,7 +114,7 @@
 #tah-collapse-expand button > .fas,
 #tah-buttons button > .fa,
 #tah-buttons button > .fas {
-  color: #ddd;
+  color: var(--tah-text-color);
   margin: 0;
   padding: 0;
   pointer-events: none;
@@ -134,7 +137,7 @@
 }
 
 #tah-expand-hud,
-.tah-title-button {
+.tah-category-button {
   height: auto;
   line-height: 1;
   margin-right: 2px;
@@ -142,15 +145,15 @@
   padding: 3px;
   position: relative;
   text-align: center;
-  text-shadow:
-    0px 0px 2px rgb(0 0 0 / 50%),
-    0px 0px 5px rgb(0 0 0 / 25%);
+  text-shadow: 
+    1px 1px 1px rgb(0 0 0),
+    0px 1px 3px rgb(0 0 0);
   width: auto;
   z-index: 1;
 }
 
-.tah-title-button > .fa,
-.tah-title-button > .fas {
+.tah-category-button-content > .fa,
+.tah-category-button-content > .fas {
   font-size: 5px;
   pointer-events: none;
   position: absolute;
@@ -159,32 +162,29 @@
   visibility: hidden;
 }
 
-.tah-title-button:hover:not(.disable-edit) > .fa,
-.tah-title-button:hover:not(.disable-edit) > .fas {
-  cursor: pointer;
+.tah-category-button:hover:not(.disable-edit) .tah-category-button-content > .fa,
+.tah-category-button:hover:not(.disable-edit) .tah-category-button-content > .fas {
   visibility: visible;
 }
+
 
 #tah-collapse-expand:hover button > i,
 #tah-lock:hover > i,
 #tah-unlock:hover > i,
 #tah-edit-categories:hover > i {
-  color: #fff;
+  color: var(--tah-text-highlight-color);
   text-shadow: 0 0 8px var(--color-shadow-primary);
-}
-#tah-expand-hud {
-  position: relative;
 }
 
 #tah-expand-hud,
-.tah-category button,
+.tah-category-button,
 .tah-action button {
 	background-color: var(--tah-button-background, #00000080);
   border: 0;
   box-shadow: 
     0 2px 0 -1px #0c0c0c,
-    0 0 0 1px #1c1c1c,
-    0 0 10px var(--tah-button-outline, #000000ff);
+    0 0 0 1px #060606,
+    0 0 5px var(--tah-button-outline, #000000ff);
   color: var(--tah-button-color, #ddd);
 	transition: all 0.1s ease-in-out;
 }
@@ -227,6 +227,10 @@
   position: relative;
 }
 
+.tah-category-button-content {
+  padding: 0 5px 0 5px;
+}
+
 /*
  * SUBCATEGORY
  */
@@ -243,7 +247,7 @@
 }
 
 .tah-subcategories-wrapper.expand-up {
-  bottom: 10px;
+  bottom: 13px;
   flex-direction: column-reverse;
   left: -10px;
   padding: 10px;
@@ -257,16 +261,19 @@
 }
 
 .tah-subcategories-wrapper.expand-up > .tah-subcategories {
-  padding: 10px 10px 2px 10px;
+  flex-direction: column-reverse;
+  padding: 10px 10px 0px 10px;
 }
 
 .tah-subcategories-wrapper.expand-down > .tah-subcategories {
-  padding: 2px 10px 10px 10px;
+  flex-direction: column;
+  padding: 0px 10px 10px 10px;
 }
 
 .tah-subcategories {
   background: var(--tah-background, #00000000);
-  border-radius: 3px;
+  border-radius: var(--tah-border-radius);
+  display: inline-flex;
   left: -9px;
   overflow-y: auto;
   position: relative;
@@ -279,24 +286,24 @@
 }
 
 .tah-subcategory > .tah-subcategory:not(:first-child) {
-    padding-left: 10px;
-}
-
-.tah-subcategories > .tah-subcategory > .tah-subtitle {
-  width: 100%;
+  padding-left: 10px;
 }
 
 /*
  * SUBTITLES
  */
 
+ .tah-subcategories > .tah-subcategory > .tah-subtitle {
+  width: 100%;
+}
+
 .tah-subtitle {
   align-items: center;
-  color: #ddd;
+  color: var(--tah-text-color);
   display: inline-flex;
   flex-wrap: wrap;
   gap: 5px;
-  line-height: 1.5;
+  padding: 3px 0 1px 0;
   text-shadow: 
     1px 1px 1px rgb(0 0 0),
     0px 1px 3px rgb(0 0 0);
@@ -311,7 +318,15 @@
 
 .tah-subtitle:hover:not(.disable-edit) > .fa,
 .tah-subtitle:hover:not(.disable-edit) > .fas {
+  color: var(--tah-text-highlight-color);
+  cursor: pointer;
   visibility: visible;
+}
+
+.tah-subtitle:hover:not(.disable-edit),
+.tah-subtitle:hover:not(.disable-edit) {
+  color: var(--tah-text-highlight-color);
+  cursor: pointer;
 }
 
 /*
@@ -338,7 +353,7 @@
 
 .tah-action button {
   align-items: center;
-  color: #ddd;
+  color: var(--tah-text-color);
   display: flex;
   line-height: 1;
   margin: 0;
@@ -346,25 +361,18 @@
   min-width: 22px;
   padding: 0;
   text-decoration: none;
-  text-shadow:
-    0px 0px 2px rgb(0 0 0 / 50%),
-    0px 0px 5px rgb(0 0 0 / 25%);
+  text-shadow: 
+    1px 1px 1px rgb(0 0 0),
+    0px 1px 3px rgb(0 0 0);
   width: 100%;
 }
 
 .tah-action button:hover {
   border: 0;
   box-shadow: 0 0 10px #ff6400, 0 2px 0 -1px #ff6400, 0 0 0 1px red;
-  color: #fff;
+  color: var(--tah-text-highlight-color);
   cursor: pointer;
   font-weight: inherit;
-}
-
-.tah-action .toggle {
-  background: var(--tah-button-background, #00000080);
-  box-shadow:
-    0 0 0 1px var(--tah-button-outline, #000000ff),
-    inset 0 0 10px #ffffff1a;
 }
 
 .tah-action .active {
@@ -377,16 +385,15 @@
 .tah-action .toggle:hover {
   background: var(--tah-button-toggle-hover, #3c0078bf);
   box-shadow: 
-    0 0 0 1px var(--tah-button-toggle-outline-hover, 9b8dff),
+    0 0 0 1px var(--tah-button-toggle-outline-hover, #9b8dff),
     0 0 10px var(--tah-button-toggle-outline-hover-glow, #9b8dff)
 }
 
-.tah-action .active.activeText:after {
+.tah-action .active.activeText > .tah-action-button-content:after {
   content: "*";
-  padding-right: 5px;
 }
 
-.tah-action-name {
+.tah-action-button-content {
   align-items: baseline;
   display: inline-flex;
   gap: 5px;
@@ -406,26 +413,26 @@
 .tah-subtitle > .tah-info1,
 .tah-subtitle > .tah-info2,
 .tah-subtitle > .tah-info3 {
-  background: #00000080;
-  border-radius: 15px;
-  line-height: 1.2;
-  padding: 1px 2px 1px 2px;
+  background: var(--tah-button-background, #00000080);
+  border-radius: 5px;
+  margin: 1px;
+  padding: 0px 3px 0 3px;
 }
 
-.tah-info1 {
-  color: var(--tah-info1-color, #ffffff)
-}
-
-.tah-info2 {
-  color: var(--tah-info2-color, #ffffff)
-}
-
+.tah-info1,
+.tah-info2,
 .tah-info3 {
-  color: var(--tah-info3-color, #ffffff)
+  color: var(--tah-info-color, #fff)
+}
+
+.tah-info1.tah-spotlight,
+.tah-info2.tah-spotlight,
+.tah-info3.tah-spotlight {
+  color: var(--tah-info-spotlight-color, #fff)
 }
 
 .tah-img {
-  border-radius: 3px 0 0 3px;
+  border-radius: 3px;
   height: 22px;
   width: 22px;
 }
@@ -434,6 +441,10 @@
 .tah-icon > .fas {
   font-size: x-small;
   margin: 0px 2px 0px 0px;
+}
+
+.tah-icon-disabled {
+  color: var(--tah-icon-disabled-color);
 }
 
 .tah-subtitle > .tah-icon > .fa,
