@@ -19,10 +19,10 @@ Hooks.on('ready', async () => {
 
     // Import SystemManager class from the Token Action Hud system module
     // For distribution
-    // const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
+    const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
 
     // For development
-    const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
+    // const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
 
     const systemModule = await import(systemModulePath)
     const SystemManager = systemModule.SystemManager

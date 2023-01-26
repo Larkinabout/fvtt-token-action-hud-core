@@ -7,7 +7,7 @@ export class MigrationManager {
 
     // Initialise migration
     async init () {
-        this._migrateUserFlags()
+        await this._migrateUserFlags()
     }
 
     /**
