@@ -20,6 +20,9 @@ export class MigrationManager {
         // Get categories
         const categories = Utils.getUserFlag('categories')
 
+        // Exit if no categories exist
+        if (!categories) return
+
         // Exit if object is already an array
         if (Array.isArray(categories)) return
 

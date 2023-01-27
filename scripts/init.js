@@ -101,12 +101,22 @@ Hooks.on('canvasReady', async () => {
             const actorId = game.tokenActionHud.actionHandler.actorId
             const controlledTokens = Utils.getControlledTokens()
             const controlledCount = controlledTokens?.length ?? 0
-            if (
-                controlledCount > 1 ||
-                (controlledCount === 1 && actorId !== token.document.actor.id) ||
-                (controlledCount === 0 && actorId !== game.user.character.id)
-            ) {
-                game.tokenActionHud.update(trigger)
+            if (controlledCount) {
+                if (actorId !== token.document.actor.id) {
+                    game.tokenActionHud.update(trigger)
+                } else {
+                    game.tokenActionHud.render(true)
+                }
+            } else {
+                if (game.user.character) {
+                    if (actorId !== game.user.character?.id) {
+                        game.tokenActionHud.update(trigger)
+                    } else {
+                        if (!game.tokenActionHud.rendered) game.tokenActionHud.render(true)
+                    }
+                } else {
+                    if (game.tokenActionHud.rendered) game.tokenActionHud.close()
+                }
             }
         })
 

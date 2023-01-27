@@ -48,7 +48,7 @@ export class CategoryManager {
      */
     async init () {
         const savedCategories = Utils.getUserFlag('categories')
-        if (!savedCategories) return this._registerDefaultCategories()
+        if (!savedCategories || !savedCategories.length) return this._registerDefaultCategories()
         Logger.debug('Retrieved saved categories', { savedCategories })
     }
 
@@ -122,6 +122,10 @@ export class CategoryManager {
         const subcategoryNestId = searchCriteria.nestId
         const subcategoryType = searchCriteria.type
         const subcategoryLevel = searchCriteria.level
+
+        // Return empty array if no flattened subcategories exist
+        if (!this.flattenedSubcategories) return []
+
         return this.flattenedSubcategories.filter(
             subcategory =>
                 (!subcategoryId || subcategory.id === subcategoryId) &&

@@ -111,7 +111,7 @@ export class ActionHandler {
             categories: []
         }
 
-        const categories = this.savedUserActionList ?? Utils.getUserFlag('default.categories')
+        const categories = (this.savedUserActionList?.length) ? this.savedUserActionList : Utils.getUserFlag('default.categories')
 
         for (const category of categories) {
             // Add category
