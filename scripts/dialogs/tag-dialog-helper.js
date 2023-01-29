@@ -113,7 +113,7 @@ export class TagDialogHelper {
         const tags = {}
 
         // Get available actions and subcategories
-        const availableActions = await actionHandler.getActionsAsTagifyEntries(subcategoryData)
+        const availableActions = await actionHandler.getAvailableActionsAsTagifyEntries(subcategoryData)
         const availableSubcategories = await categoryManager.getAvailableSubcategoriesAsTagifyEntries(subcategoryData)
         tags.available = [...availableActions, ...availableSubcategories]
 

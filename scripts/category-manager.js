@@ -269,7 +269,7 @@ export class CategoryManager {
     async getSelectedCategoriesAsTagifyEntries () {
         const categories = Utils.getUserFlag('categories')
         if (!categories) return
-        return categories.map(category => this.toTagifyEntry(category))
+        return categories.map(category => this._toTagifyEntry(category))
     }
 
     /**
@@ -286,7 +286,7 @@ export class CategoryManager {
 
         const subcategories = subcategory.subcategories
             .filter(subcategory => subcategory.isSelected)
-            .map(subcategory => this.toTagifyEntry(subcategory))
+            .map(subcategory => this._toTagifyEntry(subcategory))
         if (subcategories) return subcategories
         return []
     }
@@ -314,7 +314,7 @@ export class CategoryManager {
     async getDerivedSubcategoriesAsTagifyEntries (subcategoryData) {
         const nestId = subcategoryData.nestId
         const derivedSubcategories = this.getFlattenedSubcategories({ nestId, type: SUBCATEGORY_TYPE.SYSTEM_DERIVED })
-        return derivedSubcategories.map(subcategory => this.toTagifyEntry(subcategory))
+        return derivedSubcategories.map(subcategory => this._toTagifyEntry(subcategory))
     }
 
     /**
@@ -323,7 +323,7 @@ export class CategoryManager {
      */
     async getSystemSubcategoriesAsTagifyEntries () {
         const defaultSubcategories = Utils.getUserFlag('default.subcategories')
-        return defaultSubcategories.map(subcategory => this.toTagifyEntry(subcategory))
+        return defaultSubcategories.map(subcategory => this._toTagifyEntry(subcategory))
     }
 
     /**
@@ -355,10 +355,11 @@ export class CategoryManager {
 
     /**
      * Convert data into Tagify entry
+     * @private
      * @param {object} data
      * @returns {object}
      */
-    toTagifyEntry (data) {
+    _toTagifyEntry (data) {
         return {
             id: data.id,
             value: data.name,

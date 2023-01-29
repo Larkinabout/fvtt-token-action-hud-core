@@ -45,30 +45,31 @@ export class ActionHandler {
         Logger.debug('Building action list...', { character })
         await this.categoryManager.resetCategoryManager()
         this.character = character
-        this.savedUserActionList = await this.getSavedUserActionList(character)
-        if (this.character) this.savedActorActionList = await this.getSavedActorActionList(character)
-        this.actionList = await this.buildEmptyActionList(character)
+        this.savedUserActionList = await this._getSavedUserActionList(character)
+        if (this.character) this.savedActorActionList = await this._getSavedActorActionList(character)
+        this.actionList = await this._buildEmptyActionList(character)
         await this.categoryManager.flattenSubcategories(this.actionList)
         await Promise.all([
             this._buildSystemActions(character),
-            this._buildCoreActions(character),
+            this._buildGenericActions(character),
             this._buildCompendiumActions(),
             this._buildMacroActions()
         ])
         await this.buildFurtherActions(character)
         await this.categoryManager.saveDerivedSubcategories()
-        await this.setCharacterLimit()
-        if (this.character) await this.saveActorActionList(character)
+        await this._setCharacterLimit()
+        if (this.character) await this._saveActorActionList(character)
         Logger.debug('Action list built', { actionList: this.actionList, character })
         return this.actionList
     }
 
     /**
      * Get the saved action list from the user flags
+     * @private
      * @param {object} character The actor and token
      * @returns {object}         The saved action list
      */
-    getSavedUserActionList (character) {
+    _getSavedUserActionList (character) {
         Logger.debug('Retrieving saved action list from user...', { character })
         const categories = Utils.getUserFlag('categories')
         if (!categories) return []
@@ -79,10 +80,11 @@ export class ActionHandler {
 
     /**
      * Get the saved action list from the user flags
+     * @private
      * @param {object} character The actor and token
      * @returns {object}         The saved action list
      */
-    getSavedActorActionList (character) {
+    _getSavedActorActionList (character) {
         Logger.debug('Retrieving saved action list from actor...', { character })
         const actor = character?.actor
         if (!actor) return []
@@ -98,7 +100,7 @@ export class ActionHandler {
      * @param {object} character The actor and token
      * @returns {object}         The empty action list
      */
-    buildEmptyActionList (character) {
+    _buildEmptyActionList (character) {
         Logger.debug('Building empty action list...', { character })
         let hudTitle = ''
         if (Utils.getSetting('displayCharacterName')) hudTitle = character?.name ?? 'Multiple'
@@ -164,7 +166,7 @@ export class ActionHandler {
      * @protected
      * @param {object} character The actor and/or token
      */
-    _buildCoreActions (character) {
+    _buildGenericActions (character) {
         Logger.debug('Building generic actions...', { character })
         this.genericActionHandler.buildGenericActions(character)
         Logger.debug('Generic actions built', { actionList: this.actionList, character })
@@ -204,10 +206,10 @@ export class ActionHandler {
      * @param {object} nestId The subcategory data
      * @returns {array}       The actions
      */
-    async getActionsAsTagifyEntries (subcategoryData) {
+    async getAvailableActionsAsTagifyEntries (subcategoryData) {
         if (!this.actionList) return
         const subcategory = await Utils.getSubcategoryByNestId(this.actionList.categories, subcategoryData)
-        const actions = subcategory.actions.map(action => this.toTagifyEntry(action))
+        const actions = subcategory.actions.map(action => this._toTagifyEntry(action))
         return actions
     }
 
@@ -221,7 +223,7 @@ export class ActionHandler {
         const subcategory = await Utils.getSubcategoryByNestId(this.actionList.categories, subcategoryData)
         const actions = subcategory.actions
             .filter(action => action.selected === true)
-            .map(action => this.toTagifyEntry(action))
+            .map(action => this._toTagifyEntry(action))
         return actions
     }
 
@@ -343,8 +345,9 @@ export class ActionHandler {
 
     /**
      * Set character limit for action names based on 'Character per Word' advanced category option
+     * @private
      */
-    async setCharacterLimit () {
+    async _setCharacterLimit () {
         // Get categories
         const categories = this.categoryManager.getFlattenedSubcategories({ level: 'category' })
 
@@ -390,9 +393,10 @@ export class ActionHandler {
 
     /**
      * Save the action list to the actor flag
+     * @private
      * @param {object} character The actor and/or token
      */
-    async saveActorActionList (character) {
+    async _saveActorActionList (character) {
         Logger.debug('Saving actor action list...', { character })
         if (!character?.actor) return
         const actor = character.actor
@@ -440,7 +444,7 @@ export class ActionHandler {
         subcategory.actions = reorderedActions
 
         // Save action list
-        await this.saveActorActionList(this.character)
+        await this._saveActorActionList(this.character)
     }
 
     /**
@@ -457,21 +461,8 @@ export class ActionHandler {
      * @param {object} data The data
      * @returns {object}    Tagify entry
      */
-    toTagifyEntry (data) {
+    _toTagifyEntry (data) {
         return { id: data.encodedValue, value: data.fullName, type: 'action', level: 'action' }
-    }
-
-    /**
-     * Get image from entity
-     * @param {object} entity       The entity
-     * @param {array} defaultImages Any default images
-     * @returns {string}            The image URL
-     */
-    getImage (entity, defaultImages = []) {
-        defaultImages.push('icons/svg/mystery-man.svg')
-        let result = ''
-        if (this.displayIcons) result = entity?.img ?? entity?.icon ?? ''
-        return !defaultImages.includes(result) ? result : ''
     }
 
     /**

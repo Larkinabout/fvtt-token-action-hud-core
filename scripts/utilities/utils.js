@@ -85,6 +85,19 @@ export class Utils {
     }
 
     /**
+     * Get image from entity
+     * @param {object} entity       The entity, e.g., actor, item
+     * @param {array} defaultImages Any default images
+     * @returns {string}            The image URL
+     */
+    static getImage (entity, defaultImages = []) {
+        defaultImages.push('icons/svg/mystery-man.svg')
+        let result = ''
+        if (this.displayIcons) result = entity?.img ?? entity?.icon ?? ''
+        return !defaultImages.includes(result) ? result : ''
+    }
+
+    /**
      * Get item from the actor object
      * @param {object} actor  The actor
      * @param {string} itemId The item id
@@ -290,16 +303,17 @@ export class Utils {
      * @param {object} systemModuleCoreModuleVersion The system module's required core module version
      * @returns {boolean}
      */
-    static async checkModuleCompatibility (systemModuleCoreModuleVersion) {
+    static async checkModuleCompatibility (requiredCoreModuleVersion) {
         // Get core module version in parts
-        const coreModuleVersion = this.getModuleVersionParts(await game.modules.get(MODULE.ID).version)
+        const requiredCoreModuleVersionParts = this.getModuleVersionParts(requiredCoreModuleVersion)
+        const coreModuleVersionParts = this.getModuleVersionParts(game.modules.get(MODULE.ID).version)
 
-        if (coreModuleVersion.major !== systemModuleCoreModuleVersion.major ||
-            coreModuleVersion.minor !== systemModuleCoreModuleVersion.minor ||
-            (systemModuleCoreModuleVersion.patch && coreModuleVersion.patch !== systemModuleCoreModuleVersion.patch)
+        if (coreModuleVersionParts.major !== requiredCoreModuleVersionParts.major ||
+            coreModuleVersionParts.minor !== requiredCoreModuleVersionParts.minor ||
+            (requiredCoreModuleVersionParts.patch && coreModuleVersionParts.patch !== requiredCoreModuleVersionParts.patch)
         ) {
             ui.notifications.error(
-                `The installed Token Action Hud system module requires Token Action Hud core module version ${systemModuleCoreModuleVersion.full}.`
+                `The installed Token Action Hud system module requires Token Action Hud core module version ${requiredCoreModuleVersion}.`
             )
             return false
         }

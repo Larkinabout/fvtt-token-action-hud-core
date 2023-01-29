@@ -16,7 +16,7 @@
   ],
   "url": "https://github.com/Larkinabout/fvtt-token-action-hud-core",
   "flags": {},
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibility": {
     "minimum": "10",
     "verified": "10.291"
@@ -110,7 +110,7 @@
   },
   "socket": false,
   "manifest": "https://github.com/Larkinabout/fvtt-token-action-hud-core/releases/latest/download/module.json",
-  "download": "https://github.com/Larkinabout/fvtt-token-action-hud-core/releases/download/1.0.0/module.zip",
+  "download": "https://github.com/Larkinabout/fvtt-token-action-hud-core/releases/download/1.1.0/module.zip",
   "protected": false,
   "coreTranslation": false,
   "library": false
