@@ -13,7 +13,14 @@
     <i class="fa-duotone fa-filter-circle-xmark"></i>{{clearButtonText}}
   </button>
 </div>
+{{~#if level~}}
 <h3>{{localize "tokenActionHud.tagDialog.advancedCategoryOptions.title"}}</h3>
+{{~#if (eq this.level "subcategory") ~}}
+<div class="flexrow" style="justify-content:space-between; align-items: center; margin-bottom: 5px;">
+  <label>{{localize "tokenActionHud.tagDialog.advancedCategoryOptions.showTitle"}}</label>
+  <input type="checkbox" name="show-name" {{~#if advancedCategoryOptions.showTitle~}}checked{{~/if~}}/>
+</div>
+{{~/if~}}
 {{~#if (eq this.level "category") ~}}
 <div class="flexrow" style="justify-content:space-between; align-items: center;">
   <label>{{localize "tokenActionHud.tagDialog.advancedCategoryOptions.customWidth"}}</label>
@@ -24,4 +31,5 @@
   <label>{{localize "tokenActionHud.tagDialog.advancedCategoryOptions.characterCount"}}</label>
   <input type="number" name="character-count" placeholder="No limit" value="{{advancedCategoryOptions.characterCount}}" />
 </div>
+{{~/if~}}
 </div>

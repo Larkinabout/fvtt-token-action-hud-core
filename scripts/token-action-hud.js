@@ -25,6 +25,7 @@ export class TokenActionHud extends Application {
         this.isAlwaysShow = false
         this.isClickOpen = false
         this.isCollapsed = false
+        this.isDisplayIcons = false
         this.isDraggable = false
         this.isEnabled = false
         this.isUnlocked = false
@@ -39,6 +40,7 @@ export class TokenActionHud extends Application {
         this.isClickOpen = Utils.getSetting('clickOpenCategory')
         this.isCollapsed = Utils.getUserFlag('isCollapsed')
         this.isDebug = Utils.getSetting('debug')
+        this.isDisplayIcons = Utils.getSetting('displayIcons')
         this.isDraggable = Utils.getSetting('drag')
         this.isEnabled = this.isHudEnabled()
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
@@ -58,6 +60,7 @@ export class TokenActionHud extends Application {
         this.isAlwaysShow = Utils.getSetting('alwaysShowHud')
         this.isClickOpen = Utils.getSetting('clickOpenCategory')
         this.isDebug = Utils.getSetting('debug')
+        this.isDisplayIcons = Utils.getSetting('displayIcons')
         this.isDraggable = Utils.getSetting('drag')
         this.isEnabled = this.isHudEnabled()
         this.actionHandler.displayIcons = Utils.getSetting('displayIcons')
@@ -138,14 +141,14 @@ export class TokenActionHud extends Application {
      */
     activateListeners (html) {
         const elements = {
-            subtitles: html.find('.tah-subtitle'),
             actions: html.find('.tah-action'),
+            buttons: html.find('#tah-buttons'),
+            categories: html.find('.tah-category'),
             categoriesSection: html.find('#tah-categories'),
             editCategoriesButton: html.find('#tah-edit-categories'),
-            categories: html.find('.tah-category'),
             subcategories: html.find('.tah-subcategory'),
+            subtitles: html.find('.tah-subtitle'),
             titleButtons: html.find('.tah-category-button'),
-            buttons: html.find('#tah-buttons'),
             collapseHudButton: html.find('#tah-collapse-hud'),
             expandHudButton: html.find('#tah-expand-hud'),
             unlockButton: html.find('#tah-unlock'),
@@ -340,10 +343,12 @@ export class TokenActionHud extends Application {
             $(target).addClass('tah-hidden')
             elements.lockButton.removeClass('tah-hidden')
             elements.editCategoriesButton.removeClass('tah-hidden')
+            elements.categoriesSection.addClass('tah-unlocked')
             elements.categories.removeClass('tah-hidden')
             elements.subcategories.removeClass('tah-hidden')
-            elements.titleButtons.removeClass('disable-edit')
             elements.subtitles.removeClass('disable-edit')
+            elements.subtitles.removeClass('tah-hidden')
+            elements.titleButtons.removeClass('disable-edit')
             if (!this.isUnlocked) {
                 await Utils.setUserFlag('isUnlocked', true)
                 this.isUnlocked = true
@@ -363,13 +368,19 @@ export class TokenActionHud extends Application {
             $(target).addClass('tah-hidden')
             elements.unlockButton.removeClass('tah-hidden')
             elements.editCategoriesButton.addClass('tah-hidden')
+            elements.categoriesSection.removeClass('tah-unlocked')
             for (const categoryElement of elements.categories) {
                 const hasActions = (categoryElement.getElementsByClassName('tah-action').length > 0)
-                if (!hasActions) $(categoryElement).addClass('tah-hidden')
+                if (!hasActions) categoryElement.classList.add('tah-hidden')
             }
             for (const subcategoryElement of elements.subcategories) {
                 const hasActions = (subcategoryElement.getElementsByClassName('tah-action').length > 0)
-                if (!hasActions) $(subcategoryElement).addClass('tah-hidden')
+                if (!hasActions) subcategoryElement.classList.add('tah-hidden')
+            }
+            for (const subtitleElement of elements.subtitles) {
+                if (subtitleElement.parentElement.dataset.showTitle === 'false') {
+                    subtitleElement.classList.add('tah-hidden')
+                }
             }
             elements.titleButtons.addClass('disable-edit')
             elements.subtitles.addClass('disable-edit')

@@ -93,7 +93,7 @@ export class Utils {
     static getImage (entity, defaultImages = []) {
         defaultImages.push('icons/svg/mystery-man.svg')
         let result = ''
-        if (this.displayIcons) result = entity?.img ?? entity?.icon ?? ''
+        if (game.tokenActionHud.isDisplayIcons) result = entity?.img ?? entity?.icon ?? ''
         return !defaultImages.includes(result) ? result : ''
     }
 

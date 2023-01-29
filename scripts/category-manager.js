@@ -111,14 +111,20 @@ export class CategoryManager {
      */
     createSubcategory (subcategoryData) {
         const subcategoryDataClone = Utils.deepClone(subcategoryData)
+        // New option for 1.1.0 - Define default showTitle for existing data
+        if (!subcategoryDataClone?.advancedCategoryOptions) subcategoryDataClone.advancedCategoryOptions = {}
+        if (typeof subcategoryDataClone?.advancedCategoryOptions?.showTitle === 'undefined') subcategoryDataClone.advancedCategoryOptions.showTitle = true
+        subcategoryDataClone.subtitleClass = (!subcategoryDataClone?.advancedCategoryOptions?.showTitle) ? 'tah-hidden' : ''
+
         return {
             id: subcategoryDataClone?.id,
             nestId: subcategoryDataClone?.nestId,
             name: subcategoryDataClone?.name,
             type: subcategoryDataClone?.type ?? SUBCATEGORY_TYPE.CUSTOM,
             level: SUBCATEGORY_LEVEL.SUBCATEGORY,
-            advancedCategoryOptions: subcategoryDataClone?.advancedCategoryOptions ?? {},
+            advancedCategoryOptions: subcategoryDataClone?.advancedCategoryOptions ?? { showTitle: true },
             hasDerivedSubcategories: subcategoryDataClone?.hasDerivedSubcategories ?? false,
+            subtitleClass: subcategoryDataClone?.subtitleClass ?? '',
             isSelected: subcategoryDataClone?.isSelected ?? true,
             info1: subcategoryDataClone?.info1 ?? '',
             info2: subcategoryDataClone?.info2 ?? '',
@@ -196,14 +202,11 @@ export class CategoryManager {
 
     /**
      * Save subcategories to the user action list
-     * @param {string} categoryId
-     * @param {object} choices
+     * @param {array} subcategories The subcategories to save
+     * @param {object} parentSubcategoryData The parent subcategory to add the subcategories to
      */
-    async saveSubcategories (choices, advancedCategoryOptions = null, subcategoryData) {
-        // Exit if no choices exist
-        if (!choices) return
-
-        Logger.debug('Saving subcategories...', { choices, advancedCategoryOptions, subcategoryData })
+    async saveSubcategories (subcategories, parentSubcategoryData) {
+        Logger.debug('Saving subcategories...', { subcategories, parentSubcategoryData })
 
         const categories = game.tokenActionHud.actionHandler.actionList.categories
 
@@ -211,30 +214,34 @@ export class CategoryManager {
         const categoriesClone = Utils.deepClone(categories)
 
         // Get subcategory by nestId
-        const subcategory = await Utils.getSubcategoryByNestId(categoriesClone, subcategoryData)
+        const subcategory = await Utils.getSubcategoryByNestId(categoriesClone, parentSubcategoryData)
 
         // Exit if no subcategory exists
         if (!subcategory) return
 
-        const nestId = subcategoryData.nestId
+        const nestId = parentSubcategoryData.nestId
 
         // Loop derived subcategories or choices
         const chosenSubcategories = []
-        for (const choice of choices) {
-            chosenSubcategories.push(this.createSubcategory({ ...choice, nestId: `${nestId}_${choice.id}`, isSelected: choice.isSelected ?? true }))
+        for (const subcategory of subcategories) {
+            chosenSubcategories.push(this.createSubcategory({
+                ...subcategory,
+                nestId: `${nestId}_${subcategory.id}`,
+                isSelected: subcategory.isSelected ?? true
+            }))
         }
-        if (subcategoryData.hasDerivedSubcategories) {
+        if (parentSubcategoryData.hasDerivedSubcategories) {
             for (const subSubcategory of subcategory.subcategories) {
                 const subSubcategoryClone = Utils.deepClone(subSubcategory)
-                const choice = choices.find(choice => choice.id === subSubcategoryClone.id)
-                if (!choice) chosenSubcategories.push({ ...subSubcategoryClone, isSelected: false, actions: [] })
+                const subcategory = subcategories.find(subcategory => subcategory.id === subSubcategoryClone.id)
+                if (!subcategory) chosenSubcategories.push({ ...subSubcategoryClone, isSelected: false, actions: [] })
             }
         }
 
         subcategory.subcategories = chosenSubcategories
 
         // Add advanced category options
-        if (advancedCategoryOptions) subcategory.advancedCategoryOptions = { ...advancedCategoryOptions }
+        if (parentSubcategoryData.advancedCategoryOptions) subcategory.advancedCategoryOptions = parentSubcategoryData.advancedCategoryOptions
 
         // Save user action list
         await this.saveUserActionList(categoriesClone)
@@ -280,8 +287,8 @@ export class CategoryManager {
      * @param {string} nestId
      * @returns {object}
      */
-    async getAdvancedCategoryOptions (nestId) {
-        const categorySubcategory = await Utils.getSubcategoryByNestId(this.flattenedSubcategories, { nestId })
+    async getAdvancedCategoryOptions (subcategoryData) {
+        const categorySubcategory = await Utils.getSubcategoryByNestId(this.flattenedSubcategories, subcategoryData)
         const advancedCategoryOptions = categorySubcategory?.advancedCategoryOptions
         return advancedCategoryOptions ?? null
     }

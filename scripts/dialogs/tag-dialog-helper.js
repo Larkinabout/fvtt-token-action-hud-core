@@ -58,7 +58,7 @@ export class TagDialogHelper {
                 topLabel: Utils.i18n('tokenActionHud.tagDialog.subcategoryDialogDescription'),
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
-                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(nestId),
+                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(categorySubcategoryData),
                 level: 'category'
             }
         }
@@ -85,10 +85,10 @@ export class TagDialogHelper {
             // Get advanced category options
             const customWidth = parseInt(html.find('input[name="custom-width"]').val())
             const characterCount = parseInt(html.find('input[name="character-count"]').val())
-            const advancedCategoryOptions = { customWidth, characterCount }
+            categorySubcategoryData.advancedCategoryOptions = { customWidth, characterCount }
 
             // Save selected subcategories to user action list
-            await categoryManager.saveSubcategories(choices, advancedCategoryOptions, categorySubcategoryData)
+            await categoryManager.saveSubcategories(choices, categorySubcategoryData)
 
             Hooks.callAll('forceUpdateTokenActionHud')
         }
@@ -106,20 +106,20 @@ export class TagDialogHelper {
      * @public
      * @param {object} subcategoryData The subcategory data
      */
-    static async showActionDialog (categoryManager, actionHandler, subcategoryData) {
-        const { nestId, name } = subcategoryData
+    static async showActionDialog (categoryManager, actionHandler, parentSubcategoryData) {
+        const { nestId, name } = parentSubcategoryData
 
         // Set available and selected tags
         const tags = {}
 
         // Get available actions and subcategories
-        const availableActions = await actionHandler.getAvailableActionsAsTagifyEntries(subcategoryData)
-        const availableSubcategories = await categoryManager.getAvailableSubcategoriesAsTagifyEntries(subcategoryData)
+        const availableActions = await actionHandler.getAvailableActionsAsTagifyEntries(parentSubcategoryData)
+        const availableSubcategories = await categoryManager.getAvailableSubcategoriesAsTagifyEntries(parentSubcategoryData)
         tags.available = [...availableActions, ...availableSubcategories]
 
         // Get selected actions and subcategories
-        const selectedActions = await actionHandler.getSelectedActionsAsTagifyEntries(subcategoryData)
-        const selectedSubcategories = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(subcategoryData)
+        const selectedActions = await actionHandler.getSelectedActionsAsTagifyEntries(parentSubcategoryData)
+        const selectedSubcategories = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(parentSubcategoryData)
         tags.selected = [...selectedActions, ...selectedSubcategories]
 
         // Set dialog data
@@ -130,7 +130,7 @@ export class TagDialogHelper {
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
                 indexExplanationLabel: Utils.i18n('tokenActionHud.blockListLabel'),
-                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(nestId),
+                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(parentSubcategoryData),
                 level: 'subcategory'
             }
         }
@@ -151,15 +151,16 @@ export class TagDialogHelper {
             }
 
             // Get advanced category options
-            const customWidth = parseInt(html.find('input[name="custom-width"]').val())
             const characterCount = parseInt(html.find('input[name="character-count"]').val())
-            const advancedCategoryOptions = { customWidth, characterCount }
+            const customWidth = parseInt(html.find('input[name="custom-width"]').val())
+            const showTitle = html.find('input[name="show-name"]').prop('checked')
+            parentSubcategoryData.advancedCategoryOptions = { characterCount, customWidth, showTitle }
 
             // Save subcategories to user action list
-            await categoryManager.saveSubcategories(selectedSubcategories, advancedCategoryOptions, subcategoryData)
+            await categoryManager.saveSubcategories(selectedSubcategories, parentSubcategoryData)
 
             // Save actions to actor action list
-            await actionHandler.saveActions(selectedActions, subcategoryData)
+            await actionHandler.saveActions(selectedActions, parentSubcategoryData)
 
             Hooks.callAll('forceUpdateTokenActionHud')
         }

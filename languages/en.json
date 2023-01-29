@@ -113,7 +113,8 @@
       "advancedCategoryOptions": {
         "title": "Advanced Options",
         "characterCount": "Characters per Word",
-        "customWidth": "Custom Width (in Pixels)"
+        "customWidth": "Custom Width (in Pixels)",
+        "showTitle": "Show Title"
       },
       "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
       "categoryDialogTitle": "Customise Categories",
