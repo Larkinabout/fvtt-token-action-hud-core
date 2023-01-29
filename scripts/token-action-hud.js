@@ -203,10 +203,16 @@ export class TokenActionHud extends Application {
                 }
                 openCategory(event)
             }
+            // Remove focus to allow core ESC interactions
+            event.currentTarget.blur()
         }
 
         // Bring HUD to top
-        elements.titleButtons.on('click', () => this.bringToTop())
+        elements.titleButtons.on('click', (event) => {
+            this.bringToTop()
+            // Remove focus to allow core ESC interactions
+            event.currentTarget.blur()
+        })
 
         if (this.isClickOpen) {
             // When a category button is clicked...
