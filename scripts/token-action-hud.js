@@ -558,7 +558,6 @@ export class TokenActionHud extends Application {
 
         if (!pos) return
 
-
         const defaultLeftPos = this.defaultLeftPos
         const defaultTopPos = this.defaultTopPos
 
@@ -659,11 +658,26 @@ export class TokenActionHud extends Application {
     }
 
     /**
+     * Copy user's 'categories' flag to others users
+     * @param {string} fromUserId The user id to copy from
+     * @param {string|array} toUserIds The user ids to copy to
+     */
+    async copy (fromUserId, toUserIds) {
+        const isCopied = await this.categoryManager.copyUserFlags(fromUserId, toUserIds)
+        if (isCopied) {
+            Logger.info('HUD copied', true)
+        } else {
+            Logger.info('Copy HUD failed', true)
+        }
+    }
+
+    /**
      * Reset the hud
      */
     async reset () {
         await this.resetUserFlags()
         this.resetPosition()
+        Logger.info('HUD reset', true)
     }
 
     /**

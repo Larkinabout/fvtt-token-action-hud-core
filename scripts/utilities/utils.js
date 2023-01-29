@@ -5,13 +5,13 @@ import { MODULE } from '../constants.js'
  */
 export class Logger {
     static info (message, notify = false) {
-        console.log(`Token Action HUD Info | ${message}`)
         if (notify) ui.notifications.info(`Token Action HUD | ${message}`)
+        else console.log(`Token Action HUD Info | ${message}`)
     }
 
     static error (message, notify = false) {
-        console.error(`Token Action HUD Error | ${message}`)
         if (notify) ui.notifications.error(`Token Action HUD | ${message}`)
+        else console.error(`Token Action HUD Error | ${message}`)
     }
 
     static debug (message, data) {

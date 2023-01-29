@@ -18,6 +18,30 @@ export class CategoryManager {
     }
 
     /**
+     * Copy user's 'categories' flag to others users
+     * @param {string} fromUserId The user id to copy from
+     * @param {string|array} toUserIds The user ids to copy to
+     */
+    async copyUserFlags (fromUserId, toUserIds) {
+        // Exit if parameters are missing
+        if (!fromUserId || !toUserIds.length) return false
+
+        Logger.debug('Copying user flags...')
+
+        const fromCategories = game.users.get(fromUserId).getFlag(MODULE.ID, 'categories')
+
+        if (typeof toUserIds === 'string') {
+            game.users.get(toUserIds).setFlag(MODULE.ID, 'categories', fromCategories)
+        } else if (Array.isArray(toUserIds)) {
+            toUserIds.forEach(userId => {
+                game.users.get(userId).setFlag(MODULE.ID, 'categories', fromCategories)
+            })
+        }
+        Logger.debug('User flags copied')
+        return true
+    }
+
+    /**
      * Reset actor flags
      */
     async resetActorFlags () {
