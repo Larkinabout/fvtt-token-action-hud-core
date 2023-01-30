@@ -210,6 +210,13 @@ export class TokenActionHud extends Application {
             event.currentTarget.blur()
         }
 
+        // Resize category
+        if (this.hoveredCategoryId !== '') {
+            const id = `#${this.hoveredCategoryId}`
+            const category = document.querySelector(id)
+            CategoryResizer.resizeCategory(this.categoryManager, category, this.direction)
+        }
+
         // Bring HUD to top
         elements.titleButtons.on('click', (event) => {
             this.bringToTop()

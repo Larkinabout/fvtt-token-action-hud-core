@@ -204,8 +204,9 @@ export class CategoryManager {
      * Save subcategories to the user action list
      * @param {array} subcategories The subcategories to save
      * @param {object} parentSubcategoryData The parent subcategory to add the subcategories to
+     * @param {boolean} updateSelected Whether to update the isSelected flag
      */
-    async saveSubcategories (subcategories, parentSubcategoryData) {
+    async saveSubcategories (subcategories, parentSubcategoryData, updateSelected = true) {
         Logger.debug('Saving subcategories...', { subcategories, parentSubcategoryData })
 
         const categories = game.tokenActionHud.actionHandler.actionList.categories
@@ -234,7 +235,11 @@ export class CategoryManager {
             for (const subSubcategory of subcategory.subcategories) {
                 const subSubcategoryClone = Utils.deepClone(subSubcategory)
                 const subcategory = subcategories.find(subcategory => subcategory.id === subSubcategoryClone.id)
-                if (!subcategory) chosenSubcategories.push({ ...subSubcategoryClone, isSelected: false, actions: [] })
+                if (updateSelected) {
+                    subSubcategoryClone.isSelected = false
+                    subSubcategoryClone.actions = []
+                }
+                if (!subcategory) chosenSubcategories.push(subSubcategoryClone)
             }
         }
 
@@ -267,7 +272,16 @@ export class CategoryManager {
     async saveDerivedSubcategories () {
         for (const [parentSubcategoryNestId, derivedSubcategories] of this.derivedSubcategories) {
             const derivedSubcategoriesClone = Utils.deepClone(derivedSubcategories, { strict: true })
-            await this.saveSubcategories(derivedSubcategoriesClone, null, { nestId: parentSubcategoryNestId, type: SUBCATEGORY_TYPE.SYSTEM, hasDerivedSubcategories: true })
+            const updateSelected = false
+            await this.saveSubcategories(
+                derivedSubcategoriesClone,
+                {
+                    nestId: parentSubcategoryNestId,
+                    type: SUBCATEGORY_TYPE.SYSTEM,
+                    hasDerivedSubcategories: true
+                },
+                updateSelected
+            )
         }
     }
 

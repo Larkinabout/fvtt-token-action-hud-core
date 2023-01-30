@@ -64,10 +64,11 @@ export class CategoryResizer {
                 const actions = actionGroup.querySelectorAll('.tah-action')
                 if (actions.length > 0) {
                     let groupWidth = 0
-                    actions.forEach(action => {
-                        const actionComputed = getComputedStyle(action)
-                        const actionWidth = Math.ceil(parseFloat(actionComputed.width) + 1 || 0)
-                        groupWidth += actionWidth
+                    actions.forEach((action, index) => {
+                        const actionRect = action.getBoundingClientRect()
+                        const actionLeft = (index === 0) ? actionRect.left - contentLeft : 0
+                        const actionWidth = Math.ceil(parseFloat(actionRect.width) + 1 || 0)
+                        groupWidth += actionWidth + actionLeft
                     })
                     if (groupWidth > maxGroupWidth) {
                         maxGroupWidth = groupWidth
@@ -83,7 +84,7 @@ export class CategoryResizer {
 
             // Determine number of columns
             const defaultCols = 5
-            let cols = defaultCols
+            let cols = (maxActions < defaultCols) ? maxActions : defaultCols
             const maxCols = Math.floor(availableWidth / avgWidthPerAction)
             const sqrtActionsPerGroup = Math.ceil(Math.sqrt(maxActions))
             if (sqrtActionsPerGroup > cols && sqrtActionsPerGroup <= maxCols) cols = sqrtActionsPerGroup
