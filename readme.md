@@ -6,7 +6,7 @@ Token Action HUD is a repositionable HUD of actions for a selected token.
 
 # Features
 - Make rolls directly from the HUD instead of opening your character sheet.
-- Use items from the HUD or right-click an item to opens its sheet.
+- Use items from the HUD or right-click an item to open its sheet.
 - Move the HUD and choose to expand the menus up or down.
 - Unlock the HUD to customise categories and subcategories per user, and actions per actor.
 - Add your own macros and Journal Entry and Roll Table compendiums.

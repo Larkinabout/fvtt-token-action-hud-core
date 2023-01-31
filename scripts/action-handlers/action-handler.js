@@ -25,6 +25,9 @@ export class ActionHandler {
         this.displayIcons = Utils.getSetting('displayIcons')
     }
 
+    /**
+     * Reset action handler variables
+     */
     resetActionHandler () {
         this.genericActionHandler = new GenericActionHandler(this)
         this.compendiumActionHandler = new CompendiumActionHandler(this)
@@ -158,7 +161,9 @@ export class ActionHandler {
         Logger.debug('System actions built', { actionList: this.actionList, character })
     }
 
-    /** @public */
+    /**
+     * Placeholder function for the system module
+     * */
     async buildSystemActions (character, subcategoryIds) {}
 
     /**

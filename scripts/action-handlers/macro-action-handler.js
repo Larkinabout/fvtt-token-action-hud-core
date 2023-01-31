@@ -1,6 +1,9 @@
 import { DELIMITER } from '../constants.js'
 import { Utils } from '../utilities/utils.js'
 
+/**
+ * Handler for building the HUD's macro actions.
+ */
 export class MacroActionHandler {
     actionHandler
 

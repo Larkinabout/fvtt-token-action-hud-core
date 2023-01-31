@@ -1,6 +1,9 @@
 import { TagDialog } from './tag-dialog.js'
 import { Utils } from '../utilities/utils.js'
 
+/**
+ * Generates data for the dialogs.
+ */
 export class TagDialogHelper {
     /**
      * Show the category dialog

@@ -1,6 +1,8 @@
 import { MODULE } from '../constants.js'
-import { Utils } from '../utilities/utils.js'
 
+/**
+ * Form Application for the dialogs.
+ */
 export class TagDialog extends FormApplication {
     tagify = null
     dragSort = null
@@ -31,6 +33,10 @@ export class TagDialog extends FormApplication {
         return this.content
     }
 
+    /**
+     * Activate listeners
+     * @param {object} html The HTML element
+     */
     activateListeners (html) {
         super.activateListeners(html)
         const cancel = html.find('#tah-dialog-cancel')
@@ -135,6 +141,11 @@ export class TagDialog extends FormApplication {
         }
     }
 
+    /**
+     * Handle form submission
+     * @param {object} event       The event
+     * @param {object} formDataThe form data
+     */
     async _updateObject (event, formData) {
         const selection = TagDialog.tagify.value.map((c) => {
             c.id = c.id ?? c.value.slugify({ replacement: '-', strict: true })

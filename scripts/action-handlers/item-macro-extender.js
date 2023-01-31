@@ -2,6 +2,9 @@ import { ActionListExtender } from './action-list-extender.js'
 import { DELIMITER } from '../constants.js'
 import { Utils } from '../utilities/utils.js'
 
+/**
+ * Handler for building actions related to the Item Macro module.
+ */
 export class ItemMacroActionListExtender extends ActionListExtender {
     constructor (actionHandler) {
         super(actionHandler.categoryManager)
