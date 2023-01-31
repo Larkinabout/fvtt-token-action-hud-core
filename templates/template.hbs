@@ -2,10 +2,10 @@
 <div id="{{id}}" style="top: {{top}}; left: {{left}}; {{~#if background~}}background: {{background}};{{~/if~}} transform: scale({{scale}}); transform-origin: top left">
     {{~#if actions.actorId~}}
     <div id="tah-collapse-expand">
-        <button id="tah-collapse-hud">
+        <button id="tah-collapse-hud" title="{{localize "tokenActionHud.collapseHud"}}">
             <i class="fas fa-caret-left"></i>
         </button>
-        <button id="tah-expand-hud" class="tah-hidden">
+        <button id="tah-expand-hud" class="tah-hidden" title="{{localize "tokenActionHud.expandHud"}}">
             <i class="fas fa-caret-right"></i>
         </button>
     </div>
@@ -18,14 +18,14 @@
       {{/each}}
     </div>
     {{#unless hovering}}
-    <div id="tah-buttons">
+    <div id="tah-buttons" title="{{localize "tokenActionHud.unlockHud"}}">
       <button id="tah-unlock">
         <i class="fa fa-lock"></i>
       </button>
-      <button id="tah-lock" class="tah-hidden">
+      <button id="tah-lock" class="tah-hidden" title="{{localize "tokenActionHud.lockHud"}}">
         <i class="fa fa-lock-open"></i>
       </button>
-      <button id="tah-edit-categories" class="tah-hidden">
+      <button id="tah-edit-categories" class="tah-hidden" title="{{localize "tokenActionHud.editCategories"}}">
         <i class="fa fa-book"></i>
       </button>
     </div>
