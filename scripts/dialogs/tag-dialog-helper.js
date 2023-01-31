@@ -1,6 +1,9 @@
 import { TagDialog } from './tag-dialog.js'
 import { Utils } from '../utilities/utils.js'
 
+/**
+ * Generates data for the dialogs.
+ */
 export class TagDialogHelper {
     /**
      * Show the category dialog
@@ -25,7 +28,7 @@ export class TagDialogHelper {
         }
 
         // Set function on submit
-        const dialogSubmit = async (choices) => {
+        const dialogSubmit = async (choices, formData) => {
             await categoryManager.saveCategories(choices)
             Hooks.callAll('forceUpdateTokenActionHud')
         }
@@ -58,13 +61,13 @@ export class TagDialogHelper {
                 topLabel: Utils.i18n('tokenActionHud.tagDialog.subcategoryDialogDescription'),
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
-                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(nestId),
+                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(categorySubcategoryData),
                 level: 'category'
             }
         }
 
         // Set function on submit
-        const dialogSubmit = async (choices, html) => {
+        const dialogSubmit = async (choices, formData) => {
             choices = choices.map((choice) => {
                 choice.id =
                 choice.id ??
@@ -82,13 +85,14 @@ export class TagDialogHelper {
                 }
             })
 
-            // Get advanced category options
-            const customWidth = parseInt(html.find('input[name="custom-width"]').val())
-            const characterCount = parseInt(html.find('input[name="character-count"]').val())
-            const advancedCategoryOptions = { customWidth, characterCount }
+            const characterCount = formData?.characterCount
+            const customWidth = formData?.customWidth
+            const image = formData?.image
+            const showTitle = formData?.showTitle
+            categorySubcategoryData.advancedCategoryOptions = { characterCount, customWidth, image, showTitle }
 
             // Save selected subcategories to user action list
-            await categoryManager.saveSubcategories(choices, advancedCategoryOptions, categorySubcategoryData)
+            await categoryManager.saveSubcategories(choices, categorySubcategoryData)
 
             Hooks.callAll('forceUpdateTokenActionHud')
         }
@@ -106,20 +110,20 @@ export class TagDialogHelper {
      * @public
      * @param {object} subcategoryData The subcategory data
      */
-    static async showActionDialog (categoryManager, actionHandler, subcategoryData) {
-        const { nestId, name } = subcategoryData
+    static async showActionDialog (categoryManager, actionHandler, parentSubcategoryData) {
+        const { nestId, name } = parentSubcategoryData
 
         // Set available and selected tags
         const tags = {}
 
         // Get available actions and subcategories
-        const availableActions = await actionHandler.getActionsAsTagifyEntries(subcategoryData)
-        const availableSubcategories = await categoryManager.getAvailableSubcategoriesAsTagifyEntries(subcategoryData)
+        const availableActions = await actionHandler.getAvailableActionsAsTagifyEntries(parentSubcategoryData)
+        const availableSubcategories = await categoryManager.getAvailableSubcategoriesAsTagifyEntries(parentSubcategoryData)
         tags.available = [...availableActions, ...availableSubcategories]
 
         // Get selected actions and subcategories
-        const selectedActions = await actionHandler.getSelectedActionsAsTagifyEntries(subcategoryData)
-        const selectedSubcategories = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(subcategoryData)
+        const selectedActions = await actionHandler.getSelectedActionsAsTagifyEntries(parentSubcategoryData)
+        const selectedSubcategories = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(parentSubcategoryData)
         tags.selected = [...selectedActions, ...selectedSubcategories]
 
         // Set dialog data
@@ -130,13 +134,13 @@ export class TagDialogHelper {
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
                 indexExplanationLabel: Utils.i18n('tokenActionHud.blockListLabel'),
-                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(nestId),
+                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(parentSubcategoryData),
                 level: 'subcategory'
             }
         }
 
         // Set function on submit
-        const dialogSubmit = async (choices, html) => {
+        const dialogSubmit = async (choices, formData) => {
             const selectedSubcategories = []
             const selectedActions = []
             for (const choice of choices) {
@@ -151,15 +155,16 @@ export class TagDialogHelper {
             }
 
             // Get advanced category options
-            const customWidth = parseInt(html.find('input[name="custom-width"]').val())
-            const characterCount = parseInt(html.find('input[name="character-count"]').val())
-            const advancedCategoryOptions = { customWidth, characterCount }
+            const characterCount = formData?.characterCount
+            const image = formData?.image
+            const showTitle = formData?.showTitle
+            parentSubcategoryData.advancedCategoryOptions = { characterCount, image, showTitle }
 
             // Save subcategories to user action list
-            await categoryManager.saveSubcategories(selectedSubcategories, advancedCategoryOptions, subcategoryData)
+            await categoryManager.saveSubcategories(selectedSubcategories, parentSubcategoryData)
 
             // Save actions to actor action list
-            await actionHandler.saveActions(selectedActions, subcategoryData)
+            await actionHandler.saveActions(selectedActions, parentSubcategoryData)
 
             Hooks.callAll('forceUpdateTokenActionHud')
         }

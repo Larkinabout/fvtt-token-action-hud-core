@@ -4,15 +4,20 @@
     "addToCombat": "添加到战斗",
     "blockListLabel": "黑名单：隐藏 / 白名单：展示",
     "cancel": "取消",
+    "collapseHud": "Collapse HUD",
     "combat": "战斗",
+    "editCategories": "Edit Categories",
     "endTurn": "End Turn",
+    "expandHud": "Expand HUD",
     "handlerNotFound": "未找到，还原到核心系统掷骰。",
+    "lockHud": "Lock HUD",
     "makeInvisible": "使隐形",
     "makeVisible": "使可见",
     "pushLabelExplanation": "分类展示在哪边？",
     "removeFromCombat": "从战斗中移除",
     "title": "Token Action HUD",
     "token": "指示物",
+    "unlockHud": "Unlock HUD",
     "utility": "实用项",
     "settings": {
       "activeCssAsText": {
@@ -110,14 +115,32 @@
     "tagDialog": {
       "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
       "actionDialogTitle": "Customise Actions",
-      "advancedCategoryOptions": {
-        "title": "Advanced Options",
-        "characterCount": "Characters per Word",
-        "customWidth": "Custom Width (px)"
-      },
       "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
       "categoryDialogTitle": "Customise Categories",
       "clearButton": "清除",
+      "options": {
+        "characterCount": {
+          "label": "Characters per Word",
+          "hint": "Limit the characters per word of the actions"
+        },
+        "customWidth": {
+          "label": "Custom Width",
+          "units": "(Pixels)",
+          "hint": "Custom width for the subcategories"
+        },
+        "image": {
+          "label": "Image",
+          "hint": "Image on this button"
+        },
+        "showCategoryTitle": {
+          "label": "Show Title",
+          "hint": "Show this button's title"
+        },
+        "showSubcategoryTitle": {
+          "label": "Show Title",
+          "hint": "Show this subcategory's title"
+        }
+      },
       "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
       "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "选项（分号分隔)"

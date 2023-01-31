@@ -7,42 +7,17 @@ let systemManager
 let isControlTokenPending = false
 const controlTokenTimer = new Timer(20)
 
-Hooks.on('ready', async () => {
-    const systemId = game.system.id
-    const systemModuleId = `token-action-hud-${systemId}`
-    const systemModuleCoreVersionFile = `../../${systemModuleId}/scripts/constants.js`
-    const requiredCoreModuleVersion = await import(systemModuleCoreVersionFile).then(module => module.REQUIRED_CORE_MODULE_VERSION)
-
+Hooks.on('tokenActionHudSystemReady', async (module) => {
     // Exit if core module version is not compatible with the system module
-    const isCompatible = Utils.checkModuleCompatibility(requiredCoreModuleVersion)
+    const isCompatible = await Utils.checkModuleCompatibility(module.api.requiredCoreModuleVersion)
     if (!isCompatible) return
 
-    // Import SystemManager class from the Token Action Hud system module
-    // For distribution
-    const systemModulePath = `../../${systemModuleId}/scripts/${systemModuleId}.min.js`
-
-    // For development
-    // const systemModulePath = `../../${systemModuleId}/scripts/system-manager.js`
-
-    const systemModule = await import(systemModulePath)
-    const SystemManager = systemModule.SystemManager
-
-    // If the Token Action Hud system module is not installed, display an error and abort
-    if (!SystemManager) return ui.notifications.error('Token Action Hud system module not found.')
-
-    // If the Token Action Hud system module is not enabled, display an error and abort
-    const tokenActionHudSystemModuleId = `token-action-hud-${systemId}`
-    if (!game.modules.get(tokenActionHudSystemModuleId)?.active) {
-        ui.notifications.error('Token Action Hud system module is not active.')
-        return
-    }
-
     // Create new SystemManager and register core and system module settings
-    systemManager = new SystemManager(MODULE.ID)
+    systemManager = new module.api.SystemManager(MODULE.ID)
     systemManager.registerSettings()
 
     // Initialise MigrationManager
-    const migrationManager = new MigrationManager(systemModuleId)
+    const migrationManager = new MigrationManager(module.id)
     await migrationManager.init()
 
     // Set stylesheet to 'style' core module setting
@@ -59,11 +34,11 @@ Hooks.on('ready', async () => {
         `modules/${MODULE.ID}/templates/tagdialog.hbs`
     ])
 
-    Hooks.callAll('tokenActionHudInitialized')
+    Hooks.callAll('tokenActionHudCoreReady')
 })
 
 Hooks.on('canvasReady', async () => {
-    Hooks.on('tokenActionHudInitialized', async () => {
+    Hooks.on('tokenActionHudCoreReady', async () => {
         // If no supported color picker modules are active, for the first time only, display a notification
         if (game.user.isGM) {
             if (

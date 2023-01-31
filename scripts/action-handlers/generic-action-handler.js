@@ -1,6 +1,9 @@
 import { ACTION_TYPE, DELIMITER, SUBCATEGORY_TYPE } from '../constants.js'
 import { Utils } from '../utilities/utils.js'
 
+/**
+ * Handler for building the HUD's generic actions.
+ */
 export class GenericActionHandler {
     actionHandler
 

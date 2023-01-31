@@ -1,5 +1,8 @@
 import { Logger, Utils } from './utilities/utils.js'
 
+/**
+ * Manages migrations between module versions.
+ */
 export class MigrationManager {
     constructor (systemModuleId) {
         this.systemModuleId = systemModuleId

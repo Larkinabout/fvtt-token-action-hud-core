@@ -1,5 +1,9 @@
 import { COMPENDIUM_PACK_TYPES, DELIMITER } from '../constants.js'
+import { Utils } from '../utilities/utils.js'
 
+/**
+ * Handler for building the HUD's compendium actions.
+ */
 export class CompendiumActionHandler {
     actionHandler
 
@@ -33,7 +37,7 @@ export class CompendiumActionHandler {
             const subcategoryId = packId.replace('.', '-')
             const subcategoryData = { id: subcategoryId, type: subcategoryType }
             if (subcategoryIds.includes(packId.replace('.', '-'))) {
-                const actions = await this.getCompendiumActions(packId)
+                const actions = await this._getCompendiumActions(packId)
                 this.actionHandler.addActionsToActionList(actions, subcategoryData)
             }
         }
@@ -44,14 +48,14 @@ export class CompendiumActionHandler {
      * @param {string} packKey The compendium pack key
      * @returns {object}       The actions
      */
-    async getCompendiumActions (packKey) {
+    async _getCompendiumActions (packKey) {
         const entries = await this.getCompendiumEntries(packKey)
         const actionType = this.getCompendiumActionType(packKey)
         return entries.map((entry) => {
             const id = entry._id
             const name = entry.name
             const encodedValue = [actionType, packKey, entry._id].join(DELIMITER)
-            const img = this.actionHandler.getImage(entry)
+            const img = Utils.getImage(entry)
             const selected = true
             return {
                 id,

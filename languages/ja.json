@@ -4,15 +4,19 @@
     "addToCombat": "戦闘に追加",
     "blockListLabel": "ブロックリスト: 非表示 / 許可リスト: 表示",
     "cancel": "キャンセル",
+    "collapseHud": "Collapse HUD",
     "combat": "戦闘",
+    "editCategories": "Edit Categories",
     "endTurn": "End Turn",
-
+    "expandHud": "Expand HUD",
     "handlerNotFound": "操作が見つかりません、標準のローラーを使用します。",
+    "lockHud": "Lock HUD",
     "makeInvisible": "非表示にようにする",
     "pushLabelExplanation": "どちら側にカテゴリを表示しますか？",
     "removeFromCombat": "戦闘から外す",
     "title": "トークン･アクションHUD",
     "token": "トークン",
+    "unlockHud": "Unlock HUD",
     "utility": "他",
     "settings": {
       "activeCssAsText": {
@@ -110,14 +114,32 @@
     "tagDialog": {
       "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
       "actionDialogTitle": "Customise Actions",
-      "advancedCategoryOptions": {
-        "title": "Advanced Options",
-        "characterCount": "Characters per Word",
-        "customWidth": "Custom Width (px)"
-      },
       "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
       "categoryDialogTitle": "Customise Categories",
       "clearButton": "消去",
+      "options": {
+        "characterCount": {
+          "label": "Characters per Word",
+          "hint": "Limit the characters per word of the actions"
+        },
+        "customWidth": {
+          "label": "Custom Width",
+          "units": "(Pixels)",
+          "hint": "Custom width for the subcategories"
+        },
+        "image": {
+          "label": "Image",
+          "hint": "Image on this button"
+        },
+        "showCategoryTitle": {
+          "label": "Show Title",
+          "hint": "Show this button's title"
+        },
+        "showSubcategoryTitle": {
+          "label": "Show Title",
+          "hint": "Show this subcategory's title"
+        }
+      },
       "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
       "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "選択（セミコロンで区切る)"

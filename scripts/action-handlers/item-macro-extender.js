@@ -2,6 +2,9 @@ import { ActionListExtender } from './action-list-extender.js'
 import { DELIMITER } from '../constants.js'
 import { Utils } from '../utilities/utils.js'
 
+/**
+ * Handler for building actions related to the Item Macro module.
+ */
 export class ItemMacroActionListExtender extends ActionListExtender {
     constructor (actionHandler) {
         super(actionHandler.categoryManager)
@@ -28,7 +31,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         let itemIds
         if (Utils.isModuleActive('midi-qol')) {
             itemIds = items
-                .filter(this.isUnsupportedByMidiQoL)
+                .filter(this._isUnsupportedByMidiQoL)
                 .map((item) => item.id)
         } else {
             itemIds = items.map((item) => item.id)
@@ -45,17 +48,18 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         const replace = itemMacroSetting === 'itemMacro'
 
         this.categoryManager.flattenedSubcategories.forEach(subcategory => {
-            this.addSubcategoryActions(itemIds, subcategory, replace)
+            this._addSubcategoryActions(itemIds, subcategory, replace)
         })
     }
 
     /**
      * Add subcategory actions
+     * @private
      * @param {array} itemIds      The list of item IDs
      * @param {object} subcategory The subcategory
      * @param {boolean} replace    Whether to replace the action or not
      */
-    addSubcategoryActions (itemIds, subcategory, replace) {
+    _addSubcategoryActions (itemIds, subcategory, replace) {
         // Exit if no actions exist
         if (!subcategory?.actions?.length) return
 
@@ -63,22 +67,23 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         subcategory.actions.forEach(action => {
             if (!itemIds.includes(action.id)) return
 
-            const macroAction = this.createItemMacroAction(action, replace)
+            const macroAction = this._createItemMacroAction(action, replace)
 
             // Add action to action list
             if (!replace) macroActions.push(macroAction)
         })
 
-        this.addActionsToSubcategory(subcategory, macroActions)
+        this._addActionsToSubcategory(subcategory, macroActions)
     }
 
     /**
      * Create item macro action
+     * @private
      * @param {object} action   The action
      * @param {boolean} replace Whether to replace the action or not
      * @returns {object}        The action
      */
-    createItemMacroAction (action, replace) {
+    _createItemMacroAction (action, replace) {
         const itemMacroAction = (replace) ? action : Utils.deepClone(action)
         itemMacroAction.fullName = `(M) ${itemMacroAction.fullName}`
         itemMacroAction.name = `(M) ${itemMacroAction.name}`
@@ -89,10 +94,11 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
     /**
      * Add actions to the subcategory
+     * @private
      * @param {object} subcategory  The subcategory
      * @param {object} macroActions The actions
      */
-    addActionsToSubcategory (subcategory, macroActions) {
+    _addActionsToSubcategory (subcategory, macroActions) {
         macroActions.forEach((macroAction) => {
             const index = subcategory.actions.findIndex((action) => action.id === macroAction.id) + 1
             subcategory.actions.splice(index, 0, macroAction)
@@ -101,10 +107,11 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
     /**
      * Whether the item is supported by MidiQoL or not
+     * @private
      * @param {object} item The item
      * @returns {boolean}
      */
-    isUnsupportedByMidiQoL (item) {
+    _isUnsupportedByMidiQoL (item) {
         const flag = item.getFlag('midi-qol', 'onUseMacroName')
         return !flag
     }
