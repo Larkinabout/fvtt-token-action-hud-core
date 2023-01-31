@@ -93,6 +93,9 @@ export class CategoryManager {
      */
     createCategory (categoryData) {
         const categoryDataClone = Utils.deepClone(categoryData)
+        // New option for 1.1.0 - Define default showTitle for existing data
+        if (!categoryDataClone?.advancedCategoryOptions) categoryDataClone.advancedCategoryOptions = {}
+        if (typeof categoryDataClone?.advancedCategoryOptions?.showTitle === 'undefined') categoryDataClone.advancedCategoryOptions.showTitle = true
         return {
             id: categoryDataClone?.id,
             nestId: categoryDataClone?.nestId ?? this.id,

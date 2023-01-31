@@ -4,15 +4,20 @@
     "addToCombat": "전투에 추가",
     "blockListLabel": "차단 목록: 숨김 / 허가 목록: 보임",
     "cancel": "취소",
+    "collapseHud": "Collapse HUD",
     "combat": "전투",
+    "editCategories": "Edit Categories",
     "endTurn": "End Turn",
+    "expandHud": "Expand HUD",
     "handlerNotFound": "찾을 수 없습니다. 기본 굴림으로 돌아갑니다.",
+    "lockHud": "Lock HUD",
     "makeInvisible": "보이지 않게 만들기",
     "makeVisible": "보이게 하기",
     "pushLabelExplanation": "카테고리를 어느 쪽에 배치하는가?",
     "removeFromCombat": "전투에서 제거",
     "title": "Token Action HUD",
     "token": "토큰",
+    "unlockHud": "Unlock HUD",
     "utility": "유틸리티",
     "settings": {
       "activeCssAsText": {
@@ -110,15 +115,32 @@
     "tagDialog": {
       "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
       "actionDialogTitle": "Customise Actions",
-      "advancedCategoryOptions": {
-        "title": "Advanced Options",
-        "characterCount": "Characters per Word",
-        "customWidth": "Custom Width (px)",
-        "showTitle": "Show Title"
-      },
       "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
       "categoryDialogTitle": "Customise Categories",
       "clearButton": "클리어",
+      "options": {
+        "characterCount": {
+          "label": "Characters per Word",
+          "hint": "Limit the characters per word of the actions"
+        },
+        "customWidth": {
+          "label": "Custom Width",
+          "units": "(Pixels)",
+          "hint": "Custom width for the subcategories"
+        },
+        "image": {
+          "label": "Image",
+          "hint": "Image on this button"
+        },
+        "showCategoryTitle": {
+          "label": "Show Title",
+          "hint": "Show this button's title"
+        },
+        "showSubcategoryTitle": {
+          "label": "Show Title",
+          "hint": "Show this subcategory's title"
+        }
+      },
       "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
       "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "선택 (세미 콜론으로 구분)"

@@ -250,7 +250,7 @@ export class TokenActionHud extends Application {
             if (target.value.length === 0) return
 
             const nestId = target.value
-            const name = target.innerText ?? target.outerText
+            const name = target?.dataset?.name ?? target.innerText ?? target.outerText
             const type = target?.dataset?.type
 
             TagDialogHelper.showSubcategoryDialog(

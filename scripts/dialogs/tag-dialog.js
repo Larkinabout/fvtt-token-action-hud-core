@@ -1,15 +1,40 @@
 import { MODULE } from '../constants.js'
+import { Utils } from '../utilities/utils.js'
 
-export class TagDialog extends Dialog {
-    i18n = (toTranslate) => game.i18n.localize(toTranslate)
+export class TagDialog extends FormApplication {
     tagify = null
     dragSort = null
 
-    constructor (data, options) {
-        super(options)
-        this.data = data
+    constructor (data) {
+        super(data, { title: data.title })
+        this.content = data.content
+        this.submit = data.submit
         this.categoryId = null
         this.subcategoryId = null
+    }
+
+    static get defaultOptions () {
+        const defaults = super.defaultOptions
+        const overrides = {
+            closeOnSubmit: true,
+            id: 'token-action-hud-dialog',
+            template: `modules/${MODULE.ID}/templates/tagdialog.hbs`,
+            width: 500
+        }
+
+        const mergedOptions = foundry.utils.mergeObject(defaults, overrides)
+
+        return mergedOptions
+    }
+
+    getData (options) {
+        return this.content
+    }
+
+    activateListeners (html) {
+        super.activateListeners(html)
+        const cancel = html.find('#tah-dialog-cancel')
+        cancel.on('click', this.close.bind(this))
     }
 
     /**
@@ -24,35 +49,10 @@ export class TagDialog extends Dialog {
         this.nestId = nestId
         TagDialog._prepareHook(tags)
 
-        const template = Handlebars.compile(`{{> modules/${MODULE.ID}/templates/tagdialog.hbs}}`)
-
         const dialog = new TagDialog({
             title: dialogData.title,
-            content: template(dialogData.content),
-            buttons: {
-                accept: {
-                    icon: '<i class="fas fa-check"></i>',
-                    label: game.i18n.localize('tokenActionHud.accept'),
-                    callback: async (html) => {
-                        const selection = TagDialog.tagify.value.map((c) => {
-                            c.id = c.id ?? c.value.slugify({ replacement: '-', strict: true })
-                            return {
-                                id: c.id,
-                                name: c.value,
-                                type: c.type,
-                                level: c.level,
-                                hasDerivedSubcategories: c.hasDerivedSubcategories
-                            }
-                        })
-                        await dialogSubmit(selection, html)
-                    }
-                },
-                cancel: {
-                    icon: '<i class="fas fa-times"></i>',
-                    label: game.i18n.localize('tokenActionHud.cancel')
-                }
-            },
-            default: 'accept'
+            content: dialogData.content,
+            submit: dialogSubmit
         })
 
         dialog.render(true)
@@ -107,7 +107,7 @@ export class TagDialog extends Dialog {
                 if (tags.selected) TagDialog.tagify.addTags(tags.selected)
 
                 // "remove all tags" button event listener
-                const clearBtn = html.find('button[class="tags--removeAllBtn"]')
+                const clearBtn = html.find('#tah-dialog-clear-tags')
                 clearBtn.on('click', TagDialog.tagify.removeAllTags.bind(TagDialog.tagify))
             }
         })
@@ -133,5 +133,19 @@ export class TagDialog extends Dialog {
             const defaultChoice = this.data.buttons[this.data.default]
             return this.submit(defaultChoice)
         }
+    }
+
+    async _updateObject (event, formData) {
+        const selection = TagDialog.tagify.value.map((c) => {
+            c.id = c.id ?? c.value.slugify({ replacement: '-', strict: true })
+            return {
+                id: c.id,
+                name: c.value,
+                type: c.type,
+                level: c.level,
+                hasDerivedSubcategories: c.hasDerivedSubcategories
+            }
+        })
+        await this.submit(selection, formData)
     }
 }

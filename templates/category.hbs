@@ -1,11 +1,13 @@
 
-<div class="tah-category{{~#if cssClass}} {{cssClass}}{{~/if~}}" {{~#if this.id~}}id="tah-category-{{this.id}}" data-type="custom"{{~/if~}}>
-    <button class="tah-category-button" value="{{this.id}}">
-        <span class="tah-category-button-content">{{cap this.name}}
+<div class="tah-category{{~#if cssClass}} {{cssClass}}{{~/if~}}" {{~#if id~}}id="tah-category-{{id}}" data-type="custom"{{~/if~}}" >
+    <button class="tah-category-button" value="{{id}}" data-name={{name}}>
+        {{~#if advancedCategoryOptions.image~}}<div class="tah-img" style="background: url({{advancedCategoryOptions.image}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
+        <span class="tah-category-button-content">
+            {{~#if advancedCategoryOptions.showTitle~}}<div class="tah-category-button-text">{{cap name}}</div>{{~/if~}}
             <i class="fa fa-filter" aria-hidden="true"></i>
-            {{~#if this.info1~}}<div class="tah-info1">{{this.info1}}</div>{{~/if~}}
-            {{~#if this.info2~}}<div class="tah-info2">{{this.info2}}</div>{{~/if~}}
-            {{~#if this.info3~}}<div class="tah-info3">{{this.info3}}</div>{{~/if~}}
+            {{~#if info1~}}<div class="tah-info1">{{info1}}</div>{{~/if~}}
+            {{~#if info2~}}<div class="tah-info2">{{info2}}</div>{{~/if~}}
+            {{~#if info3~}}<div class="tah-info3">{{info3}}</div>{{~/if~}}
         </span>
     </button>
     <div class="tah-subcategories-wrapper expand-down">

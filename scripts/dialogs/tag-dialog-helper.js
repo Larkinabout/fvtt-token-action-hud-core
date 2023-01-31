@@ -25,7 +25,7 @@ export class TagDialogHelper {
         }
 
         // Set function on submit
-        const dialogSubmit = async (choices) => {
+        const dialogSubmit = async (choices, formData) => {
             await categoryManager.saveCategories(choices)
             Hooks.callAll('forceUpdateTokenActionHud')
         }
@@ -64,7 +64,7 @@ export class TagDialogHelper {
         }
 
         // Set function on submit
-        const dialogSubmit = async (choices, html) => {
+        const dialogSubmit = async (choices, formData) => {
             choices = choices.map((choice) => {
                 choice.id =
                 choice.id ??
@@ -82,10 +82,11 @@ export class TagDialogHelper {
                 }
             })
 
-            // Get advanced category options
-            const customWidth = parseInt(html.find('input[name="custom-width"]').val())
-            const characterCount = parseInt(html.find('input[name="character-count"]').val())
-            categorySubcategoryData.advancedCategoryOptions = { customWidth, characterCount }
+            const characterCount = formData?.characterCount
+            const customWidth = formData?.customWidth
+            const image = formData?.image
+            const showTitle = formData?.showTitle
+            categorySubcategoryData.advancedCategoryOptions = { characterCount, customWidth, image, showTitle }
 
             // Save selected subcategories to user action list
             await categoryManager.saveSubcategories(choices, categorySubcategoryData)
@@ -136,7 +137,7 @@ export class TagDialogHelper {
         }
 
         // Set function on submit
-        const dialogSubmit = async (choices, html) => {
+        const dialogSubmit = async (choices, formData) => {
             const selectedSubcategories = []
             const selectedActions = []
             for (const choice of choices) {
@@ -151,10 +152,10 @@ export class TagDialogHelper {
             }
 
             // Get advanced category options
-            const characterCount = parseInt(html.find('input[name="character-count"]').val())
-            const customWidth = parseInt(html.find('input[name="custom-width"]').val())
-            const showTitle = html.find('input[name="show-name"]').prop('checked')
-            parentSubcategoryData.advancedCategoryOptions = { characterCount, customWidth, showTitle }
+            const characterCount = formData?.characterCount
+            const image = formData?.image
+            const showTitle = formData?.showTitle
+            parentSubcategoryData.advancedCategoryOptions = { characterCount, image, showTitle }
 
             // Save subcategories to user action list
             await categoryManager.saveSubcategories(selectedSubcategories, parentSubcategoryData)
