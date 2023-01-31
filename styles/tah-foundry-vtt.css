@@ -136,6 +136,7 @@
 #tah-expand-hud,
 .tah-category-button {
   height: 32px;
+  margin: 0;
   padding: 0;
   position: relative;
   text-align: center;
@@ -216,7 +217,7 @@
 
 #tah-categories {
   display: flex;
-  gap: 3px;
+  gap: 5px;
 }
 
 .tah-category {
