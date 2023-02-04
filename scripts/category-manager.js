@@ -191,12 +191,10 @@ export class CategoryManager {
         for (const choice of choices) {
             const categoryNestId = choice.id
             const category = categories.find(category => category.nestId === categoryNestId)
-            const subcategories = Utils.deepClone(category?.subcategories) ?? null
+            const categoryClone = Utils.deepClone(category)
             chosenCategories.push({
-                nestId: choice.id,
-                id: choice.id,
-                name: choice.name,
-                subcategories
+                ...category,
+                name: choice.name
             })
         }
 
