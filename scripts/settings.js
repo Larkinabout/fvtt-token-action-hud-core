@@ -35,7 +35,8 @@ export const registerSettings = function (systemManager, rollHandlers) {
         choices: {
             compact: 'Compact',
             foundryVTT: 'Foundry VTT',
-            dorakoUI: 'Dorako UI'
+            dorakoUI: 'Dorako UI',
+            pathfinder: 'Pathfinder'
         },
         onChange: (value) => {
             Utils.switchCSS(value)
@@ -53,6 +54,18 @@ export const registerSettings = function (systemManager, rollHandlers) {
             up: Utils.i18n('tokenActionHud.settings.direction.choices.up'),
             down: Utils.i18n('tokenActionHud.settings.direction.choices.down')
         },
+        onChange: (value) => {
+            onChangeFunction(value)
+        }
+    })
+
+    game.settings.register(MODULE.ID, 'grid', {
+        name: Utils.i18n('tokenActionHud.settings.grid.name'),
+        hint: Utils.i18n('tokenActionHud.settings.grid.hint'),
+        scope: 'client',
+        config: true,
+        type: Boolean,
+        default: true,
         onChange: (value) => {
             onChangeFunction(value)
         }

@@ -1,7 +1,7 @@
 {{~#if
   (ne this.isSelected false)
 ~}}
-<div class="tah-subcategory" data-show-title={{advancedCategoryOptions.showTitle}}>
+<div class="tah-subcategory" data-has-actions="{{~#if (tf this.actions.length)~}}true{{~else~}}false{{~/if~}}" data-show-title="{{advancedCategoryOptions.showTitle}}">
   <div class="tah-subtitle{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}" id="{{this.nestId}}" data-type="{{this.type}}" data-has-derived-subcategories="{{this.hasDerivedSubcategories}}">
     {{~#if img~}}<div class="tah-img" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
     {{~#if icon~}}<div class="tah-icon">{{{icon}}}</div>{{~/if~}}

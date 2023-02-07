@@ -81,6 +81,10 @@
         "hint": "現在のユーザに自動的にホットバーを使用できる状態で初期化します。プレイヤーは設定を変更することで自分の好みに変更することができます。",
         "name": "現在のユーザはホットバーを使用できる"
       },
+      "grid": {
+        "hint": "Use a grid layout for actions",
+        "name": "Grid"
+      },
       "itemMacro": {
         "hint": "アイテムマクロを含むマクロはオリジナルを上書きします。それ以外では両方が表示されます。",
         "name": "アイテムマクロ：オリジナルを上書き",
@@ -126,6 +130,10 @@
           "label": "Custom Width",
           "units": "(Pixels)",
           "hint": "Custom width for the subcategories"
+        },
+        "grid": {
+          "label": "Grid",
+          "hint": "Grid layout for actions"
         },
         "image": {
           "label": "Image",

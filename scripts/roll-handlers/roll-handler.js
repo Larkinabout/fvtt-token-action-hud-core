@@ -7,12 +7,21 @@ import { Logger, Utils } from '../utilities/utils.js'
 export class RollHandler {
     preRollHandlers = []
 
+    /**
+     * Throw error
+     * @param {*} err The error
+     */
     throwInvalidValueErr (err) {
         throw new Error(
             `Error handling button click: ${err}`
         )
     }
 
+    /**
+     * Handle action events
+     * @param {object} event        The event
+     * @param {string} encodedValue The encoded value
+     */
     async handleActionEvent (event, encodedValue) {
         Logger.debug(`Handling event for action [${encodedValue}]`, { event })
 
@@ -35,8 +44,17 @@ export class RollHandler {
         this.doHandleActionEvent(event, encodedValue)
     }
 
+    /**
+     * Overide for the TAH system module
+     * @param {object} event        The event
+     * @param {string} encodedValue The encoded value
+     */
     doHandleActionEvent (event, encodedValue) {}
 
+    /**
+     * Add a pre-roll handler
+     * @param {object} handler The roll handler
+     */
     addPreRollHandler (handler) {
         Logger.debug(
             `Adding pre-roll handler ${handler.constructor.name}`
@@ -44,6 +62,11 @@ export class RollHandler {
         this.preRollHandlers.push(handler)
     }
 
+    /**
+     * Registers key presses
+     * @public
+     * @param {object} event The events
+     */
     registerKeyPresses (event) {
         this.rightClick = this.isRightClick(event)
         this.ctrl = this.isCtrl(event)
@@ -51,12 +74,24 @@ export class RollHandler {
         this.shift = this.isShift(event)
     }
 
-    doRenderItem (actorId, tokenId, actionId) {
+    /**
+     * Renders the item sheet
+     * @public
+     * @param {string} actorId The actor id
+     * @param {string} tokenId The token id
+     * @param {string} itemId  The item id
+     */
+    doRenderItem (actorId, tokenId, itemId) {
         const actor = Utils.getActor(actorId, tokenId)
-        const item = Utils.getItem(actor, actionId)
+        const item = Utils.getItem(actor, itemId)
         item.sheet.render(true)
     }
 
+    /**
+     * Whether the item sheet should be rendered
+     * @public
+     * @returns {boolean}
+     */
     isRenderItem () {
         return (
             Utils.getSetting('renderItemOnRightClick') &&
@@ -65,20 +100,44 @@ export class RollHandler {
         )
     }
 
+    /**
+     * Whether the button was right-clicked
+     * @public
+     * @param {object} event The event
+     * @returns {boolean}
+     */
     isRightClick (event) {
         return event?.originalEvent?.button === 2
     }
 
+    /**
+     * Whether the ALT key was pressed when the button was clicked
+     * @public
+     * @param {object} event The event
+     * @returns {boolean}
+     */
     isAlt (event) {
         return game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.ALT)
     }
 
+    /**
+     * Whether the CTRL key was pressed when the button was clicked
+     * @public
+     * @param {object} event The event
+     * @returns {boolean}
+     */
     isCtrl (event) {
         return game.keyboard.isModifierActive(
             KeyboardManager.MODIFIER_KEYS.CONTROL
         )
     }
 
+    /**
+     * Whether the SHIFT key was pressed when the button was clicked
+     * @public
+     * @param {object} event The event
+     * @returns {boolean}
+     */
     isShift (event) {
         return game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.SHIFT)
     }

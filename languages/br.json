@@ -82,6 +82,10 @@
         "hint": "O HUD fica ativo para o usuário. Não substitui a configuração de permissão do jogador.",
         "name": "Habilitar HUD para usuarios ativos"
       },
+      "grid": {
+        "hint": "Use a grid layout for actions",
+        "name": "Grid"
+      },
       "itemMacro": {
         "hint": "Show item macros, denoted by an (M)",
         "name": "Show Item Macros",
@@ -127,6 +131,10 @@
           "label": "Custom Width",
           "units": "(Pixels)",
           "hint": "Custom width for the subcategories"
+        },
+        "grid": {
+          "label": "Grid",
+          "hint": "Grid layout for actions"
         },
         "image": {
           "label": "Image",

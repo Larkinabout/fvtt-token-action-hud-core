@@ -87,9 +87,10 @@ export class TagDialogHelper {
 
             const characterCount = formData?.characterCount
             const customWidth = formData?.customWidth
+            const grid = formData?.grid
             const image = formData?.image
             const showTitle = formData?.showTitle
-            categorySubcategoryData.advancedCategoryOptions = { characterCount, customWidth, image, showTitle }
+            categorySubcategoryData.advancedCategoryOptions = { characterCount, customWidth, grid, image, showTitle }
 
             // Save selected subcategories to user action list
             await categoryManager.saveSubcategories(choices, categorySubcategoryData)

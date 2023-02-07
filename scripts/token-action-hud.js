@@ -28,6 +28,7 @@ export class TokenActionHud extends Application {
         this.isDisplayIcons = false
         this.isDraggable = false
         this.isEnabled = false
+        this.isGrid = false
         this.isUnlocked = false
     }
 
@@ -43,9 +44,11 @@ export class TokenActionHud extends Application {
         this.isDisplayIcons = Utils.getSetting('displayIcons')
         this.isDraggable = Utils.getSetting('drag')
         this.isEnabled = this.isHudEnabled()
+        this.isGrid = Utils.getSetting('grid')
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
         await this.systemManager.registerDefaultFlags()
         this.categoryManager = await this.systemManager.getCategoryManager()
+        this.categoryResizer = new CategoryResizer()
         this.actionHandler = await this.systemManager.getActionHandler(this.categoryManager)
         this.rollHandler = this.systemManager.getRollHandler()
     }
@@ -63,6 +66,7 @@ export class TokenActionHud extends Application {
         this.isDisplayIcons = Utils.getSetting('displayIcons')
         this.isDraggable = Utils.getSetting('drag')
         this.isEnabled = this.isHudEnabled()
+        this.isGrid = Utils.getSetting('grid')
         this.actionHandler.displayIcons = Utils.getSetting('displayIcons')
         Logger.debug('Settings updated')
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
@@ -184,12 +188,12 @@ export class TokenActionHud extends Application {
          * Open the category
          * @param {object} event The event
          */
-        const openCategory = (event) => {
+        const openCategory = async (event) => {
             const category = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
             category.classList.add('hover')
+            this.categoryResizer.resizeCategory(this.categoryManager, category, this.direction, this.isGrid)
             const id = category.id
             this.setHoveredCategory(id)
-            CategoryResizer.resizeCategory(this.categoryManager, category, this.direction)
         }
 
         /**
@@ -214,7 +218,7 @@ export class TokenActionHud extends Application {
         if (this.hoveredCategoryId !== '') {
             const id = `#${this.hoveredCategoryId}`
             const category = document.querySelector(id)
-            CategoryResizer.resizeCategory(this.categoryManager, category, this.direction)
+            this.categoryResizer.resizeCategory(this.categoryManager, category, this.direction, this.isGrid)
         }
 
         // Bring HUD to top

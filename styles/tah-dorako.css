@@ -475,7 +475,14 @@
   align-items: baseline;
   display: inline-flex;
   gap: 2px;
+  overflow: hidden;
   padding: 0 5px 0 5px;
+}
+
+.tah-action-button-text {
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
 }
 
 /*
@@ -524,6 +531,7 @@
 .tah-img {
   border-radius: 3px 0 0 3px;
   height: 30px;
+  min-width: 30px;
   width: 30px;
 }
 

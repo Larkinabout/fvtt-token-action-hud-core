@@ -193,7 +193,7 @@ export class CategoryManager {
             const category = categories.find(category => category.nestId === categoryNestId)
             const categoryClone = Utils.deepClone(category)
             chosenCategories.push({
-                ...category,
+                ...categoryClone,
                 name: choice.name
             })
         }
