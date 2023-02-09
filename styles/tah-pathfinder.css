@@ -9,14 +9,17 @@
   --tah-subtitle-disabled-color: #75683f;
   --tah-text-color: #dfc578;
   --tah-text-highlight-color: #f3e9ca;
+  --tah-text-shadow: 1px 1px 1px rgb(0 0 0), 0px 1px 3px rgb(0 0 0);
 
   /* BUTTON */
   --tah-button-background-color: #f3e9ca;
-  --tah-button-background-image: url("../../../ui/parchment.jpeg") repeat;#
+  --tah-button-background-image: url("../../../ui/parchment.jpeg") repeat;
   --tah-button-border: none;
   --tah-button-box-shadow: 0 0 0 1px #f3e9ca, 0 0 0 1px #f3e9ca, 0 0 0 2px #a98f39, inset 0 0 8px 1px rgb(0 0 0 / 50%), inset 0 0 1px 1px #a98f39;
   --tah-button-color: #191813;
   --tah-button-font-family: var(--body-serif);
+  --tah-button-height: 32px;
+  --tah-button-min-width: 32px;
 
   /* BUTTON HOVER */
   --tah-button-hover-background-color: #dfc578;
@@ -37,8 +40,8 @@
 
 #token-action-hud {
   align-items: center;
-  background: var(--tah-background, #00000000);
-  border-radius: 3px;
+  background: var(--tah-background);
+  border-radius: var(--tah-border-radius);
   display: flex;
   flex-direction: row;
   gap: 3px;
@@ -64,9 +67,7 @@
   pointer-events: none;
   position: absolute;
   text-align: left;
-  text-shadow:
-    1px 1px 1px rgb(0 0 0),
-    0px 1px 3px rgb(0 0 0);
+  text-shadow: var(--tah-text-shadow);
   top: -20px !important;
 }
 
@@ -129,8 +130,7 @@
   pointer-events: none;
   position: relative;
   text-align: center;
-  text-shadow:
-    1px 1px 1px rgba(0, 0, 0, 1);
+  text-shadow: var(--tah-text-shadow);
 }
 
 #tah-collapse-expand button > .fa,
@@ -151,7 +151,7 @@
 .tah-category-button {
   align-items: center;
   display: inline-flex;
-  height: 32px;
+  height: var(--tah-button-height);
   margin: 0;
   padding: 0;
   position: relative;
@@ -160,7 +160,7 @@
 }
 
 .tah-category-button {
-  min-width: 32px;
+  min-width: var(--tah-button-min-width);
 }
 
 .tah-category-button-content > .fa,
@@ -199,6 +199,7 @@
   border-radius: var(--tah-border-radius);
   box-shadow: var(--tah-button-box-shadow);
   color: var(--tah-button-color);
+  min-height: var(--tah-button-height);
 	transition: all 0.1s ease-in-out;
 }
 
@@ -221,7 +222,7 @@
   border: var(--tah-button-border);
   border-radius: var(--tah-border-radius);
   box-shadow: var(--tah-button-box-shadow);
-  color: var(--tah-button-color, #ddd);
+  color: var(--tah-button-color);
 }
 
 .tah-action.active button {
@@ -296,7 +297,7 @@
 }
 
 .tah-subcategories {
-  background: var(--tah-background, #00000000);
+  background: var(--tah-background);
   border-radius: var(--tah-border-radius);
   display: inline-flex;
   left: -10px;
@@ -353,12 +354,10 @@
   display: inline-flex;
   flex-wrap: wrap;
   font-size: var(--font-size-18);
-  gap: 5px;
+  gap: var(--tah-gap);
   left: -2px;
   padding-bottom: 2px;
-  text-shadow: 
-    1px 1px 1px rgb(0 0 0),
-    0px 1px 3px rgb(0 0 0);
+  text-shadow: var(--tah-text-shadow);
 }
 
 .tah-subtitle > .fa,
@@ -409,8 +408,8 @@
   display: flex;
   line-height: 1;
   margin: 0;
-  min-height: 32px;
-  min-width: 32px;
+  min-height: var(--tah-button-height);
+  min-width: var(--tah-button-min-width);
   padding: 0;
   text-decoration: none;
   width: 100%;
@@ -424,6 +423,7 @@
   align-items: center;
   display: inline-flex;
   gap: 5px;
+  min-height: var(--tah-button-height);
   overflow: hidden;
   padding: 0 10px 0 10px;
 }
@@ -448,7 +448,7 @@
 .tah-subtitle > .tah-info1,
 .tah-subtitle > .tah-info2,
 .tah-subtitle > .tah-info3 {
-  background: var(tah-button-background-color);
+  background: var(--tah-button-background-color);
   text-shadow: none;
   border-radius: 5px;
   margin: 1px;
@@ -458,22 +458,22 @@
 .tah-info1,
 .tah-info2,
 .tah-info3 {
-  color: var(--tah-info-color-primary)
+  color: var(--tah-info-color-primary);
 }
 
 .tah-info1.tah-spotlight,
 .tah-info2.tah-spotlight,
 .tah-info3.tah-spotlight {
-  color: var(--tah-info-spotlight-color, #fff)
+  color: var(--tah-info-spotlight-color);
 }
 
 .tah-img {
   border-radius: var(--tah-border-radius);
   box-shadow: 0px 0 8px rgb(0 0 0 / 75%);
   clip-path: inset(0px -15px 0px 0px);
-  height: 32px;
-  min-width: 32px;
-  width: 32px;
+  height: var(--tah-button-height);
+  min-width: var(--tah-button-min-width);
+  width: var(--tah-button-min-width);
 }
 
 .tah-icon > .fa,
@@ -488,8 +488,7 @@
 
 .tah-subtitle > .tah-icon > .fa,
 .tah-subtitle > .tah-icon > .fas {
-  text-shadow:
-    1px 1px 1px rgba(0, 0, 0, 1)
+  text-shadow: var(--tah-text-shadow);
 }
 
 /*

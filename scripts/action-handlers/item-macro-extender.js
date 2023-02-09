@@ -85,9 +85,10 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      */
     _createItemMacroAction (action, replace) {
         const itemMacroAction = (replace) ? action : Utils.deepClone(action)
+        itemMacroAction.id = `itemMacro+${itemMacroAction.id}`
         itemMacroAction.fullName = `(M) ${itemMacroAction.fullName}`
         itemMacroAction.name = `(M) ${itemMacroAction.name}`
-        itemMacroAction.encodedValue = `itemMacro ${itemMacroAction.encodedValue.substr(itemMacroAction.encodedValue.indexOf(DELIMITER))}`
+        itemMacroAction.encodedValue = `itemMacro${itemMacroAction.encodedValue.substr(itemMacroAction.encodedValue.indexOf(DELIMITER))}`
 
         return itemMacroAction
     }

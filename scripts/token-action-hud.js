@@ -743,6 +743,7 @@ export class TokenActionHud extends Application {
 
         if ((!character && !multipleTokens) || !this.isEnabled) {
             this.close()
+            this.hoveredCategoryId = ''
             Logger.debug('Hud update aborted as no character(s) found or hud is disabled')
             return
         }
@@ -751,6 +752,7 @@ export class TokenActionHud extends Application {
 
         if (this.actionList.length === 0) {
             this.close()
+            this.hoveredCategoryId = ''
             Logger.debug('Hud update aborted as action list empty')
             return
         }

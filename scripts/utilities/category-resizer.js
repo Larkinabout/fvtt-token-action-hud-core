@@ -61,7 +61,7 @@ export class CategoryResizer {
         let actionCount = 0
         let totalWidth = 0
         for (const actionGroup of this.actionGroups) {
-            const actions = actionGroup.querySelectorAll('.tah-action')
+            const actions = actionGroup.querySelectorAll('.tah-action:not(.shrink)')
             actionCount += actions.length
             for (const action of actions) {
                 const actionRect = action.getBoundingClientRect()
@@ -86,7 +86,7 @@ export class CategoryResizer {
             await this.assignCSS(actionGroup, style)
         }
 
-        const style = { height: `${this.availableHeight}px`, width: `${maxWidth + 40}px` }
+        const style = { maxHeight: `${this.availableHeight}px`, width: `${maxWidth + 40}px` }
         await this.assignCSS(this.content, style)
     }
 
@@ -136,7 +136,7 @@ export class CategoryResizer {
         }
 
         // Apply maxHeight and width styles to content
-        const style = { height: `${Math.ceil(this.availableHeight)}px`, width: `${width}px` }
+        const style = { maxHeight: `${this.availableHeight}px`, width: `${width}px` }
         await this.assignCSS(this.content, style)
     }
 

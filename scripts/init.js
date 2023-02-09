@@ -90,7 +90,10 @@ Hooks.on('canvasReady', async () => {
                         if (!game.tokenActionHud.rendered) game.tokenActionHud.render(true)
                     }
                 } else {
-                    if (game.tokenActionHud.rendered) game.tokenActionHud.close()
+                    if (game.tokenActionHud.rendered) {
+                        game.tokenActionHud.close()
+                        game.tokenActionHud.hoveredCategoryId = ''
+                    }
                 }
             }
         })
