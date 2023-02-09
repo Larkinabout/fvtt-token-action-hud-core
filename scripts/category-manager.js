@@ -191,11 +191,16 @@ export class CategoryManager {
         for (const choice of choices) {
             const categoryNestId = choice.id
             const category = categories.find(category => category.nestId === categoryNestId)
-            const categoryClone = Utils.deepClone(category)
-            chosenCategories.push({
-                ...category,
-                name: choice.name
-            })
+            if (category) {
+                const categoryClone = Utils.deepClone(category)
+                chosenCategories.push({
+                    ...categoryClone,
+                    name: choice.name
+                })
+            } else {
+                const category = this.createCategory(choice)
+                chosenCategories.push(category)
+            }
         }
 
         if (chosenCategories) await this.saveUserActionList(chosenCategories)

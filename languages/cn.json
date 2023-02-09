@@ -82,6 +82,10 @@
         "hint": "启用后，当前用户HUD激活。不会覆盖玩家的权限设置。",
         "name": "为当前用户启用HUD"
       },
+      "grid": {
+        "hint": "Use a grid layout for actions",
+        "name": "Grid"
+      },
       "itemMacro": {
         "hint": "启用后，有宏的物品的物品宏将会覆盖原本的物品，否则两个都会显示。",
         "name": "物品宏：覆盖原有物品",
@@ -127,6 +131,10 @@
           "label": "Custom Width",
           "units": "(Pixels)",
           "hint": "Custom width for the subcategories"
+        },
+        "grid": {
+          "label": "Grid",
+          "hint": "Grid layout for actions"
         },
         "image": {
           "label": "Image",

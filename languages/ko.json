@@ -82,6 +82,10 @@
         "hint": "활성화시 HUD는 유저들에게 활성화 된다. 플레이어 권한 설정을 덮어쓰지 않는다.",
         "name": "현재 유저에게 HUD를 활성화"
       },
+      "grid": {
+        "hint": "Use a grid layout for actions",
+        "name": "Grid"
+      },
       "itemMacro": {
         "hint": "활성화될 경우 아이템 매크로가 있는 아이템은 원래 아이템을 덮어쓰게 되며 그렇지 않을 경우 두 옵션이 모두 표시된다.",
         "name": "아이템 매크로: 원항목 덮어쓰기",
@@ -127,6 +131,10 @@
           "label": "Custom Width",
           "units": "(Pixels)",
           "hint": "Custom width for the subcategories"
+        },
+        "grid": {
+          "label": "Grid",
+          "hint": "Grid layout for actions"
         },
         "image": {
           "label": "Image",

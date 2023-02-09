@@ -4,11 +4,31 @@
 */
 
 :root {
-    --border-width: 1px;
-    --header-color: #fff;
-    --header-bg: var(--primary);
-    --body-padding: 0.0em 0.0em 0em 0em;
-    --edge-margin: 5px;
+  --tah-background: none;
+  --tah-border-radius: 3px;
+  --tah-gap: 5px;
+  --tah-icon-disabled-color: #dddddd80;
+  --tah-text-color: #ddd;
+  --tah-text-highlight-color: #fff;
+  --tah-text-shadow:
+    1px 1px 1px rgba(52, 52, 52, 1),
+    1px 1px 1px rgba(52, 52, 52, 1),
+    1px 1px 1px rgba(52, 52, 52, 1),
+    1px 1px 1px rgba(52, 52, 52, 1);
+  --border-width: 1px;
+  --header-color: #fff;
+  --header-bg: var(--primary);
+  --body-padding: 0.0em 0.0em 0em 0em;
+  --edge-margin: 5px;
+
+
+  /* BUTTON */
+  --tah-button-color: #ddd;
+  --tah-button-height: 30px;
+  --tah-button-min-width: 30px;
+
+  /* BUTTON HOVER */
+  --tah-button-hover-color: #fff;
 
     --dorako-bg-glass: rgba(120, 120, 120, 0.20);
     --dorako-bg-glass: rgba(120, 120, 120, 0.50);
@@ -60,7 +80,7 @@
 
     --dorako-text-shadow: 0px 0px 3px black;
     --dorako-box-shadow: 0px 0px 3px black;
-    --dorako-radius: 3px;
+
 }
 
 /*
@@ -69,8 +89,8 @@
 
 #token-action-hud {
   align-items: center;
-  background: none;
-  border-radius: var(--dorako-radius);
+  background: var(--tah-background);
+  border-radius: var(--tah-border-radius);
   display: flex;
   flex-direction: row;
   gap: 5px;
@@ -88,18 +108,14 @@
 }
 
 #tah-character-name {
-  color: #fff;
+  color: var(--tah-text-color);
   font-size: var(--font-size-16);
   margin: 0;
   padding: 0;
   pointer-events: none;
   position: absolute;
   text-align: left;
-  text-shadow:
-    1px 1px 1px rgba(52, 52, 52, 1),
-    1px 1px 1px rgba(52, 52, 52, 1),
-    1px 1px 1px rgba(52, 52, 52, 1),
-    1px 1px 1px rgba(52, 52, 52, 1);
+  text-shadow: var(--tah-text-shadow);
   top: -20px !important;
 }
 
@@ -156,17 +172,13 @@
 #tah-collapse-expand button > .fas,
 #tah-buttons button > .fa,
 #tah-buttons button > .fas {
-  color: #ddd;
+  color: var(--tah-text-color);
   margin: 3px;
   padding: 3px;
   pointer-events: none;
   position: relative;
   text-align: center;
-  text-shadow:
-    1px 1px 1px rgba(52, 52, 52, 1),
-    1px 1px 1px rgba(52, 52, 52, 1),
-    1px 1px 1px rgba(52, 52, 52, 1),
-    1px 1px 1px rgba(52, 52, 52, 1);
+  text-shadow: var(--tah-text-shadow);
 }
 
 #tah-collapse-expand button > .fa,
@@ -175,18 +187,20 @@
 }
 
 #tah-expand-hud {
+  align-items: center;
   display: flex;
-  width: auto;
+  left: -1px;
   position: relative;
   top: 14px;
-  left: -2px;
+  width: auto;
 }
 
 #tah-expand-hud,
 .tah-category-button {
   align-items: center;
   display: inline-flex;
-  height: 30px;
+  height: var(--tah-button-height);
+  margin: 0;
   padding: 0;
   position: relative;
   text-align: center;
@@ -197,9 +211,8 @@
 }
 
 .tah-category-button {
-  min-width: 30px;
+  min-width: var(--tah-button-min-width);
 }
-
 
 .tah-category-button-content > .fa,
 .tah-category-button-content > .fas {
@@ -225,27 +238,29 @@
 #tah-lock:hover > i,
 #tah-unlock:hover > i,
 #tah-edit-categories:hover > i {
-  color: #fff;
+  color: var(--tah-text-highlight-color);
 }
 
 #tah-expand-hud,
-.tah-category-button {
+.tah-category-button,
+.tah-action button {
   backdrop-filter: var(--dorako-vibrancy);
   background-color: var(--dorako-bg-current);
   border: none;
   box-shadow: var(--glassy);
-  color: #ddd;
-  height: auto;
-  text-align: center;
+  color: var(--tah-button-color);
+  min-height: var(--tah-button-height);
   text-shadow: var(--dorako-text-shadow);
+  transition: all 0.1s ease-in-out;
 }
 
 #tah-expand-hud:hover,
-.tah-category-button:hover {
+.tah-category button:hover,
+.tah-category.hover > button,
+.tah-action button:hover {
   box-shadow: var(--glassy);
-  color: #fff;
+  color: var(--tah-button-hover-color);
   cursor: pointer;
-  font-weight: normal;
 }
 
 .tah-category-button:focus {
@@ -258,12 +273,13 @@
 
 #tah-categories {
   display: flex;
-  gap: 3px;
+  gap: var(--tah-gap);
 }
 
 .tah-category {
   cursor: default;
   display: block;
+  height: min-content;
   position: relative;
 }
 
@@ -311,27 +327,39 @@
 
 .tah-subcategories-wrapper.expand-down > .tah-subcategories {
   flex-direction: column;
-  padding: 0px 10px 10px 10px;
+  padding: 0 10px 0 10px;
 }
 
 .tah-subcategories {
-  background: none;
-  border-radius: var(--dorako-radius);
+  background: var(--tah-background);
+  border-radius: var(--tah-border-radius);
   display: inline-flex;
   left: -9px;
   overflow-y: auto;
   position: relative;
-  width: 500px;
+  width: max-content;
 }
 
 .tah-subcategory {
   cursor: default;
-  margin-top: 3px;
-  padding-bottom: 1px;
+  margin-top: 2px;
   position: relative;
 }
+
+#tah-categories:not(.tah-unlocked) .tah-subcategory[data-has-actions="true"] > .tah-subcategory[data-show-title="false"] {
+  margin-top: 6px;
+}
+
 #tah-categories.tah-unlocked .tah-subcategory > .tah-subcategory {
   padding-left: 10px;
+}
+
+#tah-categories.tah-unlocked .tah-subcategory > .tah-subcategory {
+  padding-left: 10px;
+}
+
+#tah-categories:not(.tah-unlocked) .tah-subcategory[data-show-title="false"] {
+  margin-top: 0;
 }
 
 .tah-subcategory[data-show-title="false"] > .tah-subcategory:not([data-show-title="false"]) {
@@ -356,16 +384,12 @@
 
 .tah-subtitle {
   align-items: center;
-  color: #ddd;
+  color: var(--tah-text-color);
   display: inline-flex;
   flex-wrap: wrap;
-  gap: 5px;
-  padding-bottom: 1px;
-  text-shadow: 
-    1px 1px 1px rgba(52, 52, 52, 1),
-    1px 1px 1px rgba(52, 52, 52, 1), 
-    1px 1px 1px rgba(52, 52, 52, 1),
-    1px 1px 1px rgba(52, 52, 52, 1);
+  gap: var(--tah-gap);
+  padding-bottom: 2px;
+  text-shadow: var(--tah-text-shadow);
 }
 
 .tah-subtitle > .fa,
@@ -377,14 +401,14 @@
 
 .tah-subtitle:hover:not(.disable-edit) > .fa,
 .tah-subtitle:hover:not(.disable-edit) > .fas {
-  color: #fff;
+  color: var(--tah-text-highlight-color);
   cursor: pointer;
   visibility: visible;
 }
 
 .tah-subtitle:hover:not(.disable-edit),
 .tah-subtitle:hover:not(.disable-edit) {
-  color: #fff;
+  color: var(--tah-text-highlight-color);
   cursor: pointer;
 }
 
@@ -396,7 +420,7 @@
   align-items: center;
   display: flex;
   flex-flow: row wrap;
-  gap: 5px;
+  gap: var(--tah-gap);
   grid-column: 2;
   margin-bottom: 2px;
   margin-top: 2px;
@@ -415,13 +439,14 @@
   backdrop-filter: var(--dorako-vibrancy);
   background-color: var(--dorako-bg-current);
   border: none;
-  border-radius: var(--dorako-radius);
+  border-radius: var(--tah-border-radius);
   box-shadow: var(--glassy);
-  color: #ddd;
+  color: var(--tah-button-color);
   display: flex;
+  line-height: 1;
   margin: 0;
-  min-height: 30px;
-  min-width: 30px;
+  min-height: var(--tah-button-height);
+  min-width: var(--tah-button-min-width);
   padding: 0;
   text-decoration: none;
   text-shadow: var(--dorako-text-shadow);
@@ -472,10 +497,19 @@
 }
 
 .tah-action-button-content {
-  align-items: baseline;
+  align-items: center;
   display: inline-flex;
   gap: 2px;
+  min-height: var(--tah-button-height);
+  overflow: hidden;
   padding: 0 5px 0 5px;
+}
+
+.tah-action-button-text {
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  max-height: 2em;
 }
 
 /*
@@ -516,15 +550,11 @@
     1px 1px 1px rgba(52, 52, 52, 1);
 }
 
-.tah-icon {
-  display: inline;
-  margin-right: 2px;
-}
-
 .tah-img {
-  border-radius: 3px 0 0 3px;
-  height: 30px;
-  width: 30px;
+  border-radius: var(--tah-border-radius);
+  height: var(--tah-button-height);
+  min-width: var(--tah-button-min-width);
+  width: var(--tah-button-min-width);
 }
 
 .tah-icon > .fa,
@@ -579,10 +609,11 @@
   max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
+  width: 100%;
 }
 
 #tah-dialog-clear-tags {
   background: rgba(255, 255, 240, 0.8);
   border: 1px solid var(--color-border-light-primary);
-  margin: 2px 0 10px 0;
+  margin-top: 2px;
 }

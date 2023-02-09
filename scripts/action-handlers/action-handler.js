@@ -321,6 +321,9 @@ export class ActionHandler {
             const type = subcategory.type
             const savedSubcategory = await Utils.getSubcategoryByNestId(this.savedActorActionList, { nestId, type })
 
+            // Get existing actions
+            const existingActions = subcategory.actions ?? []
+
             // Get saved actions
             const savedActions = savedSubcategory?.actions ?? []
 
@@ -329,14 +332,16 @@ export class ActionHandler {
             // Set 'selected' to saved action 'selected'
             // Reorder actions based on saved action list
             for (const savedAction of savedActions) {
-                const action = actions.find((action) => action.encodedValue === savedAction.encodedValue)
+                const existingAction = existingActions.find(action => action.id === savedAction.id)
+                if (existingAction) continue
+                const action = actions.find((action) => action.id === savedAction.id)
                 if (action) {
                     const actionClone = { ...action, fullName: action.name, selected: savedAction.selected ?? true }
                     reorderedActions.push(actionClone)
                 }
             }
             for (const action of actions) {
-                const savedAction = savedActions.find((savedAction) => savedAction.encodedValue === action.encodedValue)
+                const savedAction = savedActions.find((savedAction) => savedAction.id === action.id)
                 if (!savedAction) {
                     const actionClone = { ...action, fullName: action.name, selected: true }
                     reorderedActions.push(actionClone)
@@ -344,7 +349,7 @@ export class ActionHandler {
             }
 
             // Update action list
-            subcategory.actions = reorderedActions
+            subcategory.actions.push(...reorderedActions)
         }
     }
 

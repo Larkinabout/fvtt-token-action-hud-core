@@ -82,6 +82,10 @@
         "hint": "Si está activado, el HUD se le mostrará al usuario. No reemplaza la configuración de los permisos del jugador.",
         "name": "Habilitar el HUD para el usuario actual"
       },
+      "grid": {
+        "hint": "Use a grid layout for actions",
+        "name": "Grid"
+      },
       "itemMacro": {
         "hint": "Selecciona qué elementos se mostrarán en el inventario.",
         "name": "Objeto-Macro: macro del objeto, objeto original, o ambos",
@@ -127,6 +131,10 @@
           "label": "Custom Width",
           "units": "(Pixels)",
           "hint": "Custom width for the subcategories"
+        },
+        "grid": {
+          "label": "Grid",
+          "hint": "Grid layout for actions"
         },
         "image": {
           "label": "Image",

@@ -82,6 +82,10 @@
         "hint": " Si activée, le HUD est actif pour le joueur. Ne vient pas écraser les permissions données au joueur.",
         "name": "Activer le HUD pour le joueur actuel"
       },
+      "grid": {
+        "hint": "Use a grid layout for actions",
+        "name": "Grid"
+      },
       "itemMacro": {
         "hint": "Sélectionne quels objets seront montrés dans l'inventaire.",
         "name": "Item-Macro: macro d'objet, objet original, ou les deux",
@@ -127,6 +131,10 @@
           "label": "Custom Width",
           "units": "(Pixels)",
           "hint": "Custom width for the subcategories"
+        },
+        "grid": {
+          "label": "Grid",
+          "hint": "Grid layout for actions"
         },
         "image": {
           "label": "Image",

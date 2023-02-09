@@ -128,7 +128,7 @@ export class Utils {
      * Get first controlled tokens
      * @returns {object} The first controlled token
      */
-    static getFirstControlledTokens () {
+    static getFirstControlledToken () {
         return game.canvas.tokens.controlled[0]
     }
 
@@ -191,7 +191,7 @@ export class Utils {
     /**
      * Language translation
      * @param {string} toTranslate The value to translate
-     * @returns {string} The translated value
+     * @returns {string}           The translated value
      */
     static i18n (toTranslate) {
         return game.i18n.localize(toTranslate)
@@ -199,21 +199,21 @@ export class Utils {
 
     /**
      * Whether the given module is active
-     * @param {string} id The module id
+     * @param {string} moduleId The module id
      * @returns {boolean}
      */
-    static isModuleActive (id) {
-        const module = game.modules.get(id)
+    static isModuleActive (moduleId) {
+        const module = game.modules.get(moduleId)
         return module && module.active
     }
 
     /**
      * Get the given module's title
-     * @param {string} id The module id
-     * @returns {string} The module title
+     * @param {string} moduleId The module id
+     * @returns {string}        The module title
      */
-    static getModuleTitle (id) {
-        return game.modules.get(id)?.title ?? ''
+    static getModuleTitle (moduleId) {
+        return game.modules.get(moduleId)?.title ?? ''
     }
 
     /**
@@ -224,7 +224,8 @@ export class Utils {
         const styles = [
             { setting: 'compact', file: 'tah-compact' },
             { setting: 'foundryVTT', file: 'tah-foundry-vtt' },
-            { setting: 'dorakoUI', file: 'tah-dorako' }
+            { setting: 'dorakoUI', file: 'tah-dorako' },
+            { setting: 'pathfinder', file: 'tah-pathfinder' }
         ]
 
         for (const style of styles) {
