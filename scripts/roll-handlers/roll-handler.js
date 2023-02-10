@@ -117,7 +117,12 @@ export class RollHandler {
      * @returns {boolean}
      */
     isAlt (event) {
-        return game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.ALT)
+        const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.ALT)
+        if (event.altKey && !isModiferActive) {
+            game.keyboard.downKeys.add('AltLeft')
+            return true
+        }
+        return isModiferActive
     }
 
     /**
@@ -127,9 +132,12 @@ export class RollHandler {
      * @returns {boolean}
      */
     isCtrl (event) {
-        return game.keyboard.isModifierActive(
-            KeyboardManager.MODIFIER_KEYS.CONTROL
-        )
+        const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL)
+        if (event.ctrlKey && !isModiferActive) {
+            game.keyboard.downKeys.add('ControlLeft')
+            return true
+        }
+        return isModiferActive
     }
 
     /**
@@ -139,7 +147,12 @@ export class RollHandler {
      * @returns {boolean}
      */
     isShift (event) {
-        return game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.SHIFT)
+        const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.SHIFT)
+        if (event.shiftKey && !isModiferActive) {
+            game.keyboard.downKeys.add('ShiftLeft')
+            return true
+        }
+        return isModiferActive
     }
 
     /** @private */
