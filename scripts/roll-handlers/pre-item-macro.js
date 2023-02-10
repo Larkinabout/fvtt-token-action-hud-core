@@ -5,8 +5,6 @@ import { Logger, Utils } from '../utilities/utils.js'
 export class ItemMacroPreRollHandler extends PreRollHandler {
     /** @override */
     prehandleActionEvent (event, encodedValue) {
-        this.registerKeyPresses(event)
-
         const payload = encodedValue.split(DELIMITER)
 
         if (payload.length !== 4) return false

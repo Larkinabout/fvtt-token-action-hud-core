@@ -119,6 +119,8 @@ export class RollHandler {
     isAlt (event) {
         const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.ALT)
         if (event.altKey && !isModiferActive) {
+            Logger.debug('Emulating LEFT ALT key press')
+            KeyboardManager.emulateKeypress(false, 'AltLeft', { altKey: true, force: true })
             game.keyboard.downKeys.add('AltLeft')
             return true
         }
@@ -134,6 +136,8 @@ export class RollHandler {
     isCtrl (event) {
         const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL)
         if (event.ctrlKey && !isModiferActive) {
+            Logger.debug('Emulating LEFT CTRL key press')
+            KeyboardManager.emulateKeypress(false, 'ControlLeft', { ctrlKey: true, force: true })
             game.keyboard.downKeys.add('ControlLeft')
             return true
         }
@@ -149,6 +153,8 @@ export class RollHandler {
     isShift (event) {
         const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.SHIFT)
         if (event.shiftKey && !isModiferActive) {
+            Logger.debug('Emulating LEFT SHIFT key press')
+            KeyboardManager.emulateKeypress(false, 'ShiftLeft', { shiftKey: true, force: true })
             game.keyboard.downKeys.add('ShiftLeft')
             return true
         }
