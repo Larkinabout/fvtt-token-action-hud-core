@@ -62,6 +62,7 @@
         "hint": "Imposta la direzione in cui si espanderà l'HUD",
         "name": "Direzione",
         "choices": {
+          "auto": "Automatica",
           "down": "Fuori uso",
           "up": "Su"
         }

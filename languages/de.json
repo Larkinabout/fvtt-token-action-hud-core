@@ -62,6 +62,7 @@
         "hint": "Legen Sie die Richtung fest, in die das HUD erweitert wird",
         "name": "Richtung",
         "choices": {
+          "auto": "Automatisch",
           "down": "Runter",
           "up": "Hoch"
         }

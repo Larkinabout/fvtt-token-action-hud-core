@@ -49,8 +49,9 @@ export const registerSettings = function (systemManager, rollHandlers) {
         scope: 'client',
         config: true,
         type: String,
-        default: 'down',
+        default: 'auto',
         choices: {
+            auto: Utils.i18n('tokenActionHud.settings.direction.choices.auto'),
             up: Utils.i18n('tokenActionHud.settings.direction.choices.up'),
             down: Utils.i18n('tokenActionHud.settings.direction.choices.down')
         },

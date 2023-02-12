@@ -87,13 +87,13 @@ export class Utils {
     /**
      * Get image from entity
      * @param {object} entity       The entity, e.g., actor, item
-     * @param {array} defaultImages Any default images
+     * @param {array} defaultImages Any default images to exclude
      * @returns {string}            The image URL
      */
     static getImage (entity, defaultImages = []) {
         defaultImages.push('icons/svg/mystery-man.svg')
         let result = ''
-        if (game.tokenActionHud.isDisplayIcons) result = entity?.img ?? entity?.icon ?? ''
+        if (game.tokenActionHud.isDisplayIcons) result = (typeof entity === 'string') ? entity : entity?.img ?? entity?.icon ?? ''
         return !defaultImages.includes(result) ? result : ''
     }
 
@@ -217,6 +217,17 @@ export class Utils {
     }
 
     /**
+     * Get the median
+     * @param {array} numbers The array of numbers
+     * @returns {number}      The median
+     */
+    static median (numbers) {
+        const mid = Math.floor(numbers.length / 2)
+        const nums = [...numbers].sort((a, b) => a - b)
+        return numbers.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2
+    }
+
+    /**
      * Enable stylesheet based on setting and disable all other stylesheets
      * @param {string} settingValue The 'style' setting value
      */
@@ -314,7 +325,7 @@ export class Utils {
             (requiredCoreModuleVersionParts.patch && coreModuleVersionParts.patch !== requiredCoreModuleVersionParts.patch)
         ) {
             ui.notifications.error(
-                `The installed Token Action Hud system module requires Token Action Hud core module version ${requiredCoreModuleVersion}.`
+                `The installed Token Action Hud system module requires Token Action Hud core module version ${requiredCoreModuleVersion}. Install the required version to continue using Token Action HUD.`
             )
             return false
         }

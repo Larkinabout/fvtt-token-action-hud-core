@@ -415,6 +415,10 @@
   width: 100%;
 }
 
+.tah-action.shrink button {
+  min-width: min-content;
+}
+
 .tah-action .active.activeText > .tah-action-button-content:after {
   content: "*";
 }
@@ -426,6 +430,7 @@
   min-height: var(--tah-button-height);
   overflow: hidden;
   padding: 0 10px 0 10px;
+  width: 100%;
 }
 
 .tah-action-button-text {
@@ -433,6 +438,7 @@
   text-align: left;
   text-overflow: ellipsis;
   max-height: 2em;
+  width: 100%;
 }
 
 /*

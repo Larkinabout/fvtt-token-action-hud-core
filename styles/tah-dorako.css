@@ -453,6 +453,10 @@
   width: 100%;
 }
 
+.tah-action.shrink button {
+  min-width: min-content;
+}
+
 .tah-action button[value*="toggle"]:hover {
   background-color: var(--paizo-blue);
 }
@@ -503,6 +507,7 @@
   min-height: var(--tah-button-height);
   overflow: hidden;
   padding: 0 5px 0 5px;
+  width: 100%;
 }
 
 .tah-action-button-text {
@@ -510,6 +515,7 @@
   text-align: left;
   text-overflow: ellipsis;
   max-height: 2em;
+  width: 100%;
 }
 
 /*

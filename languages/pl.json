@@ -62,6 +62,7 @@
         "hint": "Ustaw kierunek, w którym HUD będzie się rozwijał",
         "name": "Kierunek",
         "choices": {
+          "auto": "Automatyczny",
           "down": "Na dół",
           "up": "W górę"
         }

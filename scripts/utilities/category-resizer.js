@@ -1,3 +1,5 @@
+import { Utils } from './utils.js'
+
 export class CategoryResizer {
     category = null
     actionGroups = null
@@ -14,10 +16,10 @@ export class CategoryResizer {
     /**
      * Resize the category
      * @param {CategoryManager} categoryManager The CategoryManager class
-     * @param {object} category The category
-     * @param {string} direction The HUD expand direction
+     * @param {object} category                 The category
+     * @param {string} autoDirection            The direction the HUD will expand
      */
-    async resizeCategory (categoryManager, category, direction, grid) {
+    async resizeCategory (categoryManager, category, autoDirection, grid) {
         // Exit early if no category element passed in
         if (!category) return
 
@@ -29,7 +31,7 @@ export class CategoryResizer {
         if (this.actionGroups.length === 0) return
 
         // Set direction
-        this.direction = direction
+        this.direction = autoDirection
 
         // Get advanced category options
         const categoryId = this.category.id.replace('tah-category-', '')
@@ -58,31 +60,29 @@ export class CategoryResizer {
         const emptyStyle = { display: '', gridTemplateColumns: '', width: '' }
         await this.resetCSS(this.actionGroups, emptyStyle)
 
-        let actionCount = 0
-        let totalWidth = 0
+        const actionWidths = []
         for (const actionGroup of this.actionGroups) {
             const actions = actionGroup.querySelectorAll('.tah-action:not(.shrink)')
-            actionCount += actions.length
             for (const action of actions) {
                 const actionRect = action.getBoundingClientRect()
                 const actionWidth = Math.round(parseFloat(actionRect.width) + 1 || 0)
-                totalWidth += actionWidth
+                actionWidths.push(actionWidth)
             }
         }
 
-        const avgWidth = Math.ceil(totalWidth / actionCount)
+        const medianWidth = Math.ceil(Utils.median(actionWidths) * 1.1)
 
         let maxWidth = 0
         for (const actionGroup of this.actionGroups) {
             const actions = actionGroup.querySelectorAll('.tah-action')
             const squaredCols = Math.ceil(Math.sqrt(actions.length))
-            const availableCols = Math.floor(this.availableWidth / avgWidth)
+            const availableCols = Math.floor(this.availableWidth / medianWidth)
             const cols = (squaredCols > availableCols) ? availableCols : squaredCols
-            const width = (cols * avgWidth) + ((cols - 1) * actionGroupGap) + this.contentPadding
+            const width = (cols * medianWidth) + ((cols - 1) * actionGroupGap) + this.contentPadding
             maxWidth = (width > maxWidth) ? width : maxWidth
 
             // Apply maxHeight and width styles to content
-            const style = { display: 'grid', gridTemplateColumns: `repeat(${cols}, ${avgWidth}px)`, width: `${width}px` }
+            const style = { display: 'grid', gridTemplateColumns: `repeat(${cols}, ${medianWidth}px)`, width: `${width}px` }
             await this.assignCSS(actionGroup, style)
         }
 
@@ -120,17 +120,17 @@ export class CategoryResizer {
 
             maxGroupWidth += (maxActions * 5) - 5
             maxGroupWidth += this.contentPadding
-            const avgWidthPerAction = maxGroupWidth / maxActions
+            const medianWidthPerAction = maxGroupWidth / maxActions
 
             // Determine number of columns
             const defaultCols = 5
             let cols = (maxActions < defaultCols) ? maxActions : defaultCols
-            const maxCols = Math.floor(this.availableWidth / avgWidthPerAction)
+            const maxCols = Math.floor(this.availableWidth / medianWidthPerAction)
             const sqrtActionsPerGroup = Math.ceil(Math.sqrt(maxActions))
             if (sqrtActionsPerGroup > cols && sqrtActionsPerGroup <= maxCols) cols = sqrtActionsPerGroup
 
             // Determine width of content
-            width = avgWidthPerAction * cols
+            width = medianWidthPerAction * cols
             if (width > this.availableWidth) width = this.availableWidth
             if (width < 200) width = 200
         }

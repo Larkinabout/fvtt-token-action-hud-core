@@ -62,6 +62,7 @@
         "hint": "設置 HUD 展開的方向",
         "name": "方向",
         "choices": {
+          "auto": "自動的",
           "down": "下",
           "up": "向上"
         }

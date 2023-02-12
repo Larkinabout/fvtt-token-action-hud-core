@@ -62,6 +62,7 @@
         "hint": "Set the direction the HUD will expand",
         "name": "Direction",
         "choices": {
+          "auto": "Auto",
           "down": "Down",
           "up": "Up"
         }

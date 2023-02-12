@@ -13,6 +13,7 @@ export class TokenActionHud extends Application {
     defaultWidth = 20
     defaultLeftPos = 150
     defaultTopPos = 80
+    topPos = this.defaultTopPos
     defaultScale = 1
     refreshTimeout = null
     rendering = false
@@ -21,6 +22,7 @@ export class TokenActionHud extends Application {
     constructor (systemManager) {
         super()
         this.systemManager = systemManager
+        this.autoDirection = 'down'
         this.direction = 'down'
         this.isAlwaysShow = false
         this.isClickOpen = false
@@ -191,7 +193,7 @@ export class TokenActionHud extends Application {
         const openCategory = async (event) => {
             const category = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
             category.classList.add('hover')
-            this.categoryResizer.resizeCategory(this.categoryManager, category, this.direction, this.isGrid)
+            this.categoryResizer.resizeCategory(this.categoryManager, category, this.autoDirection, this.isGrid)
             const id = category.id
             this.setHoveredCategory(id)
         }
@@ -507,6 +509,8 @@ export class TokenActionHud extends Application {
 
             newElementTop = newElementTop - pos2
             newElementLeft = newElementLeft - pos1
+        
+            this.topPos = newElementTop
 
             // Apply styles
             requestAnimationFrame(() => {
@@ -529,6 +533,10 @@ export class TokenActionHud extends Application {
             // If position has not changed, do not update
             if (newElementTop === originalElementTop && newElementLeft === originalElementLeft) return
 
+            this.topPos = newElementTop
+
+            this.applySettings()
+
             // Save the new position to the user's flags
             Utils.setUserFlag('position', { top: newElementTop, left: newElementLeft })
 
@@ -545,13 +553,27 @@ export class TokenActionHud extends Application {
     }
 
     /**
+     * Get the automatic direction the HUD expands
+     * @returns {string} The direction
+     */
+    getAutoDirection () {
+        if (this.direction === 'up' || (this.direction === 'auto' && this.topPos > window.innerHeight / 2)) return 'up'
+        return 'down'
+    }
+
+    /**
      * Apply Settings
      */
     applySettings () {
-        if (Utils.getSetting('direction') === 'up') {
+        this.autoDirection = this.getAutoDirection()
+        if (this.autoDirection === 'up') {
             $(document).find('.tah-subcategories-wrapper').removeClass('expand-down')
             $(document).find('.tah-subcategories-wrapper').addClass('expand-up')
             $(document).find('#tah-character-name').addClass('tah-hidden')
+        } else {
+            $(document).find('.tah-subcategories-wrapper').addClass('expand-down')
+            $(document).find('.tah-subcategories-wrapper').removeClass('expand-up')
+            $(document).find('#tah-character-name').removeClass('tah-hidden')
         }
     }
 

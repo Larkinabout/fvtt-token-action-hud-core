@@ -62,6 +62,7 @@
         "hint": "Définissez la direction dans laquelle le HUD se développera",
         "name": "Direction",
         "choices": {
+          "auto": "Automatique",
           "down": "Vers le bas",
           "up": "En haut"
         }

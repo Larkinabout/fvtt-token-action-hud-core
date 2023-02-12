@@ -62,6 +62,7 @@
         "hint": "Defina a direção de expansão do HUD",
         "name": "Direção",
         "choices": {
+          "auto": "Auto",
           "down": "Baixa",
           "up": "Acima"
         }
