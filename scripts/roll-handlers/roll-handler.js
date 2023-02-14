@@ -5,6 +5,7 @@ import { Logger, Utils } from '../utilities/utils.js'
  * Resolves core actions triggered from the HUD
  */
 export class RollHandler {
+    delimiter = DELIMITER
     preRollHandlers = []
 
     /**

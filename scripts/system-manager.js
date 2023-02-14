@@ -26,7 +26,7 @@ export class SystemManager {
      * Register default flags
      */
     async registerDefaultFlags () {
-        const defaults = await this.doRegisterDefaultFlags()
+        const defaults = await this.doRegisterDefaultFlags() ?? []
         if (defaults) {
             await Utils.unsetUserFlag('default')
             await Utils.setUserFlag('default', defaults)

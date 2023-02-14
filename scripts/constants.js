@@ -12,10 +12,13 @@ export const MODULE = {
 export const DELIMITER = '|'
 
 /**
- * Action types
+ * Action type
  */
 export const ACTION_TYPE = {
-    UTILITY: 'utility'
+    compendiumEntry: 'tokenActionHud.compendiumEntry',
+    compendiumMacro: 'tokenActionHud.compendiumMacro',
+    compendiumPlaylist: 'tokenActionHud.compendiumPlaylist',
+    macro: 'tokenActionHud.macro'
 }
 
 /**
@@ -27,6 +30,11 @@ export const COMPENDIUM_PACK_TYPES = ['JournalEntry', 'Macro', 'RollTable', 'Pla
  * Compendium action types
  */
 export const COMPENDIUM_ACTION_TYPES = ['compendiumEntry', 'compendiumMacro', 'compendiumPlaylist', 'macro']
+
+export const ITEM_MACRO_ICON = {
+    ICON: 'fas fa-sd-card',
+    TOOLTIP: 'Item Macro'
+}
 
 /**
  * Subcategory levels

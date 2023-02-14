@@ -53,6 +53,13 @@ export class CategoryManager {
                 actor.unsetFlag(MODULE.ID, 'categories')
             })
         }
+        const tokens = game.canvas.tokens.objects.children.filter(token => token.actor.getFlag(MODULE.ID, 'categories'))
+        if (tokens) {
+            tokens.forEach(token => {
+                Logger.debug(`Resetting flags for actor [${token.actor.id}]`, { actor: token.actor })
+                token.actor.unsetFlag(MODULE.ID, 'categories')
+            })
+        }
         Logger.debug('Actor flags reset')
     }
 
@@ -352,8 +359,9 @@ export class CategoryManager {
         if (hasDerivedSubcategories === 'true') return await this.getDerivedSubcategoriesAsTagifyEntries(subcategoryData)
         const systemSubcategories = await this.getSystemSubcategoriesAsTagifyEntries()
         const compendiumSubcategories = await this.getCompendiumSubcategoriesAsTagifyEntries()
+        const macroSubcategories = await this.getMacroSubcategoriesAsTagifyEntries()
         const subcategories = []
-        subcategories.push(...systemSubcategories, ...compendiumSubcategories)
+        subcategories.push(...systemSubcategories, ...compendiumSubcategories, ...macroSubcategories)
         return subcategories
     }
 
@@ -379,7 +387,7 @@ export class CategoryManager {
 
     /**
      * Get compendium subcategories as Tagify entries
-     * @returns {object}
+     * @returns {object} The compendium subcategories
      */
     async getCompendiumSubcategoriesAsTagifyEntries () {
         const packs = game.packs
@@ -387,10 +395,28 @@ export class CategoryManager {
             .filter(pack => COMPENDIUM_PACK_TYPES.includes(pack.documentName))
             .filter(pack => game.user.isGM || !pack.private)
             .map((pack) => {
-                const id = pack.metadata.id.replace('.', '-')
-                const value = pack.metadata.label
-                return { id, value, type: SUBCATEGORY_TYPE.COMPENDIUM, level: SUBCATEGORY_TYPE.SUBCATEGORY }
+                const subcategoryData = {
+                    id: pack.metadata.id.replace('.', '-'),
+                    name: pack.metadata.label,
+                    type: 'core',
+                    level: SUBCATEGORY_TYPE.SUBCATEGORY
+                }
+                return this._toTagifyEntry(subcategoryData)
             })
+    }
+
+    /**
+     * Get macro subcategories a Tagify entries
+     * @returns {object} The macro subcategories
+     */
+    async getMacroSubcategoriesAsTagifyEntries () {
+        const subcategoryData = {
+            id: 'macro',
+            name: Utils.i18n('tokenActionHud.macros'),
+            type: 'core',
+            level: SUBCATEGORY_TYPE.SUBCATEGORY
+        }
+        return [this._toTagifyEntry(subcategoryData)]
     }
 
     /**
@@ -413,7 +439,8 @@ export class CategoryManager {
     _toTagifyEntry (data) {
         return {
             id: data.id,
-            value: data.name,
+            value: `Subcategory: ${data.name}`,
+            name: data.name,
             type: data.type,
             level: SUBCATEGORY_LEVEL.SUBCATEGORY,
             hasDerivedSubcategories: data.hasDerivedSubcategories ?? 'false'

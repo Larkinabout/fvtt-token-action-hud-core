@@ -85,7 +85,7 @@ export class TagDialog extends FormApplication {
                     delimiters: ';',
                     maxTags: 'Infinity',
                     dropdown: {
-                        maxItems: 50, // <- maximum allowed rendered suggestions
+                        maxItems: 500, // <- maximum allowed rendered suggestions
                         classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
                         enabled: 0, // <- show suggestions on focus
                         closeOnSelect: false // <- do not hide the suggestions dropdown once an item has been selected
@@ -151,7 +151,8 @@ export class TagDialog extends FormApplication {
             c.id = c.id ?? c.value.slugify({ replacement: '-', strict: true })
             return {
                 id: c.id,
-                name: c.value,
+                listName: c.value,
+                name: c.name ?? c.value,
                 type: c.type,
                 level: c.level,
                 hasDerivedSubcategories: c.hasDerivedSubcategories

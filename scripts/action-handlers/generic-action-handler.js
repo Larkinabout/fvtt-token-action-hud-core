@@ -48,6 +48,8 @@ export class GenericActionHandler {
         if (!tokenId) return
         const actions = []
 
+        const actionType = 'utility'
+
         // Build Toggle Combat action
         const toggleCombatId = 'toggleCombat'
         const inCombat = canvas.tokens.placeables.find(
@@ -57,7 +59,7 @@ export class GenericActionHandler {
             ? Utils.i18n('tokenActionHud.removeFromCombat')
             : Utils.i18n('tokenActionHud.addToCombat')
         const toggleCombatEncodedValue = [
-            ACTION_TYPE.UTILITY,
+            actionType,
             actorId,
             tokenId,
             toggleCombatId
@@ -78,7 +80,7 @@ export class GenericActionHandler {
                 ? Utils.i18n('tokenActionHud.makeVisible')
                 : Utils.i18n('tokenActionHud.makeInvisible')
             const toggleVisbilityEncodedValue = [
-                ACTION_TYPE.UTILITY,
+                actionType,
                 actorId,
                 tokenId,
                 toggleVisibilityId
@@ -108,13 +110,15 @@ export class GenericActionHandler {
         const tokens = Utils.getControlledTokens()
         const actions = []
 
+        const actionType = 'utility'
+
         // Toggle Combat
         const toggleCombatId = 'toggleCombat'
         const inCombat = tokens.every((token) => token.inCombat)
         const toggleCombatName = inCombat
             ? Utils.i18n('tokenActionHud.removeFromCombat')
             : Utils.i18n('tokenActionHud.addToCombat')
-        const toggleCombatEncodedValue = [ACTION_TYPE.UTILITY, actorId, tokenId, toggleCombatId].join(DELIMITER)
+        const toggleCombatEncodedValue = [actionType, actorId, tokenId, toggleCombatId].join(DELIMITER)
         const toggleCombatAction = {
             id: toggleCombatId,
             name: toggleCombatName,
@@ -129,7 +133,7 @@ export class GenericActionHandler {
             const toggleVisibilityname = hidden
                 ? Utils.i18n('tokenActionHud.makeVisible')
                 : Utils.i18n('tokenActionHud.makeInvisible')
-            const toggleVisbilityEncodedValue = [ACTION_TYPE.UTILITY, actorId, tokenId, toggleVisibilityId].join(DELIMITER)
+            const toggleVisbilityEncodedValue = [actionType, actorId, tokenId, toggleVisibilityId].join(DELIMITER)
             const toggleVisibilityAction = {
                 id: toggleVisibilityId,
                 name: toggleVisibilityname,

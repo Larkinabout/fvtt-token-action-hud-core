@@ -19,6 +19,8 @@ export class ActionHandler {
         this.compendiumActionHandler = new CompendiumActionHandler(this)
         this.macroActionHandler = new MacroActionHandler(this)
         this.actionList = []
+        this.availableActions = []
+        this.flattenedActions = []
         this.userActionList = []
         this.savedUserActionList = []
         this.savedActorActionList = []
@@ -33,6 +35,8 @@ export class ActionHandler {
         this.compendiumActionHandler = new CompendiumActionHandler(this)
         this.macroActionHandler = new MacroActionHandler(this)
         this.actionList = []
+        this.availableActions = []
+        this.flattenedActions = []
         this.userActionList = []
         this.savedUserActionList = []
         this.savedActorActionList = []
@@ -46,6 +50,7 @@ export class ActionHandler {
      */
     async buildActionList (character) {
         Logger.debug('Building action list...', { character })
+        this.resetActionHandler()
         await this.categoryManager.resetCategoryManager()
         this.character = character
         this.savedUserActionList = await this._getSavedUserActionList(character)
@@ -103,7 +108,7 @@ export class ActionHandler {
      * @param {object} character The actor and token
      * @returns {object}         The empty action list
      */
-    _buildEmptyActionList (character) {
+    async _buildEmptyActionList (character) {
         Logger.debug('Building empty action list...', { character })
         let hudTitle = ''
         if (Utils.getSetting('displayCharacterName')) hudTitle = character?.name ?? 'Multiple'
@@ -116,33 +121,47 @@ export class ActionHandler {
             categories: []
         }
 
-        const categories = (this.savedUserActionList?.length) ? this.savedUserActionList : Utils.getUserFlag('default.categories')
+        const userCategories = (this.savedUserActionList?.length) ? this.savedUserActionList : Utils.getUserFlag('default.categories')
+        const actorCategories = this.savedActorActionList ?? []
 
-        for (const category of categories) {
-            // Add category
+        for (const category of userCategories) {
+            // Add category to action list and flattened subcategories
+            const categoryData = this.categoryManager.createCategory(category)
             emptyActionList.categories.push(this.categoryManager.createCategory(category))
+            this.categoryManager.addToFlattenedSubcategories(categoryData)
 
             const lastIndex = emptyActionList.categories.length - 1
             const latestCategory = emptyActionList.categories[lastIndex]
 
             // addSubcategories function
-            const addSubcategories = (latestCategorySubcategory, subcategories) => {
+            const addSubcategories = async (latestCategorySubcategory, subcategories) => {
                 if (subcategories) {
                     for (const subcategory of subcategories) {
-                        latestCategorySubcategory.subcategories.push(this.categoryManager.createSubcategory(subcategory))
+                        // Add subcategory to action list and flattened subcategories
+                        const subcategoryData = this.categoryManager.createSubcategory(subcategory)
+
+                        const actorSubcategory = await Utils.getSubcategoryByNestId(actorCategories, subcategoryData)
+                        const actions = actorSubcategory?.actions ?? []
+                        if (actions.length) {
+                            subcategoryData.actions = actions
+                            this.flattenedActions.push(...actions)
+                        }
+
+                        latestCategorySubcategory.subcategories.push(subcategoryData)
+                        this.categoryManager.addToFlattenedSubcategories(subcategoryData)
 
                         if (subcategory?.subcategories?.length) {
                             const lastIndex = latestCategorySubcategory.subcategories.length - 1
                             const latestSubcategory = latestCategorySubcategory.subcategories[lastIndex]
 
-                            addSubcategories(latestSubcategory, subcategory.subcategories)
+                            await addSubcategories(latestSubcategory, subcategory.subcategories)
                         }
                     }
                 }
             }
 
             // Add subcategories to category
-            addSubcategories(latestCategory, category.subcategories, category.nestId)
+            await addSubcategories(latestCategory, category.subcategories, category.nestId)
         }
 
         Logger.debug('Empty action list built', { emptyActionList, character })
@@ -207,14 +226,58 @@ export class ActionHandler {
     }
 
     /**
+     * Create action
+     * @param {object} actionData The action data
+     * @returns {object}          The action
+     */
+    createAction (actionData) {
+        return {
+            id: actionData.id,
+            name: actionData.name,
+            fullName: actionData.fullName ?? actionData.name,
+            listName: actionData.listName ?? actionData.name,
+            encodedValue: actionData.encodedValue,
+            cssClass: actionData.cssClass ?? '',
+            icon1: actionData.icon1 ?? '',
+            icon2: actionData.icon2 ?? '',
+            icon3: actionData.icon3 ?? '',
+            img: actionData.img ?? '',
+            info1: {
+                class: actionData?.info1?.class ?? '',
+                text: actionData?.info1?.text ?? '',
+                title: actionData?.info1?.title ?? ''
+            },
+            info2: {
+                class: actionData?.info2?.class ?? '',
+                text: actionData?.info2?.text ?? '',
+                title: actionData?.info2?.title ?? ''
+            },
+            info3: {
+                class: actionData?.info3?.class ?? '',
+                text: actionData?.info3?.text ?? '',
+                title: actionData?.info3?.title ?? ''
+            },
+            selected: actionData.selected ?? true
+        }
+    }
+
+    /**
+     * Get flattened actions
+     * @param {object} actionData The action data
+     * @returns {array}           The actions
+     */
+    getFlattenedActions (actionData) {
+        return this.flattenedActions.filter(flattenedAction => flattenedAction.id === actionData.id)
+    }
+
+    /**
      * Get actions as Tagify entries for dialogs
      * @param {object} nestId The subcategory data
      * @returns {array}       The actions
      */
     async getAvailableActionsAsTagifyEntries (subcategoryData) {
         if (!this.actionList) return
-        const subcategory = await Utils.getSubcategoryByNestId(this.actionList.categories, subcategoryData)
-        const actions = subcategory.actions.map(action => this._toTagifyEntry(action))
+        const actions = this.availableActions.map(action => this._toTagifyEntry(action))
         return actions
     }
 
@@ -306,6 +369,11 @@ export class ActionHandler {
         // Exit if no actions exist
         if (!actions.length) return
 
+        actions = actions.map(action => this.createAction(action))
+
+        // Add actions to availableActions array
+        this.availableActions.push(...actions)
+
         // Exit if no subcategoryId exists
         if (!subcategoryData?.id) return
 
@@ -332,24 +400,36 @@ export class ActionHandler {
             // Set 'selected' to saved action 'selected'
             // Reorder actions based on saved action list
             for (const savedAction of savedActions) {
-                const existingAction = existingActions.find(action => action.id === savedAction.id)
-                if (existingAction) continue
                 const action = actions.find((action) => action.id === savedAction.id)
                 if (action) {
-                    const actionClone = { ...action, fullName: action.name, selected: savedAction.selected ?? true }
-                    reorderedActions.push(actionClone)
+                    const actionClone = Utils.deepClone({ ...action, selected: savedAction.selected ?? action.selected })
+                    const existingActionIndex = existingActions.findIndex(action => action.id === savedAction.id)
+                    if (existingActionIndex >= 0) {
+                        existingActions[existingActionIndex] = { ...actionClone, selected: existingActions[existingActionIndex].selected }
+                    } else {
+                        reorderedActions.push(actionClone)
+                    }
                 }
             }
             for (const action of actions) {
                 const savedAction = savedActions.find((savedAction) => savedAction.id === action.id)
                 if (!savedAction) {
-                    const actionClone = { ...action, fullName: action.name, selected: true }
+                    const actionClone = Utils.deepClone(action)
                     reorderedActions.push(actionClone)
                 }
             }
 
             // Update action list
             subcategory.actions.push(...reorderedActions)
+        }
+
+        // Update existing actions
+        for (const action of actions) {
+            const actionClone = Utils.deepClone(action)
+            const flattenedActions = this.getFlattenedActions(action)
+            for (let flattenedAction of flattenedActions) {
+                flattenedAction = { ...actionClone, selected: flattenedAction.selected }
+            }
         }
     }
 
@@ -433,9 +513,8 @@ export class ActionHandler {
         // Set 'selected' to true for selected actions
         // Reorder actions based on order in dialog
         for (const selectedAction of selectedActions) {
-            const action = actions.find(
-                (action) => action.encodedValue === selectedAction.id
-            )
+            if (selectedAction.id.includes('itemMacro')) continue
+            const action = this.availableActions.find((action) => action.encodedValue === selectedAction.id)
             if (action) {
                 const actionClone = { ...action, selected: true }
                 reorderedActions.push(actionClone)
@@ -443,6 +522,7 @@ export class ActionHandler {
         }
         // Set 'selected' to false for unselected actions
         for (const action of actions) {
+            if (action.id.includes('itemMacro')) continue
             const selectedAction = selectedActions.find(selectedAction => selectedAction.id === action.encodedValue)
             if (!selectedAction) {
                 const actionClone = { ...action, selected: false }
@@ -472,7 +552,13 @@ export class ActionHandler {
      * @returns {object}    Tagify entry
      */
     _toTagifyEntry (data) {
-        return { id: data.encodedValue, value: data.fullName, type: 'action', level: 'action' }
+        return {
+            id: data.encodedValue,
+            value: data.listName ?? data.name,
+            name: data.name,
+            type: 'action',
+            level: 'action'
+        }
     }
 
     /**
