@@ -155,7 +155,7 @@
           "hint": "Show this subcategory's title"
         }
       },
-      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "subcategoryDialogDescription": "Add and remove subcategories. Select subcategories with pre-defined actions from the list or enter free text for an empty subcategory. Drag subcategories to change their order.",
       "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "Wybierz (oddziel średnikiem)"
     }

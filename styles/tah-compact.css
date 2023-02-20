@@ -300,7 +300,6 @@
 
 .tah-subcategory {
   cursor: default;
-  margin-top: 2px;
   position: relative;
 }
 
@@ -345,9 +344,11 @@
   color: var(--tah-text-color);
   display: inline-flex;
   flex-wrap: wrap;
+  font-size: var(--font-size-12);
   gap: var(--tah-gap);
-  padding-bottom: 1px;
+  letter-spacing: 0.1em;
   text-shadow: var(--tah-text-shadow);
+  text-transform: uppercase;
 }
 
 .tah-subtitle > .fa,

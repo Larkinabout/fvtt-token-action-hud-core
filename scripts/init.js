@@ -67,11 +67,6 @@ Hooks.on('canvasReady', async () => {
 
         // Registers hooks to trigger a Token Action Hud update
         Hooks.on('controlToken', async (token, controlled) => {
-            if (isControlTokenPending) await controlTokenTimer.abort()
-            isControlTokenPending = true
-            await controlTokenTimer.start()
-            isControlTokenPending = false
-
             // Exit if same actor or token
             const actorId = game.tokenActionHud.actionHandler.actorId
             const controlledTokens = Utils.getControlledTokens()

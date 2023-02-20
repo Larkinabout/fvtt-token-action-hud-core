@@ -257,7 +257,20 @@ export class ActionHandler {
                 text: actionData?.info3?.text ?? '',
                 title: actionData?.info3?.title ?? ''
             },
-            selected: actionData.selected ?? true
+            userSelected: actionData.userSelected ?? true,
+            systemSelected: actionData.systemSelected ?? true,
+            selected: (!actionData.systemSelected) ? false : actionData.userSelected ?? actionData.systemSelected ?? true
+        }
+    }
+
+    /**
+     * Add to available actions
+     * @param {array} actions The actions
+     */
+    addToAvailableActions (actions) {
+        for (const action of actions) {
+            const existingAction = this.availableActions.find(availableAction => availableAction.id === action.id)
+            if (!existingAction) this.availableActions.push(action)
         }
     }
 
@@ -372,7 +385,17 @@ export class ActionHandler {
         actions = actions.map(action => this.createAction(action))
 
         // Add actions to availableActions array
-        this.availableActions.push(...actions)
+        this.addToAvailableActions(actions)
+
+        // Update existing actions
+        for (const action of actions) {
+            const flattenedActions = this.getFlattenedActions(action)
+            for (const flattenedAction of flattenedActions) {
+                const systemSelected = action.systemSelected ?? flattenedAction.systemSelected
+                const userSelected = flattenedAction.userSelected ?? action.userSelected
+                Object.assign(flattenedAction, this.createAction({ ...action, systemSelected, userSelected }))
+            }
+        }
 
         // Exit if no subcategoryId exists
         if (!subcategoryData?.id) return
@@ -397,39 +420,35 @@ export class ActionHandler {
 
             const reorderedActions = []
 
-            // Set 'selected' to saved action 'selected'
-            // Reorder actions based on saved action list
+            // Loop the previously saved actions in the subcategory
             for (const savedAction of savedActions) {
                 const action = actions.find((action) => action.id === savedAction.id)
+                const existingActionIndex = existingActions.findIndex(action => action.id === savedAction.id)
                 if (action) {
-                    const actionClone = Utils.deepClone({ ...action, selected: savedAction.selected ?? action.selected })
-                    const existingActionIndex = existingActions.findIndex(action => action.id === savedAction.id)
+                    const systemSelected = action.systemSelected ?? savedAction.systemSelected
                     if (existingActionIndex >= 0) {
-                        existingActions[existingActionIndex] = { ...actionClone, selected: existingActions[existingActionIndex].selected }
+                        const userSelected = existingActions[existingActionIndex].userSelected ?? savedAction.userSelected ?? action.userSelected
+                        existingActions[existingActionIndex] = this.createAction({ ...action, systemSelected, userSelected })
                     } else {
-                        reorderedActions.push(actionClone)
+                        const userSelected = savedAction.userSelected ?? action.userSelected
+                        reorderedActions.push(this.createAction({ ...action, systemSelected, userSelected }))
+                    }
+                } else {
+                    if (existingActionIndex >= 0) {
+                        const systemSelected = false
+                        const userSelected = existingActions[existingActionIndex].userSelected ?? savedAction.userSelected
+                        existingActions[existingActionIndex] = this.createAction({ ...action, systemSelected, userSelected })
                     }
                 }
             }
+            // Loop the generated actions and add any not previously saved
             for (const action of actions) {
                 const savedAction = savedActions.find((savedAction) => savedAction.id === action.id)
-                if (!savedAction) {
-                    const actionClone = Utils.deepClone(action)
-                    reorderedActions.push(actionClone)
-                }
+                if (!savedAction) reorderedActions.push(this.createAction(action))
             }
 
             // Update action list
             subcategory.actions.push(...reorderedActions)
-        }
-
-        // Update existing actions
-        for (const action of actions) {
-            const actionClone = Utils.deepClone(action)
-            const flattenedActions = this.getFlattenedActions(action)
-            for (let flattenedAction of flattenedActions) {
-                flattenedAction = { ...actionClone, selected: flattenedAction.selected }
-            }
         }
     }
 
@@ -516,7 +535,7 @@ export class ActionHandler {
             if (selectedAction.id.includes('itemMacro')) continue
             const action = this.availableActions.find((action) => action.encodedValue === selectedAction.id)
             if (action) {
-                const actionClone = { ...action, selected: true }
+                const actionClone = { ...action, userSelected: true }
                 reorderedActions.push(actionClone)
             }
         }
@@ -525,7 +544,7 @@ export class ActionHandler {
             if (action.id.includes('itemMacro')) continue
             const selectedAction = selectedActions.find(selectedAction => selectedAction.id === action.encodedValue)
             if (!selectedAction) {
-                const actionClone = { ...action, selected: false }
+                const actionClone = { ...action, userSelected: false }
                 reorderedActions.push(actionClone)
             }
         }

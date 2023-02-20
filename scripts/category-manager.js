@@ -290,7 +290,6 @@ export class CategoryManager {
                 derivedSubcategoriesClone,
                 {
                     nestId: parentSubcategoryNestId,
-                    type: SUBCATEGORY_TYPE.SYSTEM,
                     hasDerivedSubcategories: true
                 },
                 updateSelected
@@ -411,7 +410,7 @@ export class CategoryManager {
      */
     async getMacroSubcategoriesAsTagifyEntries () {
         const subcategoryData = {
-            id: 'macro',
+            id: 'macros',
             name: Utils.i18n('tokenActionHud.macros'),
             type: 'core',
             level: SUBCATEGORY_TYPE.SUBCATEGORY
