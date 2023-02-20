@@ -1,7 +1,7 @@
 import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
 import { CategoryResizer } from './utilities/category-resizer.js'
 import { MODULE } from './constants.js'
-import { Logger, Utils } from './utilities/utils.js'
+import { Logger, Timer, Utils } from './utilities/utils.js'
 
 /**
  * Token Action HUD application
@@ -13,10 +13,14 @@ export class TokenActionHud extends Application {
     defaultWidth = 20
     defaultLeftPos = 150
     defaultTopPos = 80
+    topPos = this.defaultTopPos
     defaultScale = 1
     refreshTimeout = null
     rendering = false
     tokens = null
+    isUpdatePending = false
+    isUpdating = false
+    updateTimer = new Timer(20)
 
     constructor (systemManager) {
         super()
@@ -735,6 +739,13 @@ export class TokenActionHud extends Application {
      * @param {object} trigger The trigger for the update
      */
     async _updateHud (trigger) {
+        if (this.isUpdating) return
+        if (this.isUpdatePending) await this.updateTimer.abort()
+        this.isUpdatePending = true
+        await this.updateTimer.start()
+        this.isUpdatePending = false
+        this.isUpdating = true
+
         Logger.debug('Updating hud...', trigger)
         const controlledTokens = Utils.getControlledTokens()
         const character = this._getCharacter(controlledTokens)
@@ -745,6 +756,7 @@ export class TokenActionHud extends Application {
             this.close()
             this.hoveredCategoryId = ''
             Logger.debug('Hud update aborted as no character(s) found or hud is disabled')
+            this.isUpdating = false
             return
         }
 
@@ -754,11 +766,13 @@ export class TokenActionHud extends Application {
             this.close()
             this.hoveredCategoryId = ''
             Logger.debug('Hud update aborted as action list empty')
+            this.isUpdating = false
             return
         }
 
         this.rendering = true
         this.render(true)
+        this.isUpdating = false
         Logger.debug('Hud updated')
     }
 
