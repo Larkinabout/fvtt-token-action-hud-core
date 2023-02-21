@@ -257,6 +257,7 @@ export class ActionHandler {
                 text: actionData?.info3?.text ?? '',
                 title: actionData?.info3?.title ?? ''
             },
+            isPreset: actionData.isPreset ?? false,
             userSelected: actionData.userSelected ?? true,
             systemSelected: actionData.systemSelected ?? true,
             selected: (!actionData.systemSelected) ? false : actionData.userSelected ?? actionData.systemSelected ?? true
@@ -423,28 +424,28 @@ export class ActionHandler {
             // Loop the previously saved actions in the subcategory
             for (const savedAction of savedActions) {
                 const action = actions.find((action) => action.id === savedAction.id)
-                const existingActionIndex = existingActions.findIndex(action => action.id === savedAction.id)
+                const existingAction = existingActions.find(action => action.id === savedAction.id)
                 if (action) {
                     const systemSelected = action.systemSelected ?? savedAction.systemSelected
-                    if (existingActionIndex >= 0) {
-                        const userSelected = existingActions[existingActionIndex].userSelected ?? savedAction.userSelected ?? action.userSelected
-                        existingActions[existingActionIndex] = this.createAction({ ...action, systemSelected, userSelected })
+                    if (existingAction) {
+                        const userSelected = existingAction.userSelected ?? savedAction.userSelected ?? action.userSelected
+                        Object.assign(existingAction, this.createAction({ ...action, isPreset: true, systemSelected, userSelected }))
                     } else {
                         const userSelected = savedAction.userSelected ?? action.userSelected
-                        reorderedActions.push(this.createAction({ ...action, systemSelected, userSelected }))
+                        reorderedActions.push(this.createAction({ ...action, isPreset: true, systemSelected, userSelected }))
                     }
                 } else {
-                    if (existingActionIndex >= 0) {
+                    if (existingAction && existingAction.isPreset) {
                         const systemSelected = false
-                        const userSelected = existingActions[existingActionIndex].userSelected ?? savedAction.userSelected
-                        existingActions[existingActionIndex] = this.createAction({ ...action, systemSelected, userSelected })
+                        const userSelected = existingAction.userSelected ?? savedAction.userSelected
+                        Object.assign(existingAction, this.createAction({ ...existingAction, systemSelected, userSelected }))
                     }
                 }
             }
             // Loop the generated actions and add any not previously saved
             for (const action of actions) {
                 const savedAction = savedActions.find((savedAction) => savedAction.id === action.id)
-                if (!savedAction) reorderedActions.push(this.createAction(action))
+                if (!savedAction) reorderedActions.push(this.createAction({ ...action, isPreset: true }))
             }
 
             // Update action list
@@ -541,9 +542,10 @@ export class ActionHandler {
         }
         // Set 'selected' to false for unselected actions
         for (const action of actions) {
+            if (!action.id) continue
             if (action.id.includes('itemMacro')) continue
             const selectedAction = selectedActions.find(selectedAction => selectedAction.id === action.encodedValue)
-            if (!selectedAction) {
+            if (!selectedAction && action.isPreset) {
                 const actionClone = { ...action, userSelected: false }
                 reorderedActions.push(actionClone)
             }
