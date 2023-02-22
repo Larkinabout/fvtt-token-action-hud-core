@@ -67,30 +67,8 @@ Hooks.on('canvasReady', async () => {
 
         // Registers hooks to trigger a Token Action Hud update
         Hooks.on('controlToken', async (token, controlled) => {
-            // Exit if same actor or token
-            const actorId = game.tokenActionHud.actionHandler.actorId
-            const controlledTokens = Utils.getControlledTokens()
-            const controlledCount = controlledTokens?.length ?? 0
-            if (controlledCount) {
-                if (actorId !== token.document.actor.id) {
-                    game.tokenActionHud.update(trigger)
-                } else {
-                    game.tokenActionHud.render(true)
-                }
-            } else {
-                if (game.user.character) {
-                    if (actorId !== game.user.character?.id) {
-                        game.tokenActionHud.update(trigger)
-                    } else {
-                        if (!game.tokenActionHud.rendered) game.tokenActionHud.render(true)
-                    }
-                } else {
-                    if (game.tokenActionHud.rendered) {
-                        game.tokenActionHud.close()
-                        game.tokenActionHud.hoveredCategoryId = ''
-                    }
-                }
-            }
+            const trigger = { trigger: { type: 'hook', name: 'controlToken', data: [token, controlled] } }
+            game.tokenActionHud.update(trigger)
         })
 
         Hooks.on('updateToken', (token, data, diff) => {
