@@ -8,6 +8,9 @@ import { Logger, Utils } from '../utilities/utils.js'
  * Handler for building the HUD's action list.
  */
 export class ActionHandler {
+    characterName = null
+    actor = null
+    token = null
     furtherActionHandlers = []
     delimiter = DELIMITER
 
@@ -45,75 +48,70 @@ export class ActionHandler {
 
     /**
      * Build the action list
-     * @param {object} character The actor and token
      * @returns {object}         The action list
      */
-    async buildActionList (character) {
-        Logger.debug('Building action list...', { character })
+    async buildActionList () {
+        Logger.debug('Building action list...', { actor: this.actor, token: this.token })
         this.resetActionHandler()
         await this.categoryManager.resetCategoryManager()
-        this.character = character
-        this.savedUserActionList = await this._getSavedUserActionList(character)
-        if (this.character) this.savedActorActionList = await this._getSavedActorActionList(character)
-        this.actionList = await this._buildEmptyActionList(character)
+        this.savedUserActionList = await this._getSavedUserActionList()
+        if (this.actor) this.savedActorActionList = await this._getSavedActorActionList()
+        this.actionList = await this._buildEmptyActionList()
         await this.categoryManager.flattenSubcategories(this.actionList)
         await Promise.all([
-            this._buildSystemActions(character),
-            this._buildGenericActions(character),
+            this._buildSystemActions(),
+            this._buildGenericActions(),
             this._buildCompendiumActions(),
             this._buildMacroActions()
         ])
-        await this.buildFurtherActions(character)
+        await this.buildFurtherActions()
         await this.categoryManager.saveDerivedSubcategories()
         await this._setCharacterLimit()
-        if (this.character) await this._saveActorActionList(character)
-        Logger.debug('Action list built', { actionList: this.actionList, character })
+        if (this.actor) await this._saveActorActionList()
+        Logger.debug('Action list built', { actionList: this.actionList, actor: this.actor, token: this.token })
         return this.actionList
     }
 
     /**
      * Get the saved action list from the user flags
      * @private
-     * @param {object} character The actor and token
      * @returns {object}         The saved action list
      */
-    _getSavedUserActionList (character) {
-        Logger.debug('Retrieving saved action list from user...', { character })
+    _getSavedUserActionList () {
+        const user = game.user
+        Logger.debug('Retrieving saved action list from user...', { user })
         const categories = Utils.getUserFlag('categories')
         if (!categories) return []
         const savedUserActionList = Utils.deepClone(categories)
-        Logger.debug('Action list from user retrieved', { savedUserActionList, character })
+        Logger.debug('Action list from user retrieved', { savedUserActionList, user })
         return savedUserActionList
     }
 
     /**
      * Get the saved action list from the user flags
      * @private
-     * @param {object} character The actor and token
      * @returns {object}         The saved action list
      */
-    _getSavedActorActionList (character) {
-        Logger.debug('Retrieving saved action list from actor...', { character })
-        const actor = character?.actor
-        if (!actor) return []
-        const categories = actor.getFlag(MODULE.ID, 'categories')
+    _getSavedActorActionList () {
+        if (!this.actor) return []
+        Logger.debug('Retrieving saved action list from actor...', { actor: this.actor })
+        const categories = this.actor.getFlag(MODULE.ID, 'categories')
         if (!categories) return []
         const savedActorActionList = Utils.deepClone(categories)
-        Logger.debug('Action list from actor retrieved', { savedActorActionList, character })
+        Logger.debug('Action list from actor retrieved', { savedActorActionList, actor: this.actor })
         return savedActorActionList
     }
 
     /**
      * Build an empty action list
-     * @param {object} character The actor and token
      * @returns {object}         The empty action list
      */
-    async _buildEmptyActionList (character) {
-        Logger.debug('Building empty action list...', { character })
+    async _buildEmptyActionList () {
+        Logger.debug('Building empty action list...', { actor: this.actor, token: this.token })
         let hudTitle = ''
-        if (Utils.getSetting('displayCharacterName')) hudTitle = character?.name ?? 'Multiple'
-        const tokenId = character?.token?.id ?? 'multi'
-        const actorId = character?.actor?.id ?? 'multi'
+        if (Utils.getSetting('displayCharacterName')) hudTitle = (this.actor) ? this.characterName : 'Multiple'
+        const actorId = this.actor?.id ?? 'multi'
+        const tokenId = this.token?.id ?? 'multi'
         const emptyActionList = {
             hudTitle,
             tokenId,
@@ -164,36 +162,40 @@ export class ActionHandler {
             await addSubcategories(latestCategory, category.subcategories, category.nestId)
         }
 
-        Logger.debug('Empty action list built', { emptyActionList, character })
+        // Set all actions to hidden by default
+        this.flattenedActions.forEach(action => {
+            action.selected = false
+            action.systemSelected = false
+        })
+
+        Logger.debug('Empty action list built', { emptyActionList, actor: this.actor, token: this.token })
         return emptyActionList
     }
 
     /**
      * Build any system-specific actions
-     * @param {object} character The actor and/or token
      */
-    async _buildSystemActions (character) {
-        Logger.debug('Building system actions...', { character })
+    async _buildSystemActions () {
+        Logger.debug('Building system actions...', { actor: this.actor, token: this.token })
         const subcategories = this.categoryManager.getFlattenedSubcategories({ level: 'subcategory' })
         const subcategoryIds = subcategories.map(subcategory => subcategory.id)
-        await this.buildSystemActions(character, subcategoryIds)
-        Logger.debug('System actions built', { actionList: this.actionList, character })
+        await this.buildSystemActions(subcategoryIds)
+        Logger.debug('System actions built', { actionList: this.actionList, actor: this.actor, token: this.token })
     }
 
     /**
      * Placeholder function for the system module
      * */
-    async buildSystemActions (character, subcategoryIds) {}
+    async buildSystemActions (subcategoryIds) {}
 
     /**
      * Build generic actions
      * @protected
-     * @param {object} character The actor and/or token
      */
-    _buildGenericActions (character) {
-        Logger.debug('Building generic actions...', { character })
-        this.genericActionHandler.buildGenericActions(character)
-        Logger.debug('Generic actions built', { actionList: this.actionList, character })
+    _buildGenericActions () {
+        Logger.debug('Building generic actions...', { actor: this.actor, token: this.token })
+        this.genericActionHandler.buildGenericActions()
+        Logger.debug('Generic actions built', { actionList: this.actionList, actor: this.actor, token: this.token })
     }
 
     /**
@@ -219,10 +221,9 @@ export class ActionHandler {
     /**
      * Build any further actions
      * @protected
-     * @param {object} character The actor and/or token
      */
-    async buildFurtherActions (character) {
-        this.furtherActionHandlers.forEach(handler => handler.extendActionList(character))
+    async buildFurtherActions () {
+        this.furtherActionHandlers.forEach(handler => handler.extendActionList())
     }
 
     /**
@@ -257,6 +258,7 @@ export class ActionHandler {
                 text: actionData?.info3?.text ?? '',
                 title: actionData?.info3?.title ?? ''
             },
+            isItem: actionData.isitem ?? null,
             isPreset: actionData.isPreset ?? false,
             userSelected: actionData.userSelected ?? true,
             systemSelected: actionData.systemSelected ?? true,
@@ -504,15 +506,13 @@ export class ActionHandler {
     /**
      * Save the action list to the actor flag
      * @private
-     * @param {object} character The actor and/or token
      */
-    async _saveActorActionList (character) {
-        Logger.debug('Saving actor action list...', { character })
-        if (!character?.actor) return
-        const actor = character.actor
+    async _saveActorActionList () {
+        if (!this.actor) return
+        Logger.debug('Saving actor action list...', { actor: this.actor })
         const categories = Utils.deepClone(this.actionList.categories)
-        await actor.setFlag(MODULE.ID, 'categories', categories)
-        Logger.debug('Actor action list saved', { actionList: this.actionList, character })
+        await this.actor.setFlag(MODULE.ID, 'categories', categories)
+        Logger.debug('Actor action list saved', { actionList: this.actionList, actor: this.actor })
     }
 
     /**
@@ -555,7 +555,7 @@ export class ActionHandler {
         subcategory.actions = reorderedActions
 
         // Save action list
-        await this._saveActorActionList(this.character)
+        await this._saveActorActionList()
     }
 
     /**

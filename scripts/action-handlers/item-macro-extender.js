@@ -10,23 +10,17 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         super(actionHandler.categoryManager)
         this.actionHandler = actionHandler
         this.categoryManager = actionHandler.categoryManager
+        this.actor = this.actionHandler.actor
+        this.token = this.actionHandler.token
     }
 
     /**
      * Extend the action list
      * @override
-     * @param {object} character The actor and/or token
      */
-    extendActionList (character) {
-        if (!character) return
-
-        const tokenId = character.token?.id
-        const actorId = character.actor?.id
-
-        if (!actorId) return
-
-        const actor = Utils.getActor(actorId, tokenId)
-        const items = actor.items.filter((item) => item.flags?.itemacro?.macro?.command)
+    extendActionList () {
+        if (!this.actor) return
+        const items = this.actor.items.filter((item) => item.flags?.itemacro?.macro?.command)
 
         let itemIds
         if (Utils.isModuleActive('midi-qol')) {

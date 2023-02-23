@@ -1,11 +1,9 @@
 import { MigrationManager } from './migration-manager.js'
 import { TokenActionHud } from './token-action-hud.js'
 import { MODULE } from './constants.js'
-import { Timer, Utils } from './utilities/utils.js'
+import { Utils } from './utilities/utils.js'
 
 let systemManager
-let isControlTokenPending = false
-const controlTokenTimer = new Timer(20)
 
 Hooks.on('tokenActionHudSystemReady', async (module) => {
     // Exit if core module version is not compatible with the system module

@@ -513,7 +513,7 @@ export class TokenActionHud extends Application {
 
             newElementTop = newElementTop - pos2
             newElementLeft = newElementLeft - pos1
-        
+
             this.topPos = newElementTop
 
             // Apply styles
@@ -905,8 +905,13 @@ export class TokenActionHud extends Application {
 
         if (!character.actor) return null
 
-        character.id = character.token?.id ?? character.actor.id
-        character.name = character.token?.name ?? character.actor.name
+        this.actor = character.actor
+        this.token = character.token
+        this.actionHandler.characterName = character.token?.name ?? character.actor.name
+        this.actionHandler.actor = character.actor
+        this.actionHandler.token = character.token
+        this.rollHandler.actor = character.actor
+        this.rollHandler.token = character.token
         return character
     }
 

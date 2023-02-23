@@ -5,6 +5,8 @@ import { Logger, Utils } from '../utilities/utils.js'
  * Resolves core actions triggered from the HUD
  */
 export class RollHandler {
+    actor = null
+    token = null
     delimiter = DELIMITER
     preRollHandlers = []
 
@@ -78,13 +80,10 @@ export class RollHandler {
     /**
      * Renders the item sheet
      * @public
-     * @param {string} actorId The actor id
-     * @param {string} tokenId The token id
      * @param {string} itemId  The item id
      */
-    doRenderItem (actorId, tokenId, itemId) {
-        const actor = Utils.getActor(actorId, tokenId)
-        const item = Utils.getItem(actor, itemId)
+    doRenderItem (itemId) {
+        const item = Utils.getItem(this.actor, itemId)
         item.sheet.render(true)
     }
 
@@ -167,7 +166,7 @@ export class RollHandler {
         const payload = encodedValue.split(DELIMITER)
 
         const actionType = payload[0]
-        const actionId = payload[3]
+        const actionId = payload[1]
 
         return actionType === 'utility' && actionId.includes('toggle')
     }
@@ -175,7 +174,7 @@ export class RollHandler {
     /** @private */
     async _doMultiGenericAction (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
-        const actionId = payload[3]
+        const actionId = payload[1]
 
         const firstControlledToken = Utils.getFirstControlledToken()
 
