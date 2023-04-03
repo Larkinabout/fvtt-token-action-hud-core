@@ -44,6 +44,21 @@ export class CategoryManager {
     /**
      * Reset actor flags
      */
+    async resetActorFlag () {
+        Logger.debug('Resetting actor flag...')
+        await game.tokenActionHud.actor.unsetFlag(MODULE.ID, 'categories')
+        const token = game.canvas.tokens.objects.children.find(token => token.actor.id === game.tokenActionHud.actor.id)
+        if (token) {
+            Logger.debug(`Resetting flags for actor [${token.actor.id}]`, { actor: token.actor })
+            await token.actor.unsetFlag(MODULE.ID, 'categories')
+        }
+        Hooks.callAll('forceUpdateTokenActionHud')
+        Logger.debug('Actor flag reset')
+    }
+
+    /**
+     * Reset actor flags
+     */
     async resetActorFlags () {
         Logger.debug('Resetting actor flags...')
         const actors = game.actors.filter(actor => actor.getFlag(MODULE.ID, 'categories'))
@@ -105,7 +120,7 @@ export class CategoryManager {
         if (typeof categoryDataClone?.advancedCategoryOptions?.showTitle === 'undefined') categoryDataClone.advancedCategoryOptions.showTitle = true
         return {
             id: categoryDataClone?.id,
-            nestId: categoryDataClone?.nestId ?? this.id,
+            nestId: categoryDataClone?.nestId ?? categoryDataClone?.id,
             name: categoryDataClone?.name,
             level: SUBCATEGORY_LEVEL.CATEGORY,
             advancedCategoryOptions: categoryDataClone?.advancedCategoryOptions ?? {},
@@ -130,6 +145,7 @@ export class CategoryManager {
             id: subcategoryDataClone?.id,
             nestId: subcategoryDataClone?.nestId,
             name: subcategoryDataClone?.name,
+            listName: subcategoryDataClone?.listName,
             type: subcategoryDataClone?.type ?? SUBCATEGORY_TYPE.CUSTOM,
             level: SUBCATEGORY_LEVEL.SUBCATEGORY,
             advancedCategoryOptions: subcategoryDataClone?.advancedCategoryOptions ?? { showTitle: true },
@@ -235,27 +251,36 @@ export class CategoryManager {
 
         const nestId = parentSubcategoryData.nestId
 
-        // Loop derived subcategories or choices
+        // Loop subcategories
         const chosenSubcategories = []
         for (const subcategory of subcategories) {
-            chosenSubcategories.push(this.createSubcategory({
-                ...subcategory,
-                nestId: `${nestId}_${subcategory.id}`,
-                isSelected: subcategory.isSelected ?? true
-            }))
-        }
-        if (parentSubcategoryData.hasDerivedSubcategories) {
-            for (const subSubcategory of subcategory.subcategories) {
-                const subSubcategoryClone = Utils.deepClone(subSubcategory)
-                const subcategory = subcategories.find(subcategory => subcategory.id === subSubcategoryClone.id)
-                if (updateSelected) {
-                    subSubcategoryClone.isSelected = false
-                    subSubcategoryClone.actions = []
-                }
-                if (!subcategory) chosenSubcategories.push(subSubcategoryClone)
-            }
+            subcategory.nestId = `${nestId}_${subcategory.id}`
+            const existingSubcategory = await Utils.getSubcategoryByNestId(categoriesClone, subcategory)
+            chosenSubcategories.push(
+                (existingSubcategory)
+                    ? {
+                        ...existingSubcategory,
+                        isSelected: existingSubcategory.isSelected ?? true
+                    }
+                    : this.createSubcategory({
+                        ...subcategory,
+                        isSelected: subcategory.isSelected ?? true
+                    })
+            )
         }
 
+        // Loop derived subcategories
+        if (parentSubcategoryData.hasDerivedSubcategories) {
+            const subSubcategories = subcategory.subcategories.filter(subSubcategory => {
+                const subcategory = subcategories.find(s => s.id === subSubcategory.id)
+                if (!subcategory && updateSelected) {
+                    subSubcategory.isSelected = false
+                    subSubcategory.actions = []
+                }
+                return !subcategory
+            })
+            chosenSubcategories.push(...subSubcategories)
+        }
         subcategory.subcategories = chosenSubcategories
 
         // Add advanced category options
@@ -438,7 +463,7 @@ export class CategoryManager {
     _toTagifyEntry (data) {
         return {
             id: data.id,
-            value: `Subcategory: ${data.name}`,
+            value: data.listName ?? data.name,
             name: data.name,
             type: data.type,
             level: SUBCATEGORY_LEVEL.SUBCATEGORY,

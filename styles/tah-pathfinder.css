@@ -513,3 +513,7 @@
   border: 1px solid var(--color-border-light-primary);
   margin-top: 2px;
 }
+
+#tah-dialog-reset-actions {
+  margin-top: 2px;
+}

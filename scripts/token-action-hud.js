@@ -729,6 +729,15 @@ export class TokenActionHud extends Application {
     }
 
     /**
+     * Reset the hud
+     */
+    async resetActorFlag () {
+        await this.categoryManager.resetActorFlag()
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud.resetActorFlag' } }
+        this.update(trigger)
+    }
+
+    /**
      * Reset actor flags
      */
     async resetActorFlags () {

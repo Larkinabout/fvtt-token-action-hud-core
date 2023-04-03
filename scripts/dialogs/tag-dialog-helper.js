@@ -23,7 +23,8 @@ export class TagDialogHelper {
                 topLabel: Utils.i18n('tokenActionHud.tagDialog.categoryDialogDescription'),
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
-                indexExplanationLabel: Utils.i18n('tokenActionHud.pushLabelExplanation')
+                indexExplanationLabel: Utils.i18n('tokenActionHud.pushLabelExplanation'),
+                level: 'hud'
             }
         }
 

@@ -14,8 +14,15 @@
       <button type="button" id="tah-dialog-clear-tags" class="tags--removeAllBtn">
         <i class="fa-duotone fa-filter-circle-xmark"></i>{{clearButtonText}}
       </button>
+    </div
+    {{~#if level~}}>
+    {{~#if (eq this.level "hud") ~}}
+    <div>
+      <button type="button" id="tah-dialog-reset-actions">
+        <i class="fa-solid fa-arrow-rotate-left"></i>{{localize "tokenActionHud.tagDialog.resetActions.button"}}
+      </button>
     </div>
-    {{~#if level~}}
+    {{~/if~}}
     {{~#if (eq this.level "category") ~}}
     <div class="form-group slim">
       <label>{{localize "tokenActionHud.tagDialog.options.showCategoryTitle.label"}}</label>
@@ -43,7 +50,6 @@
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.image.hint"}}</p>
     </div>
-    {{~/if~}}
     <div class="form-group slim">
       <label>{{localize "tokenActionHud.tagDialog.options.grid.label"}}</label>
       <div class="form-fields">
@@ -51,7 +57,6 @@
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.grid.hint"}}</p>
     </div>
-    {{~#if (eq this.level "category") ~}}
     <div class="form-group">
       <label>{{localize "tokenActionHud.tagDialog.options.customWidth.label"}} <span class="units">{{localize "tokenActionHud.tagDialog.options.customWidth.units"}}</span></label>
       <div class="form-fields">
@@ -60,8 +65,6 @@
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.customWidth.hint"}}</p>
     </div>
     {{~/if~}}
-    
-    
     <div class="form-group">
       <label>{{localize "tokenActionHud.tagDialog.options.characterCount.label"}}</label>
       <div class="form-fields">

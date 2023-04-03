@@ -155,6 +155,17 @@
           "hint": "Show this subcategory's title"
         }
       },
+      "resetActions": {
+        "button": "Reset Actions",
+        "dialog": {
+          "title": "Reset Actions",
+          "content": "This will reset all actions for this actor. Do you wish to continue?",
+          "buttons": {
+            "yes": "Yes",
+            "no": "No"
+          }
+        }
+      },
       "subcategoryDialogDescription": "Add and remove subcategories. Select subcategories with pre-defined actions from the list or enter free text for an empty subcategory. Drag subcategories to change their order.",
       "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "Scelte (diviso con punto e virgola)"
