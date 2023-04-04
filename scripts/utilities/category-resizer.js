@@ -122,6 +122,7 @@ export class CategoryResizer {
      * @param {object} actionGroup The action group
      */
     async resizeGrid (actionGroup) {
+        if (!actionGroup) return
         const emptyStyle = { display: '', gridTemplateColumns: '', width: '' }
         await this.assignCSS(actionGroup, emptyStyle)
 
@@ -140,6 +141,7 @@ export class CategoryResizer {
      * @param {object} actionGroup The action group
      */
     async resize (actionGroup) {
+        if (!actionGroup) return
         // Calculate width
         let width = 500
         if (this.isCustomWidth) {

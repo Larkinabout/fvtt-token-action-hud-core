@@ -14,6 +14,7 @@
   --tah-button-border: none;
   --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606, 0 0 5px #000000ff;
   --tah-button-color: #ddd;
+  --tah-button-disabled-color: #666;
   --tah-button-height: 22px;
   --tah-button-min-width: 22px;
 
@@ -155,9 +156,7 @@
   padding: 0;
   position: relative;
   text-align: center;
-  text-shadow: 
-    1px 1px 1px rgb(0 0 0),
-    0px 1px 3px rgb(0 0 0);
+  text-shadow: var(--tah-text-shadow);
   z-index: 1;
 }
 
@@ -202,27 +201,11 @@
 }
 
 #tah-expand-hud:hover,
-.tah-category button:hover,
-.tah-category.hover > button,
-.tah-action button:hover {
+.tah-category > button:hover,
+.tah-action:not(.disabled) button:hover {
   box-shadow: var(--tah-button-hover-box-shadow);
   color: var(--tah-button-hover-color);
   cursor: pointer;
-}
-
-.tah-category button:active {
-  box-shadow: var(--tah-button-hover-box-shadow);
-  color: var(--tah-button-hover-color);
-}
-
-.tah-action.active button {
-  background: var(--tah-button-active-background-color);
-  box-shadow: var(--tah-button-active-box-shadow);
-}
-
-.tah-action.toggle button:hover {
-  background: var(--tah-button-toggle-hover-background-color);
-  box-shadow: var(--tah-button-toggle-hover-box-shadow);
 }
 
 /*
@@ -407,12 +390,36 @@
   width: 100%;
 }
 
+.tah-action .active.activeText > .tah-action-button-content:after {
+  content: "*";
+}
+
+.tah-action.disabled button {
+  color: var(--tah-button-disabled-color);
+}
+
+.tah-action.disabled button:hover {
+  box-shadow: var(--tah-button-box-shadow);
+}
+
+.tah-category button:active {
+  box-shadow: var(--tah-button-hover-box-shadow);
+  color: var(--tah-button-hover-color);
+}
+
+.tah-action.active button,
+.tah-action.active.disabled button:hover {
+  background: var(--tah-button-active-background-color);
+  box-shadow: var(--tah-button-active-box-shadow);
+}
+
 .tah-action.shrink button {
   min-width: min-content;
 }
 
-.tah-action .active.activeText > .tah-action-button-content:after {
-  content: "*";
+.tah-action.toggle:not(.disabled) button:hover {
+  background: var(--tah-button-toggle-hover-background-color);
+  box-shadow: var(--tah-button-toggle-hover-box-shadow);
 }
 
 .tah-action-button-content {

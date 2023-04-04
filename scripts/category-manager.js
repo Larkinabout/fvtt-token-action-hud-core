@@ -422,6 +422,7 @@ export class CategoryManager {
                 const subcategoryData = {
                     id: pack.metadata.id.replace('.', '-'),
                     name: pack.metadata.label,
+                    listName: `Subcategory: ${pack.metadata.label}`,
                     type: 'core',
                     level: SUBCATEGORY_TYPE.SUBCATEGORY
                 }
@@ -437,6 +438,7 @@ export class CategoryManager {
         const subcategoryData = {
             id: 'macros',
             name: Utils.i18n('tokenActionHud.macros'),
+            listName: `Subcategory: ${Utils.i18n('tokenActionHud.macros')}`,
             type: 'core',
             level: SUBCATEGORY_TYPE.SUBCATEGORY
         }

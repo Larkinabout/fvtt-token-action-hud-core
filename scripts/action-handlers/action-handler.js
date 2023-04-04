@@ -66,6 +66,7 @@ export class ActionHandler {
         ])
         await this.buildFurtherActions()
         await this.categoryManager.saveDerivedSubcategories()
+        await this.sortAvailableActions()
         await this._setCharacterLimit()
         if (this.actor) await this._saveActorActionList()
         Logger.debug('Action list built', { actionList: this.actionList, actor: this.actor, token: this.token })
@@ -275,6 +276,13 @@ export class ActionHandler {
             const existingAction = this.availableActions.find(availableAction => availableAction.id === action.id)
             if (!existingAction) this.availableActions.push(action)
         }
+    }
+
+    /**
+     * Sort available actions by listName
+     */
+    async sortAvailableActions () {
+        this.availableActions.sort((a, b) => a.listName.localeCompare(b.listName))
     }
 
     /**

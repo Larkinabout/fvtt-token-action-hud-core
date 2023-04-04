@@ -24,6 +24,7 @@
 
   /* BUTTON */
   --tah-button-color: #ddd;
+  --tah-button-disabled-color: #dddddd80;
   --tah-button-height: 30px;
   --tah-button-min-width: 30px;
 
@@ -255,12 +256,15 @@
 }
 
 #tah-expand-hud:hover,
-.tah-category button:hover,
-.tah-category.hover > button,
-.tah-action button:hover {
+.tah-category > button:hover,
+.tah-action:not(.disabled) button:hover {
+  background-color: var(--paizo-red);
+  border: none;
   box-shadow: var(--glassy);
   color: var(--tah-button-hover-color);
-  cursor: pointer;
+  font-weight: inherit;
+  transition: backdrop-filter 0.15s ease-out;
+  transition: background-color 0.15s ease-out;
 }
 
 .tah-category-button:focus {
@@ -453,51 +457,38 @@
   width: 100%;
 }
 
+.tah-action .active.activeText > .tah-action-button-content:after {
+  content: "*";
+}
+
+.tah-action.active button,
+.tah-action.active.disabled button:hover {
+  background-color: var(--paizo-blue) !important;
+}
+
+.tah-action.disabled button {
+  color: var(--tah-button-disabled-color);
+}
+
+.tah-action.disabled button:hover {
+  box-shadow: var(--glassy);
+}
+
+.tah-action.toggle:not(.disabled) button:hover {
+  background-color: var(--paizo-blue);
+  border: none;
+  box-shadow: var(--glassy);
+  transition: backdrop-filter 0.15s ease-out;
+  transition: background-color 0.15s ease-out;
+}
+
 .tah-action.shrink button {
   min-width: min-content;
-}
-
-.tah-action button[value*="toggle"]:hover {
-  background-color: var(--paizo-blue);
-}
-
-.tah-action.active,
-.tah-action.active button[value*="toggle"] {
-  background-color: var(--paizo-blue-bright) !important;
-}
-
-#tah-expand-hud:hover,
-.tah-category-button:hover,
-.tah-action button:hover {
-  background-color: var(--paizo-red);
-  border: none;
-  box-shadow: var(--glassy);
-  transition: backdrop-filter 0.15s ease-out;
-  transition: background-color 0.15s ease-out;
-}
-
-
-.tah-action button:hover {
-  color: #fff;
-  cursor: pointer;
-  font-weight: inherit;
-}
-
-.tah-action button[value^="toggle"]:hover {
-  background-color: var(--paizo-blue);
-  border: none;
-  box-shadow: var(--glassy);
-  transition: backdrop-filter 0.15s ease-out;
-  transition: background-color 0.15s ease-out;
 }
 
 .tah-action .tah-img {
   border: none;
   box-shadow: 0 0 0 1px var(--tertiary);
-}
-
-.tah-action .active.activeText > .tah-action-button-content:after {
-  content: "*";
 }
 
 .tah-action-button-content {
