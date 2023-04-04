@@ -14,8 +14,7 @@
       <button type="button" id="tah-dialog-clear-tags" class="tags--removeAllBtn">
         <i class="fa-duotone fa-filter-circle-xmark"></i>{{clearButtonText}}
       </button>
-    </div
-    {{~#if level~}}>
+    </div>
     {{~#if (eq this.level "hud") ~}}
     <div>
       <button type="button" id="tah-dialog-reset-actions">
@@ -31,6 +30,14 @@
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.showCategoryTitle.hint"}}</p>
     </div>
+    <div class="form-group">
+      <label>{{localize "tokenActionHud.tagDialog.options.image.label"}}</label>
+      <div class="form-fields">
+          <input type="text" id="image" name="image" data-dtype="text" value="{{advancedCategoryOptions.image}}">
+          {{filePicker target="image" type="image"}}
+      </div>
+      <p class="hint">{{localize "tokenActionHud.tagDialog.options.image.hint"}}</p>
+    </div>
     {{~/if~}}
     {{~#if (eq this.level "subcategory") ~}}
     <div class="form-group slim">
@@ -41,15 +48,6 @@
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.showSubcategoryTitle.hint"}}</p>
     </div>
     {{~/if~}}
-    {{~#if (eq this.level "category") ~}}
-    <div class="form-group">
-      <label>{{localize "tokenActionHud.tagDialog.options.image.label"}}</label>
-      <div class="form-fields">
-          <input type="text" id="image" name="image" data-dtype="text" value="{{advancedCategoryOptions.image}}">
-          {{filePicker target="image" type="image"}}
-      </div>
-      <p class="hint">{{localize "tokenActionHud.tagDialog.options.image.hint"}}</p>
-    </div>
     <div class="form-group slim">
       <label>{{localize "tokenActionHud.tagDialog.options.grid.label"}}</label>
       <div class="form-fields">
@@ -57,14 +55,18 @@
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.grid.hint"}}</p>
     </div>
+    {{~#if (eq this.level "category") ~}}
     <div class="form-group">
-      <label>{{localize "tokenActionHud.tagDialog.options.customWidth.label"}} <span class="units">{{localize "tokenActionHud.tagDialog.options.customWidth.units"}}</span></label>
+      <label>{{localize "tokenActionHud.tagDialog.options.customWidth.label"}}
+        <span class="units">{{localize "tokenActionHud.tagDialog.options.customWidth.units"}}</span>
+      </label>
       <div class="form-fields">
         <input type="number" name="customWidth" value="{{advancedCategoryOptions.customWidth}}" />
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.customWidth.hint"}}</p>
     </div>
     {{~/if~}}
+    {{~#if (ne this.level "hud") ~}}
     <div class="form-group">
       <label>{{localize "tokenActionHud.tagDialog.options.characterCount.label"}}</label>
       <div class="form-fields">

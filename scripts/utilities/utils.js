@@ -362,7 +362,7 @@ export class Utils {
      */
     static async getSubcategoryByNestId (subcategories, searchCriteria = {}) {
         const nestId = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.nestId)
-        const subcategoryType = searchCriteria?.type ?? 'system'
+        const subcategoryType = searchCriteria?.type
         if (!nestId) return
 
         const parts = nestId.split('_')
@@ -373,7 +373,7 @@ export class Utils {
             for (const subcategory of subcategories) {
                 if (subcategory.id === parts[0]) {
                     if (parts.length === 1) {
-                        if (!subcategory.type || subcategory.type === subcategoryType) return subcategory
+                        if (!subcategory.type || !subcategoryType || subcategory.type === subcategoryType) return subcategory
                         return
                     }
                     if (subcategory.subcategories.length === 0) return
