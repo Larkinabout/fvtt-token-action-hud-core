@@ -120,7 +120,7 @@ export class GenericActionHandler {
         // Toggle Visibility
         if (game.user.isGM) {
             const toggleVisibilityId = 'toggleVisibility'
-            const hidden = tokens.every((token) => !token.document.hidden)
+            const hidden = tokens.every((token) => token.document.hidden)
             const toggleVisibilityname = hidden
                 ? Utils.i18n('tokenActionHud.makeVisible')
                 : Utils.i18n('tokenActionHud.makeInvisible')
