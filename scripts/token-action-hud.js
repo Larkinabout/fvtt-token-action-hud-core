@@ -896,7 +896,16 @@ export class TokenActionHud extends Application {
      * @private
      */
     _getCharacter (controlled = []) {
-        if (controlled.length > 1) return null
+        if (controlled.length > 1) {
+            this.actor = null
+            this.token = null
+            this.actionHandler.characterName = 'Multiple'
+            this.actionHandler.actor = null
+            this.actionHandler.token = null
+            this.rollHandler.actor = null
+            this.rollHandler.token = null
+            return null
+        }
 
         const character = { token: null, actor: null }
         if (controlled.length === 1) {

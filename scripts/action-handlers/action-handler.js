@@ -445,7 +445,7 @@ export class ActionHandler {
                         reorderedActions.push(this.createAction({ ...action, isPreset: true, systemSelected, userSelected }))
                     }
                 } else {
-                    if (existingAction && existingAction.isPreset) {
+                    if (existingAction && !existingAction.selected && existingAction.isPreset) {
                         const systemSelected = false
                         const userSelected = existingAction.userSelected ?? savedAction.userSelected
                         Object.assign(existingAction, this.createAction({ ...existingAction, systemSelected, userSelected }))

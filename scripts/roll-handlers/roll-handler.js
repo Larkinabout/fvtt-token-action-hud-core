@@ -39,12 +39,11 @@ export class RollHandler {
 
         if (handled) return
 
-        if (this._isMultiGenericAction(encodedValue)) {
-            await this._doMultiGenericAction(encodedValue)
-            return
+        if (this._isGenericAction(encodedValue)) {
+            await this._handleGenericAction(encodedValue)
+        } else {
+            this.doHandleActionEvent(event, encodedValue)
         }
-
-        this.doHandleActionEvent(event, encodedValue)
     }
 
     /**
@@ -80,10 +79,12 @@ export class RollHandler {
     /**
      * Renders the item sheet
      * @public
-     * @param {string} itemId  The item id
+     * @param {object} actor  The actor
+     * @param {string} itemId The item id
      */
-    doRenderItem (itemId) {
-        const item = Utils.getItem(this.actor, itemId)
+    doRenderItem (actor, itemId) {
+        if (!actor) actor = this.actor
+        const item = Utils.getItem(actor, itemId)
         item.sheet.render(true)
     }
 
@@ -162,7 +163,7 @@ export class RollHandler {
     }
 
     /** @private */
-    _isMultiGenericAction (encodedValue) {
+    _isGenericAction (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
 
         const actionType = payload[0]
@@ -172,14 +173,14 @@ export class RollHandler {
     }
 
     /** @private */
-    async _doMultiGenericAction (encodedValue) {
+    async _handleGenericAction (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
         const actionId = payload[1]
 
         const firstControlledToken = Utils.getFirstControlledToken()
 
-        if (actionId === 'toggleVisibility') firstControlledToken.toggleVisibility()
-        if (actionId === 'toggleCombat') firstControlledToken.toggleCombat()
+        if (actionId === 'toggleVisibility') await firstControlledToken.toggleVisibility()
+        if (actionId === 'toggleCombat') await firstControlledToken.toggleCombat()
 
         Hooks.callAll('forceUpdateTokenActionHud')
     }

@@ -7,26 +7,23 @@ export class ItemMacroPreRollHandler extends PreRollHandler {
     prehandleActionEvent (event, encodedValue) {
         const payload = encodedValue.split(DELIMITER)
 
-        if (payload.length !== 4) return false
+        if (payload.length !== 2) return false
 
         const actionType = payload[0]
-        const actorId = payload[1]
-        const tokenId = payload[2]
-        const actionId = payload[3]
+        const actionId = payload[1]
 
         if (actionType !== 'itemMacro') return false
 
         if (this.isRenderItem()) {
-            this.doRenderItem(actorId, tokenId, actionId)
+            this.doRenderItem(this.actor, actionId)
             return true
         }
 
-        return this._tryExecuteItemMacro(event, actorId, tokenId, actionId)
+        return this._tryExecuteItemMacro(actionId)
     }
 
-    _tryExecuteItemMacro (event, actorId, tokenId, actionId) {
-        const actor = Utils.getActor(actorId, tokenId)
-        const item = Utils.getItem(actor, actionId)
+    _tryExecuteItemMacro (actionId) {
+        const item = Utils.getItem(this.actor, actionId)
 
         try {
             item.executeMacro()
