@@ -325,7 +325,7 @@ export class Utils {
             (requiredCoreModuleVersionParts.patch && coreModuleVersionParts.patch !== requiredCoreModuleVersionParts.patch)
         ) {
             ui.notifications.error(
-                `The installed Token Action Hud system module requires Token Action Hud core module version ${requiredCoreModuleVersion}. Install the required version to continue using Token Action HUD.`
+                `The installed Token Action HUD system module requires Token Action HUD Core module version ${requiredCoreModuleVersion}. Install the required version to continue using Token Action HUD.`
             )
             return false
         }

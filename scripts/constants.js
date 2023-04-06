@@ -24,7 +24,7 @@ export const ACTION_TYPE = {
 /**
  * Compendium pack types
  */
-export const COMPENDIUM_PACK_TYPES = ['JournalEntry', 'Macro', 'RollTable', 'Playlist']
+export const COMPENDIUM_PACK_TYPES = ['JournalEntry', 'Macro', 'RollTable']
 
 /**
  * Compendium action types
