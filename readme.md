@@ -31,6 +31,9 @@ Token Action HUD is a repositionable HUD of actions for a selected token.
 
 - [Token Action HUD CypherSystem](https://foundryvtt.com/packages/token-action-hud-cyphersystem)
 - [Token Action HUD D&D 5e](https://foundryvtt.com/packages/token-action-hud-dnd5e)
+- [Token Action HUD OpenD6 Space](https://foundryvtt.com/packages/token-action-hud-od6s)
+- [Token Action HUD Pathfinder 1e](https://foundryvtt.com/packages/token-action-hud-pf1)
+- [Token Action HUD Pathfinder 2](https://foundryvtt.com/packages/token-action-hud-pf2e)
 
 For other systems, continue to use the [original Token Action HUD](https://foundryvtt.com/packages/token-action-hud).
 
