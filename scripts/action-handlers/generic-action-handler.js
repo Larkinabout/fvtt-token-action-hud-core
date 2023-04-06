@@ -9,57 +9,54 @@ export class GenericActionHandler {
 
     constructor (actionHandler) {
         this.actionHandler = actionHandler
+        this.actor = actionHandler.actor
+        this.token = actionHandler.token
     }
 
     /**
      * Build generic actions
      * @param {object} character The actor and/or token
      */
-    buildGenericActions (character) {
-        this._buildConditions(character)
-        this._buildUtilities(character)
+    buildGenericActions () {
+        this._buildConditions()
+        this._buildUtilities()
     }
 
     /**
      * Build conditions
      * @private
-     * @param {object} character The actor and/or token
      */
-    _buildConditions (character) {}
+    _buildConditions () {}
 
     /**
      * Build utilities
      * @private
-     * @param {object} character The actor and/or token
      */
-    _buildUtilities (character) {
-        if (character) return this._buildSingleTokenUtilities(character)
+    _buildUtilities () {
+        if (this.actor) return this._buildSingleTokenUtilities()
         this._buildMultipleTokenUtilities()
     }
 
     /**
      * Build utilities for a single token
      * @private
-     * @param {object} character The actor and/or token
      */
-    _buildSingleTokenUtilities (character) {
-        const actorId = character.actor?.id
-        const tokenId = character.token?.id
-        if (!tokenId) return
+    _buildSingleTokenUtilities () {
+        if (!this.token) return
         const actions = []
+
+        const actionType = 'utility'
 
         // Build Toggle Combat action
         const toggleCombatId = 'toggleCombat'
         const inCombat = canvas.tokens.placeables.find(
-            (token) => token.id === tokenId
+            (token) => token.id === this.token.id
         ).inCombat
         const toggleCombatName = inCombat
             ? Utils.i18n('tokenActionHud.removeFromCombat')
             : Utils.i18n('tokenActionHud.addToCombat')
         const toggleCombatEncodedValue = [
-            ACTION_TYPE.UTILITY,
-            actorId,
-            tokenId,
+            actionType,
             toggleCombatId
         ].join(DELIMITER)
         const toggleCombatAction = {
@@ -73,14 +70,12 @@ export class GenericActionHandler {
         // Build Toggle Visibility action
         if (game.user.isGM) {
             const toggleVisibilityId = 'toggleVisibility'
-            const hidden = canvas.tokens.placeables.find((token) => token.id === tokenId).document.hidden
+            const hidden = canvas.tokens.placeables.find((token) => token.id === this.token.id).document.hidden
             const toggleVisibilityName = hidden
                 ? Utils.i18n('tokenActionHud.makeVisible')
                 : Utils.i18n('tokenActionHud.makeInvisible')
             const toggleVisbilityEncodedValue = [
-                ACTION_TYPE.UTILITY,
-                actorId,
-                tokenId,
+                actionType,
                 toggleVisibilityId
             ].join(DELIMITER)
             const toggleVisibilityAction = {
@@ -103,10 +98,10 @@ export class GenericActionHandler {
      * Build utilities for multiple tokens
      */
     _buildMultipleTokenUtilities () {
-        const actorId = 'multi'
-        const tokenId = 'multi'
         const tokens = Utils.getControlledTokens()
         const actions = []
+
+        const actionType = 'utility'
 
         // Toggle Combat
         const toggleCombatId = 'toggleCombat'
@@ -114,7 +109,7 @@ export class GenericActionHandler {
         const toggleCombatName = inCombat
             ? Utils.i18n('tokenActionHud.removeFromCombat')
             : Utils.i18n('tokenActionHud.addToCombat')
-        const toggleCombatEncodedValue = [ACTION_TYPE.UTILITY, actorId, tokenId, toggleCombatId].join(DELIMITER)
+        const toggleCombatEncodedValue = [actionType, toggleCombatId].join(DELIMITER)
         const toggleCombatAction = {
             id: toggleCombatId,
             name: toggleCombatName,
@@ -125,11 +120,11 @@ export class GenericActionHandler {
         // Toggle Visibility
         if (game.user.isGM) {
             const toggleVisibilityId = 'toggleVisibility'
-            const hidden = tokens.every((token) => !token.document.hidden)
+            const hidden = tokens.every((token) => token.document.hidden)
             const toggleVisibilityname = hidden
                 ? Utils.i18n('tokenActionHud.makeVisible')
                 : Utils.i18n('tokenActionHud.makeInvisible')
-            const toggleVisbilityEncodedValue = [ACTION_TYPE.UTILITY, actorId, tokenId, toggleVisibilityId].join(DELIMITER)
+            const toggleVisbilityEncodedValue = [actionType, toggleVisibilityId].join(DELIMITER)
             const toggleVisibilityAction = {
                 id: toggleVisibilityId,
                 name: toggleVisibilityname,

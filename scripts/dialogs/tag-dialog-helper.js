@@ -15,6 +15,7 @@ export class TagDialogHelper {
         const tags = {}
         tags.available = []
         tags.selected = await categoryManager.getSelectedCategoriesAsTagifyEntries()
+        const grid = await Utils.getSetting('grid')
 
         // Set dialog data
         const dialogData = {
@@ -23,13 +24,19 @@ export class TagDialogHelper {
                 topLabel: Utils.i18n('tokenActionHud.tagDialog.categoryDialogDescription'),
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
-                indexExplanationLabel: Utils.i18n('tokenActionHud.pushLabelExplanation')
+                indexExplanationLabel: Utils.i18n('tokenActionHud.pushLabelExplanation'),
+                advancedCategoryOptions: { grid },
+                level: 'hud'
             }
         }
 
         // Set function on submit
         const dialogSubmit = async (choices, formData) => {
+            const grid = formData?.grid
+            await Utils.setSetting('grid', grid)
+
             await categoryManager.saveCategories(choices)
+
             Hooks.callAll('forceUpdateTokenActionHud')
         }
 
@@ -157,9 +164,10 @@ export class TagDialogHelper {
 
             // Get advanced category options
             const characterCount = formData?.characterCount
+            const grid = formData?.grid
             const image = formData?.image
             const showTitle = formData?.showTitle
-            parentSubcategoryData.advancedCategoryOptions = { characterCount, image, showTitle }
+            parentSubcategoryData.advancedCategoryOptions = { characterCount, grid, image, showTitle }
 
             // Save subcategories to user action list
             await categoryManager.saveSubcategories(selectedSubcategories, parentSubcategoryData)

@@ -17,6 +17,7 @@
   --tah-button-border: none;
   --tah-button-box-shadow: 0 0 0 1px #f3e9ca, 0 0 0 1px #f3e9ca, 0 0 0 2px #a98f39, inset 0 0 8px 1px rgb(0 0 0 / 50%), inset 0 0 1px 1px #a98f39;
   --tah-button-color: #191813;
+  --tah-button-disabled-color: #75683f;
   --tah-button-font-family: var(--body-serif);
   --tah-button-height: 32px;
   --tah-button-min-width: 32px;
@@ -204,33 +205,23 @@
 }
 
 #tah-expand-hud:hover,
-.tah-category button:hover,
-.tah-category.hover > button,
-.tah-action button:hover {
+.tah-category > button:hover,
+.tah-action:not(.disabled) button:hover {
   background: var(--tah-button-hover-background-color);
   border: var(--tah-button-border);
   border-radius: var(--tah-border-radius);
   box-shadow: var(--tah-button-box-shadow);
-  cursor: pointer;
 }
 
 #tah-expand-hud:focus,
 .tah-category button:focus,
 .tah-category.focus > button,
-.tah-action button:focus {
+.tah-action:not(.disabled) button:focus {
 	background-image: var(--tah-button-background-image);
   border: var(--tah-button-border);
   border-radius: var(--tah-border-radius);
   box-shadow: var(--tah-button-box-shadow);
   color: var(--tah-button-color);
-}
-
-.tah-action.active button {
-  background: var(--tah-button-active-background-color);
-}
-
-.tah-action.toggle button:hover {
-  background: var(--tah-button-toggle-hover-background-color);
 }
 
 /*
@@ -419,6 +410,27 @@
   content: "*";
 }
 
+.tah-action.disabled button {
+  color: var(--tah-button-disabled-color);
+}
+
+.tah-action.disabled button:hover {
+  box-shadow: var(--tah-button-box-shadow);
+}
+
+.tah-action.active button,
+.tah-action.active.disabled button:hover {
+  background: var(--tah-button-active-background-color);
+}
+
+.tah-action.shrink button {
+  min-width: min-content;
+}
+
+.tah-action.toggle:not(.disabled) button:hover {
+  background: var(--tah-button-toggle-hover-background-color);
+}
+
 .tah-action-button-content {
   align-items: center;
   display: inline-flex;
@@ -426,6 +438,7 @@
   min-height: var(--tah-button-height);
   overflow: hidden;
   padding: 0 10px 0 10px;
+  width: 100%;
 }
 
 .tah-action-button-text {
@@ -433,6 +446,7 @@
   text-align: left;
   text-overflow: ellipsis;
   max-height: 2em;
+  width: 100%;
 }
 
 /*
@@ -505,5 +519,9 @@
 #tah-dialog-clear-tags {
   background: rgba(255, 255, 240, 0.8);
   border: 1px solid var(--color-border-light-primary);
+  margin-top: 2px;
+}
+
+#tah-dialog-reset-actions {
   margin-top: 2px;
 }

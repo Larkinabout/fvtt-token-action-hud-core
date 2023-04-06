@@ -44,6 +44,21 @@ export class CategoryManager {
     /**
      * Reset actor flags
      */
+    async resetActorFlag () {
+        Logger.debug('Resetting actor flag...')
+        await game.tokenActionHud.actor.unsetFlag(MODULE.ID, 'categories')
+        const token = game.canvas.tokens.objects.children.find(token => token.actor.id === game.tokenActionHud.actor.id)
+        if (token) {
+            Logger.debug(`Resetting flags for actor [${token.actor.id}]`, { actor: token.actor })
+            await token.actor.unsetFlag(MODULE.ID, 'categories')
+        }
+        Hooks.callAll('forceUpdateTokenActionHud')
+        Logger.debug('Actor flag reset')
+    }
+
+    /**
+     * Reset actor flags
+     */
     async resetActorFlags () {
         Logger.debug('Resetting actor flags...')
         const actors = game.actors.filter(actor => actor.getFlag(MODULE.ID, 'categories'))
@@ -51,6 +66,13 @@ export class CategoryManager {
             actors.forEach(actor => {
                 Logger.debug(`Resetting flags for actor [${actor.id}]`, { actor })
                 actor.unsetFlag(MODULE.ID, 'categories')
+            })
+        }
+        const tokens = game.canvas.tokens.objects.children.filter(token => token.actor.getFlag(MODULE.ID, 'categories'))
+        if (tokens) {
+            tokens.forEach(token => {
+                Logger.debug(`Resetting flags for actor [${token.actor.id}]`, { actor: token.actor })
+                token.actor.unsetFlag(MODULE.ID, 'categories')
             })
         }
         Logger.debug('Actor flags reset')
@@ -98,7 +120,7 @@ export class CategoryManager {
         if (typeof categoryDataClone?.advancedCategoryOptions?.showTitle === 'undefined') categoryDataClone.advancedCategoryOptions.showTitle = true
         return {
             id: categoryDataClone?.id,
-            nestId: categoryDataClone?.nestId ?? this.id,
+            nestId: categoryDataClone?.nestId ?? categoryDataClone?.id,
             name: categoryDataClone?.name,
             level: SUBCATEGORY_LEVEL.CATEGORY,
             advancedCategoryOptions: categoryDataClone?.advancedCategoryOptions ?? {},
@@ -123,6 +145,7 @@ export class CategoryManager {
             id: subcategoryDataClone?.id,
             nestId: subcategoryDataClone?.nestId,
             name: subcategoryDataClone?.name,
+            listName: subcategoryDataClone?.listName,
             type: subcategoryDataClone?.type ?? SUBCATEGORY_TYPE.CUSTOM,
             level: SUBCATEGORY_LEVEL.SUBCATEGORY,
             advancedCategoryOptions: subcategoryDataClone?.advancedCategoryOptions ?? { showTitle: true },
@@ -228,27 +251,36 @@ export class CategoryManager {
 
         const nestId = parentSubcategoryData.nestId
 
-        // Loop derived subcategories or choices
+        // Loop subcategories
         const chosenSubcategories = []
         for (const subcategory of subcategories) {
-            chosenSubcategories.push(this.createSubcategory({
-                ...subcategory,
-                nestId: `${nestId}_${subcategory.id}`,
-                isSelected: subcategory.isSelected ?? true
-            }))
-        }
-        if (parentSubcategoryData.hasDerivedSubcategories) {
-            for (const subSubcategory of subcategory.subcategories) {
-                const subSubcategoryClone = Utils.deepClone(subSubcategory)
-                const subcategory = subcategories.find(subcategory => subcategory.id === subSubcategoryClone.id)
-                if (updateSelected) {
-                    subSubcategoryClone.isSelected = false
-                    subSubcategoryClone.actions = []
-                }
-                if (!subcategory) chosenSubcategories.push(subSubcategoryClone)
-            }
+            subcategory.nestId = `${nestId}_${subcategory.id}`
+            const existingSubcategory = await Utils.getSubcategoryByNestId(categoriesClone, subcategory)
+            chosenSubcategories.push(
+                (existingSubcategory)
+                    ? {
+                        ...existingSubcategory,
+                        isSelected: existingSubcategory.isSelected ?? true
+                    }
+                    : this.createSubcategory({
+                        ...subcategory,
+                        isSelected: subcategory.isSelected ?? true
+                    })
+            )
         }
 
+        // Loop derived subcategories
+        if (parentSubcategoryData.hasDerivedSubcategories) {
+            const subSubcategories = subcategory.subcategories.filter(subSubcategory => {
+                const subcategory = subcategories.find(s => s.id === subSubcategory.id)
+                if (!subcategory && updateSelected) {
+                    subSubcategory.isSelected = false
+                    subSubcategory.actions = []
+                }
+                return !subcategory
+            })
+            chosenSubcategories.push(...subSubcategories)
+        }
         subcategory.subcategories = chosenSubcategories
 
         // Add advanced category options
@@ -283,7 +315,6 @@ export class CategoryManager {
                 derivedSubcategoriesClone,
                 {
                     nestId: parentSubcategoryNestId,
-                    type: SUBCATEGORY_TYPE.SYSTEM,
                     hasDerivedSubcategories: true
                 },
                 updateSelected
@@ -352,8 +383,9 @@ export class CategoryManager {
         if (hasDerivedSubcategories === 'true') return await this.getDerivedSubcategoriesAsTagifyEntries(subcategoryData)
         const systemSubcategories = await this.getSystemSubcategoriesAsTagifyEntries()
         const compendiumSubcategories = await this.getCompendiumSubcategoriesAsTagifyEntries()
+        const macroSubcategories = await this.getMacroSubcategoriesAsTagifyEntries()
         const subcategories = []
-        subcategories.push(...systemSubcategories, ...compendiumSubcategories)
+        subcategories.push(...systemSubcategories, ...compendiumSubcategories, ...macroSubcategories)
         return subcategories
     }
 
@@ -379,7 +411,7 @@ export class CategoryManager {
 
     /**
      * Get compendium subcategories as Tagify entries
-     * @returns {object}
+     * @returns {object} The compendium subcategories
      */
     async getCompendiumSubcategoriesAsTagifyEntries () {
         const packs = game.packs
@@ -387,10 +419,30 @@ export class CategoryManager {
             .filter(pack => COMPENDIUM_PACK_TYPES.includes(pack.documentName))
             .filter(pack => game.user.isGM || !pack.private)
             .map((pack) => {
-                const id = pack.metadata.id.replace('.', '-')
-                const value = pack.metadata.label
-                return { id, value, type: SUBCATEGORY_TYPE.COMPENDIUM, level: SUBCATEGORY_TYPE.SUBCATEGORY }
+                const subcategoryData = {
+                    id: pack.metadata.id.replace('.', '-'),
+                    name: pack.metadata.label,
+                    listName: `Subcategory: ${pack.metadata.label}`,
+                    type: 'core',
+                    level: SUBCATEGORY_TYPE.SUBCATEGORY
+                }
+                return this._toTagifyEntry(subcategoryData)
             })
+    }
+
+    /**
+     * Get macro subcategories a Tagify entries
+     * @returns {object} The macro subcategories
+     */
+    async getMacroSubcategoriesAsTagifyEntries () {
+        const subcategoryData = {
+            id: 'macros',
+            name: Utils.i18n('tokenActionHud.macros'),
+            listName: `Subcategory: ${Utils.i18n('tokenActionHud.macros')}`,
+            type: 'core',
+            level: SUBCATEGORY_TYPE.SUBCATEGORY
+        }
+        return [this._toTagifyEntry(subcategoryData)]
     }
 
     /**
@@ -413,7 +465,8 @@ export class CategoryManager {
     _toTagifyEntry (data) {
         return {
             id: data.id,
-            value: data.name,
+            value: data.listName ?? data.name,
+            name: data.name,
             type: data.type,
             level: SUBCATEGORY_LEVEL.SUBCATEGORY,
             hasDerivedSubcategories: data.hasDerivedSubcategories ?? 'false'

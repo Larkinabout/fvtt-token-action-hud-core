@@ -114,5 +114,5 @@
   "download": "This is auto replaced",
   "protected": false,
   "coreTranslation": false,
-  "library": false
+  "library": true
 }

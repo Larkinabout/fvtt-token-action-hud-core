@@ -6,11 +6,16 @@
     "cancel": "キャンセル",
     "collapseHud": "Collapse HUD",
     "combat": "戦闘",
+    "compendiumEntry": "Compendium Entry",
+    "compendiumMacro": "Compendium Macro",
+    "compendiumPlaylist": "Compendium Playlist",
     "editCategories": "Edit Categories",
     "endTurn": "End Turn",
     "expandHud": "Expand HUD",
     "handlerNotFound": "操作が見つかりません、標準のローラーを使用します。",
     "lockHud": "Lock HUD",
+    "macro": "Macro",
+    "macros": "Macros",
     "makeInvisible": "非表示にようにする",
     "pushLabelExplanation": "どちら側にカテゴリを表示しますか？",
     "removeFromCombat": "戦闘から外す",
@@ -61,6 +66,7 @@
         "hint": "HUD が展開する方向を設定する",
         "name": "方向",
         "choices": {
+          "auto": "自動",
           "down": "下",
           "up": "上"
         }
@@ -148,7 +154,18 @@
           "hint": "Show this subcategory's title"
         }
       },
-      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "resetActions": {
+        "button": "Reset Actions",
+        "dialog": {
+          "title": "Reset Actions",
+          "content": "This will reset all actions for this actor. Do you wish to continue?",
+          "buttons": {
+            "yes": "Yes",
+            "no": "No"
+          }
+        }
+      },
+      "subcategoryDialogDescription": "Add and remove subcategories. Select subcategories with pre-defined actions from the list or enter free text for an empty subcategory. Drag subcategories to change their order.",
       "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "選択（セミコロンで区切る)"
     }

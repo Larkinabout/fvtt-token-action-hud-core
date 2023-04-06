@@ -6,11 +6,16 @@
     "cancel": "取消",
     "collapseHud": "折叠HUD",
     "combat": "战斗",
+    "compendiumEntry": "Compendium Entry",
+    "compendiumMacro": "Compendium Macro",
+    "compendiumPlaylist": "Compendium Playlist",
     "editCategories": "编辑分类",
     "endTurn": "结束回合",
     "expandHud": "展开HUD",
     "handlerNotFound": "未找到，还原到核心系统掷骰。",
     "lockHud": "锁定HUD",
+    "macro": "Macro",
+    "macros": "Macros",
     "makeInvisible": "使隐形",
     "makeVisible": "使可见",
     "pushLabelExplanation": "分类展示在哪边？",
@@ -62,6 +67,7 @@
         "hint": "設置 HUD 展開的方向",
         "name": "方向",
         "choices": {
+          "auto": "自動的",
           "down": "下",
           "up": "向上"
         }
@@ -147,6 +153,17 @@
         "showSubcategoryTitle": {
           "label": "显示标题",
           "hint": "显示子分类的标题"
+        }
+      },
+      "resetActions": {
+        "button": "Reset Actions",
+        "dialog": {
+          "title": "Reset Actions",
+          "content": "This will reset all actions for this actor. Do you wish to continue?",
+          "buttons": {
+            "yes": "Yes",
+            "no": "No"
+          }
         }
       },
       "subcategoryDialogDescription": "增加和移除子分类。选择列表中的多个子分类，或为宏填入文本。拖拽子分类来改变顺序。",

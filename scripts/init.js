@@ -1,23 +1,43 @@
+import { ActionHandler } from './action-handlers/action-handler.js'
+import { ActionListExtender } from './action-handlers/action-list-extender.js'
+import { CategoryManager } from './category-manager.js'
 import { MigrationManager } from './migration-manager.js'
+import { PreRollHandler } from './roll-handlers/pre-roll-handler.js'
+import { RollHandler } from './roll-handlers/roll-handler.js'
+import { SystemManager } from './system-manager.js'
 import { TokenActionHud } from './token-action-hud.js'
 import { MODULE } from './constants.js'
-import { Timer, Utils } from './utilities/utils.js'
+import { Logger, Utils } from './utilities/utils.js'
 
 let systemManager
-let isControlTokenPending = false
-const controlTokenTimer = new Timer(20)
 
-Hooks.on('tokenActionHudSystemReady', async (module) => {
+Hooks.on('ready', async () => {
+    const module = game.modules.get(MODULE.ID)
+    module.api = {
+        ActionListExtender,
+        ActionHandler,
+        CategoryManager,
+        Logger,
+        PreRollHandler,
+        RollHandler,
+        SystemManager,
+        Utils
+    }
+
+    Hooks.callAll('tokenActionHudCoreApiReady', module)
+})
+
+Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
     // Exit if core module version is not compatible with the system module
-    const isCompatible = await Utils.checkModuleCompatibility(module.api.requiredCoreModuleVersion)
+    const isCompatible = await Utils.checkModuleCompatibility(systemModule.api.requiredCoreModuleVersion)
     if (!isCompatible) return
 
     // Create new SystemManager and register core and system module settings
-    systemManager = new module.api.SystemManager(MODULE.ID)
+    systemManager = new systemModule.api.SystemManager(MODULE.ID)
     systemManager.registerSettings()
 
     // Initialise MigrationManager
-    const migrationManager = new MigrationManager(module.id)
+    const migrationManager = new MigrationManager(systemModule.id)
     await migrationManager.init()
 
     // Set stylesheet to 'style' core module setting
@@ -67,7 +87,7 @@ Hooks.on('canvasReady', async () => {
 
         // Registers hooks to trigger a Token Action Hud update
         Hooks.on('controlToken', async (token, controlled) => {
-            const trigger = { trigger: { type: 'hook', name: 'updateToken', data: [token, controlled] } }
+            const trigger = { trigger: { type: 'hook', name: 'controlToken', data: [token, controlled] } }
             game.tokenActionHud.update(trigger)
         })
 

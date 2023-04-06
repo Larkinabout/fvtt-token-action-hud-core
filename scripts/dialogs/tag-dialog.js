@@ -1,4 +1,5 @@
 import { MODULE } from '../constants.js'
+import { Logger, Utils } from '../utilities/utils.js'
 
 /**
  * Form Application for the dialogs.
@@ -41,6 +42,9 @@ export class TagDialog extends FormApplication {
         super.activateListeners(html)
         const cancel = html.find('#tah-dialog-cancel')
         cancel.on('click', this.close.bind(this))
+
+        const resetActions = html.find('#tah-dialog-reset-actions')
+        resetActions.on('click', this._resetActions)
     }
 
     /**
@@ -85,7 +89,7 @@ export class TagDialog extends FormApplication {
                     delimiters: ';',
                     maxTags: 'Infinity',
                     dropdown: {
-                        maxItems: 50, // <- maximum allowed rendered suggestions
+                        maxItems: 500, // <- maximum allowed rendered suggestions
                         classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
                         enabled: 0, // <- show suggestions on focus
                         closeOnSelect: false // <- do not hide the suggestions dropdown once an item has been selected
@@ -117,6 +121,28 @@ export class TagDialog extends FormApplication {
                 clearBtn.on('click', TagDialog.tagify.removeAllTags.bind(TagDialog.tagify))
             }
         })
+    }
+
+    async _resetActions () {
+        const d = new Dialog({
+            title: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.title'),
+            content: `<p>${Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.content')}</p>`,
+            buttons: {
+                yes: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.buttons.yes'),
+                    callback: async () => {
+                        await game.tokenActionHud.resetActorFlag()
+                        Logger.info('Actions reset', true)
+                    }
+                },
+                no: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.buttons.no')
+                }
+            }
+        })
+        d.render(true)
     }
 
     /** @override */
@@ -151,7 +177,8 @@ export class TagDialog extends FormApplication {
             c.id = c.id ?? c.value.slugify({ replacement: '-', strict: true })
             return {
                 id: c.id,
-                name: c.value,
+                listName: c.value,
+                name: c.name ?? c.value,
                 type: c.type,
                 level: c.level,
                 hasDerivedSubcategories: c.hasDerivedSubcategories

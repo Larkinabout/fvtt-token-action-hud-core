@@ -1,4 +1,4 @@
-import { DELIMITER } from '../constants.js'
+import { DELIMITER, ACTION_TYPE } from '../constants.js'
 import { Utils } from '../utilities/utils.js'
 
 /**
@@ -17,21 +17,14 @@ export class MacroActionHandler {
      * @override
      */
     async buildMacroActions () {
-        const subcategoryType = 'custom'
-        // Get macro subcategories
-        const subcategories = this.categoryManager.getFlattenedSubcategories({ type: subcategoryType })
-        const subcategoryIds = subcategories.flatMap(subcategory => subcategory.id)
-
-        if (!subcategoryIds) return
+        // Create subcategory data
+        const subcategoryData = { id: 'macros', type: 'core' }
 
         // Get actions
         const actions = await this._getActions()
 
         // Add actions to action list
-        for (const subcategoryId of subcategoryIds) {
-            const subcategoryData = { id: subcategoryId, type: subcategoryType }
-            this.actionHandler.addActionsToActionList(actions, subcategoryData)
-        }
+        this.actionHandler.addActionsToActionList(actions, subcategoryData)
     }
 
     /**
@@ -49,15 +42,16 @@ export class MacroActionHandler {
         return macros.map((macro) => {
             const id = macro.id
             const name = macro.name
+            const actionTypeName = `${Utils.i18n(ACTION_TYPE[actionType])}: ` ?? ''
+            const listName = `${actionTypeName}${name}`
             const encodedValue = [actionType, macro.id].join(DELIMITER)
             const img = Utils.getImage(macro)
-            const selected = true
             return {
                 id,
                 name,
                 encodedValue,
                 img,
-                selected
+                listName
             }
         })
     }

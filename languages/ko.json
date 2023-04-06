@@ -6,11 +6,16 @@
     "cancel": "취소",
     "collapseHud": "Collapse HUD",
     "combat": "전투",
+    "compendiumEntry": "Compendium Entry",
+    "compendiumMacro": "Compendium Macro",
+    "compendiumPlaylist": "Compendium Playlist",
     "editCategories": "Edit Categories",
     "endTurn": "End Turn",
     "expandHud": "Expand HUD",
     "handlerNotFound": "찾을 수 없습니다. 기본 굴림으로 돌아갑니다.",
     "lockHud": "Lock HUD",
+    "macro": "Macro",
+    "macros": "Macros",
     "makeInvisible": "보이지 않게 만들기",
     "makeVisible": "보이게 하기",
     "pushLabelExplanation": "카테고리를 어느 쪽에 배치하는가?",
@@ -62,6 +67,7 @@
         "hint": "HUD가 확장되는 방향 설정",
         "name": "방향",
         "choices": {
+          "auto": "자동적 인",
           "down": "아래에",
           "up": "위로"
         }
@@ -149,7 +155,18 @@
           "hint": "Show this subcategory's title"
         }
       },
-      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "resetActions": {
+        "button": "Reset Actions",
+        "dialog": {
+          "title": "Reset Actions",
+          "content": "This will reset all actions for this actor. Do you wish to continue?",
+          "buttons": {
+            "yes": "Yes",
+            "no": "No"
+          }
+        }
+      },
+      "subcategoryDialogDescription": "Add and remove subcategories. Select subcategories with pre-defined actions from the list or enter free text for an empty subcategory. Drag subcategories to change their order.",
       "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "선택 (세미 콜론으로 구분)"
     }

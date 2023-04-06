@@ -1,4 +1,4 @@
-import { COMPENDIUM_PACK_TYPES, DELIMITER } from '../constants.js'
+import { ACTION_TYPE, COMPENDIUM_PACK_TYPES, DELIMITER } from '../constants.js'
 import { Utils } from '../utilities/utils.js'
 
 /**
@@ -17,13 +17,6 @@ export class CompendiumActionHandler {
      * @override
      */
     async buildCompendiumActions () {
-        // Get compendium subcategories
-        const subcategoryType = 'compendium'
-        const subcategories = this.categoryManager.getFlattenedSubcategories({ type: subcategoryType })
-        const subcategoryIds = subcategories.flatMap(subcategory => subcategory.id)
-
-        if (!subcategoryIds) return
-
         // Get compendium packs
         const packIds = game.packs
             .filter((pack) => {
@@ -35,11 +28,9 @@ export class CompendiumActionHandler {
         // Add actions to the action list
         for (const packId of packIds) {
             const subcategoryId = packId.replace('.', '-')
-            const subcategoryData = { id: subcategoryId, type: subcategoryType }
-            if (subcategoryIds.includes(packId.replace('.', '-'))) {
-                const actions = await this._getCompendiumActions(packId)
-                this.actionHandler.addActionsToActionList(actions, subcategoryData)
-            }
+            const subcategoryData = { id: subcategoryId, type: 'core' }
+            const actions = await this._getCompendiumActions(packId)
+            this.actionHandler.addActionsToActionList(actions, subcategoryData)
         }
     }
 
@@ -54,15 +45,16 @@ export class CompendiumActionHandler {
         return entries.map((entry) => {
             const id = entry._id
             const name = entry.name
+            const actionTypeName = `${Utils.i18n(ACTION_TYPE[actionType])}: ` ?? ''
+            const listName = `${actionTypeName}${name}`
             const encodedValue = [actionType, packKey, entry._id].join(DELIMITER)
             const img = Utils.getImage(entry)
-            const selected = true
             return {
                 id,
                 name,
                 encodedValue,
                 img,
-                selected
+                listName
             }
         })
     }

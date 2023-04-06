@@ -8,6 +8,9 @@ import { Logger, Utils } from '../utilities/utils.js'
  * Handler for building the HUD's action list.
  */
 export class ActionHandler {
+    characterName = null
+    actor = null
+    token = null
     furtherActionHandlers = []
     delimiter = DELIMITER
 
@@ -19,6 +22,8 @@ export class ActionHandler {
         this.compendiumActionHandler = new CompendiumActionHandler(this)
         this.macroActionHandler = new MacroActionHandler(this)
         this.actionList = []
+        this.availableActions = []
+        this.flattenedActions = []
         this.userActionList = []
         this.savedUserActionList = []
         this.savedActorActionList = []
@@ -33,6 +38,8 @@ export class ActionHandler {
         this.compendiumActionHandler = new CompendiumActionHandler(this)
         this.macroActionHandler = new MacroActionHandler(this)
         this.actionList = []
+        this.availableActions = []
+        this.flattenedActions = []
         this.userActionList = []
         this.savedUserActionList = []
         this.savedActorActionList = []
@@ -41,74 +48,71 @@ export class ActionHandler {
 
     /**
      * Build the action list
-     * @param {object} character The actor and token
      * @returns {object}         The action list
      */
-    async buildActionList (character) {
-        Logger.debug('Building action list...', { character })
+    async buildActionList () {
+        Logger.debug('Building action list...', { actor: this.actor, token: this.token })
+        this.resetActionHandler()
         await this.categoryManager.resetCategoryManager()
-        this.character = character
-        this.savedUserActionList = await this._getSavedUserActionList(character)
-        if (this.character) this.savedActorActionList = await this._getSavedActorActionList(character)
-        this.actionList = await this._buildEmptyActionList(character)
+        this.savedUserActionList = await this._getSavedUserActionList()
+        if (this.actor) this.savedActorActionList = await this._getSavedActorActionList()
+        this.actionList = await this._buildEmptyActionList()
         await this.categoryManager.flattenSubcategories(this.actionList)
         await Promise.all([
-            this._buildSystemActions(character),
-            this._buildGenericActions(character),
+            this._buildSystemActions(),
+            this._buildGenericActions(),
             this._buildCompendiumActions(),
             this._buildMacroActions()
         ])
-        await this.buildFurtherActions(character)
+        await this.buildFurtherActions()
         await this.categoryManager.saveDerivedSubcategories()
+        await this.sortAvailableActions()
         await this._setCharacterLimit()
-        if (this.character) await this._saveActorActionList(character)
-        Logger.debug('Action list built', { actionList: this.actionList, character })
+        if (this.actor) await this._saveActorActionList()
+        Logger.debug('Action list built', { actionList: this.actionList, actor: this.actor, token: this.token })
         return this.actionList
     }
 
     /**
      * Get the saved action list from the user flags
      * @private
-     * @param {object} character The actor and token
      * @returns {object}         The saved action list
      */
-    _getSavedUserActionList (character) {
-        Logger.debug('Retrieving saved action list from user...', { character })
+    _getSavedUserActionList () {
+        const user = game.user
+        Logger.debug('Retrieving saved action list from user...', { user })
         const categories = Utils.getUserFlag('categories')
         if (!categories) return []
         const savedUserActionList = Utils.deepClone(categories)
-        Logger.debug('Action list from user retrieved', { savedUserActionList, character })
+        Logger.debug('Action list from user retrieved', { savedUserActionList, user })
         return savedUserActionList
     }
 
     /**
      * Get the saved action list from the user flags
      * @private
-     * @param {object} character The actor and token
      * @returns {object}         The saved action list
      */
-    _getSavedActorActionList (character) {
-        Logger.debug('Retrieving saved action list from actor...', { character })
-        const actor = character?.actor
-        if (!actor) return []
-        const categories = actor.getFlag(MODULE.ID, 'categories')
+    _getSavedActorActionList () {
+        if (!this.actor) return []
+        Logger.debug('Retrieving saved action list from actor...', { actor: this.actor })
+        const categories = this.actor.getFlag(MODULE.ID, 'categories')
         if (!categories) return []
         const savedActorActionList = Utils.deepClone(categories)
-        Logger.debug('Action list from actor retrieved', { savedActorActionList, character })
+        Logger.debug('Action list from actor retrieved', { savedActorActionList, actor: this.actor })
         return savedActorActionList
     }
 
     /**
      * Build an empty action list
-     * @param {object} character The actor and token
      * @returns {object}         The empty action list
      */
-    _buildEmptyActionList (character) {
-        Logger.debug('Building empty action list...', { character })
+    async _buildEmptyActionList () {
+        Logger.debug('Building empty action list...', { actor: this.actor, token: this.token })
         let hudTitle = ''
-        if (Utils.getSetting('displayCharacterName')) hudTitle = character?.name ?? 'Multiple'
-        const tokenId = character?.token?.id ?? 'multi'
-        const actorId = character?.actor?.id ?? 'multi'
+        if (Utils.getSetting('displayCharacterName')) hudTitle = (this.actor) ? this.characterName : 'Multiple'
+        const actorId = this.actor?.id ?? 'multi'
+        const tokenId = this.token?.id ?? 'multi'
         const emptyActionList = {
             hudTitle,
             tokenId,
@@ -116,65 +120,83 @@ export class ActionHandler {
             categories: []
         }
 
-        const categories = (this.savedUserActionList?.length) ? this.savedUserActionList : Utils.getUserFlag('default.categories')
+        const userCategories = (this.savedUserActionList?.length) ? this.savedUserActionList : Utils.getUserFlag('default.categories')
+        const actorCategories = this.savedActorActionList ?? []
 
-        for (const category of categories) {
-            // Add category
+        for (const category of userCategories) {
+            // Add category to action list and flattened subcategories
+            const categoryData = this.categoryManager.createCategory(category)
             emptyActionList.categories.push(this.categoryManager.createCategory(category))
+            this.categoryManager.addToFlattenedSubcategories(categoryData)
 
             const lastIndex = emptyActionList.categories.length - 1
             const latestCategory = emptyActionList.categories[lastIndex]
 
             // addSubcategories function
-            const addSubcategories = (latestCategorySubcategory, subcategories) => {
+            const addSubcategories = async (latestCategorySubcategory, subcategories) => {
                 if (subcategories) {
                     for (const subcategory of subcategories) {
-                        latestCategorySubcategory.subcategories.push(this.categoryManager.createSubcategory(subcategory))
+                        // Add subcategory to action list and flattened subcategories
+                        const subcategoryData = this.categoryManager.createSubcategory(subcategory)
+
+                        const actorSubcategory = await Utils.getSubcategoryByNestId(actorCategories, subcategoryData)
+                        const actions = actorSubcategory?.actions ?? []
+                        if (actions.length) {
+                            subcategoryData.actions = actions
+                            this.flattenedActions.push(...actions)
+                        }
+
+                        latestCategorySubcategory.subcategories.push(subcategoryData)
+                        this.categoryManager.addToFlattenedSubcategories(subcategoryData)
 
                         if (subcategory?.subcategories?.length) {
                             const lastIndex = latestCategorySubcategory.subcategories.length - 1
                             const latestSubcategory = latestCategorySubcategory.subcategories[lastIndex]
 
-                            addSubcategories(latestSubcategory, subcategory.subcategories)
+                            await addSubcategories(latestSubcategory, subcategory.subcategories)
                         }
                     }
                 }
             }
 
             // Add subcategories to category
-            addSubcategories(latestCategory, category.subcategories, category.nestId)
+            await addSubcategories(latestCategory, category.subcategories, category.nestId)
         }
 
-        Logger.debug('Empty action list built', { emptyActionList, character })
+        // Set all actions to hidden by default
+        this.flattenedActions.forEach(action => {
+            action.selected = false
+            action.systemSelected = false
+        })
+
+        Logger.debug('Empty action list built', { emptyActionList, actor: this.actor, token: this.token })
         return emptyActionList
     }
 
     /**
      * Build any system-specific actions
-     * @param {object} character The actor and/or token
      */
-    async _buildSystemActions (character) {
-        Logger.debug('Building system actions...', { character })
+    async _buildSystemActions () {
+        Logger.debug('Building system actions...', { actor: this.actor, token: this.token })
         const subcategories = this.categoryManager.getFlattenedSubcategories({ level: 'subcategory' })
         const subcategoryIds = subcategories.map(subcategory => subcategory.id)
-        await this.buildSystemActions(character, subcategoryIds)
-        Logger.debug('System actions built', { actionList: this.actionList, character })
+        await this.buildSystemActions(subcategoryIds)
+        Logger.debug('System actions built', { actionList: this.actionList, actor: this.actor, token: this.token })
     }
 
     /**
      * Placeholder function for the system module
      * */
-    async buildSystemActions (character, subcategoryIds) {}
+    async buildSystemActions (subcategoryIds) {}
 
     /**
      * Build generic actions
      * @protected
-     * @param {object} character The actor and/or token
      */
-    _buildGenericActions (character) {
-        Logger.debug('Building generic actions...', { character })
-        this.genericActionHandler.buildGenericActions(character)
-        Logger.debug('Generic actions built', { actionList: this.actionList, character })
+    _buildGenericActions () {
+        Logger.debug('Building generic actions...', { actor: this.actor, token: this.token })
+        this.genericActionHandler.buildGenericActions()
+        Logger.debug('Generic actions built', { actionList: this.actionList, actor: this.actor, token: this.token })
     }
 
     /**
@@ -200,10 +222,76 @@ export class ActionHandler {
     /**
      * Build any further actions
      * @protected
-     * @param {object} character The actor and/or token
      */
-    async buildFurtherActions (character) {
-        this.furtherActionHandlers.forEach(handler => handler.extendActionList(character))
+    async buildFurtherActions () {
+        this.furtherActionHandlers.forEach(handler => handler.extendActionList())
+    }
+
+    /**
+     * Create action
+     * @param {object} actionData The action data
+     * @returns {object}          The action
+     */
+    createAction (actionData) {
+        return {
+            id: actionData.id,
+            name: actionData.name,
+            fullName: actionData.fullName ?? actionData.name,
+            listName: actionData.listName ?? actionData.name,
+            encodedValue: actionData.encodedValue,
+            cssClass: actionData.cssClass ?? '',
+            icon1: actionData.icon1 ?? '',
+            icon2: actionData.icon2 ?? '',
+            icon3: actionData.icon3 ?? '',
+            img: actionData.img ?? '',
+            info1: {
+                class: actionData?.info1?.class ?? '',
+                text: actionData?.info1?.text ?? '',
+                title: actionData?.info1?.title ?? ''
+            },
+            info2: {
+                class: actionData?.info2?.class ?? '',
+                text: actionData?.info2?.text ?? '',
+                title: actionData?.info2?.title ?? ''
+            },
+            info3: {
+                class: actionData?.info3?.class ?? '',
+                text: actionData?.info3?.text ?? '',
+                title: actionData?.info3?.title ?? ''
+            },
+            isItem: actionData.isitem ?? null,
+            isPreset: actionData.isPreset ?? false,
+            userSelected: actionData.userSelected ?? true,
+            systemSelected: actionData.systemSelected ?? true,
+            selected: (!actionData.systemSelected) ? false : actionData.userSelected ?? actionData.systemSelected ?? true
+        }
+    }
+
+    /**
+     * Add to available actions
+     * @param {array} actions The actions
+     */
+    addToAvailableActions (actions) {
+        for (const action of actions) {
+            const existingAction = this.availableActions.find(availableAction => availableAction.id === action.id)
+            if (!existingAction) this.availableActions.push(action)
+        }
+    }
+
+    /**
+     * Sort available actions by listName
+     */
+    async sortAvailableActions () {
+        this.availableActions.sort((a, b) => a.listName.localeCompare(b.listName))
+    }
+
+    /**
+     * Get flattened actions
+     * @param {object} actionData The action data
+     * @returns {array}           The actions
+     */
+    getFlattenedActions (actionData) {
+        return this.flattenedActions.filter(flattenedAction => flattenedAction.id === actionData.id)
     }
 
     /**
@@ -213,8 +301,7 @@ export class ActionHandler {
      */
     async getAvailableActionsAsTagifyEntries (subcategoryData) {
         if (!this.actionList) return
-        const subcategory = await Utils.getSubcategoryByNestId(this.actionList.categories, subcategoryData)
-        const actions = subcategory.actions.map(action => this._toTagifyEntry(action))
+        const actions = this.availableActions.map(action => this._toTagifyEntry(action))
         return actions
     }
 
@@ -306,6 +393,21 @@ export class ActionHandler {
         // Exit if no actions exist
         if (!actions.length) return
 
+        actions = actions.map(action => this.createAction(action))
+
+        // Add actions to availableActions array
+        this.addToAvailableActions(actions)
+
+        // Update existing actions
+        for (const action of actions) {
+            const flattenedActions = this.getFlattenedActions(action)
+            for (const flattenedAction of flattenedActions) {
+                const systemSelected = action.systemSelected ?? flattenedAction.systemSelected
+                const userSelected = flattenedAction.userSelected ?? action.userSelected
+                Object.assign(flattenedAction, this.createAction({ ...action, systemSelected, userSelected }))
+            }
+        }
+
         // Exit if no subcategoryId exists
         if (!subcategoryData?.id) return
 
@@ -329,23 +431,31 @@ export class ActionHandler {
 
             const reorderedActions = []
 
-            // Set 'selected' to saved action 'selected'
-            // Reorder actions based on saved action list
+            // Loop the previously saved actions in the subcategory
             for (const savedAction of savedActions) {
-                const existingAction = existingActions.find(action => action.id === savedAction.id)
-                if (existingAction) continue
                 const action = actions.find((action) => action.id === savedAction.id)
+                const existingAction = existingActions.find(action => action.id === savedAction.id)
                 if (action) {
-                    const actionClone = { ...action, fullName: action.name, selected: savedAction.selected ?? true }
-                    reorderedActions.push(actionClone)
+                    const systemSelected = action.systemSelected ?? savedAction.systemSelected
+                    if (existingAction) {
+                        const userSelected = existingAction.userSelected ?? savedAction.userSelected ?? action.userSelected
+                        Object.assign(existingAction, this.createAction({ ...action, isPreset: true, systemSelected, userSelected }))
+                    } else {
+                        const userSelected = savedAction.userSelected ?? action.userSelected
+                        reorderedActions.push(this.createAction({ ...action, isPreset: true, systemSelected, userSelected }))
+                    }
+                } else {
+                    if (existingAction && !existingAction.selected && existingAction.isPreset) {
+                        const systemSelected = false
+                        const userSelected = existingAction.userSelected ?? savedAction.userSelected
+                        Object.assign(existingAction, this.createAction({ ...existingAction, systemSelected, userSelected }))
+                    }
                 }
             }
+            // Loop the generated actions and add any not previously saved
             for (const action of actions) {
                 const savedAction = savedActions.find((savedAction) => savedAction.id === action.id)
-                if (!savedAction) {
-                    const actionClone = { ...action, fullName: action.name, selected: true }
-                    reorderedActions.push(actionClone)
-                }
+                if (!savedAction) reorderedActions.push(this.createAction({ ...action, isPreset: true }))
             }
 
             // Update action list
@@ -404,15 +514,13 @@ export class ActionHandler {
     /**
      * Save the action list to the actor flag
      * @private
-     * @param {object} character The actor and/or token
      */
-    async _saveActorActionList (character) {
-        Logger.debug('Saving actor action list...', { character })
-        if (!character?.actor) return
-        const actor = character.actor
+    async _saveActorActionList () {
+        if (!this.actor) return
+        Logger.debug('Saving actor action list...', { actor: this.actor })
         const categories = Utils.deepClone(this.actionList.categories)
-        await actor.setFlag(MODULE.ID, 'categories', categories)
-        Logger.debug('Actor action list saved', { actionList: this.actionList, character })
+        await this.actor.setFlag(MODULE.ID, 'categories', categories)
+        Logger.debug('Actor action list saved', { actionList: this.actionList, actor: this.actor })
     }
 
     /**
@@ -433,19 +541,20 @@ export class ActionHandler {
         // Set 'selected' to true for selected actions
         // Reorder actions based on order in dialog
         for (const selectedAction of selectedActions) {
-            const action = actions.find(
-                (action) => action.encodedValue === selectedAction.id
-            )
+            if (selectedAction.id.includes('itemMacro')) continue
+            const action = this.availableActions.find((action) => action.encodedValue === selectedAction.id)
             if (action) {
-                const actionClone = { ...action, selected: true }
+                const actionClone = { ...action, userSelected: true }
                 reorderedActions.push(actionClone)
             }
         }
         // Set 'selected' to false for unselected actions
         for (const action of actions) {
+            if (!action.id) continue
+            if (action.id.includes('itemMacro')) continue
             const selectedAction = selectedActions.find(selectedAction => selectedAction.id === action.encodedValue)
-            if (!selectedAction) {
-                const actionClone = { ...action, selected: false }
+            if (!selectedAction && action.isPreset) {
+                const actionClone = { ...action, userSelected: false }
                 reorderedActions.push(actionClone)
             }
         }
@@ -454,7 +563,7 @@ export class ActionHandler {
         subcategory.actions = reorderedActions
 
         // Save action list
-        await this._saveActorActionList(this.character)
+        await this._saveActorActionList()
     }
 
     /**
@@ -472,7 +581,13 @@ export class ActionHandler {
      * @returns {object}    Tagify entry
      */
     _toTagifyEntry (data) {
-        return { id: data.encodedValue, value: data.fullName, type: 'action', level: 'action' }
+        return {
+            id: data.encodedValue,
+            value: data.listName ?? data.name,
+            name: data.name,
+            type: 'action',
+            level: 'action'
+        }
     }
 
     /**

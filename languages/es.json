@@ -6,11 +6,16 @@
     "cancel": "Cancelar",
     "collapseHud": "Collapse HUD",
     "combat": "Combate",
+    "compendiumEntry": "Compendium Entry",
+    "compendiumMacro": "Compendium Macro",
+    "compendiumPlaylist": "Compendium Playlist",
     "editCategories": "Edit Categories",
     "endTurn": "End Turn",
     "expandHud": "Expand HUD",
 	  "handlerNotFound": "no encontrado, revirtiendo a las tiradas básicas.",
     "lockHud": "Lock HUD",
+    "macro": "Macro",
+    "macros": "Macros",
     "makeInvisible": "Hacer Invisible",
     "makeVisible": "Hacer Visible",
     "pushLabelExplanation": "¿En qué lado mostrar las categorías?",
@@ -62,6 +67,7 @@
         "hint": "Establecer la dirección en la que se expandirá el HUD",
         "name": "Dirección",
         "choices": {
+          "auto": "Automática",
           "down": "Abajo",
           "up": "Arriba"
         }
@@ -149,7 +155,18 @@
           "hint": "Show this subcategory's title"
         }
       },
-      "subcategoryDialogDescription": "Add and remove subcategories. Select core subcategories from the list or enter free text for macros. Drag subcategories to change their order.",
+      "resetActions": {
+        "button": "Reset Actions",
+        "dialog": {
+          "title": "Reset Actions",
+          "content": "This will reset all actions for this actor. Do you wish to continue?",
+          "buttons": {
+            "yes": "Yes",
+            "no": "No"
+          }
+        }
+      },
+      "subcategoryDialogDescription": "Add and remove subcategories. Select subcategories with pre-defined actions from the list or enter free text for an empty subcategory. Drag subcategories to change their order.",
       "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "Opciones (separadas con punto y coma)"
     }

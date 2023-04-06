@@ -1,5 +1,5 @@
 import { ActionListExtender } from './action-list-extender.js'
-import { DELIMITER } from '../constants.js'
+import { DELIMITER, ITEM_MACRO_ICON } from '../constants.js'
 import { Utils } from '../utilities/utils.js'
 
 /**
@@ -10,23 +10,17 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         super(actionHandler.categoryManager)
         this.actionHandler = actionHandler
         this.categoryManager = actionHandler.categoryManager
+        this.actor = this.actionHandler.actor
+        this.token = this.actionHandler.token
     }
 
     /**
      * Extend the action list
      * @override
-     * @param {object} character The actor and/or token
      */
-    extendActionList (character) {
-        if (!character) return
-
-        const tokenId = character.token?.id
-        const actorId = character.actor?.id
-
-        if (!actorId) return
-
-        const actor = Utils.getActor(actorId, tokenId)
-        const items = actor.items.filter((item) => item.flags?.itemacro?.macro?.command)
+    extendActionList () {
+        if (!this.actor) return
+        const items = this.actor.items.filter((item) => item.flags?.itemacro?.macro?.command)
 
         let itemIds
         if (Utils.isModuleActive('midi-qol')) {
@@ -67,7 +61,14 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         subcategory.actions.forEach(action => {
             if (!itemIds.includes(action.id)) return
 
-            const macroAction = this._createItemMacroAction(action, replace)
+            const existingItemMacroAction = subcategory.actions.find(subcategoryAction => subcategoryAction.id === `itemMacro+${action.id}`)
+            const actionToReplace = existingItemMacroAction ?? action
+
+            if (existingItemMacroAction) {
+                replace = true
+            }
+
+            const macroAction = this._createItemMacroAction(action, actionToReplace, replace)
 
             // Add action to action list
             if (!replace) macroActions.push(macroAction)
@@ -79,17 +80,19 @@ export class ItemMacroActionListExtender extends ActionListExtender {
     /**
      * Create item macro action
      * @private
-     * @param {object} action   The action
-     * @param {boolean} replace Whether to replace the action or not
-     * @returns {object}        The action
+     * @param {object} originalAction  The original action
+     * @param {object} actionToReplace The action to replace
+     * @param {boolean} replace        Whether to replace the action or not
+     * @returns {object}               The item macro action
      */
-    _createItemMacroAction (action, replace) {
-        const itemMacroAction = (replace) ? action : Utils.deepClone(action)
-        itemMacroAction.id = `itemMacro+${itemMacroAction.id}`
-        itemMacroAction.fullName = `(M) ${itemMacroAction.fullName}`
-        itemMacroAction.name = `(M) ${itemMacroAction.name}`
-        itemMacroAction.encodedValue = `itemMacro${itemMacroAction.encodedValue.substr(itemMacroAction.encodedValue.indexOf(DELIMITER))}`
-
+    _createItemMacroAction (originalAction, actionToReplace, replace) {
+        const itemMacroAction = (replace) ? actionToReplace : Utils.deepClone(originalAction)
+        itemMacroAction.id = `itemMacro+${originalAction.id}`
+        itemMacroAction.fullName = originalAction.fullName
+        itemMacroAction.listName = `Item Macro: ${originalAction.fullName}`
+        itemMacroAction.name = originalAction.name
+        itemMacroAction.encodedValue = `itemMacro${originalAction.encodedValue.substr(originalAction.encodedValue.indexOf(DELIMITER))}`
+        itemMacroAction.itemMacroIcon = `<i class="${ITEM_MACRO_ICON.ICON}" title="${ITEM_MACRO_ICON.TOOLTIP}"></i>`
         return itemMacroAction
     }
 

@@ -5,6 +5,9 @@ import { Logger, Utils } from '../utilities/utils.js'
  * Resolves core actions triggered from the HUD
  */
 export class RollHandler {
+    actor = null
+    token = null
+    delimiter = DELIMITER
     preRollHandlers = []
 
     /**
@@ -36,12 +39,11 @@ export class RollHandler {
 
         if (handled) return
 
-        if (this._isMultiGenericAction(encodedValue)) {
-            await this._doMultiGenericAction(encodedValue)
-            return
+        if (this._isGenericAction(encodedValue)) {
+            await this._handleGenericAction(encodedValue)
+        } else {
+            this.doHandleActionEvent(event, encodedValue)
         }
-
-        this.doHandleActionEvent(event, encodedValue)
     }
 
     /**
@@ -77,12 +79,11 @@ export class RollHandler {
     /**
      * Renders the item sheet
      * @public
-     * @param {string} actorId The actor id
-     * @param {string} tokenId The token id
-     * @param {string} itemId  The item id
+     * @param {object} actor  The actor
+     * @param {string} itemId The item id
      */
-    doRenderItem (actorId, tokenId, itemId) {
-        const actor = Utils.getActor(actorId, tokenId)
+    doRenderItem (actor, itemId) {
+        if (!actor) actor = this.actor
         const item = Utils.getItem(actor, itemId)
         item.sheet.render(true)
     }
@@ -162,24 +163,24 @@ export class RollHandler {
     }
 
     /** @private */
-    _isMultiGenericAction (encodedValue) {
+    _isGenericAction (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
 
         const actionType = payload[0]
-        const actionId = payload[3]
+        const actionId = payload[1]
 
         return actionType === 'utility' && actionId.includes('toggle')
     }
 
     /** @private */
-    async _doMultiGenericAction (encodedValue) {
+    async _handleGenericAction (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
-        const actionId = payload[3]
+        const actionId = payload[1]
 
         const firstControlledToken = Utils.getFirstControlledToken()
 
-        if (actionId === 'toggleVisibility') firstControlledToken.toggleVisibility()
-        if (actionId === 'toggleCombat') firstControlledToken.toggleCombat()
+        if (actionId === 'toggleVisibility') await firstControlledToken.toggleVisibility()
+        if (actionId === 'toggleCombat') await firstControlledToken.toggleCombat()
 
         Hooks.callAll('forceUpdateTokenActionHud')
     }

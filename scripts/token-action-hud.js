@@ -25,6 +25,7 @@ export class TokenActionHud extends Application {
     constructor (systemManager) {
         super()
         this.systemManager = systemManager
+        this.autoDirection = 'down'
         this.direction = 'down'
         this.isAlwaysShow = false
         this.isClickOpen = false
@@ -195,7 +196,7 @@ export class TokenActionHud extends Application {
         const openCategory = async (event) => {
             const category = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
             category.classList.add('hover')
-            this.categoryResizer.resizeCategory(this.categoryManager, category, this.direction, this.isGrid)
+            this.categoryResizer.resizeCategory(this.categoryManager, category, this.autoDirection, this.isGrid)
             const id = category.id
             this.setHoveredCategory(id)
         }
@@ -300,7 +301,8 @@ export class TokenActionHud extends Application {
          * @param {object} event
          */
         const openActionDialog = (event) => {
-            const { id, innerText, outerText, dataset } = event.target
+            const id = event.target.parentElement.id
+            const { innerText, outerText, dataset } = event.target
             if (!id) return
 
             const nestId = id
@@ -512,6 +514,8 @@ export class TokenActionHud extends Application {
             newElementTop = newElementTop - pos2
             newElementLeft = newElementLeft - pos1
 
+            this.topPos = newElementTop
+
             // Apply styles
             requestAnimationFrame(() => {
                 Object.assign(element.style, { left: `${newElementLeft}px`, position: 'fixed', top: `${newElementTop}px` })
@@ -533,6 +537,10 @@ export class TokenActionHud extends Application {
             // If position has not changed, do not update
             if (newElementTop === originalElementTop && newElementLeft === originalElementLeft) return
 
+            this.topPos = newElementTop
+
+            this.applySettings()
+
             // Save the new position to the user's flags
             Utils.setUserFlag('position', { top: newElementTop, left: newElementLeft })
 
@@ -549,13 +557,27 @@ export class TokenActionHud extends Application {
     }
 
     /**
+     * Get the automatic direction the HUD expands
+     * @returns {string} The direction
+     */
+    getAutoDirection () {
+        if (this.direction === 'up' || (this.direction === 'auto' && this.topPos > window.innerHeight / 2)) return 'up'
+        return 'down'
+    }
+
+    /**
      * Apply Settings
      */
     applySettings () {
-        if (Utils.getSetting('direction') === 'up') {
+        this.autoDirection = this.getAutoDirection()
+        if (this.autoDirection === 'up') {
             $(document).find('.tah-subcategories-wrapper').removeClass('expand-down')
             $(document).find('.tah-subcategories-wrapper').addClass('expand-up')
             $(document).find('#tah-character-name').addClass('tah-hidden')
+        } else {
+            $(document).find('.tah-subcategories-wrapper').addClass('expand-down')
+            $(document).find('.tah-subcategories-wrapper').removeClass('expand-up')
+            $(document).find('#tah-character-name').removeClass('tah-hidden')
         }
     }
 
@@ -707,6 +729,15 @@ export class TokenActionHud extends Application {
     }
 
     /**
+     * Reset the hud
+     */
+    async resetActorFlag () {
+        await this.categoryManager.resetActorFlag()
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud.resetActorFlag' } }
+        this.update(trigger)
+    }
+
+    /**
      * Reset actor flags
      */
     async resetActorFlags () {
@@ -745,7 +776,6 @@ export class TokenActionHud extends Application {
         await this.updateTimer.start()
         this.isUpdatePending = false
         this.isUpdating = true
-
         Logger.debug('Updating hud...', trigger)
         const controlledTokens = Utils.getControlledTokens()
         const character = this._getCharacter(controlledTokens)
@@ -866,7 +896,16 @@ export class TokenActionHud extends Application {
      * @private
      */
     _getCharacter (controlled = []) {
-        if (controlled.length > 1) return null
+        if (controlled.length > 1) {
+            this.actor = null
+            this.token = null
+            this.actionHandler.characterName = 'Multiple'
+            this.actionHandler.actor = null
+            this.actionHandler.token = null
+            this.rollHandler.actor = null
+            this.rollHandler.token = null
+            return null
+        }
 
         const character = { token: null, actor: null }
         if (controlled.length === 1) {
@@ -884,8 +923,13 @@ export class TokenActionHud extends Application {
 
         if (!character.actor) return null
 
-        character.id = character.token?.id ?? character.actor.id
-        character.name = character.token?.name ?? character.actor.name
+        this.actor = character.actor
+        this.token = character.token
+        this.actionHandler.characterName = character.token?.name ?? character.actor.name
+        this.actionHandler.actor = character.actor
+        this.actionHandler.token = character.token
+        this.rollHandler.actor = character.actor
+        this.rollHandler.token = character.token
         return character
     }
 

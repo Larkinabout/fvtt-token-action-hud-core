@@ -14,6 +14,7 @@
   --tah-button-border: none;
   --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606, 0 0 5px #000000ff;
   --tah-button-color: #ddd;
+  --tah-button-disabled-color: #dddddd80;
   --tah-button-height: 32px;
   --tah-button-min-width: 32px;
 
@@ -204,27 +205,15 @@
 }
 
 #tah-expand-hud:hover,
-.tah-category button:hover,
-.tah-category.hover > button,
-.tah-action button:hover {
+.tah-category > button:hover,
+.tah-action:not(.disabled) button:hover {
   box-shadow: var(--tah-button-hover-box-shadow);
   color: var(--tah-button-hover-color);
-  cursor: pointer;
 }
 
 .tah-category button:active {
   box-shadow: var(--tah-button-hover-box-shadow);
   color: var(--tah-button-hover-color);
-}
-
-.tah-action.active button {
-  background: var(--tah-button-active-background-color);
-  box-shadow: var(--tah-button-active-box-shadow);
-}
-
-.tah-action.toggle button:hover {
-  background: var(--tah-button-toggle-hover-background-color);
-  box-shadow: var(--tah-button-toggle-hover-box-shadow);
 }
 
 /*
@@ -302,7 +291,6 @@
 
 .tah-subcategory {
   cursor: default;
-  margin-top: 2px;
   position: relative;
 }
 
@@ -347,10 +335,11 @@
   color: var(--tah-text-color);
   display: inline-flex;
   flex-wrap: wrap;
-  font-size: var(--font-size-18);
+  font-size: var(--font-size-12);
   gap: var(--tah-gap);
-  padding-bottom: 2px;
+  letter-spacing: 0.1em;
   text-shadow: var(--tah-text-shadow);
+  text-transform: uppercase;
 }
 
 .tah-subtitle > .fa,
@@ -413,6 +402,29 @@
   content: "*";
 }
 
+.tah-action.disabled button {
+  color: var(--tah-button-disabled-color);
+}
+
+.tah-action.disabled button:hover {
+  box-shadow: var(--tah-button-box-shadow);
+}
+
+.tah-action.active button,
+.tah-action.active.disabled button:hover {
+  background: var(--tah-button-active-background-color);
+  box-shadow: var(--tah-button-active-box-shadow);
+}
+
+.tah-action.shrink button {
+  min-width: min-content;
+}
+
+.tah-action.toggle:not(.disabled) button:hover {
+  background: var(--tah-button-toggle-hover-background-color);
+  box-shadow: var(--tah-button-toggle-hover-box-shadow);
+}
+
 .tah-action-button-content {
   align-items: center;
   display: inline-flex;
@@ -420,6 +432,7 @@
   min-height: var(--tah-button-height);
   overflow: hidden;
   padding: 0 10px 0 10px;
+  width: 100%;
 }
 
 .tah-action-button-text {
@@ -427,6 +440,7 @@
   text-align: left;
   text-overflow: ellipsis;
   max-height: 2em;
+  width: 100%;
 }
 
 /*
@@ -496,5 +510,9 @@
 #tah-dialog-clear-tags {
   background: rgba(255, 255, 240, 0.8);
   border: 1px solid var(--color-border-light-primary);
+  margin-top: 2px;
+}
+
+#tah-dialog-reset-actions {
   margin-top: 2px;
 }
