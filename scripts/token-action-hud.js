@@ -2,7 +2,6 @@ import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
 import { CategoryResizer } from './utilities/category-resizer.js'
 import { MODULE } from './constants.js'
 import { Logger, Timer, Utils } from './utilities/utils.js'
-import { Logger, Timer, Utils } from './utilities/utils.js'
 
 /**
  * Token Action HUD application
@@ -15,14 +14,10 @@ export class TokenActionHud extends Application {
     defaultLeftPos = 150
     defaultTopPos = 80
     topPos = this.defaultTopPos
-    topPos = this.defaultTopPos
     defaultScale = 1
     refreshTimeout = null
     rendering = false
     tokens = null
-    isUpdatePending = false
-    isUpdating = false
-    updateTimer = new Timer(20)
     isUpdatePending = false
     isUpdating = false
     updateTimer = new Timer(20)
@@ -792,7 +787,6 @@ export class TokenActionHud extends Application {
             this.hoveredCategoryId = ''
             Logger.debug('Hud update aborted as no character(s) found or hud is disabled')
             this.isUpdating = false
-            this.isUpdating = false
             return
         }
 
@@ -803,13 +797,11 @@ export class TokenActionHud extends Application {
             this.hoveredCategoryId = ''
             Logger.debug('Hud update aborted as action list empty')
             this.isUpdating = false
-            this.isUpdating = false
             return
         }
 
         this.rendering = true
         this.render(true)
-        this.isUpdating = false
         this.isUpdating = false
         Logger.debug('Hud updated')
     }
