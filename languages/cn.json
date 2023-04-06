@@ -4,16 +4,16 @@
     "addToCombat": "添加到战斗",
     "blockListLabel": "黑名单：隐藏 / 白名单：展示",
     "cancel": "取消",
-    "collapseHud": "Collapse HUD",
+    "collapseHud": "折叠HUD",
     "combat": "战斗",
     "compendiumEntry": "Compendium Entry",
     "compendiumMacro": "Compendium Macro",
     "compendiumPlaylist": "Compendium Playlist",
-    "editCategories": "Edit Categories",
-    "endTurn": "End Turn",
-    "expandHud": "Expand HUD",
+    "editCategories": "编辑分类",
+    "endTurn": "结束回合",
+    "expandHud": "展开HUD",
     "handlerNotFound": "未找到，还原到核心系统掷骰。",
-    "lockHud": "Lock HUD",
+    "lockHud": "锁定HUD",
     "macro": "Macro",
     "macros": "Macros",
     "makeInvisible": "使隐形",
@@ -22,21 +22,21 @@
     "removeFromCombat": "从战斗中移除",
     "title": "Token Action HUD",
     "token": "指示物",
-    "unlockHud": "Unlock HUD",
+    "unlockHud": "解锁HUD",
     "utility": "实用项",
     "settings": {
       "activeCssAsText": {
-        "hint":  "Mark active actions with an asterisk",
-        "name": "Mark Active Actions with Asterisk"
+        "hint":  "为正在生效的动作添加星号",
+        "name": "为正在生效的动作添加星号"
       },
       "allow": {
-        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
-        "name": "Allow HUD",
+        "hint": "GM设置: 允许此权限及更高的用户使用HUD (需要刷新)",
+        "name": "允许使用HUD",
         "choices" : {
-          "4": "Game Master",
-          "3": "Assistant GM",
-          "2": "Trusted Player",
-          "1": "Player"
+          "4": "GM",
+          "3": "GM助手",
+          "2": "受信玩家",
+          "1": "玩家"
         }
       },
       "alwaysShowHud": {
@@ -44,16 +44,16 @@
         "name": "始终显示HUD"
       },
       "background": {
-        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI",
-        "name": "HUD Background Color"
+        "hint": "设置HUD的背景颜色，使用Dorako UI时忽略此设置",
+        "name": "HUD背景颜色"
       },
       "buttonBackgroundColor": {
-        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI",
-        "name": "Button Background Color"
+        "hint": "设置HUD按钮的背景颜色，使用Dorako UI时忽略此设置",
+        "name": "按钮背景颜色"
       },
       "buttonBorderColor": {
-        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI",
-        "name": "Button Border Color"
+        "hint": "设置HUD按钮边框颜色，使用Dorako UI时忽略此设置",
+        "name": "按钮边框颜色"
       },
       "clickOpenCategory": {
         "hint": "启用后，需要点击而非悬浮来展开分类。",
@@ -81,24 +81,24 @@
         "name": "显示动作图标"
       },
       "drag": {
-        "hint": "Move the HUD by dragging one of the category buttons",
-        "name": "Enable Dragging"
+        "hint": "拖拽分类按钮以移动HD",
+        "name": "启用拖拽"
       },
       "enable": {
         "hint": "启用后，当前用户HUD激活。不会覆盖玩家的权限设置。",
         "name": "为当前用户启用HUD"
       },
       "grid": {
-        "hint": "Use a grid layout for actions",
-        "name": "Grid"
+        "hint": "为动作启用网格图层",
+        "name": "网格"
       },
       "itemMacro": {
         "hint": "启用后，有宏的物品的物品宏将会覆盖原本的物品，否则两个都会显示。",
         "name": "物品宏：覆盖原有物品",
         "choices": {
-            "both": "Show original item and item macro",
-            "itemMacro": "Show item macro only",
-            "original": "Show original item only"
+            "both": "显示原始道具和道具宏",
+            "itemMacro": "只显示道具宏",
+            "original": "只显示原始道具"
         }
       },
       "renderItemOnRightClick": {
@@ -106,53 +106,53 @@
         "name": "右键单击展示物品卡片。"
       },
       "reset": {
-        "hint": "WARNING!!! This will reset the hud to its default configuration",
-        "name": "Reset HUD"
+        "hint": "警告！！此功能会将HUD设置重置为初始状态",
+        "name": "重置HUD"
       },
       "rollHandler": {
         "hint": "选择用哪个模组来接手HUD进行的动作。",
         "name": "HUD掷骰处理器"
       },
       "scale": {
-        "hint": "Adjust the scale of the HUD (1 is the default)",
-        "name": "HUD Scale"
+        "hint": "调整HUD界面大小 (默认为1)",
+        "name": "HUD界面大小"
       },
       "style": {
-        "hint": "設置 HUD 的樣式",
-        "name": "風格"
+        "hint": "设置HUD样式",
+        "name": "风格"
       }
     },
     "tagDialog": {
-      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
-      "actionDialogTitle": "Customise Actions",
-      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
-      "categoryDialogTitle": "Customise Categories",
+      "actionDialogDescription": "增加和移除动作。拖拽动作来改变顺序。",
+      "actionDialogTitle": "自定义动作",
+      "categoryDialogDescription": "增加和移除分类。拖拽分类来改变顺序。",
+      "categoryDialogTitle": "自定义分类",
       "clearButton": "清除",
       "options": {
         "characterCount": {
-          "label": "Characters per Word",
-          "hint": "Limit the characters per word of the actions"
+          "label": "单词字数",
+          "hint": "限制动作的字数"
         },
         "customWidth": {
-          "label": "Custom Width",
+          "label": "自定义宽度",
           "units": "(Pixels)",
-          "hint": "Custom width for the subcategories"
+          "hint": "调整子分类的宽度"
         },
         "grid": {
-          "label": "Grid",
-          "hint": "Grid layout for actions"
+          "label": "网格",
+          "hint": "动作使用的网格图层"
         },
         "image": {
-          "label": "Image",
-          "hint": "Image on this button"
+          "label": "图像",
+          "hint": "按钮上显示的图像"
         },
         "showCategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this button's title"
+          "label": "显示标题",
+          "hint": "显示按钮的标题"
         },
         "showSubcategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this subcategory's title"
+          "label": "显示标题",
+          "hint": "显示子分类的标题"
         }
       },
       "resetActions": {
@@ -166,8 +166,8 @@
           }
         }
       },
-      "subcategoryDialogDescription": "Add and remove subcategories. Select subcategories with pre-defined actions from the list or enter free text for an empty subcategory. Drag subcategories to change their order.",
-      "subcategoryDialogTitle": "Customise Subcategories",
+      "subcategoryDialogDescription": "增加和移除子分类。选择列表中的多个子分类，或为宏填入文本。拖拽子分类来改变顺序。",
+      "subcategoryDialogTitle": "自定义子分类",
       "tagPlaceholder": "选项（分号分隔)"
     }
   }
