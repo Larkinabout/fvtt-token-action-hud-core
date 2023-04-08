@@ -12,6 +12,7 @@ export class CategoryResizer {
     contentRect = null
     direction = null
     gridWidth = null
+    minCols = 3
     isCustomWidth = false
     spacing = 10
     subcategories = null
@@ -26,6 +27,8 @@ export class CategoryResizer {
     async resizeCategory (categoryManager, category, autoDirection, gridModuleSetting) {
         // Exit early if no category element passed in
         if (!category) return
+
+        this._resetVariables()
 
         this.category = category
 
@@ -72,6 +75,24 @@ export class CategoryResizer {
                 this.resize(actionGroup)
             }
         }
+    }
+
+    _resetVariables () {
+        this.actionGroups = null
+        this.actionGroupsGap = 5
+        this.advancedCategoryOptions = null
+        this.availableHeight = null
+        this.availableWidth = null
+        this.category = null
+        this.content = null
+        this.contentPadding = null
+        this.contentRect = null
+        this.direction = null
+        this.gridWidth = null
+        this.minCols = 3
+        this.isCustomWidth = false
+        this.spacing = 10
+        this.subcategories = null
     }
 
     /**
@@ -129,7 +150,7 @@ export class CategoryResizer {
         const actions = actionGroup.querySelectorAll('.tah-action')
         const squaredCols = Math.ceil(Math.sqrt(actions.length))
         const availableCols = Math.floor(this.availableWidth / this.gridWidth)
-        const cols = (squaredCols > availableCols) ? availableCols : squaredCols
+        const cols = (squaredCols > availableCols) ? availableCols : (actions.length <= this.minCols) ? actions.length : squaredCols
 
         // Apply maxHeight and width styles to content
         const style = { display: 'grid', gridTemplateColumns: `repeat(${cols}, ${this.gridWidth}px)` }
@@ -174,18 +195,18 @@ export class CategoryResizer {
             // Determine number of columns
             const defaultCols = 5
             let cols = (maxActions < defaultCols) ? maxActions : defaultCols
-            const maxCols = Math.floor(this.availableWidth / medianWidthPerAction)
+            const availableCols = Math.floor(this.availableWidth / medianWidthPerAction)
             const sqrtActionsPerGroup = Math.ceil(Math.sqrt(maxActions))
-            if (sqrtActionsPerGroup > cols && sqrtActionsPerGroup <= maxCols) cols = sqrtActionsPerGroup
+            if (sqrtActionsPerGroup > cols && sqrtActionsPerGroup <= availableCols) cols = sqrtActionsPerGroup
 
             // Determine width of content
             width = medianWidthPerAction * cols
             if (width > this.availableWidth) width = this.availableWidth
             if (width < 200) width = 200
-
-            const style = { width: `${width}px` }
-            await this.assignCSS(actionGroup, style)
         }
+
+        const style = { width: `${width}px` }
+        await this.assignCSS(actionGroup, style)
     }
 
     /**

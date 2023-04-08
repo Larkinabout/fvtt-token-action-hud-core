@@ -260,7 +260,7 @@ export class CategoryManager {
                 (existingSubcategory)
                     ? {
                         ...existingSubcategory,
-                        isSelected: existingSubcategory.isSelected ?? true
+                        isSelected: true
                     }
                     : this.createSubcategory({
                         ...subcategory,
