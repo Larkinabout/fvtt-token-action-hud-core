@@ -474,6 +474,11 @@ export class ActionHandler {
 
             // Update action list
             subcategory.actions.push(...reorderedActions)
+
+            // Sort actions
+            if (subcategory.advancedCategoryOptions.sort) {
+                subcategory.actions.sort((a, b) => a.name.localeCompare(b.name))
+            }
         }
     }
 

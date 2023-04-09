@@ -153,6 +153,10 @@
         "showSubcategoryTitle": {
           "label": "显示标题",
           "hint": "显示子分类的标题"
+        },
+        "sort": {
+          "label": "Sort Actions",
+          "hint": "Sort actions into alphabetical order"
         }
       },
       "resetActions": {
