@@ -21,6 +21,7 @@
     "pushLabelExplanation": "分类展示在哪边？",
     "removeFromCombat": "从战斗中移除",
     "title": "Token Action HUD",
+    "toggleHud": "Toggle HUD",
     "token": "指示物",
     "unlockHud": "解锁HUD",
     "utility": "实用项",
@@ -153,6 +154,10 @@
         "showSubcategoryTitle": {
           "label": "显示标题",
           "hint": "显示子分类的标题"
+        },
+        "sort": {
+          "label": "Sort Actions",
+          "hint": "Sort actions into alphabetical order"
         }
       },
       "resetActions": {

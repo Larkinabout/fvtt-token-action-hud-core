@@ -21,6 +21,7 @@
     "pushLabelExplanation": "Mostrar categorias em qual lado?",
     "removeFromCombat": "Remover do Combate",
     "title": "Token Action HUD",
+    "toggleHud": "Toggle HUD",
     "token": "Token",
     "unlockHud": "Unlock HUD",
     "utility": "Utilidade",
@@ -153,6 +154,10 @@
         "showSubcategoryTitle": {
           "label": "Show Title",
           "hint": "Show this subcategory's title"
+        },
+        "sort": {
+          "label": "Sort Actions",
+          "hint": "Sort actions into alphabetical order"
         }
       },
       "resetActions": {

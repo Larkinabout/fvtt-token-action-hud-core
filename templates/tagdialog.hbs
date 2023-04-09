@@ -66,6 +66,15 @@
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.customWidth.hint"}}</p>
     </div>
     {{~/if~}}
+    {{~#if (eq this.level "subcategory") ~}}
+    <div class="form-group slim">
+      <label>{{localize "tokenActionHud.tagDialog.options.sort.label"}}</label>
+      <div class="form-fields">
+          <input type="checkbox" name="sort" {{~#if advancedCategoryOptions.sort~}}checked{{~/if~}}/>
+      </div>
+      <p class="hint">{{localize "tokenActionHud.tagDialog.options.sort.hint"}}</p>
+    </div>
+    {{~/if~}}
     {{~#if (ne this.level "hud") ~}}
     <div class="form-group">
       <label>{{localize "tokenActionHud.tagDialog.options.characterCount.label"}}</label>

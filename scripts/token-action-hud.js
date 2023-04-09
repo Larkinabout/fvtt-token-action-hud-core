@@ -35,6 +35,7 @@ export class TokenActionHud extends Application {
         this.isEnabled = false
         this.isGrid = false
         this.isUnlocked = false
+        this.isVisible = Utils.getSetting('visible')
     }
 
     /**
@@ -51,6 +52,7 @@ export class TokenActionHud extends Application {
         this.isEnabled = this.isHudEnabled()
         this.isGrid = Utils.getSetting('grid')
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
+        this.isVisible = Utils.getSetting('visible')
         await this.systemManager.registerDefaultFlags()
         this.categoryManager = await this.systemManager.getCategoryManager()
         this.categoryResizer = new CategoryResizer()
@@ -72,6 +74,7 @@ export class TokenActionHud extends Application {
         this.isDraggable = Utils.getSetting('drag')
         this.isEnabled = this.isHudEnabled()
         this.isGrid = Utils.getSetting('grid')
+        this.isVisible = Utils.getSetting('visible')
         this.actionHandler.displayIcons = Utils.getSetting('displayIcons')
         Logger.debug('Settings updated')
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
@@ -706,8 +709,23 @@ export class TokenActionHud extends Application {
     }
 
     /**
+     * Toggle HUD
+     */
+    async toggleHud () {
+        if (this.isVisible) {
+            this.close()
+            this.isVisible = false
+            await Utils.setSetting('visible', false)
+        } else {
+            this.isVisible = true
+            await Utils.setSetting('visible', true)
+            Hooks.callAll('forceUpdateTokenActionHud')
+        }
+    }
+
+    /**
      * Copy user's 'categories' flag to others users
-     * @param {string} fromUserId The user id to copy from
+     * @param {string} fromUserId      The user id to copy from
      * @param {string|array} toUserIds The user ids to copy to
      */
     async copy (fromUserId, toUserIds) {
@@ -782,7 +800,7 @@ export class TokenActionHud extends Application {
 
         const multipleTokens = controlledTokens.length > 1 && !character
 
-        if ((!character && !multipleTokens) || !this.isEnabled) {
+        if ((!character && !multipleTokens) || !this.isEnabled || !this.isVisible) {
             this.close()
             this.hoveredCategoryId = ''
             Logger.debug('Hud update aborted as no character(s) found or hud is disabled')

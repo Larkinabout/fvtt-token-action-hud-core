@@ -20,6 +20,7 @@
     "pushLabelExplanation": "どちら側にカテゴリを表示しますか？",
     "removeFromCombat": "戦闘から外す",
     "title": "トークン･アクションHUD",
+    "toggleHud": "Toggle HUD",
     "token": "トークン",
     "unlockHud": "Unlock HUD",
     "utility": "他",
@@ -152,6 +153,10 @@
         "showSubcategoryTitle": {
           "label": "Show Title",
           "hint": "Show this subcategory's title"
+        },
+        "sort": {
+          "label": "Sort Actions",
+          "hint": "Sort actions into alphabetical order"
         }
       },
       "resetActions": {

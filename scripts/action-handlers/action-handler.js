@@ -349,8 +349,9 @@ export class ActionHandler {
      * @public
      * @param {object} parentSubcategoryData The parent subcategory data
      * @param {object} subcategoryData       The subcategory data
+     * @param {boolean} [update = false]     Whether to update an existing subcategory
      */
-    async addSubcategoryToActionList (parentSubcategoryData, subcategoryData) {
+    async addSubcategoryToActionList (parentSubcategoryData, subcategoryData, update = false) {
         const parentSubcategoryId = parentSubcategoryData?.id
 
         // Exit if no parentSubcategoryId exists
@@ -367,20 +368,33 @@ export class ActionHandler {
             const subcategoryNestId = `${parentSubcategory.nestId}_${subcategoryData.id}`
 
             // Get existing subcategory
-            const existingSubcategory = this.categoryManager.getFlattenedSubcategories({ ...subcategoryData, nestId: subcategoryNestId })
+            const existingSubcategories = this.categoryManager.getFlattenedSubcategories({ ...subcategoryData, nestId: subcategoryNestId })
 
-            if (existingSubcategory.length) continue
-            // Create a new subcategory
-            const subcategory = this.categoryManager.createSubcategory({ ...subcategoryData, nestId: subcategoryNestId })
+            if (existingSubcategories.length) {
+                if (update) {
+                    for (const existingSubcategory of existingSubcategories) {
+                        // Temporary fix until info1-3 properties are grouped into info object
+                        if (subcategoryData.info) {
+                            Object.assign(subcategoryData, { ...subcategoryData.info })
+                            delete subcategoryData.info
+                        }
+                        // Update existing subcategory
+                        Object.assign(existingSubcategory, { ...subcategoryData })
+                    }
+                }
+            } else {
+                // Create a new subcategory
+                const subcategory = this.categoryManager.createSubcategory({ ...subcategoryData, nestId: subcategoryNestId })
 
-            // Add subcategory to action list
-            parentSubcategory.subcategories.push(subcategory)
+                // Add subcategory to action list
+                parentSubcategory.subcategories.push(subcategory)
 
-            // Add subcategory to the flattenedSubcategories variable
-            this.categoryManager.addToFlattenedSubcategories(subcategory)
+                // Add subcategory to the flattenedSubcategories variable
+                this.categoryManager.addToFlattenedSubcategories(subcategory)
 
-            // Add subcategory to the derivedSubcategories variable
-            this.categoryManager.addToDerivedSubcategories({ ...parentSubcategoryData, nestId: parentSubcategory.nestId }, subcategory)
+                // Add subcategory to the derivedSubcategories variable
+                this.categoryManager.addToDerivedSubcategories({ ...parentSubcategoryData, nestId: parentSubcategory.nestId }, subcategory)
+            }
         }
     }
 
@@ -460,6 +474,11 @@ export class ActionHandler {
 
             // Update action list
             subcategory.actions.push(...reorderedActions)
+
+            // Sort actions
+            if (subcategory.advancedCategoryOptions.sort) {
+                subcategory.actions.sort((a, b) => a.name.localeCompare(b.name))
+            }
         }
     }
 

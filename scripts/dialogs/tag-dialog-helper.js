@@ -97,7 +97,8 @@ export class TagDialogHelper {
             const grid = formData?.grid
             const image = formData?.image
             const showTitle = formData?.showTitle
-            categorySubcategoryData.advancedCategoryOptions = { characterCount, customWidth, grid, image, showTitle }
+            const sort = formData?.sort
+            categorySubcategoryData.advancedCategoryOptions = { characterCount, customWidth, grid, image, showTitle, sort }
 
             // Save selected subcategories to user action list
             await categoryManager.saveSubcategories(choices, categorySubcategoryData)
@@ -167,7 +168,8 @@ export class TagDialogHelper {
             const grid = formData?.grid
             const image = formData?.image
             const showTitle = formData?.showTitle
-            parentSubcategoryData.advancedCategoryOptions = { characterCount, grid, image, showTitle }
+            const sort = formData?.sort
+            parentSubcategoryData.advancedCategoryOptions = { characterCount, grid, image, showTitle, sort }
 
             // Save subcategories to user action list
             await categoryManager.saveSubcategories(selectedSubcategories, parentSubcategoryData)
