@@ -110,6 +110,10 @@ export class CategoryResizer {
      * Get the grid width
      */
     async getGridWidth () {
+        // Reset action groups
+        const emptyStyle = { display: '', gridTemplateColumns: '', width: '' }
+        await this.resetCSS(this.actionGroups, emptyStyle)
+
         const actionWidths = []
         const actionWidthsForMedian = []
         for (const actionGroup of this.actionGroups) {
@@ -271,5 +275,11 @@ export class CategoryResizer {
         requestAnimationFrame(() => {
             Object.assign(element.style, style)
         })
+    }
+
+    async resetCSS (elements, style) {
+        for (const element of elements) {
+            Object.assign(element.style, style)
+        }
     }
 }
