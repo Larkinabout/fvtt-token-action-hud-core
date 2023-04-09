@@ -3,6 +3,20 @@ import { Logger, Utils } from './utilities/utils.js'
 
 function onChangeFunction (value) { if (game.tokenActionHud) game.tokenActionHud.updateSettings() }
 
+// Register key bindings
+Hooks.on('init', async () => {
+    game.keybindings.register(MODULE.ID, 'toggleHud', {
+        name: Utils.i18n('tokenActionHud.toggleHud'),
+        editable: [{ key: 'KeyH', modifiers: [] }],
+        onDown: () => { game.tokenActionHud.toggleHud() }
+    })
+})
+
+/**
+ * Register module settings
+ * @param {object} systemManager The SystemManager class
+ * @param {array} rollHandlers   The available roll handlers
+ */
 export const registerSettings = function (systemManager, rollHandlers) {
     game.settings.register(MODULE.ID, 'startup', {
         name: 'One-Time Startup Prompt',
@@ -249,11 +263,25 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
+    game.settings.register(MODULE.ID, 'visible', {
+        name: 'visible',
+        scope: 'client',
+        config: false,
+        type: Boolean,
+        default: true,
+        onChange: (value) => {
+            onChangeFunction(value)
+        }
+    })
+
     systemManager.doRegisterSettings(onChangeFunction)
 
     Logger.debug('Available roll handlers', { rollHandlers })
 }
 
+/**
+ * Initiate color settings
+ */
 function initColorSettings () {
     // Determine color picker module
     let module = null
@@ -310,6 +338,10 @@ function initColorSettings () {
     }
 }
 
+/**
+ * Register color settings
+ * @param {*} module The color picker module
+ */
 function registerColorSettings (module) {
     const backgroundColor = {
         key: 'background',

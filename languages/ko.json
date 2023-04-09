@@ -21,6 +21,7 @@
     "pushLabelExplanation": "카테고리를 어느 쪽에 배치하는가?",
     "removeFromCombat": "전투에서 제거",
     "title": "Token Action HUD",
+    "toggleHud": "Toggle HUD",
     "token": "토큰",
     "unlockHud": "Unlock HUD",
     "utility": "유틸리티",

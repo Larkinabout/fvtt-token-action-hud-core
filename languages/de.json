@@ -21,6 +21,7 @@
     "pushLabelExplanation": "Show categories on which side?",
     "removeFromCombat": "Aus Kampf Entfernen",
     "title": "Token Action HUD",
+    "toggleHud": "Toggle HUD",
     "token": "Token",
     "unlockHud": "Unlock HUD",
     "utility": "Nützliches",
