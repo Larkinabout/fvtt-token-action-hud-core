@@ -87,7 +87,7 @@
       },
       "enable": {
         "hint": "Enable the HUD",
-        "name": "Enable HUD for Current User"
+        "name": "Enable HUD"
       },
       "grid": {
         "hint": "Use a grid layout for actions",

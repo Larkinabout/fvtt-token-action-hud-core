@@ -263,17 +263,6 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
-    game.settings.register(MODULE.ID, 'visible', {
-        name: 'visible',
-        scope: 'client',
-        config: false,
-        type: Boolean,
-        default: true,
-        onChange: (value) => {
-            onChangeFunction(value)
-        }
-    })
-
     systemManager.doRegisterSettings(onChangeFunction)
 
     Logger.debug('Available roll handlers', { rollHandlers })

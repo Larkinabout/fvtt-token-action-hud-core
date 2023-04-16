@@ -34,9 +34,9 @@ export class TokenActionHud extends Application {
         this.isDisplayIcons = false
         this.isDraggable = false
         this.isEnabled = false
+        this.isHudEnabled = false
         this.isGrid = false
         this.isUnlocked = false
-        this.isVisible = Utils.getSetting('visible')
     }
 
     /**
@@ -51,10 +51,10 @@ export class TokenActionHud extends Application {
         this.isDebug = Utils.getSetting('debug')
         this.isDisplayIcons = Utils.getSetting('displayIcons')
         this.isDraggable = Utils.getSetting('drag')
-        this.isEnabled = this.isHudEnabled()
+        this.isEnabled = Utils.getSetting('enable')
+        this.isHudEnabled = this.getHudEnabled()
         this.isGrid = Utils.getSetting('grid')
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
-        this.isVisible = Utils.getSetting('visible')
         await this.systemManager.registerDefaultFlags()
         this.categoryResizer = new CategoryResizer()
         this.actionHandler = await this.systemManager.getActionHandler()
@@ -74,9 +74,9 @@ export class TokenActionHud extends Application {
         this.isDebug = Utils.getSetting('debug')
         this.isDisplayIcons = Utils.getSetting('displayIcons')
         this.isDraggable = Utils.getSetting('drag')
-        this.isEnabled = this.isHudEnabled()
+        this.isEnabled = Utils.getSetting('enable')
+        this.isHudEnabled = this.getHudEnabled()
         this.isGrid = Utils.getSetting('grid')
-        this.isVisible = Utils.getSetting('visible')
         this.actionHandler.displayIcons = Utils.getSetting('displayIcons')
         Logger.debug('Settings updated')
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
@@ -720,13 +720,13 @@ export class TokenActionHud extends Application {
      * Toggle HUD
      */
     async toggleHud () {
-        if (this.isVisible) {
+        if (this.isEnabled) {
             this.close()
-            this.isVisible = false
-            await Utils.setSetting('visible', false)
+            this.isEnabled = false
+            await Utils.setSetting('enable', false)
         } else {
-            this.isVisible = true
-            await Utils.setSetting('visible', true)
+            this.isEnabled = true
+            await Utils.setSetting('enable', true)
             Hooks.callAll('forceUpdateTokenActionHud')
         }
     }
@@ -869,7 +869,7 @@ export class TokenActionHud extends Application {
 
         const multipleTokens = controlledTokens.length > 1 && !character
 
-        if ((!character && !multipleTokens) || !this.isEnabled || !this.isVisible) {
+        if ((!character && !multipleTokens) || !this.isHudEnabled) {
             this.close()
             this.hoveredCategoryId = ''
             Logger.debug('Hud update aborted as no character(s) found or hud is disabled')
@@ -958,7 +958,7 @@ export class TokenActionHud extends Application {
      * Whether the hud is enabled for the current user
      * @returns {boolean}
      */
-    isHudEnabled () {
+    getHudEnabled () {
         const userRole = game.user.role
         const isGM = game.user.isGM
         const isEnabled = Utils.getSetting('enable')
