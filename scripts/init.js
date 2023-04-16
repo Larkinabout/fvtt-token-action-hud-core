@@ -9,9 +9,10 @@ import { MODULE } from './constants.js'
 import { Logger, Utils } from './utilities/utils.js'
 
 let systemManager
+let module
 
 Hooks.on('ready', async () => {
-    const module = game.modules.get(MODULE.ID)
+    module = game.modules.get(MODULE.ID)
     module.api = {
         ActionListExtender,
         ActionHandler,
@@ -76,7 +77,7 @@ Hooks.on('canvasReady', async () => {
 
         // If no Token Action Hud application exists, create a new TokenActionHud and initialise it
         if (!game.tokenActionHud) {
-            game.tokenActionHud = new TokenActionHud(systemManager)
+            game.tokenActionHud = new TokenActionHud(module, systemManager)
             await game.tokenActionHud.init()
         }
 

@@ -22,8 +22,9 @@ export class TokenActionHud extends Application {
     isUpdating = false
     updateTimer = new Timer(20)
 
-    constructor (systemManager) {
+    constructor (module, systemManager) {
         super()
+        this.module = module
         this.systemManager = systemManager
         this.autoDirection = 'down'
         this.direction = 'down'
@@ -889,6 +890,8 @@ export class TokenActionHud extends Application {
         this.rendering = true
         this.render(true)
         this.isUpdating = false
+
+        Hooks.callAll('tokenActionHudCoreHudUpdated', this.module)
         Logger.debug('Hud updated')
     }
 
