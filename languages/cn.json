@@ -9,7 +9,7 @@
     "compendiumEntry": "Compendium Entry",
     "compendiumMacro": "Compendium Macro",
     "compendiumPlaylist": "Compendium Playlist",
-    "editCategories": "编辑分类",
+    "editHud": "编辑HUD",
     "endTurn": "结束回合",
     "expandHud": "展开HUD",
     "handlerNotFound": "未找到，还原到核心系统掷骰。",
@@ -126,8 +126,10 @@
     "tagDialog": {
       "actionDialogDescription": "增加和移除动作。拖拽动作来改变顺序。",
       "actionDialogTitle": "自定义动作",
-      "categoryDialogDescription": "增加和移除分类。拖拽分类来改变顺序。",
-      "categoryDialogTitle": "自定义分类",
+      "groupDialogDescription": "增加和移除子分类。选择列表中的多个子分类，或为宏填入文本。拖拽子分类来改变顺序。",
+      "groupDialogTitle": "自定义子分类",
+      "hudDialogDescription": "增加和移除分类。拖拽分类来改变顺序。",
+      "hudDialogTitle": "自定义分类",
       "clearButton": "清除",
       "options": {
         "characterCount": {
@@ -171,8 +173,6 @@
           }
         }
       },
-      "subcategoryDialogDescription": "增加和移除子分类。选择列表中的多个子分类，或为宏填入文本。拖拽子分类来改变顺序。",
-      "subcategoryDialogTitle": "自定义子分类",
       "tagPlaceholder": "选项（分号分隔)"
     }
   }

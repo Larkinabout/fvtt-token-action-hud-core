@@ -1,6 +1,5 @@
 import { ActionHandler } from './action-handlers/action-handler.js'
 import { ActionListExtender } from './action-handlers/action-list-extender.js'
-import { CategoryManager } from './category-manager.js'
 import { MigrationManager } from './migration-manager.js'
 import { PreRollHandler } from './roll-handlers/pre-roll-handler.js'
 import { RollHandler } from './roll-handlers/roll-handler.js'
@@ -16,7 +15,6 @@ Hooks.on('ready', async () => {
     module.api = {
         ActionListExtender,
         ActionHandler,
-        CategoryManager,
         Logger,
         PreRollHandler,
         RollHandler,

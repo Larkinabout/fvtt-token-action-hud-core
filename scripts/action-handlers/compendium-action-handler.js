@@ -9,28 +9,22 @@ export class CompendiumActionHandler {
 
     constructor (actionHandler) {
         this.actionHandler = actionHandler
-        this.categoryManager = actionHandler.categoryManager
     }
 
     /**
-     * Build any compendium actions
+     * Build compendium actions
      * @override
      */
     async buildCompendiumActions () {
         // Get compendium packs
         const packIds = game.packs
-            .filter((pack) => {
-                return COMPENDIUM_PACK_TYPES.includes(pack.documentName)
-            })
-            .filter((pack) => game.user.isGM || !pack.private)
-            .map((pack) => pack.metadata.id)
+            .filter(pack => COMPENDIUM_PACK_TYPES.includes(pack.documentName) && (!pack.private || game.user.isGM))
+            .map(pack => pack.metadata.id)
 
-        // Add actions to the action list
         for (const packId of packIds) {
-            const subcategoryId = packId.replace('.', '-')
-            const subcategoryData = { id: subcategoryId, type: 'core' }
-            const actions = await this._getCompendiumActions(packId)
-            this.actionHandler.addActionsToActionList(actions, subcategoryData)
+            const actionsData = await this._getCompendiumActions(packId)
+            const groupData = { id: packId.replace('.', '-'), type: 'core' }
+            this.actionHandler.addActions(actionsData, groupData)
         }
     }
 

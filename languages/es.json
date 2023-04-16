@@ -9,7 +9,7 @@
     "compendiumEntry": "Compendium Entry",
     "compendiumMacro": "Compendium Macro",
     "compendiumPlaylist": "Compendium Playlist",
-    "editCategories": "Edit Categories",
+    "editHud": "Edit HUD",
     "endTurn": "End Turn",
     "expandHud": "Expand HUD",
 	  "handlerNotFound": "no encontrado, revirtiendo a las tiradas básicas.",
@@ -124,10 +124,12 @@
       }
     },
     "tagDialog": {
-      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
+      "actionDialogDescription": "Add and remove groups and actions. Drag groups and actions to change their order.",
       "actionDialogTitle": "Customise Actions",
-      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
-      "categoryDialogTitle": "Customise Categories",
+      "groupDialogDescription": "Add and remove groups. Select groups with pre-defined actions from the list or enter free text for an empty groups. Drag groups to change their order.",
+      "groupDialogTitle": "Customise Groups",
+      "hudDialogDescription": "Add and remove groups. Drag groups to change their order.",
+      "hudDialogTitle": "Customise HUD",
       "clearButton": "Borrar",
       "options": {
         "characterCount": {
@@ -153,7 +155,7 @@
         },
         "showSubcategoryTitle": {
           "label": "Show Title",
-          "hint": "Show this subcategory's title"
+          "hint": "Show this group's title"
         },
         "sort": {
           "label": "Sort Actions",
@@ -171,8 +173,6 @@
           }
         }
       },
-      "subcategoryDialogDescription": "Add and remove subcategories. Select subcategories with pre-defined actions from the list or enter free text for an empty subcategory. Drag subcategories to change their order.",
-      "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "Opciones (separadas con punto y coma)"
     }
   }

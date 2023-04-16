@@ -163,6 +163,32 @@ export class Utils {
     }
 
     /**
+     * Get module actor flag
+     * @param {string} key The flag key
+     * @returns {*}        The flag value
+     */
+    static getActorFlag (key) {
+        return game.tokenActionHud.actor.getFlag(MODULE.ID, key)
+    }
+
+    /**
+     * Set module actor flag
+     * @param {string} key The flag key
+     * @param {*} value    The flag value
+     */
+    static async setActorFlag (key, value) {
+        await game.tokenActionHud.actor.setFlag(MODULE.ID, key, value)
+    }
+
+    /**
+     * Unset module actor flag
+     * @param {string} key The flag key
+     */
+    static async unsetActorFlag (key) {
+        await game.tokenActionHud.actor.unsetFlag(MODULE.ID, key)
+    }
+
+    /**
      * Get module user flag
      * @param {string} key The flag key
      * @returns {*}        The flag value
@@ -225,6 +251,24 @@ export class Utils {
         const mid = Math.floor(numbers.length / 2)
         const nums = [...numbers].sort((a, b) => a - b)
         return numbers.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2
+    }
+
+    /**
+     * Sort items
+     * @param {object} items The items
+     * @returns {object}     The sorted items
+     */
+    static sortItems (items) {
+        return new Map([...items.entries()].sort((a, b) => a[1].sort.localeCompare(b[1].sort)))
+    }
+
+    /**
+     * Sort items by name
+     * @param {object} items The items
+     * @returns {object}     The sorted items
+     */
+    static sortItemsByName (items) {
+        return new Map([...items.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name)))
     }
 
     /**
@@ -339,19 +383,23 @@ export class Utils {
      * @returns {object}
      */
     static getSubcategories (subcategories, searchCriteria = {}) {
+        let order = 0
         if (!subcategories) return
         const subcategoryId = searchCriteria?.id
         const subcategoryType = searchCriteria?.type
         subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories)
-        let foundSubcategories = []
+        const foundSubcategories = {}
         for (const subcategory of subcategories) {
-            if ((!subcategoryId || subcategory.id === subcategoryId) && (!subcategoryType || subcategory.type === subcategoryType)) foundSubcategories.push(subcategory)
-            if (subcategory.subcategories.length > 0) {
+            if ((!subcategoryId || subcategory.id === subcategoryId) && (!subcategoryType || subcategory.type === subcategoryType)) {
+                order++
+                foundSubcategories[subcategory.nestId] = { ...subcategory, order }
+            }
+            if (subcategory.subcategories?.length > 0) {
                 const subcategories = this.getSubcategories(subcategory.subcategories, searchCriteria)
-                if (subcategories) foundSubcategories = foundSubcategories.concat(subcategories.filter(subcategory => subcategory !== undefined))
+                if (subcategories) Object.assign(foundSubcategories, subcategories)
             }
         }
-        return (foundSubcategories.length > 0) ? foundSubcategories : null
+        return (Object.keys(foundSubcategories).length > 0) ? foundSubcategories : null
     }
 
     /**
@@ -380,6 +428,37 @@ export class Utils {
                     parts.shift()
                     const foundSubcategory = await findSubcategory(subcategory.subcategories, parts)
                     if (foundSubcategory) return foundSubcategory
+                }
+            }
+        }
+    }
+
+    /**
+     * Loop groups, find groups matching nestId, and return flattened
+     * @param {object} groups
+     * @param {string} searchCriteria
+     * @returns {object}
+     */
+    static async getGroupByNestId (groups, searchCriteria = {}) {
+        const nestId = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.nestId)
+        const groupType = searchCriteria?.type
+        if (!nestId) return
+
+        const parts = nestId.split('_')
+        return await findGroup(groups, parts)
+
+        async function findGroup (groups, parts) {
+            groups = (Array.isArray(groups)) ? groups : Object.values(groups)
+            for (const group of groups) {
+                if (group.id === parts[0]) {
+                    if (parts.length === 1) {
+                        if (!group.type || !groupType || group.type === groupType) return group
+                        return
+                    }
+                    if (group.groups.length === 0) return
+                    parts.shift()
+                    const foundGroup = await findGroup(group.groups, parts)
+                    if (foundGroup) return foundGroup
                 }
             }
         }

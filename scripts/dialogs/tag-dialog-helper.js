@@ -6,26 +6,26 @@ import { Utils } from '../utilities/utils.js'
  */
 export class TagDialogHelper {
     /**
-     * Show the category dialog
-     * @param {CategoryManager} categoryManager The CategoryManager class
+     * Show the HUD dialog
+     * @param {ActionHandler} actionHandler The ActionHandler class
      * @public
      */
-    static async showCategoryDialog (categoryManager) {
+    static async showHudDialog (actionHandler) {
         // Set available and selected tags
         const tags = {}
         tags.available = []
-        tags.selected = await categoryManager.getSelectedCategoriesAsTagifyEntries()
+        tags.selected = await actionHandler.getSelectedGroups()
         const grid = await Utils.getSetting('grid')
 
         // Set dialog data
         const dialogData = {
-            title: Utils.i18n('tokenActionHud.tagDialog.categoryDialogTitle'),
+            title: Utils.i18n('tokenActionHud.tagDialog.hudDialogTitle'),
             content: {
-                topLabel: Utils.i18n('tokenActionHud.tagDialog.categoryDialogDescription'),
+                topLabel: Utils.i18n('tokenActionHud.tagDialog.hudDialogDescription'),
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
                 indexExplanationLabel: Utils.i18n('tokenActionHud.pushLabelExplanation'),
-                advancedCategoryOptions: { grid },
+                settings: { grid },
                 level: 'hud'
             }
         }
@@ -33,10 +33,9 @@ export class TagDialogHelper {
         // Set function on submit
         const dialogSubmit = async (choices, formData) => {
             const grid = formData?.grid
+            await actionHandler.updateGroups(choices, { level: 0 })
+            await actionHandler.saveGroups()
             await Utils.setSetting('grid', grid)
-
-            await categoryManager.saveCategories(choices)
-
             Hooks.callAll('forceUpdateTokenActionHud')
         }
 
@@ -45,30 +44,31 @@ export class TagDialogHelper {
     }
 
     /**
-     * Show subcategory dialog
+     * Show group dialog
      * @public
-     * @param {object} categorySubcategoryData The category/subcategory data
+     * @param {class} actionHandler The ActionHandler class
+     * @param {object} groupData    The group data
      */
-    static async showSubcategoryDialog (categoryManager, categorySubcategoryData) {
-        const { nestId, name } = categorySubcategoryData
+    static async showGroupDialog (actionHandler, groupData) {
+        const { nestId, name, level } = groupData
 
         // Set available and selected tags
         const tags = {}
 
         // Get available subcategories
-        tags.available = await categoryManager.getAvailableSubcategoriesAsTagifyEntries(categorySubcategoryData)
+        tags.available = await actionHandler.getAvailableGroups({ nestId, level })
 
         // Get selected subcategories
-        tags.selected = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(categorySubcategoryData)
+        tags.selected = await actionHandler.getSelectedGroups({ nestId, level })
 
         // Set dialog data
         const dialogData = {
-            title: Utils.i18n('tokenActionHud.tagDialog.subcategoryDialogTitle') + ` (${name})`,
+            title: Utils.i18n('tokenActionHud.tagDialog.groupDialogTitle') + ` (${name})`,
             content: {
-                topLabel: Utils.i18n('tokenActionHud.tagDialog.subcategoryDialogDescription'),
+                topLabel: Utils.i18n('tokenActionHud.tagDialog.groupDialogDescription'),
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
-                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(categorySubcategoryData),
+                settings: await actionHandler.getGroupSettings(groupData),
                 level: 'category'
             }
         }
@@ -83,12 +83,10 @@ export class TagDialogHelper {
                     strict: true
                 })
                 choice.type = choice.type ?? 'custom'
-                choice.hasDerivedSubcategories = choice.hasDerivedSubcategories ?? 'false'
                 return {
                     id: choice.id,
                     name: choice.name,
-                    type: choice.type,
-                    hasDerivedSubcategories: choice.hasDerivedSubcategories
+                    type: choice.type
                 }
             })
 
@@ -98,11 +96,11 @@ export class TagDialogHelper {
             const image = formData?.image
             const showTitle = formData?.showTitle
             const sort = formData?.sort
-            categorySubcategoryData.advancedCategoryOptions = { characterCount, customWidth, grid, image, showTitle, sort }
+            groupData.settings = { characterCount, customWidth, grid, image, showTitle, sort }
 
             // Save selected subcategories to user action list
-            await categoryManager.saveSubcategories(choices, categorySubcategoryData)
-
+            await actionHandler.updateGroups(choices, groupData)
+            await actionHandler.saveGroups()
             Hooks.callAll('forceUpdateTokenActionHud')
         }
 
@@ -117,23 +115,24 @@ export class TagDialogHelper {
     /**
      * Show action dialog
      * @public
-     * @param {object} subcategoryData The subcategory data
+     * @param {class} actionHandler The ActionHandler class
+     * @param {object} groupData    The group data
      */
-    static async showActionDialog (categoryManager, actionHandler, parentSubcategoryData) {
-        const { nestId, name } = parentSubcategoryData
+    static async showActionDialog (actionHandler, groupData) {
+        const { nestId, name, level } = groupData
 
         // Set available and selected tags
         const tags = {}
 
         // Get available actions and subcategories
-        const availableActions = await actionHandler.getAvailableActionsAsTagifyEntries(parentSubcategoryData)
-        const availableSubcategories = await categoryManager.getAvailableSubcategoriesAsTagifyEntries(parentSubcategoryData)
+        const availableActions = await actionHandler.getAvailableActions(groupData)
+        const availableSubcategories = await actionHandler.getAvailableGroups({ nestId, level })
         tags.available = [...availableActions, ...availableSubcategories]
 
         // Get selected actions and subcategories
-        const selectedActions = await actionHandler.getSelectedActionsAsTagifyEntries(parentSubcategoryData)
-        const selectedSubcategories = await categoryManager.getSelectedSubcategoriesAsTagifyEntries(parentSubcategoryData)
-        tags.selected = [...selectedActions, ...selectedSubcategories]
+        const selectedActions = await actionHandler.getSelectedActions(groupData)
+        const selectedGroups = await actionHandler.getSelectedGroups({ nestId, level })
+        tags.selected = [...selectedActions, ...selectedGroups]
 
         // Set dialog data
         const dialogData = {
@@ -143,23 +142,20 @@ export class TagDialogHelper {
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
                 indexExplanationLabel: Utils.i18n('tokenActionHud.blockListLabel'),
-                advancedCategoryOptions: await categoryManager.getAdvancedCategoryOptions(parentSubcategoryData),
+                settings: await actionHandler.getGroupSettings(groupData),
                 level: 'subcategory'
             }
         }
 
         // Set function on submit
         const dialogSubmit = async (choices, formData) => {
-            const selectedSubcategories = []
+            const selectedGroups = []
             const selectedActions = []
             for (const choice of choices) {
-                switch (choice.level) {
-                case 'subcategory':
-                    selectedSubcategories.push(choice)
-                    break
-                case 'action':
+                if (choice.type === 'action') {
                     selectedActions.push(choice)
-                    break
+                } else {
+                    selectedGroups.push(choice)
                 }
             }
 
@@ -169,13 +165,12 @@ export class TagDialogHelper {
             const image = formData?.image
             const showTitle = formData?.showTitle
             const sort = formData?.sort
-            parentSubcategoryData.advancedCategoryOptions = { characterCount, grid, image, showTitle, sort }
+            groupData.settings = { characterCount, grid, image, showTitle, sort }
 
             // Save subcategories to user action list
-            await categoryManager.saveSubcategories(selectedSubcategories, parentSubcategoryData)
-
-            // Save actions to actor action list
-            await actionHandler.saveActions(selectedActions, parentSubcategoryData)
+            await actionHandler.updateGroups(selectedGroups, groupData)
+            await actionHandler.updateActions(selectedActions, groupData)
+            await actionHandler.saveGroups()
 
             Hooks.callAll('forceUpdateTokenActionHud')
         }

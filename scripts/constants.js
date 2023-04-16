@@ -37,18 +37,9 @@ export const ITEM_MACRO_ICON = {
 }
 
 /**
- * Subcategory levels
- */
-export const SUBCATEGORY_LEVEL = {
-    CATEGORY: 'category',
-    SUBCATEGORY: 'subcategory',
-    ACTION: 'action'
-}
-
-/**
  * Subcategory types
  */
-export const SUBCATEGORY_TYPE = {
+export const GROUP_TYPE = {
     COMPENDIUM: 'compendium',
     CUSTOM: 'custom',
     SYSTEM: 'system',

@@ -183,7 +183,7 @@
 #tah-collapse-expand:hover button > i,
 #tah-lock:hover > i,
 #tah-unlock:hover > i,
-#tah-edit-categories:hover > i {
+#tah-edit-hud:hover > i {
   color: var(--tah-text-highlight-color);
   text-shadow: 0 0 8px var(--color-shadow-primary);
 }

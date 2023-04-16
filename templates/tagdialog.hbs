@@ -26,14 +26,14 @@
     <div class="form-group slim">
       <label>{{localize "tokenActionHud.tagDialog.options.showCategoryTitle.label"}}</label>
       <div class="form-fields">
-          <input type="checkbox" name="showTitle" {{~#if advancedCategoryOptions.showTitle~}}checked{{~/if~}}/>
+          <input type="checkbox" name="showTitle" {{~#if settings.showTitle~}}checked{{~/if~}}/>
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.showCategoryTitle.hint"}}</p>
     </div>
     <div class="form-group">
       <label>{{localize "tokenActionHud.tagDialog.options.image.label"}}</label>
       <div class="form-fields">
-          <input type="text" id="image" name="image" data-dtype="text" value="{{advancedCategoryOptions.image}}">
+          <input type="text" id="image" name="image" data-dtype="text" value="{{settings.image}}">
           {{filePicker target="image" type="image"}}
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.image.hint"}}</p>
@@ -43,7 +43,7 @@
     <div class="form-group slim">
       <label>{{localize "tokenActionHud.tagDialog.options.showSubcategoryTitle.label"}}</label>
       <div class="form-fields">
-          <input type="checkbox" name="showTitle" {{~#if advancedCategoryOptions.showTitle~}}checked{{~/if~}}/>
+          <input type="checkbox" name="showTitle" {{~#if settings.showTitle~}}checked{{~/if~}}/>
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.showSubcategoryTitle.hint"}}</p>
     </div>
@@ -51,7 +51,7 @@
     <div class="form-group slim">
       <label>{{localize "tokenActionHud.tagDialog.options.grid.label"}}</label>
       <div class="form-fields">
-          <input type="checkbox" name="grid" {{~#if advancedCategoryOptions.grid}}checked{{~/if~}}/>
+          <input type="checkbox" name="grid" {{~#if settings.grid}}checked{{~/if~}}/>
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.grid.hint"}}</p>
     </div>
@@ -61,7 +61,7 @@
         <span class="units">{{localize "tokenActionHud.tagDialog.options.customWidth.units"}}</span>
       </label>
       <div class="form-fields">
-        <input type="number" name="customWidth" value="{{advancedCategoryOptions.customWidth}}" />
+        <input type="number" name="customWidth" value="{{settings.customWidth}}" />
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.customWidth.hint"}}</p>
     </div>
@@ -70,7 +70,7 @@
     <div class="form-group slim">
       <label>{{localize "tokenActionHud.tagDialog.options.sort.label"}}</label>
       <div class="form-fields">
-          <input type="checkbox" name="sort" {{~#if advancedCategoryOptions.sort~}}checked{{~/if~}}/>
+          <input type="checkbox" name="sort" {{~#if settings.sort~}}checked{{~/if~}}/>
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.sort.hint"}}</p>
     </div>
@@ -79,7 +79,7 @@
     <div class="form-group">
       <label>{{localize "tokenActionHud.tagDialog.options.characterCount.label"}}</label>
       <div class="form-fields">
-        <input type="number" name="characterCount" placeholder="No limit" value="{{advancedCategoryOptions.characterCount}}" />
+        <input type="number" name="characterCount" placeholder="No limit" value="{{settings.characterCount}}" />
       </div>
       <p class="hint">{{localize "tokenActionHud.tagDialog.options.characterCount.hint"}}</p> 
     </div> 

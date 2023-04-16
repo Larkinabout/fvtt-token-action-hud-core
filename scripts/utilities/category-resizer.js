@@ -1,9 +1,9 @@
 import { Utils } from './utils.js'
 
 export class CategoryResizer {
-    actionGroups = null
-    actionGroupsGap = 5
-    advancedCategoryOptions = null
+    groups = null
+    groupsGap = 5
+    settings = null
     availableHeight = null
     availableWidth = null
     category = null
@@ -19,12 +19,12 @@ export class CategoryResizer {
 
     /**
      * Resize the category
-     * @param {CategoryManager} categoryManager The CategoryManager class
+     * @param {ActionHandler} actionHandler The actionHandler class
      * @param {object} category                 The category
      * @param {string} autoDirection            The direction the HUD will expand
      * @param {boolean} gridModuleSetting       The grid module setting
      */
-    async resizeCategory (categoryManager, category, autoDirection, gridModuleSetting) {
+    async resizeCategory (actionHandler, category, autoDirection, gridModuleSetting) {
         // Exit early if no category element passed in
         if (!category) return
 
@@ -32,19 +32,19 @@ export class CategoryResizer {
 
         this.category = category
 
-        this.actionGroups = category.querySelectorAll('.tah-actions')
+        this.groups = category.querySelectorAll('.tah-actions')
 
         // Exit early if no action groups exist
-        if (this.actionGroups.length === 0) return
+        if (this.groups.length === 0) return
 
-        this.actionGroupsGap = parseInt(getComputedStyle(this.actionGroups[0]).gap ?? 5)
+        this.groupsGap = parseInt(getComputedStyle(this.groups[0]).gap ?? 5)
 
         // Set direction
         this.direction = autoDirection
 
         // Get advanced category options
         const categoryId = this.category.id.replace('tah-category-', '')
-        this.advancedCategoryOptions = await categoryManager.getAdvancedCategoryOptions(categoryId)
+        this.settings = await actionHandler.getGroupSettings({ id: categoryId, level: 1 })
 
         // Get content
         await this.getContent()
@@ -62,25 +62,25 @@ export class CategoryResizer {
 
         // Loop subcategories
         for (const subcategory of this.subcategories) {
-            const actionGroup = subcategory.querySelector('.tah-actions')
-            const subcategoryAdvancedCategoryOptions = await categoryManager.getAdvancedCategoryOptions(subcategory.id)
-            const grid = gridModuleSetting || this.advancedCategoryOptions?.grid || subcategoryAdvancedCategoryOptions?.grid
+            const group = subcategory.querySelector('.tah-actions')
+            const subcategorysettings = await actionHandler.getGroupSettings({ nestId: subcategory.id })
+            const grid = gridModuleSetting || this.settings?.grid || subcategorysettings?.grid
             if (grid) {
                 if (!hasGrid) {
                     this.getGridWidth()
                     hasGrid = true
                 }
-                this.resizeGrid(actionGroup)
+                this.resizeGrid(group)
             } else {
-                this.resize(actionGroup)
+                this.resize(group)
             }
         }
     }
 
     _resetVariables () {
-        this.actionGroups = null
-        this.actionGroupsGap = 5
-        this.advancedCategoryOptions = null
+        this.groups = null
+        this.groupsGap = 5
+        this.settings = null
         this.availableHeight = null
         this.availableWidth = null
         this.category = null
@@ -112,12 +112,12 @@ export class CategoryResizer {
     async getGridWidth () {
         // Reset action groups
         const emptyStyle = { display: '', gridTemplateColumns: '', width: '' }
-        await this.resetCSS(this.actionGroups, emptyStyle)
+        await this.resetCSS(this.groups, emptyStyle)
 
         const actionWidths = []
         const actionWidthsForMedian = []
-        for (const actionGroup of this.actionGroups) {
-            const actions = actionGroup.querySelectorAll('.tah-action:not(.shrink)')
+        for (const group of this.groups) {
+            const actions = group.querySelectorAll('.tah-action:not(.shrink)')
             for (const action of actions) {
                 const actionRect = action.getBoundingClientRect()
                 const actionWidth = Math.round(parseFloat(actionRect.width) + 1 || 0)
@@ -144,29 +144,29 @@ export class CategoryResizer {
 
     /**
      * Resize the action group into the grid format
-     * @param {object} actionGroup The action group
+     * @param {object} group The action group
      */
-    async resizeGrid (actionGroup) {
-        if (!actionGroup) return
+    async resizeGrid (group) {
+        if (!group) return
         const emptyStyle = { display: '', gridTemplateColumns: '', width: '' }
-        await this.assignCSS(actionGroup, emptyStyle)
+        await this.assignCSS(group, emptyStyle)
 
-        const actions = actionGroup.querySelectorAll('.tah-action')
+        const actions = group.querySelectorAll('.tah-action')
         const squaredCols = Math.ceil(Math.sqrt(actions.length))
         const availableCols = Math.floor(this.availableWidth / this.gridWidth)
         const cols = (squaredCols > availableCols) ? availableCols : (actions.length <= this.minCols) ? actions.length : squaredCols
 
         // Apply maxHeight and width styles to content
         const style = { display: 'grid', gridTemplateColumns: `repeat(${cols}, ${this.gridWidth}px)` }
-        await this.assignCSS(actionGroup, style)
+        await this.assignCSS(group, style)
     }
 
     /**
      * Resize the action group
-     * @param {object} actionGroup The action group
+     * @param {object} group The action group
      */
-    async resize (actionGroup) {
-        if (!actionGroup) return
+    async resize (group) {
+        if (!group) return
         // Calculate width
         let width = 500
         if (this.isCustomWidth) {
@@ -176,7 +176,7 @@ export class CategoryResizer {
             let maxActions = 0
             let maxGroupWidth = 0
             // Iterate through action groups, calculating dimensions and counts
-            const actions = actionGroup.querySelectorAll('.tah-action')
+            const actions = group.querySelectorAll('.tah-action')
             if (actions.length > 0) {
                 let groupWidth = 0
                 actions.forEach((action, index) => {
@@ -210,14 +210,14 @@ export class CategoryResizer {
         }
 
         const style = { width: `${width}px` }
-        await this.assignCSS(actionGroup, style)
+        await this.assignCSS(group, style)
     }
 
     /**
      * Get available content width
      */
     async getAvailableWidth () {
-        const customWidth = this.advancedCategoryOptions?.customWidth
+        const customWidth = this.settings?.customWidth
 
         if (customWidth) {
             this.isCustomWidth = true

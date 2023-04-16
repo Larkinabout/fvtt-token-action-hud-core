@@ -1,6 +1,6 @@
 
 <div id="{{id}}" style="top: {{top}}; left: {{left}}; {{~#if background~}}background: {{background}};{{~/if~}} transform: scale({{scale}}); transform-origin: top left">
-    {{~#if actions.actorId~}}
+    {{~#if hud.actorId~}}
     <div id="tah-collapse-expand">
         <button id="tah-collapse-hud" title="{{localize "tokenActionHud.collapseHud"}}">
             <i class="fas fa-caret-left"></i>
@@ -10,10 +10,10 @@
         </button>
     </div>
     <div id="tah-categories">
-      {{~#if actions.hudTitle~}}
-      <div id="tah-character-name">{{actions.hudTitle}}</div>
+      {{~#if hud.title~}}
+      <div id="tah-character-name">{{hud.title}}</div>
       {{~/if~}}
-      {{#each actions.categories}}
+      {{#each hud.groups}}
       {{>"modules/token-action-hud-core/templates/category.hbs" background=../background}}
       {{/each}}
     </div>
@@ -25,7 +25,7 @@
       <button id="tah-lock" class="tah-hidden" title="{{localize "tokenActionHud.lockHud"}}">
         <i class="fa fa-lock-open"></i>
       </button>
-      <button id="tah-edit-categories" class="tah-hidden" title="{{localize "tokenActionHud.editCategories"}}">
+      <button id="tah-edit-hud" class="tah-hidden" title="{{localize "tokenActionHud.editHud"}}">
         <i class="fa fa-book"></i>
       </button>
     </div>
