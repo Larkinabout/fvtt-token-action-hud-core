@@ -750,8 +750,8 @@ export class ActionHandler {
 
     /**
      * Update group in the HUD
-     * @param {*} groupData       The group data
-     * @param {*} parentGroupData The parent group data
+     * @param {object} groupData       The group data
+     * @param {object} parentGroupData The parent group data
      */
     async updateGroup (groupData, parentGroupData) {
         groupData.type = 'system-derived'
@@ -775,6 +775,27 @@ export class ActionHandler {
 
                     Object.assign(existingGroup, { ...groupData })
                 }
+            }
+        }
+    }
+
+    /**
+     * Remove group from HUD
+     * @public
+     * @param {object} groupData The group data
+     */
+    removeGroup (groupData) {
+        if (!groupData?.nestId && groupData?.id) {
+            Utils.deleteGroupsById(this.hud.groups, groupData.id)
+        }
+
+        const groups = this._getGroups(groupData)
+        if (!groups?.length) return
+
+        for (const group of groups) {
+            delete this.groups[group.nestId]
+            if (groupData?.nestId) {
+                Utils.deleteGroupByNestId(this.hud.groups, group.nestId)
             }
         }
     }

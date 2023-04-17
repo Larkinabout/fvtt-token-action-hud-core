@@ -463,4 +463,51 @@ export class Utils {
             }
         }
     }
+
+    /**
+     * Delete group by nest id
+     * @param {object} groups
+     * @param {string} searchCriteria
+     */
+    static async deleteGroupByNestId (groups, searchCriteria = {}) {
+        const nestId = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.nestId)
+        if (!nestId) return
+
+        const parts = nestId.split('_')
+        return await findGroup(groups, parts)
+
+        async function findGroup (groups, parts) {
+            groups = (Array.isArray(groups)) ? groups : Object.values(groups)
+            for (const [index, group] of groups.entries()) {
+                if (group.id === parts[0]) {
+                    if (parts.length === 1) {
+                        groups.splice(index, 1)
+                        return
+                    }
+                    if (group.groups.length === 0) return
+                    parts.shift()
+                    const foundGroup = await findGroup(group.groups, parts)
+                    if (foundGroup) return
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete groups by id
+     * @param {object} groups
+     * @param {string} searchCriteria
+     */
+    static async deleteGroupsById (groups, searchCriteria = {}) {
+        const id = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.id)
+        if (!id) return
+
+        for (let i = groups.length - 1; i >= 0; i--) {
+            if (groups[i].id === id) {
+                groups.splice(i, 1)
+            } else if (groups[i].groups?.length > 0) {
+                this.deleteGroupsById(groups[i].groups, searchCriteria)
+            }
+        }
+    }
 }
