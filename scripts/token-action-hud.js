@@ -9,6 +9,7 @@ import { Logger, Timer, Utils } from './utilities/utils.js'
 export class TokenActionHud extends Application {
     // Set defaults
     hoveredCategoryId = ''
+    defaults = {}
     defaultHeight = 200
     defaultWidth = 20
     defaultLeftPos = 150
@@ -864,6 +865,7 @@ export class TokenActionHud extends Application {
         this.isUpdatePending = false
         this.isUpdating = true
         Logger.debug('Updating hud...', trigger)
+        const previousActorId = this.actor?.id
         const controlledTokens = Utils.getControlledTokens()
         const character = this._getCharacter(controlledTokens)
 
@@ -877,7 +879,9 @@ export class TokenActionHud extends Application {
             return
         }
 
-        this.hud = await this.actionHandler.buildHud(character)
+        const options = (trigger === 'controlToken' && previousActorId !== this.actor?.id) ? { saveActor: true } : {}
+
+        this.hud = await this.actionHandler.buildHud(options)
 
         if (this.hud.length === 0) {
             this.close()

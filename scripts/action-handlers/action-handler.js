@@ -58,7 +58,7 @@ export class ActionHandler {
      * @public
      * @returns {object} The HUD
      */
-    async buildHud () {
+    async buildHud (options) {
         Logger.debug('Building HUD...', { actor: this.actor, token: this.token })
         this.resetActionHandler()
         await this._getDefaultGroups()
@@ -75,7 +75,7 @@ export class ActionHandler {
         await this.buildFurtherActions()
         await this._sortAvailableActions()
         await this._setCharacterLimit()
-        await this.saveGroups()
+        await this.saveGroups(options)
         Logger.debug('HUD built', { hud: this.hud, actor: this.actor, token: this.token })
         return this.hud
     }
@@ -128,7 +128,7 @@ export class ActionHandler {
                     if (actorGroup.actions?.length) existingGroup.actions = actorGroup.actions
                 } else {
                     const parentGroup = await Utils.getGroupByNestId(hud.groups, { nestId: parentNestId })
-                    if (parentGroup) {
+                    if (parentGroup && actorGroup.type === 'system-derived') {
                         const groupData = this._createGroup(actorGroup)
                         if (actorGroup.actions?.length) {
                             groupData.actions = actorGroup.actions
@@ -204,7 +204,7 @@ export class ActionHandler {
      * @private
      */
     async _getDefaultGroups () {
-        const defaultSubcategories = await Utils.getUserFlag('default.subcategories')
+        const defaultSubcategories = game.tokenActionHud.defaults.subcategories
         if (!defaultSubcategories) return {}
         for (const defaultSubcategory of defaultSubcategories) {
             this.defaultGroups[defaultSubcategory.id] = defaultSubcategory
@@ -216,7 +216,7 @@ export class ActionHandler {
      * @private
      */
     async _getDefaultLayout () {
-        const defaultCategories = await Utils.getUserFlag('default.categories')
+        const defaultCategories = game.tokenActionHud.defaults.categories
         if (!defaultCategories) return {}
         this.defaultLayout = await Utils.getSubcategories(defaultCategories)
         for (const defaultGroup of Object.values(this.defaultLayout)) {
@@ -448,10 +448,10 @@ export class ActionHandler {
      * Save groups
      * @public
      */
-    async saveGroups () {
+    async saveGroups (options = { saveActor: false, saveUser: false }) {
         Logger.debug('Saving groups...')
-        await this._saveActorGroups()
-        await this._saveUserGroups()
+        if (options?.saveActor) await this._saveActorGroups()
+        if (options?.saveUser) await this._saveUserGroups()
         Logger.debug('Groups saved', { groups: this.groups })
     }
 
@@ -479,8 +479,8 @@ export class ActionHandler {
         for (const group of Object.values(this.groups)) {
             if (group.type !== 'system-derived') {
                 const groupClone = Utils.deepClone(group)
-                if (groupClone.actions?.length) groupClone.actions = []
-                if (groupClone.groups?.length) groupClone.groups = []
+                if (Object.hasOwn(groupClone, 'actions')) delete groupClone.actions
+                if (Object.hasOwn(groupClone, 'groups')) delete groupClone.groups
                 userGroups[groupClone.nestId] = groupClone
             }
         }

@@ -24,10 +24,10 @@ export class SystemManager {
      * @public
      */
     async registerDefaultFlags () {
+        await Utils.unsetUserFlag('default')
         const defaults = await this.doRegisterDefaultFlags() ?? []
         if (defaults) {
-            await Utils.unsetUserFlag('default')
-            await Utils.setUserFlag('default', defaults)
+            game.tokenActionHud.defaults = defaults
         }
     }
 

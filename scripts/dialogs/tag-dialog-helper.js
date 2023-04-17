@@ -34,7 +34,7 @@ export class TagDialogHelper {
         const dialogSubmit = async (choices, formData) => {
             const grid = formData?.grid
             await actionHandler.updateGroups(choices, { level: 0 })
-            await actionHandler.saveGroups()
+            await actionHandler.saveGroups({ saveActor: true, saveUser: true })
             await Utils.setSetting('grid', grid)
             Hooks.callAll('forceUpdateTokenActionHud')
         }
@@ -100,7 +100,7 @@ export class TagDialogHelper {
 
             // Save selected subcategories to user action list
             await actionHandler.updateGroups(choices, groupData)
-            await actionHandler.saveGroups()
+            await actionHandler.saveGroups({ saveActor: true, saveUser: true })
             Hooks.callAll('forceUpdateTokenActionHud')
         }
 
@@ -170,7 +170,7 @@ export class TagDialogHelper {
             // Save subcategories to user action list
             await actionHandler.updateGroups(selectedGroups, groupData)
             await actionHandler.updateActions(selectedActions, groupData)
-            await actionHandler.saveGroups()
+            await actionHandler.saveGroups({ saveActor: true, saveUser: true })
 
             Hooks.callAll('forceUpdateTokenActionHud')
         }
