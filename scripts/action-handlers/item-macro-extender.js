@@ -41,7 +41,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         const replace = itemMacroSetting === 'itemMacro'
 
         this.actionHandler.groups.forEach(group => {
-            this._addgroupActions(itemIds, group, replace)
+            this._addGroupActions(itemIds, group, replace)
         })
     }
 
@@ -52,7 +52,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      * @param {object} group    The group
      * @param {boolean} replace Whether to replace the action or not
      */
-    _addgroupActions (itemIds, group, replace) {
+    _addGroupActions (itemIds, group, replace) {
         // Exit if no actions exist
         if (!group?.actions?.length) return
 

@@ -54,7 +54,7 @@ export class SystemManager {
     /**
      * Get the roll handler
      * @public
-     * @returns {class} The roll handler
+     * @returns {object} The roll handler
      */
     getRollHandler () {
         let rollHandlerId = Utils.getSetting('rollHandler')
@@ -73,7 +73,7 @@ export class SystemManager {
     /**
      * Add pre-handlers
      * @public
-     * @param {class} rollHandler
+     * @param {object} rollHandler
      */
     addPreHandlers (rollHandler) {
         rollHandler.addPreRollHandler(new CompendiumMacroPreHandler())

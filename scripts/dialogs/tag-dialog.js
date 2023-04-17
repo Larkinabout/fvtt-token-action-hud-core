@@ -36,6 +36,7 @@ export class TagDialog extends FormApplication {
 
     /**
      * Activate listeners
+     * @public
      * @param {object} html The HTML element
      */
     activateListeners (html) {
@@ -70,6 +71,7 @@ export class TagDialog extends FormApplication {
 
     /**
      * Prepare dialog hook
+     * @private
      * @param {object} tags The tags
      */
     static _prepareHook (tags) {
@@ -123,6 +125,10 @@ export class TagDialog extends FormApplication {
         })
     }
 
+    /**
+     * Reset actions
+     * @private
+     */
     async _resetActions () {
         const d = new Dialog({
             title: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.title'),

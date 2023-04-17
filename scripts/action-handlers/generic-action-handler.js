@@ -15,6 +15,7 @@ export class GenericActionHandler {
 
     /**
      * Build generic actions
+     * @public
      * @param {object} character The actor and/or token
      */
     buildGenericActions () {
@@ -95,6 +96,7 @@ export class GenericActionHandler {
 
     /**
      * Build utilities for multiple tokens
+     * @private
      */
     _buildMultipleTokenUtilities () {
         const tokens = Utils.getControlledTokens()

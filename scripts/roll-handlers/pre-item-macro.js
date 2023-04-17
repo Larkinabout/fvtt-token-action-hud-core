@@ -22,6 +22,12 @@ export class ItemMacroPreRollHandler extends PreRollHandler {
         return this._tryExecuteItemMacro(actionId)
     }
 
+    /**
+     * Try to execute item macro
+     * @private
+     * @param {string} actionId The action id
+     * @returns {boolean}       Whether the item macro executed
+     */
     _tryExecuteItemMacro (actionId) {
         const item = Utils.getItem(this.actor, actionId)
 

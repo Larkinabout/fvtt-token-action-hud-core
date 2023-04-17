@@ -52,6 +52,7 @@ export class Timer {
 export class Utils {
     /**
     * Whether the user is allowed to use the HUD
+    * @public
     * @param {number} userRole The user's role
     * @returns {boolean}
     */
@@ -63,6 +64,7 @@ export class Utils {
 
     /**
      * Foundry VTT's deepClone function wrapped here to avoid code error highlighting due to missing definition.
+     * @public
      * @param {*} original
      * @param {*} options
      */
@@ -73,6 +75,7 @@ export class Utils {
 
     /**
      * Get actor from the token or actor object
+     * @public
      * @param {string} actorId The actor id
      * @param {string} tokenId The token id
      * @returns {object}       The actor
@@ -86,6 +89,7 @@ export class Utils {
 
     /**
      * Get image from entity
+     * @public
      * @param {object} entity       The entity, e.g., actor, item
      * @param {array} defaultImages Any default images to exclude
      * @returns {string}            The image URL
@@ -99,6 +103,7 @@ export class Utils {
 
     /**
      * Get item from the actor object
+     * @public
      * @param {object} actor  The actor
      * @param {string} itemId The item id
      * @returns {object}      The item
@@ -109,6 +114,7 @@ export class Utils {
 
     /**
      * Get token
+     * @public
      * @param {string} tokenId The token id
      * @returns {object}       The token
      */
@@ -118,6 +124,7 @@ export class Utils {
 
     /**
      * Get controlled tokens
+     * @public
      * @returns {array} The controlled tokens
      */
     static getControlledTokens () {
@@ -126,6 +133,7 @@ export class Utils {
 
     /**
      * Get first controlled tokens
+     * @public
      * @returns {object} The first controlled token
      */
     static getFirstControlledToken () {
@@ -134,6 +142,7 @@ export class Utils {
 
     /**
      * Get setting value
+     * @public
      * @param {string} key               The setting key
      * @param {string=null} defaultValue The setting default value
      * @returns {*}                      The setting value
@@ -150,6 +159,7 @@ export class Utils {
 
     /**
      * Set setting value
+     * @public
      * @param {string} key   The setting key
      * @param {string} value The setting value
      */
@@ -164,6 +174,7 @@ export class Utils {
 
     /**
      * Get module actor flag
+     * @public
      * @param {string} key The flag key
      * @returns {*}        The flag value
      */
@@ -173,6 +184,7 @@ export class Utils {
 
     /**
      * Set module actor flag
+     * @public
      * @param {string} key The flag key
      * @param {*} value    The flag value
      */
@@ -182,6 +194,7 @@ export class Utils {
 
     /**
      * Unset module actor flag
+     * @public
      * @param {string} key The flag key
      */
     static async unsetActorFlag (key) {
@@ -190,6 +203,7 @@ export class Utils {
 
     /**
      * Get module user flag
+     * @public
      * @param {string} key The flag key
      * @returns {*}        The flag value
      */
@@ -199,6 +213,7 @@ export class Utils {
 
     /**
      * Set module user flag
+     * @public
      * @param {string} key The flag key
      * @param {*} value    The flag value
      */
@@ -208,6 +223,7 @@ export class Utils {
 
     /**
      * Unset module user flag
+     * @public
      * @param {string} key The flag key
      */
     static async unsetUserFlag (key) {
@@ -216,6 +232,7 @@ export class Utils {
 
     /**
      * Language translation
+     * @public
      * @param {string} toTranslate The value to translate
      * @returns {string}           The translated value
      */
@@ -225,6 +242,7 @@ export class Utils {
 
     /**
      * Whether the given module is active
+     * @public
      * @param {string} moduleId The module id
      * @returns {boolean}
      */
@@ -235,6 +253,7 @@ export class Utils {
 
     /**
      * Get the given module's title
+     * @public
      * @param {string} moduleId The module id
      * @returns {string}        The module title
      */
@@ -244,6 +263,7 @@ export class Utils {
 
     /**
      * Get the median
+     * @public
      * @param {array} numbers The array of numbers
      * @returns {number}      The median
      */
@@ -255,6 +275,7 @@ export class Utils {
 
     /**
      * Sort items
+     * @public
      * @param {object} items The items
      * @returns {object}     The sorted items
      */
@@ -264,6 +285,7 @@ export class Utils {
 
     /**
      * Sort items by name
+     * @public
      * @param {object} items The items
      * @returns {object}     The sorted items
      */
@@ -273,6 +295,7 @@ export class Utils {
 
     /**
      * Enable stylesheet based on setting and disable all other stylesheets
+     * @public
      * @param {string} settingValue The 'style' setting value
      */
     static switchCSS (settingValue) {
@@ -299,6 +322,7 @@ export class Utils {
 
     /**
      * Register Handlebar helpers
+     * @public
      */
     static registerHandlebars () {
         // Capitalise first character
@@ -338,8 +362,9 @@ export class Utils {
 
     /**
      * Get the major, minor and patch parts of the module version
-     * @param {*} moduleVersion The module version
-     * @returns {object}        The module version parts
+     * @public
+     * @param {string} moduleVersion The module version
+     * @returns {object}             The module version parts
      */
     static getModuleVersionParts (moduleVersion) {
         if (!moduleVersion) {
@@ -356,6 +381,7 @@ export class Utils {
 
     /**
      * Whether the system module is compatible with the core module version
+     * @public
      * @param {object} systemModuleCoreModuleVersion The system module's required core module version
      * @returns {boolean}
      */
@@ -377,25 +403,27 @@ export class Utils {
     }
 
     /**
-     * Loop nested subcategories and return flattened
+     * Get subcategories by criteria
+     * @public
      * @param {object} subcategories  The subcategories
-     * @param {object} searchCriteria The search criteria
+     * @param {object} data           The search data
      * @returns {object}
      */
-    static getSubcategories (subcategories, searchCriteria = {}) {
+    static getSubcategories (subcategories, data = {}) {
         let order = 0
         if (!subcategories) return
-        const subcategoryId = searchCriteria?.id
-        const subcategoryType = searchCriteria?.type
+        const subcategoryId = data?.id
+        const subcategoryType = data?.type
         subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories)
         const foundSubcategories = {}
         for (const subcategory of subcategories) {
             if ((!subcategoryId || subcategory.id === subcategoryId) && (!subcategoryType || subcategory.type === subcategoryType)) {
                 order++
-                foundSubcategories[subcategory.nestId] = { ...subcategory, order }
+                const level = subcategory.nestId.split('_').length
+                foundSubcategories[subcategory.nestId] = { ...subcategory, order, level }
             }
             if (subcategory.subcategories?.length > 0) {
-                const subcategories = this.getSubcategories(subcategory.subcategories, searchCriteria)
+                const subcategories = this.getSubcategories(subcategory.subcategories, data)
                 if (subcategories) Object.assign(foundSubcategories, subcategories)
             }
         }
@@ -403,45 +431,15 @@ export class Utils {
     }
 
     /**
-     * Loop nested subcategories, find subcategories matching nestId, and return flattened
-     * @param {object} subcategories
-     * @param {string} searchCriteria
+     * Get group by nest id
+     * @public
+     * @param {object} groups The groups
+     * @param {string} data   The search data
      * @returns {object}
      */
-    static async getSubcategoryByNestId (subcategories, searchCriteria = {}) {
-        const nestId = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.nestId)
-        const subcategoryType = searchCriteria?.type
-        if (!nestId) return
-
-        const parts = nestId.split('_')
-        return await findSubcategory(subcategories, parts)
-
-        async function findSubcategory (subcategories, parts) {
-            subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories)
-            for (const subcategory of subcategories) {
-                if (subcategory.id === parts[0]) {
-                    if (parts.length === 1) {
-                        if (!subcategory.type || !subcategoryType || subcategory.type === subcategoryType) return subcategory
-                        return
-                    }
-                    if (subcategory.subcategories.length === 0) return
-                    parts.shift()
-                    const foundSubcategory = await findSubcategory(subcategory.subcategories, parts)
-                    if (foundSubcategory) return foundSubcategory
-                }
-            }
-        }
-    }
-
-    /**
-     * Loop groups, find groups matching nestId, and return flattened
-     * @param {object} groups
-     * @param {string} searchCriteria
-     * @returns {object}
-     */
-    static async getGroupByNestId (groups, searchCriteria = {}) {
-        const nestId = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.nestId)
-        const groupType = searchCriteria?.type
+    static async getGroupByNestId (groups, data = {}) {
+        const nestId = (typeof data === 'string' ? data : data?.nestId)
+        const groupType = data?.type
         if (!nestId) return
 
         const parts = nestId.split('_')
@@ -466,11 +464,12 @@ export class Utils {
 
     /**
      * Delete group by nest id
-     * @param {object} groups
-     * @param {string} searchCriteria
+     * @public
+     * @param {object} groups The groups
+     * @param {string} data   The search data
      */
-    static async deleteGroupByNestId (groups, searchCriteria = {}) {
-        const nestId = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.nestId)
+    static async deleteGroupByNestId (groups, data = {}) {
+        const nestId = (typeof data === 'string' ? data : data?.nestId)
         if (!nestId) return
 
         const parts = nestId.split('_')
@@ -495,18 +494,19 @@ export class Utils {
 
     /**
      * Delete groups by id
-     * @param {object} groups
-     * @param {string} searchCriteria
+     * @public
+     * @param {object} groups The groups
+     * @param {string} data   The search data
      */
-    static async deleteGroupsById (groups, searchCriteria = {}) {
-        const id = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.id)
+    static async deleteGroupsById (groups, data = {}) {
+        const id = (typeof data === 'string' ? data : data?.id)
         if (!id) return
 
         for (let i = groups.length - 1; i >= 0; i--) {
             if (groups[i].id === id) {
                 groups.splice(i, 1)
             } else if (groups[i].groups?.length > 0) {
-                this.deleteGroupsById(groups[i].groups, searchCriteria)
+                this.deleteGroupsById(groups[i].groups, data)
             }
         }
     }

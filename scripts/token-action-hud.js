@@ -232,7 +232,7 @@ export class TokenActionHud extends Application {
         if (this.hoveredCategoryId !== '') {
             const id = `#${this.hoveredCategoryId}`
             const category = document.querySelector(id)
-            this.categoryResizer.resizeCategory(this.actionnHandler, category, this.direction, this.isGrid)
+            this.categoryResizer.resizeCategory(this.actionHandler, category, this.direction, this.isGrid)
         }
 
         // Bring HUD to top

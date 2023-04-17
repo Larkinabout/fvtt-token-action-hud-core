@@ -47,16 +47,16 @@ export class CategoryResizer {
         this.settings = await actionHandler.getGroupSettings({ id: categoryId, level: 1 })
 
         // Get content
-        await this.getContent()
+        await this._getContent()
 
         // Set height
-        this.setHeight()
+        this._setHeight()
 
         // Get available width
-        this.availableWidth = await this.getAvailableWidth()
+        this.availableWidth = await this._getAvailableWidth()
 
         // Get subcategories
-        await this.getSubcategories()
+        await this._getSubcategories()
 
         let hasGrid = false
 
@@ -67,16 +67,20 @@ export class CategoryResizer {
             const grid = gridModuleSetting || this.settings?.grid || subcategorysettings?.grid
             if (grid) {
                 if (!hasGrid) {
-                    this.getGridWidth()
+                    this._getGridWidth()
                     hasGrid = true
                 }
-                this.resizeGrid(group)
+                this._resizeGrid(group)
             } else {
-                this.resize(group)
+                this._resize(group)
             }
         }
     }
 
+    /**
+     * Reset variables
+     * @private
+     */
     _resetVariables () {
         this.groups = null
         this.groupsGap = 5
@@ -97,22 +101,24 @@ export class CategoryResizer {
 
     /**
      * Set the content height
+     * @private
      */
-    async setHeight () {
+    async _setHeight () {
         // Get available height
-        this.availableHeight = await this.getAvailableHeight()
+        this.availableHeight = await this._getAvailableHeight()
 
         const style = { maxHeight: `${this.availableHeight}px` }
-        await this.assignCSS(this.content, style)
+        await this._assignCSS(this.content, style)
     }
 
     /**
      * Get the grid width
+     * @private
      */
-    async getGridWidth () {
+    async _getGridWidth () {
         // Reset action groups
         const emptyStyle = { display: '', gridTemplateColumns: '', width: '' }
-        await this.resetCSS(this.groups, emptyStyle)
+        await this._resetCSS(this.groups, emptyStyle)
 
         const actionWidths = []
         const actionWidthsForMedian = []
@@ -144,12 +150,13 @@ export class CategoryResizer {
 
     /**
      * Resize the action group into the grid format
+     * @private
      * @param {object} group The action group
      */
-    async resizeGrid (group) {
+    async _resizeGrid (group) {
         if (!group) return
         const emptyStyle = { display: '', gridTemplateColumns: '', width: '' }
-        await this.assignCSS(group, emptyStyle)
+        await this._assignCSS(group, emptyStyle)
 
         const actions = group.querySelectorAll('.tah-action')
         const squaredCols = Math.ceil(Math.sqrt(actions.length))
@@ -158,14 +165,15 @@ export class CategoryResizer {
 
         // Apply maxHeight and width styles to content
         const style = { display: 'grid', gridTemplateColumns: `repeat(${cols}, ${this.gridWidth}px)` }
-        await this.assignCSS(group, style)
+        await this._assignCSS(group, style)
     }
 
     /**
      * Resize the action group
+     * @private
      * @param {object} group The action group
      */
-    async resize (group) {
+    async _resize (group) {
         if (!group) return
         // Calculate width
         let width = 500
@@ -210,13 +218,14 @@ export class CategoryResizer {
         }
 
         const style = { width: `${width}px` }
-        await this.assignCSS(group, style)
+        await this._assignCSS(group, style)
     }
 
     /**
      * Get available content width
+     * @private
      */
-    async getAvailableWidth () {
+    async _getAvailableWidth () {
         const customWidth = this.settings?.customWidth
 
         if (customWidth) {
@@ -237,8 +246,9 @@ export class CategoryResizer {
 
     /**
      * Get available content height
+     * @private
      */
-    async getAvailableHeight () {
+    async _getAvailableHeight () {
         // Calculate maxHeight
         const windowHeight = canvas.screenDimensions[1]
         const contentHeight = this.contentRect.height
@@ -253,8 +263,9 @@ export class CategoryResizer {
 
     /**
      * Get content
+     * @private
      */
-    async getContent () {
+    async _getContent () {
         this.content = this.category.querySelector('.tah-subcategories')
         this.contentRect = this.content.getBoundingClientRect()
         this.contentComputed = getComputedStyle(this.content)
@@ -265,19 +276,32 @@ export class CategoryResizer {
 
     /**
      * Get subcategories
+     * @private
      */
-    async getSubcategories () {
+    async _getSubcategories () {
         this.subcategories = this.category.querySelectorAll('.tah-subcategory')
     }
 
-    async assignCSS (element, style) {
+    /**
+     * Assign CSS
+     * @private
+     * @param {object} element The DOM element
+     * @param {object} style   The style
+     */
+    async _assignCSS (element, style) {
         if (!element) return
         requestAnimationFrame(() => {
             Object.assign(element.style, style)
         })
     }
 
-    async resetCSS (elements, style) {
+    /**
+     * Reset CSS
+     * @private
+     * @param {array} elements The DOM elements
+     * @param {object} style   The style
+     */
+    async _resetCSS (elements, style) {
         for (const element of elements) {
             Object.assign(element.style, style)
         }

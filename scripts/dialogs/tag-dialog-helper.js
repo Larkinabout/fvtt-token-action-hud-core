@@ -7,8 +7,8 @@ import { Utils } from '../utilities/utils.js'
 export class TagDialogHelper {
     /**
      * Show the HUD dialog
-     * @param {ActionHandler} actionHandler The ActionHandler class
      * @public
+     * @param {object} actionHandler The ActionHandler class
      */
     static async showHudDialog (actionHandler) {
         // Set available and selected tags
@@ -46,7 +46,7 @@ export class TagDialogHelper {
     /**
      * Show group dialog
      * @public
-     * @param {class} actionHandler The ActionHandler class
+     * @param {object} actionHandler The ActionHandler class
      * @param {object} groupData    The group data
      */
     static async showGroupDialog (actionHandler, groupData) {
@@ -85,6 +85,7 @@ export class TagDialogHelper {
                 choice.type = choice.type ?? 'custom'
                 return {
                     id: choice.id,
+                    listName: choice.listName,
                     name: choice.name,
                     type: choice.type
                 }
@@ -115,7 +116,7 @@ export class TagDialogHelper {
     /**
      * Show action dialog
      * @public
-     * @param {class} actionHandler The ActionHandler class
+     * @param {object} actionHandler The ActionHandler class
      * @param {object} groupData    The group data
      */
     static async showActionDialog (actionHandler, groupData) {

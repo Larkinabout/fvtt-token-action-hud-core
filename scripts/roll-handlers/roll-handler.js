@@ -12,6 +12,7 @@ export class RollHandler {
 
     /**
      * Throw error
+     * @public
      * @param {*} err The error
      */
     throwInvalidValueErr (err) {
@@ -22,6 +23,7 @@ export class RollHandler {
 
     /**
      * Handle action events
+     * @public
      * @param {object} event        The event
      * @param {string} encodedValue The encoded value
      */
@@ -55,6 +57,7 @@ export class RollHandler {
 
     /**
      * Add a pre-roll handler
+     * @public
      * @param {object} handler The roll handler
      */
     addPreRollHandler (handler) {
@@ -162,7 +165,12 @@ export class RollHandler {
         return isModiferActive
     }
 
-    /** @private */
+    /**
+     * Whether the action is a generic action
+     * @private
+     * @param {string} encodedValue The encoded value
+     * @returns {boolean}           Whether the action is a generic action
+     */
     _isGenericAction (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
 
@@ -172,7 +180,11 @@ export class RollHandler {
         return actionType === 'utility' && actionId.includes('toggle')
     }
 
-    /** @private */
+    /**
+     * Handle generic action
+     * @private
+     * @param {string} encodedValue The encoded value
+     */
     async _handleGenericAction (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
         const actionId = payload[1]
