@@ -1,5 +1,5 @@
 {{~#if (ne this.isSelected false)~}}
-<div class="tah-subcategory" id="{{this.nestId}}" data-has-actions="{{~#if (tf this.actions.length)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
+<div class="tah-group" data-nest-id="{{this.nestId}}" data-has-actions="{{~#if (tf this.actions.length)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
   <div class="tah-subtitle{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}">
     {{~#if img~}}<div class="tah-img" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
     {{~#if icon~}}<div class="tah-icon">{{{icon}}}</div>{{~/if~}}

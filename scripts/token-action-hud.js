@@ -1,6 +1,6 @@
 import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
 import { CategoryResizer } from './utilities/category-resizer.js'
-import { MODULE } from './constants.js'
+import { MODULE, STYLE_CLASS } from './constants.js'
 import { Logger, Timer, Utils } from './utilities/utils.js'
 
 /**
@@ -38,6 +38,7 @@ export class TokenActionHud extends Application {
         this.isHudEnabled = false
         this.isGrid = false
         this.isUnlocked = false
+        this.style = null
     }
 
     /**
@@ -56,6 +57,7 @@ export class TokenActionHud extends Application {
         this.isHudEnabled = this.getHudEnabled()
         this.isGrid = Utils.getSetting('grid')
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
+        this.style = Utils.getSetting('style')
         await this.systemManager.registerDefaultFlags()
         this.categoryResizer = new CategoryResizer()
         this.actionHandler = await this.systemManager.getActionHandler()
@@ -78,6 +80,7 @@ export class TokenActionHud extends Application {
         this.isEnabled = Utils.getSetting('enable')
         this.isHudEnabled = this.getHudEnabled()
         this.isGrid = Utils.getSetting('grid')
+        this.style = Utils.getSetting('style')
         this.actionHandler.displayIcons = Utils.getSetting('displayIcons')
         Logger.debug('Settings updated')
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
@@ -146,6 +149,7 @@ export class TokenActionHud extends Application {
         const data = super.getData()
         data.hud = this.hud
         data.id = 'token-action-hud'
+        data.style = STYLE_CLASS[this.style]
         data.scale = this._getScale()
         data.background = Utils.getSetting('background') ?? '#00000000'
         Logger.debug('Application data', { data })
@@ -161,12 +165,12 @@ export class TokenActionHud extends Application {
         const elements = {
             actions: html.find('.tah-action'),
             buttons: html.find('#tah-buttons'),
-            categories: html.find('.tah-category'),
-            categoriesSection: html.find('#tah-categories'),
+            categories: html.find('.tah-top-group'),
+            categoriesSection: html.find('#tah-top-groups'),
             editHudButton: html.find('#tah-edit-hud'),
-            subcategories: html.find('.tah-subcategory'),
+            subcategories: html.find('.tah-group'),
             subtitles: html.find('.tah-subtitle'),
-            titleButtons: html.find('.tah-category-button'),
+            titleButtons: html.find('.tah-top-group-button'),
             collapseHudButton: html.find('#tah-collapse-hud'),
             expandHudButton: html.find('#tah-expand-hud'),
             unlockButton: html.find('#tah-unlock'),
@@ -263,14 +267,14 @@ export class TokenActionHud extends Application {
          * Open the Subcategory dialog
          * @param {object} event
          */
-        const openSubcategoryDialog = (event) => {
+        const openGroupDialog = (event) => {
             const target = event.currentTarget
-            if (target.value.length === 0) return
+            if (!target?.parentElement?.dataset?.nestId) return
 
-            const nestId = target.value
-            const name = target?.parentElement.dataset?.name ?? target.innerText ?? target.outerText
-            const level = parseInt(target?.parentElement.dataset?.level) || null
-            const type = target?.parentElement.dataset?.type
+            const nestId = target?.parentElement?.dataset?.nestId
+            const name = target?.parentElement?.dataset?.name ?? target.innerText ?? target.outerText
+            const level = parseInt(target?.parentElement?.dataset?.level) || null
+            const type = target?.parentElement?.dataset?.type
 
             TagDialogHelper.showGroupDialog(
                 this.actionHandler,
@@ -280,7 +284,7 @@ export class TokenActionHud extends Application {
 
         // When a category button is right-clicked...
         elements.titleButtons.on('contextmenu', (event) => {
-            if (this.isUnlocked) openSubcategoryDialog(event)
+            if (this.isUnlocked) openGroupDialog(event)
         })
     }
 
@@ -313,12 +317,11 @@ export class TokenActionHud extends Application {
          */
         const openActionDialog = (event) => {
             const target = event.target
-            const id = target.parentElement.id
-            if (!id) return
-            const nestId = id
-            const name = target?.parentElement.dataset?.name ?? target.innerText ?? target.outerText
-            const level = parseInt(target?.parentElement.dataset?.level) || null
-            const type = target?.parentElement.dataset?.type
+            if (!target?.parentElement?.dataset?.nestId) return
+            const nestId = target?.parentElement?.dataset?.nestId
+            const name = target?.parentElement?.dataset?.name ?? target.innerText ?? target.outerText
+            const level = parseInt(target?.parentElement?.dataset?.level) || null
+            const type = target?.parentElement?.dataset?.type
 
             TagDialogHelper.showActionDialog(
                 this.actionHandler,
@@ -583,12 +586,12 @@ export class TokenActionHud extends Application {
     applySettings () {
         this.autoDirection = this._getAutoDirection()
         if (this.autoDirection === 'up') {
-            $(document).find('.tah-subcategories-wrapper').removeClass('expand-down')
-            $(document).find('.tah-subcategories-wrapper').addClass('expand-up')
+            $(document).find('.tah-groups-wrapper').removeClass('expand-down')
+            $(document).find('.tah-groups-wrapper').addClass('expand-up')
             $(document).find('#tah-character-name').addClass('tah-hidden')
         } else {
-            $(document).find('.tah-subcategories-wrapper').addClass('expand-down')
-            $(document).find('.tah-subcategories-wrapper').removeClass('expand-up')
+            $(document).find('.tah-groups-wrapper').addClass('expand-down')
+            $(document).find('.tah-groups-wrapper').removeClass('expand-up')
             $(document).find('#tah-character-name').removeClass('tah-hidden')
         }
     }
@@ -710,7 +713,7 @@ export class TokenActionHud extends Application {
         if (!category[0]) return
 
         if (this.isClickOpen) {
-            const button = category.find('.tah-category-button')[0]
+            const button = category.find('.tah-top-group-button')[0]
             button.click()
         } else {
             category.mouseenter()

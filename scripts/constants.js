@@ -45,3 +45,10 @@ export const ITEM_MACRO_ICON = {
     ICON: 'fas fa-sd-card',
     TOOLTIP: 'Item Macro'
 }
+
+export const STYLE_CLASS = {
+    compact: 'tah-style-foundry-vtt',
+    foundryVTT: 'tah-style-foundry-vtt',
+    dorakoUI: 'tah-style-dorako-ui',
+    pathfinder: 'tah-style-pathfinder'
+}

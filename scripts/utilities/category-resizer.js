@@ -43,8 +43,8 @@ export class CategoryResizer {
         this.direction = autoDirection
 
         // Get advanced category options
-        const categoryId = this.category.id.replace('tah-category-', '')
-        this.settings = await actionHandler.getGroupSettings({ id: categoryId, level: 1 })
+        const nestId = category.dataset.nestId
+        this.settings = await actionHandler.getGroupSettings({ nestId, level: 1 })
 
         // Get content
         await this._getContent()
@@ -266,7 +266,7 @@ export class CategoryResizer {
      * @private
      */
     async _getContent () {
-        this.content = this.category.querySelector('.tah-subcategories')
+        this.content = this.category.querySelector('.tah-groups')
         this.contentRect = this.content.getBoundingClientRect()
         this.contentComputed = getComputedStyle(this.content)
         this.contentPadding =
@@ -279,7 +279,7 @@ export class CategoryResizer {
      * @private
      */
     async _getSubcategories () {
-        this.subcategories = this.category.querySelectorAll('.tah-subcategory')
+        this.subcategories = this.category.querySelectorAll('.tah-group')
     }
 
     /**

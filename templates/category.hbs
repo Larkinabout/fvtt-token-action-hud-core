@@ -1,17 +1,17 @@
 
-<div class="tah-category{{~#if cssClass}} {{cssClass}}{{~/if~}}" {{~#if id~}}id="tah-category-{{id}}" data-nest-id="{{nestId}}" data-level="{{level}}" data-name="{{name}}" data-type="custom"{{~/if~}}>
-    <button class="tah-category-button" value="{{id}}">
+<div class="tah-top-group{{~#if cssClass}} {{cssClass}}{{~/if~}}" {{~#if id~}}id="tah-{{id}}"{{~/if~}} data-nest-id="{{nestId}}" data-level="{{level}}" data-name="{{name}}" data-type="custom">
+    <button class="tah-top-group-button" value="{{id}}">
         {{~#if settings.image~}}<div class="tah-img" style="background: url({{settings.image}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
-        <span class="tah-category-button-content">
-            {{~#if settings.showTitle~}}<div class="tah-category-button-text">{{cap name}}</div>{{~/if~}}
+        <span class="tah-top-group-button-content">
+            {{~#if settings.showTitle~}}<div class="tah-top-group-button-text">{{cap name}}</div>{{~/if~}}
             <i class="fa fa-filter" aria-hidden="true"></i>
             {{~#if info1~}}<div class="tah-info1">{{info1}}</div>{{~/if~}}
             {{~#if info2~}}<div class="tah-info2">{{info2}}</div>{{~/if~}}
             {{~#if info3~}}<div class="tah-info3">{{info3}}</div>{{~/if~}}
         </span>
     </button>
-    <div class="tah-subcategories-wrapper expand-down">
-        <div class="tah-subcategories" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
+    <div class="tah-groups-wrapper expand-down">
+        <div class="tah-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
             {{#each groups}}
             {{>"modules/token-action-hud-core/templates/subcategory.hbs" categoryId=../id}}
             {{/each}}
