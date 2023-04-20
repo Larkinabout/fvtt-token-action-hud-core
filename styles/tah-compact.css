@@ -147,7 +147,7 @@
 }
 
 #tah-expand-hud,
-.tah-top-group-button {
+.tah-button {
   align-items: center;
   display: inline-flex;
   height: var(--tah-button-height);
@@ -160,12 +160,12 @@
   z-index: 1;
 }
 
-.tah-top-group-button {
+.tah-button {
   min-width: var(--tah-button-min-width);
 }
 
-.tah-top-group-button-content > .fa,
-.tah-top-group-button-content > .fas {
+.tah-button-content > .fa,
+.tah-button-content > .fas {
   font-size: 5px;
   pointer-events: none;
   position: absolute;
@@ -174,8 +174,8 @@
   visibility: hidden;
 }
 
-.tah-top-group-button:hover:not(.disable-edit) .tah-top-group-button-content > .fa,
-.tah-top-group-button:hover:not(.disable-edit) .tah-top-group-button-content > .fas {
+.tah-button:hover:not(.disable-edit) .tah-button-content > .fa,
+.tah-button:hover:not(.disable-edit) .tah-button-content > .fas {
   visibility: visible;
 }
 
@@ -189,7 +189,7 @@
 }
 
 #tah-expand-hud,
-.tah-top-group-button,
+.tah-button,
 .tah-action button {
 	background-color: var(--tah-button-background-color);
   border: var(--tah-button-border);
@@ -201,7 +201,7 @@
 }
 
 #tah-expand-hud:hover,
-.tah-top-group > button:hover,
+.tah-tab-group[data-level="1"] > button:hover,
 .tah-action:not(.disabled) button:hover {
   box-shadow: var(--tah-button-hover-box-shadow);
   color: var(--tah-button-hover-color);
@@ -212,23 +212,23 @@
  * CATEGORY
  */
 
-#tah-top-groups {
+#tah-groups {
   display: flex;
   gap: var(--tah-gap);
 }
 
-.tah-top-group {
+.tah-tab-group[data-level="1"] {
   cursor: default;
   display: block;
   height: min-content;
   position: relative;
 }
 
-.tah-top-group-button-content {
+.tah-button-content {
   padding: 0;
 }
 
-.tah-top-group-button-text {
+.tah-button-text {
   padding: 0 5px 0 5px;
 }
 
@@ -236,42 +236,42 @@
  * SUBCATEGORY
  */
 
-.tah-top-group.hover .tah-groups-wrapper {
+.tah-tab-group[data-level="1"].hover .tah-groups {
   background: none;
   display: block;
   position: absolute;
 }
 
-.tah-groups-wrapper {
+.tah-groups {
   display: none;
   position: relative;
 }
 
-.tah-groups-wrapper.expand-up {
+.tah-groups.expand-up {
   bottom: 13px;
   flex-direction: column-reverse;
   left: -10px;
   padding: 10px;
 }
 
-.tah-groups-wrapper.expand-down {
+.tah-groups.expand-down {
   flex-direction: column;
   left: -10px;
   padding: 10px;
   top: 12px;
 }
 
-.tah-groups-wrapper.expand-up > .tah-groups {
+.tah-groups.expand-up > .tah-list-groups {
   flex-direction: column-reverse;
   padding: 10px 10px 3px 10px;
 }
 
-.tah-groups-wrapper.expand-down > .tah-groups {
+.tah-groups.expand-down > .tah-list-groups {
   flex-direction: column;
   padding: 0 10px 0 10px;
 }
 
-.tah-groups {
+.tah-list-groups {
   background: var(--tah-background);
   border-radius: var(--tah-border-radius);
   display: inline-flex;
@@ -286,19 +286,19 @@
   position: relative;
 }
 
-#tah-top-groups:not(.tah-unlocked) .tah-group[data-has-actions="true"] > .tah-group[data-show-title="false"] {
+#tah-groups:not(.tah-unlocked) .tah-group[data-has-actions="true"] > .tah-group[data-show-title="false"] {
   margin-top: 6px;
 }
 
-#tah-top-groups.tah-unlocked .tah-group > .tah-group {
+#tah-groups.tah-unlocked .tah-group > .tah-group {
   padding-left: 10px;
 }
 
-#tah-top-groups.tah-unlocked .tah-group > .tah-group {
+#tah-groups.tah-unlocked .tah-group > .tah-group {
   padding-left: 10px;
 }
 
-#tah-top-groups:not(.tah-unlocked) .tah-group[data-show-title="false"] {
+#tah-groups:not(.tah-unlocked) .tah-group[data-show-title="false"] {
   margin-top: 0;
 }
 
@@ -318,7 +318,7 @@
  * SUBTITLES
  */
 
- .tah-groups > .tah-group > .tah-subtitle {
+ .tah-list-groups > .tah-group > .tah-subtitle {
   width: 100%;
 }
 
@@ -402,7 +402,7 @@
   box-shadow: var(--tah-button-box-shadow);
 }
 
-.tah-top-group button:active {
+.tah-tab-group[data-level="1"] button:active {
   box-shadow: var(--tah-button-hover-box-shadow);
   color: var(--tah-button-hover-color);
 }
@@ -470,7 +470,7 @@
   color: var(--tah-info-spotlight-color);
 }
 
-.tah-img {
+.tah-button-image {
   border-radius: var(--tah-border-radius);
   height: var(--tah-button-height);
   min-width: var(--tah-button-min-width);

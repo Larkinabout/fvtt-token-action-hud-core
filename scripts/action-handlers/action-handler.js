@@ -113,7 +113,11 @@ export class ActionHandler {
                     const parentGroup = await Utils.getGroupByNestId(hud.groups, { nestId: parentNestId })
                     if (parentGroup) {
                         const group = this._createGroup(userGroup)
-                        parentGroup.groups.push(group)
+                        if (group.style === 'tab') {
+                            parentGroup.groups.tabs.push(group)
+                        } else {
+                            parentGroup.groups.lists.push(group)
+                        }
                         this.groups[group.nestId] = group
                     }
                 }
@@ -135,15 +139,19 @@ export class ActionHandler {
                 } else {
                     const parentGroup = await Utils.getGroupByNestId(hud.groups, { nestId: parentNestId })
                     if (parentGroup && actorGroup.type === 'system-derived') {
-                        const groupData = this._createGroup(actorGroup)
+                        const group = this._createGroup(actorGroup)
                         if (actorGroup.actions?.length) {
-                            groupData.actions = actorGroup.actions
-                            for (const action of groupData.actions) {
+                            group.actions = actorGroup.actions
+                            for (const action of group.actions) {
                                 action.selected = false
                             }
                         }
-                        parentGroup.groups.push(groupData)
-                        this.groups[groupData.nestId] = groupData
+                        if (group.style === 'tab') {
+                            parentGroup.groups.tabs.push(group)
+                        } else {
+                            parentGroup.groups.lists.push(group)
+                        }
+                        this.groups[group.nestId] = group
                     }
                 }
             }
@@ -158,7 +166,6 @@ export class ActionHandler {
      * @public
      */
     async buildSystemActions (groupIds) {}
-
     /**
      * Build system-specific actions
      * @private
@@ -363,7 +370,7 @@ export class ActionHandler {
             return {
                 actions: [],
                 cssClass: '',
-                groups: [],
+                groups: { lists: [], tabs: [] },
                 id: groupDataClone?.id,
                 isSelected: groupDataClone?.isSelected ?? true,
                 level: groupDataClone?.level ?? nestIdParts.length ?? 1,
@@ -371,7 +378,7 @@ export class ActionHandler {
                 nestId: groupDataClone?.nestId ?? groupDataClone?.id,
                 order: groupDataClone.order,
                 settings: groupDataClone?.settings ?? {},
-                style: groupDataClone?.style ?? 'tabbed',
+                style: groupDataClone?.style ?? 'tab',
                 type: 'custom'
             }
         } else {
@@ -390,7 +397,7 @@ export class ActionHandler {
                 info1: groupDataClone?.info1 ?? '',
                 info2: groupDataClone?.info2 ?? '',
                 info3: groupDataClone?.info3 ?? '',
-                groups: [],
+                groups: { lists: [], tabs: [] },
                 actions: []
             }
         }
@@ -736,6 +743,7 @@ export class ActionHandler {
      */
     async addGroup (groupData, parentGroupData, update = false) {
         groupData.type = 'system-derived'
+        groupData.style = groupData?.style ?? 'list'
 
         if (!parentGroupData?.id && !parentGroupData?.nestId) return
 
@@ -760,7 +768,11 @@ export class ActionHandler {
                 }
             } else {
                 const group = this._createGroup({ ...groupData, nestId })
-                parentGroup.groups.push(group)
+                if (group.style === 'tab') {
+                    parentGroup.groups.tabs.push(group)
+                } else {
+                    parentGroup.groups.lists.push(group)
+                }
                 this.groups[group.nestId] = group
             }
         }

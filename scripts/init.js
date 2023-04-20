@@ -48,7 +48,8 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
     // Load templates
     loadTemplates([
         `modules/${MODULE.ID}/templates/category.hbs`,
-        `modules/${MODULE.ID}/templates/subcategory.hbs`,
+        `modules/${MODULE.ID}/templates/list-group.hbs`,
+        `modules/${MODULE.ID}/templates/tab-group.hbs`,
         `modules/${MODULE.ID}/templates/action.hbs`,
         `modules/${MODULE.ID}/templates/tagdialog.hbs`
     ])

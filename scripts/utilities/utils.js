@@ -453,10 +453,12 @@ export class Utils {
                         if (!group.type || !groupType || group.type === groupType) return group
                         return
                     }
-                    if (group.groups.length === 0) return
                     parts.shift()
-                    const foundGroup = await findGroup(group.groups, parts)
-                    if (foundGroup) return foundGroup
+                    for (const groupStyle of Object.values(group.groups)) {
+                        if (groupStyle.length === 0) continue
+                        const foundGroup = await findGroup(groupStyle, parts)
+                        if (foundGroup) return foundGroup
+                    }
                 }
             }
         }

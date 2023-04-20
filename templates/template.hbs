@@ -9,25 +9,25 @@
             <i class="fas fa-caret-right"></i>
         </button>
     </div>
-    <div id="tah-top-groups">
-      {{~#if hud.title~}}
-      <div id="tah-character-name">{{hud.title}}</div>
-      {{~/if~}}
-      {{#each hud.groups}}
-      {{>"modules/token-action-hud-core/templates/category.hbs" background=../background}}
-      {{/each}}
+    <div id="tah-groups">
+        {{~#if hud.title~}}
+        <div id="tah-character-name">{{hud.title}}</div>
+        {{~/if~}}
+        {{#each hud.groups}}
+        {{>"modules/token-action-hud-core/templates/category.hbs" background=../background}}
+        {{/each}}
     </div>
     {{#unless hovering}}
     <div id="tah-buttons" title="{{localize "tokenActionHud.unlockHud"}}">
-      <button id="tah-unlock">
-        <i class="fa fa-lock"></i>
-      </button>
-      <button id="tah-lock" class="tah-hidden" title="{{localize "tokenActionHud.lockHud"}}">
-        <i class="fa fa-lock-open"></i>
-      </button>
-      <button id="tah-edit-hud" class="tah-hidden" title="{{localize "tokenActionHud.editHud"}}">
-        <i class="fa fa-pen-to-square"></i>
-      </button>
+        <button id="tah-unlock">
+            <i class="fa fa-lock"></i>
+        </button>
+        <button id="tah-lock" class="tah-hidden" title="{{localize "tokenActionHud.lockHud"}}">
+            <i class="fa fa-lock-open"></i>
+        </button>
+        <button id="tah-edit-hud" class="tah-hidden" title="{{localize "tokenActionHud.editHud"}}">
+            <i class="fa fa-pen-to-square"></i>
+        </button>
     </div>
     {{/unless}}
     {{~/if~}}

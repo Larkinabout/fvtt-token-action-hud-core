@@ -8,7 +8,7 @@ import { Logger, Timer, Utils } from './utilities/utils.js'
  */
 export class TokenActionHud extends Application {
     // Set defaults
-    hoveredTopGroupId = ''
+    hoveredGroups = []
     defaults = {}
     defaultHeight = 200
     defaultWidth = 20
@@ -48,7 +48,7 @@ export class TokenActionHud extends Application {
     async init () {
         this.direction = Utils.getSetting('direction')
         this.isAlwaysShow = Utils.getSetting('alwaysShowHud')
-        this.isClickOpen = Utils.getSetting('clickopenTopGroup')
+        this.isClickOpen = Utils.getSetting('clickOpenCategory')
         this.isCollapsed = Utils.getUserFlag('isCollapsed')
         this.isDebug = Utils.getSetting('debug')
         this.isDisplayIcons = Utils.getSetting('displayIcons')
@@ -73,7 +73,7 @@ export class TokenActionHud extends Application {
         this.updateRollHandler()
         this.direction = Utils.getSetting('direction')
         this.isAlwaysShow = Utils.getSetting('alwaysShowHud')
-        this.isClickOpen = Utils.getSetting('clickopenTopGroup')
+        this.isClickOpen = Utils.getSetting('clickOpenCategory')
         this.isDebug = Utils.getSetting('debug')
         this.isDisplayIcons = Utils.getSetting('displayIcons')
         this.isDraggable = Utils.getSetting('drag')
@@ -165,12 +165,12 @@ export class TokenActionHud extends Application {
         const elements = {
             actions: html.find('.tah-action'),
             buttons: html.find('#tah-buttons'),
-            topGroups: html.find('.tah-top-group'),
-            topGroupsSection: html.find('#tah-top-groups'),
+            tabGroups: html.find('.tah-tab-group'),
+            topGroupsSection: html.find('#tah-groups'),
             editHudButton: html.find('#tah-edit-hud'),
             groups: html.find('.tah-group'),
             subtitles: html.find('.tah-subtitle'),
-            titleButtons: html.find('.tah-top-group-button'),
+            titleButtons: html.find('.tah-button'),
             collapseHudButton: html.find('#tah-collapse-hud'),
             expandHudButton: html.find('#tah-expand-hud'),
             unlockButton: html.find('#tah-unlock'),
@@ -191,50 +191,53 @@ export class TokenActionHud extends Application {
     */
     _bindGroupEvents (elements) {
         /**
-         * Close the top group
+         * Close the group
          * @param {object} event The event
          */
-        const closeTopGroup = (event) => {
+        const closeGroup = (event) => {
             if (game.tokenActionHud.rendering) return
-            const topGroup = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
-            topGroup.classList.remove('hover')
-            this._clearHoveredTopGroup(topGroup.id)
+            const group = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
+            group.classList.remove('hover')
+            this._clearHoveredGroup(group.id)
         }
 
         /**
-         * Open the top group
+         * Open the group
          * @param {object} event The event
          */
-        const openTopGroup = async (event) => {
-            const topGroup = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
-            topGroup.classList.add('hover')
-            this.categoryResizer.resizeCategory(this.actionHandler, topGroup, this.autoDirection, this.isGrid)
-            this._setHoveredTopGroup(topGroup.id)
+        const openGroup = async (event) => {
+            const group = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
+            group.classList.add('hover')
+            this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.isGrid)
+            this._setHoveredGroup(group.id)
         }
 
         /**
-         * Toggle the top group
+         * Toggle the group
          * @param {object} event The event
          */
-        const toggleTopGroup = (event) => {
-            const topGroup = event.currentTarget.parentElement
-            if (topGroup.classList.contains('hover')) {
-                closeTopGroup(event)
+        const toggleGroup = (event) => {
+            const group = event.currentTarget.parentElement
+            if (group.classList.contains('hover')) {
+                closeGroup(event)
             } else {
-                for (const topGroupElement of elements.topGroups) {
-                    topGroupElement.classList.remove('hover')
+                const groupElements = group.parentElement.querySelectorAll('.tah-tab-group')
+                for (const groupElement of groupElements) {
+                    groupElement.classList.remove('hover')
+                    this._clearHoveredGroup(groupElement.id)
                 }
-                openTopGroup(event)
+                openGroup(event)
             }
             // Remove focus to allow core ESC interactions
             event.currentTarget.blur()
         }
 
         // Resize category
-        if (this.hoveredTopGroupId !== '') {
-            const id = `#${this.hoveredTopGroupId}`
-            const category = document.querySelector(id)
-            this.categoryResizer.resizeCategory(this.actionHandler, category, this.direction, this.isGrid)
+        if (this.hoveredGroups.length) {
+            for (const groupId of this.hoveredGroups) {
+                const group = document.querySelector(`#${groupId}`)
+                this.categoryResizer.resizeCategory(this.actionHandler, group, this.direction, this.isGrid)
+            }
         }
 
         // Bring HUD to top
@@ -246,13 +249,13 @@ export class TokenActionHud extends Application {
 
         if (this.isClickOpen) {
             // When a category button is clicked...
-            elements.titleButtons.on('click', toggleTopGroup)
+            elements.titleButtons.on('click', toggleGroup)
         } else {
             // When a category button is hovered over...
-            elements.topGroups.get().forEach(element => {
-                element.addEventListener('touchstart', toggleTopGroup, { passive: true })
+            elements.tabGroups.get().forEach(element => {
+                element.addEventListener('touchstart', toggleGroup, { passive: true })
             })
-            elements.topGroups.hover(openTopGroup, closeTopGroup)
+            elements.tabGroups.hover(openGroup, closeGroup)
         }
 
         // When a category button is clicked and held...
@@ -371,7 +374,7 @@ export class TokenActionHud extends Application {
             elements.lockButton.removeClass('tah-hidden')
             elements.editHudButton.removeClass('tah-hidden')
             elements.topGroupsSection.addClass('tah-unlocked')
-            elements.topGroups.removeClass('tah-hidden')
+            elements.tabGroups.removeClass('tah-hidden')
             elements.groups.removeClass('tah-hidden')
             elements.subtitles.removeClass('disable-edit')
             elements.subtitles.removeClass('tah-hidden')
@@ -396,7 +399,7 @@ export class TokenActionHud extends Application {
             elements.unlockButton.removeClass('tah-hidden')
             elements.editHudButton.addClass('tah-hidden')
             elements.topGroupsSection.removeClass('tah-unlocked')
-            for (const topGroupElement of elements.topGroups) {
+            for (const topGroupElement of elements.tabGroups) {
                 const hasActions = (topGroupElement.getElementsByClassName('tah-action').length > 0)
                 if (!hasActions) topGroupElement.classList.add('tah-hidden')
             }
@@ -584,12 +587,12 @@ export class TokenActionHud extends Application {
     applySettings () {
         this.autoDirection = this._getAutoDirection()
         if (this.autoDirection === 'up') {
-            $(document).find('.tah-groups-wrapper').removeClass('expand-down')
-            $(document).find('.tah-groups-wrapper').addClass('expand-up')
+            $(document).find('.tah-groups').removeClass('expand-down')
+            $(document).find('.tah-groups').addClass('expand-up')
             $(document).find('#tah-character-name').addClass('tah-hidden')
         } else {
-            $(document).find('.tah-groups-wrapper').addClass('expand-down')
-            $(document).find('.tah-groups-wrapper').removeClass('expand-up')
+            $(document).find('.tah-groups').addClass('expand-down')
+            $(document).find('.tah-groups').removeClass('expand-up')
             $(document).find('#tah-character-name').removeClass('tah-hidden')
         }
     }
@@ -608,7 +611,7 @@ export class TokenActionHud extends Application {
             (t) => t.id === this.hud?.tokenId
         )
         this._setPositionFromFlag()
-        this._restoreHoveredTopGroup()
+        this._restoreHoveredGroups()
         this.rendering = false
     }
 
@@ -688,40 +691,42 @@ export class TokenActionHud extends Application {
     }
 
     /**
-     * Set hovered top group
+     * Set hovered group
      * @private
-     * @param {string} topGroupId The top group id
+     * @param {string} groupId The group id
      */
-    _setHoveredTopGroup (topGroupId) {
-        this.hoveredTopGroupId = topGroupId
+    _setHoveredGroup (groupId) {
+        if (this.hoveredGroups.length > 10) { this.hoveredGroups = [] }
+        this.hoveredGroups.push(groupId)
     }
 
     /**
-     * Clear hovered top group
+     * Clear hovered group
      * @private
-     * @param {string} topGroupId The top group id
+     * @param {string} groupId The group id
      */
-    _clearHoveredTopGroup (topGroupId) {
-        if (this.hoveredTopGroupId === topGroupId) this.hoveredTopGroupId = ''
+    _clearHoveredGroup (groupId) {
+        this.hoveredGroups = this.hoveredGroups.filter(id => id !== groupId)
     }
 
     /**
      * Restore the hovered category state on the HUD
      * @private
      */
-    _restoreHoveredTopGroup () {
-        if (this.hoveredTopGroupId === '') return
+    _restoreHoveredGroups () {
+        if (!this.hoveredGroups.length) return
 
-        const id = `#${this.hoveredTopGroupId}`
-        const category = $(id)
+        for (const groupId of this.hoveredGroups) {
+            const groupElement = $(`#${groupId}`)
 
-        if (!category[0]) return
+            if (!groupElement[0]) return
 
-        if (this.isClickOpen) {
-            const button = category.find('.tah-top-group-button')[0]
-            button.click()
-        } else {
-            category.mouseenter()
+            if (this.isClickOpen) {
+                const button = groupElement.find('.tah-button')[0]
+                button.click()
+            } else {
+                groupElement.mouseenter()
+            }
         }
     }
 
@@ -882,7 +887,7 @@ export class TokenActionHud extends Application {
 
         if ((!character && !multipleTokens) || !this.isHudEnabled) {
             this.close()
-            this.hoveredTopGroupId = ''
+            this.hoveredGroups = []
             Logger.debug('Hud update aborted as no character(s) found or hud is disabled')
             this.isUpdating = false
             return
@@ -894,7 +899,7 @@ export class TokenActionHud extends Application {
 
         if (this.hud.length === 0) {
             this.close()
-            this.hoveredTopGroupId = ''
+            this.hoveredGroups = []
             Logger.debug('Hud update aborted as action list empty')
             this.isUpdating = false
             return
