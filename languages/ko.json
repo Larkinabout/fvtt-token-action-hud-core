@@ -160,6 +160,14 @@
         "sort": {
           "label": "Sort Actions",
           "hint": "Sort actions into alphabetical order"
+        },
+        "style": {
+          "label": "Style",
+          "choice": {
+            "list": "List",
+            "tab": "Tab"
+          },
+          "hint": "Style of this group"
         }
       },
       "resetActions": {

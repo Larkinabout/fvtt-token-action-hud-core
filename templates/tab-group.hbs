@@ -1,5 +1,5 @@
-{{~#if (ne this.isSelected false)~}}
-<div class="tah-tab-group" id="tah-group-{{nestId}}" data-nest-id="{{this.nestId}}" data-has-actions="{{~#if (tf this.actions.length)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
+{{~#if (ne isSelected false)~}}
+<div class="tah-tab-group" id="tah-group-{{nestId}}" data-nest-id="{{nestId}}" data-has-actions="{{~#if (tf hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
     <button class="tah-button" value="{{id}}">
         {{~#if settings.image~}}<div class="tah-button-image" style="background: url({{settings.image}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
         <span class="tah-button-content">
@@ -10,25 +10,25 @@
             {{~#if info3~}}<div class="tah-info3">{{info3}}</div>{{~/if~}}
         </span>
     </button>
-    {{~#if (tf this.actions.length)~}}
-    <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
+    <div class="tah-groups">
+        {{~#if (tf hasActions)~}}
+        <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
         {{#each actions}}
             {{>"modules/token-action-hud-core/templates/action.hbs"}}
         {{/each}}
-    </div>
-    {{~/if~}}
-    <div class="tah-groups expand-down">
-        {{~#if (tf groups.tabs.length)~}}
-        <div class="tah-tab-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
-            {{#each groups.tabs}}
-                {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
-            {{/each}}
         </div>
         {{~/if~}}
         {{~#if (tf groups.lists.length)~}}
         <div class="tah-list-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
             {{#each groups.lists}}
                 {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
+            {{/each}}
+        </div>
+        {{~/if~}}
+        {{~#if (tf groups.tabs.length)~}}
+        <div class="tah-tab-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
+            {{#each groups.tabs}}
+                {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
             {{/each}}
         </div>
         {{~/if~}}

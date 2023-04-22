@@ -74,6 +74,7 @@ export class ActionHandler {
             this._buildMacroActions()
         ])
         await this.buildFurtherActions()
+        await this.setHasActions()
         await this._sortAvailableActions()
         await this._setCharacterLimit()
         await this.saveGroups(options)
@@ -113,7 +114,7 @@ export class ActionHandler {
                     const parentGroup = await Utils.getGroupByNestId(hud.groups, { nestId: parentNestId })
                     if (parentGroup) {
                         const group = this._createGroup(userGroup)
-                        if (group.style === 'tab') {
+                        if (group.settings.style === 'tab') {
                             parentGroup.groups.tabs.push(group)
                         } else {
                             parentGroup.groups.lists.push(group)
@@ -132,6 +133,7 @@ export class ActionHandler {
                 if (existingGroup) {
                     if (actorGroup.actions?.length) {
                         existingGroup.actions = actorGroup.actions
+                        this.actions.push(...existingGroup.actions)
                         for (const action of existingGroup.actions) {
                             action.selected = false
                         }
@@ -142,11 +144,12 @@ export class ActionHandler {
                         const group = this._createGroup(actorGroup)
                         if (actorGroup.actions?.length) {
                             group.actions = actorGroup.actions
+                            this.actions.push(...group.actions)
                             for (const action of group.actions) {
                                 action.selected = false
                             }
                         }
-                        if (group.style === 'tab') {
+                        if (group.settings.style === 'tab') {
                             parentGroup.groups.tabs.push(group)
                         } else {
                             parentGroup.groups.lists.push(group)
@@ -213,6 +216,19 @@ export class ActionHandler {
      */
     async buildFurtherActions () {
         this.furtherActionHandlers.forEach(handler => handler.extendActionList())
+    }
+
+    /**
+     * Set hasActions
+     */
+    async setHasActions () {
+        for (const group of Object.values(this.groups)) {
+            if (group.actions.some(action => action.selected)) {
+                group.hasActions = true
+            } else {
+                group.hasActions = false
+            }
+        }
     }
 
     /**
@@ -367,6 +383,7 @@ export class ActionHandler {
         const level = nestIdParts.length ?? 1
 
         if (level === 1) {
+            if (typeof groupDataClone?.settings?.style === 'undefined') groupDataClone.settings.style = 'tab'
             return {
                 actions: [],
                 cssClass: '',
@@ -377,11 +394,11 @@ export class ActionHandler {
                 name: groupDataClone?.name,
                 nestId: groupDataClone?.nestId ?? groupDataClone?.id,
                 order: groupDataClone.order,
-                settings: groupDataClone?.settings ?? {},
-                style: groupDataClone?.style ?? 'tab',
+                settings: groupDataClone?.settings ?? { style: 'tab' },
                 type: 'custom'
             }
         } else {
+            if (typeof groupDataClone?.settings?.style === 'undefined') groupDataClone.settings.style = 'list'
             return {
                 id: groupDataClone?.id,
                 nestId: groupDataClone?.nestId,
@@ -390,8 +407,7 @@ export class ActionHandler {
                 isSelected: groupDataClone?.isSelected ?? true,
                 level: groupDataClone.level ?? level,
                 order: groupDataClone.order,
-                settings: groupDataClone?.settings ?? { showTitle: true },
-                style: groupDataClone?.style ?? 'list',
+                settings: groupDataClone?.settings ?? { showTitle: true, style: 'list' },
                 type: groupDataClone?.type ?? GROUP_TYPE.CUSTOM,
                 subtitleClass: groupDataClone?.subtitleClass ?? '',
                 info1: groupDataClone?.info1 ?? '',
@@ -768,7 +784,7 @@ export class ActionHandler {
                 }
             } else {
                 const group = this._createGroup({ ...groupData, nestId })
-                if (group.style === 'tab') {
+                if (group.settings.style === 'tab') {
                     parentGroup.groups.tabs.push(group)
                 } else {
                     parentGroup.groups.lists.push(group)

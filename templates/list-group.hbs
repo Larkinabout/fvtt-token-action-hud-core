@@ -1,33 +1,35 @@
-{{~#if (ne this.isSelected false)~}}
-<div class="tah-group" data-nest-id="{{this.nestId}}" data-has-actions="{{~#if (tf this.actions.length)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
+{{~#if (ne isSelected false)~}}
+<div class="tah-group" data-nest-id="{{nestId}}" data-has-actions="{{~#if (tf hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
     <div class="tah-subtitle{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}">
         {{~#if img~}}<div class="tah-button-image" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
         {{~#if icon~}}<div class="tah-icon">{{{icon}}}</div>{{~/if~}}
-        {{cap this.name}}
+        {{cap name}}
         {{~#if info1.text~}}<div class="tah-info1{{~#if info1.class}} {{info1.class}}{{~/if~}}" title="{{~#if info1.title}}{{info1.title}}{{~else~}}{{info1.text}}{{~/if}}">{{info1.text}}</div>{{~/if~}}
         {{~#if info2.text~}}<div class="tah-info2{{~#if info2.class}} {{info2.class}}{{~/if~}}" title="{{~#if info2.title}}{{info2.title}}{{~else~}}{{info2.text}}{{~/if}}">{{info2.text}}</div>{{~/if~}}
         <i class="fa fa-pen-to-square" aria-hidden="true"></i>
     </div>
-    {{~#if (tf actions.length)~}}
-    <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
-        {{#each actions}}
-            {{>"modules/token-action-hud-core/templates/action.hbs"}}
-        {{/each}}
+    <div class="tah-groups">
+        {{~#if (tf hasActions)~}}
+        <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
+            {{#each actions}}
+                {{>"modules/token-action-hud-core/templates/action.hbs"}}
+            {{/each}}
+        </div>
+        {{~/if~}}
+        {{~#if (tf groups.lists.length)~}}
+        <div class="tah-list-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
+            {{#each groups.lists}}
+                {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
+            {{/each}}
+        </div>
+        {{~/if~}}
+        {{~#if (tf groups.tabs.length)~}}
+        <div class="tah-tab-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
+            {{#each groups.tabs}}
+                {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
+            {{/each}}
+        </div>
+        {{~/if~}}
     </div>
-    {{~/if~}}
-    {{~#if (tf groups.tabs.length)~}}
-    <div class="tah-tab-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
-        {{#each groups.tabs}}
-            {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
-        {{/each}}
-    </div>
-    {{~/if~}}
-    {{~#if (tf groups.lists.length)~}}
-    <div class="tah-list-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
-        {{#each groups.lists}}
-            {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
-        {{/each}}
-    </div>
-    {{~/if~}}
 </div>
 {{~/if~}}

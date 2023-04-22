@@ -10,20 +10,21 @@
             {{~#if info3~}}<div class="tah-info3">{{info3}}</div>{{~/if~}}
         </span>
     </button>
-    <div class="tah-groups-wrapper expand-down">
-        <div class="tah-groups tah-first expand-down">
-            {{~#if (tf groups.tabs.length)~}}
-            <div class="tah-tab-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
-                {{#each groups.tabs}}
-                {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
-                {{/each}}
-            </div>
-            {{~/if~}}
-            <div class="tah-list-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
-                {{#each groups.lists}}
-                {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
-                {{/each}}
-            </div>
+    <div class="tah-groups expand-down">
+        {{~#if (tf groups.lists.length)~}}
+        <div class="tah-list-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
+            {{#each groups.lists}}
+            {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
+            {{/each}}
         </div>
+        {{~/if~}}
+        {{~#if (tf groups.tabs.length)~}}
+        <div class="tah-tab-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
+            {{#each groups.tabs}}
+            {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
+            {{/each}}
+        </div>
+        {{~/if~}}
+        
     </div>
 </div>

@@ -14,7 +14,7 @@
         <div id="tah-character-name">{{hud.title}}</div>
         {{~/if~}}
         {{#each hud.groups}}
-        {{>"modules/token-action-hud-core/templates/category.hbs" background=../background}}
+        {{>"modules/token-action-hud-core/templates/group.hbs" background=../background}}
         {{/each}}
     </div>
     {{#unless hovering}}

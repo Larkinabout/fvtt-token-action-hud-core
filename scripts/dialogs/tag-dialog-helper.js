@@ -166,7 +166,8 @@ export class TagDialogHelper {
             const image = formData?.image
             const showTitle = formData?.showTitle
             const sort = formData?.sort
-            groupData.settings = { characterCount, grid, image, showTitle, sort }
+            const style = formData?.style
+            groupData.settings = { characterCount, grid, image, showTitle, sort, style }
 
             // Save subcategories to user action list
             await actionHandler.updateGroups(selectedGroups, groupData)

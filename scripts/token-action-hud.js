@@ -14,6 +14,7 @@ export class TokenActionHud extends Application {
     defaultWidth = 20
     defaultLeftPos = 150
     defaultTopPos = 80
+    leftPos = this.defaultLeftPos
     topPos = this.defaultTopPos
     defaultScale = 1
     refreshTimeout = null
@@ -186,6 +187,21 @@ export class TokenActionHud extends Application {
     }
 
     /**
+     * Post-render HUD
+     */
+    postRender () {
+        this.applySettings()
+
+        // Resize category
+        if (this.hoveredGroups.length) {
+            for (const groupId of this.hoveredGroups) {
+                const group = document.querySelector(`#${groupId}`)
+                this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.isGrid)
+            }
+        }
+    }
+
+    /**
     * Bind category events
     * @private
     */
@@ -230,14 +246,6 @@ export class TokenActionHud extends Application {
             }
             // Remove focus to allow core ESC interactions
             event.currentTarget.blur()
-        }
-
-        // Resize category
-        if (this.hoveredGroups.length) {
-            for (const groupId of this.hoveredGroups) {
-                const group = document.querySelector(`#${groupId}`)
-                this.categoryResizer.resizeCategory(this.actionHandler, group, this.direction, this.isGrid)
-            }
         }
 
         // Bring HUD to top
@@ -285,7 +293,9 @@ export class TokenActionHud extends Application {
 
         // When a category button is right-clicked...
         elements.titleButtons.on('contextmenu', (event) => {
-            if (this.isUnlocked) openGroupDialog(event)
+            if (this.isUnlocked && event.currentTarget.parentElement.dataset.level === '1') {
+                openGroupDialog(event)
+            }
         })
     }
 
@@ -317,7 +327,7 @@ export class TokenActionHud extends Application {
          * @param {object} event
          */
         const openActionDialog = (event) => {
-            const target = event.target
+            const target = (event.target.classList.contains('tah-button-text')) ? event.currentTarget : event.target
             if (!target?.parentElement?.dataset?.nestId) return
             const nestId = target?.parentElement?.dataset?.nestId
             const name = target?.parentElement?.dataset?.name ?? target.innerText ?? target.outerText
@@ -339,6 +349,12 @@ export class TokenActionHud extends Application {
         elements.actions.on('click contextmenu', (event) => {
             event.preventDefault()
             handleAction(event)
+        })
+
+        elements.titleButtons.on('contextmenu', (event) => {
+            if (this.isUnlocked && event.currentTarget.parentElement.dataset.level !== '1') {
+                openActionDialog(event)
+            }
         })
     }
 
@@ -589,8 +605,12 @@ export class TokenActionHud extends Application {
         if (this.autoDirection === 'up') {
             $(document).find('.tah-groups').removeClass('expand-down')
             $(document).find('.tah-groups').addClass('expand-up')
+            $(document).find('.tah-groups').removeClass('expand-down')
+            $(document).find('.tah-groups').addClass('expand-up')
             $(document).find('#tah-character-name').addClass('tah-hidden')
         } else {
+            $(document).find('.tah-groups').addClass('expand-down')
+            $(document).find('.tah-groups').removeClass('expand-up')
             $(document).find('.tah-groups').addClass('expand-down')
             $(document).find('.tah-groups').removeClass('expand-up')
             $(document).find('#tah-character-name').removeClass('tah-hidden')
@@ -628,18 +648,18 @@ export class TokenActionHud extends Application {
         const defaultTopPos = this.defaultTopPos
 
         return new Promise((resolve) => {
-            function check () {
+            const check = () => {
                 const element = document.getElementById('token-action-hud')
                 if (element) {
                     element.style.bottom = null
-                    element.style.top =
-            pos.top < 5 || pos.top > window.innerHeight + 5
-                ? defaultTopPos + 'px'
-                : pos.top + 'px'
-                    element.style.left =
-            pos.left < 5 || pos.left > window.innerWidth + 5
-                ? defaultLeftPos + 'px'
-                : pos.left + 'px'
+                    this.topPos = pos.top < 5 || pos.top > window.innerHeight + 5
+                        ? defaultTopPos
+                        : pos.top
+                    element.style.top = `${this.topPos}px`
+                    this.leftPos = pos.left < 5 || pos.left > window.innerWidth + 5
+                        ? defaultLeftPos
+                        : pos.left
+                    element.style.left = `${this.leftPos}px`
                     element.style.position = 'fixed'
                     resolve()
                 } else {
