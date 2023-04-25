@@ -116,9 +116,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
-    if (['compact', 'foundryVTT', 'highContrast'].includes(style)) {
-        initColorSettings(style)
-    }
+    initColorSettings()
 
     game.settings.register(MODULE.ID, 'enable', {
         name: Utils.i18n('tokenActionHud.settings.enable.name'),
@@ -274,7 +272,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
 /**
  * Initiate color settings
  */
-function initColorSettings (style) {
+function initColorSettings () {
     // Determine color picker module
     let module = null
     if (game.modules.get('lib-themer')?.active) {
