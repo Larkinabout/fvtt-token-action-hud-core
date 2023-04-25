@@ -236,10 +236,12 @@ export class ActionHandler {
      * @private
      */
     async _getDefaultGroups () {
-        const defaultSubcategories = game.tokenActionHud.defaults.subcategories
-        if (!defaultSubcategories) return {}
-        for (const defaultSubcategory of defaultSubcategories) {
-            this.defaultGroups[defaultSubcategory.id] = defaultSubcategory
+        const defaultGroups = (game.tokenActionHud.defaults?.groups?.length)
+            ? game.tokenActionHud.defaults?.groups
+            : game.tokenActionHud.defaults?.subcategories
+        if (!defaultGroups) return {}
+        for (const defaultGroup of defaultGroups) {
+            this.defaultGroups[defaultGroup.id] = defaultGroup
         }
     }
 
@@ -248,9 +250,11 @@ export class ActionHandler {
      * @private
      */
     async _getDefaultLayout () {
-        const defaultCategories = game.tokenActionHud.defaults.categories
-        if (!defaultCategories) return {}
-        this.defaultLayout = await Utils.getSubcategories(defaultCategories)
+        const defaultLayout = (game.tokenActionHud.defaults?.layout?.length)
+            ? game.tokenActionHud.defaults?.layout
+            : game.tokenActionHud.defaults?.categories
+        if (!defaultLayout) return {}
+        this.defaultLayout = await Utils.getSubcategories(defaultLayout)
     }
 
     /**
@@ -758,7 +762,7 @@ export class ActionHandler {
      * @param {boolean} [update = false] Whether to update an existing group
      */
     async addGroup (groupData, parentGroupData, update = false) {
-        groupData.type = 'system-derived'
+        groupData.type = groupData?.type ?? 'system-derived'
         groupData.style = groupData?.style ?? 'list'
 
         if (!parentGroupData?.id && !parentGroupData?.nestId) return
@@ -797,32 +801,36 @@ export class ActionHandler {
     /**
      * Update group in the HUD
      * @public
-     * @param {object} groupData       The group data
-     * @param {object} parentGroupData The parent group data
+     * @param {object} groupData                The group data
+     * @param {object} [parentGroupData = null] The parent group data
      */
-    async updateGroup (groupData, parentGroupData) {
-        groupData.type = 'system-derived'
+    async updateGroup (groupData, parentGroupData = null) {
+        groupData.type = groupData?.type ?? 'system-derived'
 
-        if (!parentGroupData?.id && !parentGroupData?.nestId) return
-
-        const parentGroups = this._getGroups(parentGroupData)
-        if (!parentGroups?.length) return
-
-        for (const parentGroup of parentGroups) {
-            const nestId = `${parentGroup.nestId}_${groupData.id}`
-            const existingGroups = this._getGroups({ ...groupData, nestId })
-
-            if (existingGroups.length) {
-                for (const existingGroup of existingGroups) {
-                    // Temporary fix until info1-3 properties are grouped into info object
-                    if (groupData.info) {
-                        Object.assign(groupData, { ...groupData.info })
-                        delete groupData.info
-                    }
-
-                    Object.assign(existingGroup, { ...groupData })
+        const updateExistingGroups = (existingGroups) => {
+            for (const existingGroup of existingGroups) {
+                // Temporary fix until info1-3 properties are grouped into info object
+                if (groupData.info) {
+                    Object.assign(groupData, { ...groupData.info })
+                    delete groupData.info
                 }
+
+                Object.assign(existingGroup, { ...groupData })
             }
+        }
+
+        if (parentGroupData) {
+            const parentGroups = this._getGroups(parentGroupData)
+            for (const parentGroup of parentGroups) {
+                const nestId = `${parentGroup.nestId}_${groupData.id}`
+                const existingGroups = this._getGroups({ ...groupData, nestId })
+
+                updateExistingGroups(existingGroups)
+            }
+        } else {
+            const existingGroups = this._getGroups(groupData)
+
+            updateExistingGroups(existingGroups)
         }
     }
 

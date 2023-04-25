@@ -1,0 +1,24 @@
+/*
+ * DIALOGS
+ */
+
+ .token-action-hud-taginput {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+#tah-dialog-clear-tags {
+    background: rgba(255, 255, 240, 0.8);
+    border: 1px solid var(--color-border-light-primary);
+    margin-top: 2px;
+}
+
+#tah-dialog-reset-actions {
+    margin-top: 2px;
+}
+
+.tah-radio-group {
+    text-align: right;
+}

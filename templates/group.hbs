@@ -1,6 +1,6 @@
 
 <div class="tah-tab-group{{~#if cssClass}} {{cssClass}}{{~/if~}}" id="tah-group-{{nestId}}" data-nest-id="{{nestId}}" data-level="{{level}}" data-name="{{name}}" data-type="custom">
-    <button class="tah-button" value="{{id}}">
+    <button class="tah-group-button" value="{{id}}">
         {{~#if settings.image~}}<div class="tah-button-image" style="background: url({{settings.image}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
         <span class="tah-button-content">
             {{~#if settings.showTitle~}}<div class="tah-button-text">{{cap name}}</div>{{~/if~}}
@@ -12,14 +12,14 @@
     </button>
     <div class="tah-groups expand-down">
         {{~#if (tf groups.lists.length)~}}
-        <div class="tah-list-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
+        <div class="tah-list-groups">
             {{#each groups.lists}}
             {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
             {{/each}}
         </div>
         {{~/if~}}
         {{~#if (tf groups.tabs.length)~}}
-        <div class="tah-tab-groups" {{~#if background~}}style='background: {{background}}'{{~/if~}}>
+        <div class="tah-tab-groups">
             {{#each groups.tabs}}
             {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
             {{/each}}

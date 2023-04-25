@@ -1,7 +1,11 @@
 {{~#if (ne this.selected false)~}}
-<div class="tah-action{{~#if cssClass}} {{cssClass}}{{~/if~}}" {{~#if spellLevel~}}data-spell-lvl="{{spellLevel}}"{{~/if~}} {{~#if title~}} title="{{title}}"{{~/if~}}>
-    <button value="{{encodedValue}}" {{~#if cssClass~}}class="{{cssClass}}{{#activeText}} activeText{{/activeText}}"{{~/if~}}>
-        {{~#if img~}}<div class="tah-button-image" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
+<div class="tah-action" {{~#if spellLevel~}}data-spell-lvl="{{spellLevel}}"{{~/if~}} {{~#if title~}} title="{{title}}"{{~/if~}}>
+    <button class="tah-action-button{{~#if cssClass}} {{cssClass}}{{~/if~}}{{#activeText}} activeText{{/activeText}}" value="{{encodedValue}}">
+        {{~#if img~}}
+        <div class="tah-button-image-wrapper">
+            <div class="tah-button-image" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>
+        </div>
+        {{~/if~}}
         <span class="tah-action-button-content">
             {{~#if itemMacroIcon~}}<div class="tah-icon">{{{itemMacroIcon}}}</div>{{~/if~}}
             {{~#if icon1~}}<div class="tah-icon">{{{icon1}}}</div>{{~/if~}}

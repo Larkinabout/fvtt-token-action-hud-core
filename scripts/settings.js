@@ -1,4 +1,4 @@
-import { MODULE } from './constants.js'
+import { MODULE, STYLE_CLASS } from './constants.js'
 import { Logger, Utils } from './utilities/utils.js'
 
 function onChangeFunction (value) { if (game.tokenActionHud) game.tokenActionHud.updateSettings() }
@@ -48,8 +48,9 @@ export const registerSettings = function (systemManager, rollHandlers) {
         default: 'foundryVTT',
         choices: {
             compact: 'Compact',
-            foundryVTT: 'Foundry VTT',
             dorakoUI: 'Dorako UI',
+            foundryVTT: 'Foundry VTT',
+            highContrast: 'High Contrast',
             pathfinder: 'Pathfinder'
         },
         onChange: (value) => {
@@ -115,7 +116,9 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
-    initColorSettings(MODULE.ID)
+    if (['compact', 'foundryVTT', 'highContrast'].includes(style)) {
+        initColorSettings(style)
+    }
 
     game.settings.register(MODULE.ID, 'enable', {
         name: Utils.i18n('tokenActionHud.settings.enable.name'),
@@ -271,7 +274,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
 /**
  * Initiate color settings
  */
-function initColorSettings () {
+function initColorSettings (style) {
     // Determine color picker module
     let module = null
     if (game.modules.get('lib-themer')?.active) {
@@ -295,7 +298,7 @@ function initColorSettings () {
                     type: 'color',
                     default: '#00000000'
                 },
-                '--tah-button-background': {
+                '--tah-button-background-color-editable': {
                     name: 'tokenActionHud.settings.buttonBackgroundColor.name',
                     hint: 'tokenActionHud.settings.buttonBackgroundColor.hint',
                     type: 'color',
@@ -355,22 +358,7 @@ function registerColorSettings (module) {
         restricted: true,
         default: '#00000080',
         onChange: (value) => {
-            document.querySelector(':root').style.setProperty('--tah-button-background', value)
-            onChangeFunction(value)
-        }
-    }
-
-    const buttonBorderColor = {
-        key: 'buttonBorderColor',
-        name: Utils.i18n('tokenActionHud.settings.buttonBorderColor.name'),
-        hint: Utils.i18n('tokenActionHud.settings.buttonBorderColor.hint'),
-        scope: 'client',
-        restricted: true,
-        default: '#000000ff',
-        onChange: (value) => {
-            document
-                .querySelector(':root')
-                .style.setProperty('--tah-button-outline', value)
+            document.querySelector(':root').style.setProperty('--tah-button-background-color-editable', value)
             onChangeFunction(value)
         }
     }
@@ -410,20 +398,6 @@ function registerColorSettings (module) {
             pickerOptions
         )
 
-        ColorPicker.register(
-            MODULE.ID,
-            buttonBorderColor.key,
-            {
-                name: buttonBorderColor.name,
-                hint: buttonBorderColor.hint,
-                scope: buttonBorderColor.scope,
-                restricted: buttonBorderColor.restricted,
-                default: buttonBorderColor.default,
-                onChange: buttonBorderColor.onChange
-            },
-            pickerOptions
-        )
-
     // Color Settings module
     } else if (module === 'colorsettings') {
         new window.Ardittristan.ColorSetting(MODULE.ID, backgroundColor.key, {
@@ -445,16 +419,6 @@ function registerColorSettings (module) {
             onChange: buttonBackgroundColor.onChange,
             insertAfter: `${MODULE.ID}.${backgroundColor.key}`
         })
-
-        new window.Ardittristan.ColorSetting(MODULE.ID, buttonBorderColor.key, {
-            name: buttonBorderColor.name,
-            hint: buttonBorderColor.hint,
-            scope: buttonBorderColor.scope,
-            restricted: buttonBorderColor.restricted,
-            defaultColor: buttonBorderColor.default,
-            onChange: buttonBorderColor.onChange,
-            insertAfter: `${MODULE.ID}.${buttonBackgroundColor.key}`
-        })
     }
 
     document
@@ -466,13 +430,7 @@ function registerColorSettings (module) {
     document
         .querySelector(':root')
         .style.setProperty(
-            '--tah-button-background',
+            '--tah-button-background-color-editable',
             Utils.getSetting('buttonBackgroundColor') ?? '#000000b3'
-        )
-    document
-        .querySelector(':root')
-        .style.setProperty(
-            '--tah-button-outline',
-            Utils.getSetting('buttonBorderColor') ?? '#000000ff'
         )
 }

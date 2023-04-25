@@ -1,27 +1,31 @@
 :root {
-    --tah-background: #000000b3;
+    --tah-background: #00000000;
     --tah-border-radius: 3px;
+    --tah-color-primary: #ddd;
+    --tah-color-primary-active: var(--tah-color-primary);
+    --tah-color-primary-hover: var(--tah-color-primary);
+    --tah-color-secondary: #dddddd80;
+    --tah-color-secondary-active: var(--tah-color-secondary);
+    --tah-color-secondary-hover: var(--tah-color-secondary);
+    --tah-color-tertiary: #ff6400;
+    --tah-color-tertiary-active: var(--tah-color-tertiary);
+    --tah-color-tertiary-hover: var(--tah-color-tertiary);
+    --tah-font-size-10: 0.65rem;
     --tah-gap: 5px;
-    --tah-icon-disabled-color: #dddddd80;
-    --tah-info-spotlight-color: #ff6400;
-    --tah-info-color-primary: #dddddd80;
-    --tah-text-color: #ddd;
-    --tah-text-highlight-color: #ddd;
+    --tah-icon-color-disabled: var(--tah-color-secondary);
     --tah-text-shadow: 1px 1px 1px rgb(0 0 0), 0px 1px 3px rgb(0 0 0);
 
     /* BUTTON */
-    --tah-button-background-color: #000000b3;
-    --tah-button-border: none;
-    --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606,
-        0 0 5px #000000ff;
-    --tah-button-color: #ddd;
-    --tah-button-disabled-color: #dddddd80;
+    --tah-button-background-color-editable: #000000b3;
+    --tah-button-border-color: none;
+    --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606, 0 0 5px #000000ff;
+    --tah-button-color: var(--tah-color-primary);
+    --tah-button-color-disabled: var(--tah-color-secondary);
     --tah-button-height: 32px;
     --tah-button-min-width: 32px;
 
     /* BUTTON HOVER */
-    --tah-button-hover-box-shadow: 0 2px 0 -1px #ff6400, 0 0 0 1px red,
-        0 0 10px #ff6400;
+    --tah-button-hover-box-shadow: 0 2px 0 -1px var(--tah-color-tertiary), 0 0 0 1px red, 0 0 10px var(--tah-color-tertiary);
     --tah-button-hover-color: #fff;
 
     /* BUTTON ACTIVE */
@@ -30,7 +34,6 @@
 
     /* BUTTON TOGGLE */
     --tah-button-toggle-background-color: #000000b3;
-    --tah-button-toggle-outline: #000000ff;
 
     /* BUTTON TOGGLE HOVER */
     --tah-button-toggle-hover-background-color: #3c0078bf;
@@ -43,7 +46,6 @@
 
 #token-action-hud {
     align-items: center;
-    background: var(--tah-background);
     border-radius: var(--tah-border-radius);
     display: flex;
     flex-direction: row;
@@ -61,7 +63,7 @@
 }
 
 #tah-character-name {
-    color: var(--tah-text-color);
+    color: var(--tah-color-primary);
     font-size: var(--font-size-16);
     margin: 0;
     padding: 0;
@@ -80,22 +82,20 @@
  * BUTTONS
  */
 
-#token-action-hud:hover > #tah-collapse-expand #tah-collapse-hud,
+#token-action-hud:hover #tah-collapse-hud,
 #token-action-hud:hover > #tah-buttons {
     display: flex;
 }
 
 #tah-collapse-hud,
 #tah-buttons {
+    align-items: center;
     display: none;
     font-style: normal;
     font-weight: normal;
+    height: var(--tah-button-height);
     position: relative;
     z-index: 1;
-}
-
-#tah-collapse-expand:hover {
-    cursor: pointer;
 }
 
 #tah-collapse-expand {
@@ -121,11 +121,10 @@
     box-shadow: none;
 }
 
-#tah-collapse-expand button > .fa,
-#tah-collapse-expand button > .fas,
-#tah-buttons button > .fa,
-#tah-buttons button > .fas {
-    color: var(--tah-text-color);
+#tah-collapse-expand button > :is(.fa, .fas),
+#tah-buttons button > :is(.fa, .fas) {
+    color: var(--tah-color-primary);
+    font-size: var(--font-size-12);
     margin: 3px;
     padding: 3px;
     pointer-events: none;
@@ -134,40 +133,98 @@
     text-shadow: var(--tah-text-shadow);
 }
 
-#tah-collapse-expand button > .fa,
-#tah-collapse-expand button > .fas {
-    font-size: small;
+#tah-collapse-expand button > :is(.fa, .fas) {
+    font-size: medium;
+}
+
+#tah-collapse-hud {
+    left: -3px;
 }
 
 #tah-expand-hud {
-    left: -1px;
+    left: -3px;
     top: 16px;
 }
 
 #tah-expand-hud,
-.tah-button {
+#tah-expand-hud:focus,
+.tah-action-button,
+.tah-action-button:focus,
+.tah-group-button,
+.tah-group-button:focus {
     align-items: center;
+    background-color: var(--tah-button-background-color-editable);
+    border: var(--tah-button-border-color);
+    border-radius: var(--tah-border-radius);
+    box-shadow: var(--tah-button-box-shadow);
+    color: var(--tah-button-color);
     display: flex;
     height: var(--tah-button-height);
     margin: 0;
     padding: 0;
     position: relative;
     text-align: center;
+    text-decoration: none;
     text-shadow: var(--tah-text-shadow);
+    transition: all 0.1s ease-in-out;
     white-space: nowrap;
     z-index: 1;
 }
 
-.tah-button {
+.tah-action-button,
+.tah-group-button {
+    font-size: var(--font-size-13);
     min-width: var(--tah-button-min-width);
+}
+
+#tah-expand-hud:hover,
+.tah-action-button:active,
+.tah-action-button:not(.disabled):hover,
+.tah-group-button:not(.disabled):hover {
+    box-shadow: var(--tah-button-hover-box-shadow);
+    color: var(--tah-button-hover-color);
+}
+
+.tah-action-button.active,
+.tah-action.button.active.disabled:hover {
+    background: var(--tah-button-active-background-color);
+    box-shadow: var(--tah-button-active-box-shadow);
+}
+
+.tah-action-button.active.activeText > .tah-action-button-content:after {
+    content: "*";
+}
+
+.tah-action-button.disabled {
+    color: var(--tah-button-color-disabled);
+}
+
+.tah-action-button.disabled:hover {
+    box-shadow: var(--tah-button-box-shadow);
+}
+
+.tah-action-button.shrink {
+    min-width: min-content;
+}
+
+.tah-action-button.toggle:not(.disabled):hover {
+    background: var(--tah-button-toggle-hover-background-color);
+    box-shadow: var(--tah-button-toggle-hover-box-shadow);
 }
 
 .tah-button-content {
     padding: 0;
 }
 
-.tah-button-content > .fa,
-.tah-button-content > .fas {
+.tah-group-button:hover:not(.disable-edit) .tah-button-content > :is(.fa, .fas) {
+    visibility: visible;
+}
+
+.tah-button-text {
+    padding: 0 10px 0 10px;
+}
+
+.tah-button-content > :is(.fa, .fas) {
     font-size: 8px;
     position: absolute;
     right: 2px;
@@ -175,50 +232,30 @@
     visibility: hidden;
 }
 
-.tah-button:hover:not(.disable-edit) .tah-button-content > .fa,
-.tah-button:hover:not(.disable-edit) .tah-button-content > .fas {
-    visibility: visible;
-}
-
-#tah-edit-hud > .fa,
-#tah-edit-hud > .fas {
-    font-size: var(--font-size-16);
-}
-
-.tah-button-text {
+.tah-action-button-content {
+    align-items: center;
+    display: flex;
+    gap: var(--tah-gap);
+    overflow: hidden;
     padding: 0 10px 0 10px;
+    width: 100%;
+}
+
+.tah-action-button-text {
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 #tah-collapse-expand:hover button > i,
-#tah-lock:hover > i,
-#tah-unlock:hover > i,
-#tah-edit-hud:hover > i {
-    color: var(--tah-text-highlight-color);
+#tah-buttons button:hover > i {
+    color: var(--tah-color-primary-hover);
     text-shadow: 0 0 8px var(--color-shadow-primary);
 }
 
-#tah-expand-hud,
-.tah-button,
-.tah-action button {
-    background-color: var(--tah-button-background-color);
-    border: var(--tah-button-border);
-    border-radius: var(--tah-border-radius);
-    box-shadow: var(--tah-button-box-shadow);
-    color: var(--tah-button-color);
-    min-height: var(--tah-button-height);
-    transition: all 0.1s ease-in-out;
-}
-
-#tah-expand-hud:hover,
-.tah-button:hover,
-.tah-action:not(.disabled) button:hover {
-    box-shadow: var(--tah-button-hover-box-shadow);
-    color: var(--tah-button-hover-color);
-}
-
-.tah-tab-group button:active {
-    box-shadow: var(--tah-button-hover-box-shadow);
-    color: var(--tah-button-hover-color);
+#tah-edit-hud > :is(.fa, .fas) {
+    font-size: var(--font-size-16);
 }
 
 /*
@@ -235,6 +272,10 @@
 .tah-tab-groups {
     padding: 3px 0 3px 0;
     width: max-content;
+}
+
+.tah-tab-groups > .tah-tab-group {
+    padding-top: 3px;
 }
 
 .tah-tab-group,
@@ -263,19 +304,26 @@
 .tah-tab-group > .tah-groups {
     display: none;
     left: -10px;
-    padding-left: 10px;
+    padding: 0 10px 0 10px;
     position: absolute;
 }
 
-.tah-groups {
+.tah-list-groups,
+.tah-tab-groups > .tah-tab-group > .tah-groups > .tah-actions {
     background: var(--tah-background);
     border-radius: var(--tah-border-radius);
+}
+
+.tah-list-groups .tah-list-groups {
+    background: none;
+}
+
+.tah-groups {
     width: max-content;
 }
 
 .tah-groups.expand-down {
     flex-direction: column;
-    width: max-content;
 }
 
 .tah-tab-group > .tah-groups.expand-up {
@@ -306,13 +354,8 @@
     padding-left: 10px;
 }
 
-#tah-groups > .tah-tab-group > .tah-groups,
-.tah-tab-groups > .tah-tab-group > .tah-groups {
-    padding-top: 3px;
-}
-
 .tah-group[data-show-title="false"] > .tah-subtitle {
-    color: var(--tah-icon-disabled-color);
+    color: var(--tah-icon-color-disabled);
 }
 
 /*
@@ -321,36 +364,34 @@
 
 .tah-subtitle {
     align-items: center;
-    color: var(--tah-text-color);
     display: inline-flex;
     flex-wrap: wrap;
-    font-size: var(--font-size-12);
+    font-size: var(--tah-font-size-10);
     gap: var(--tah-gap);
     letter-spacing: 0.1em;
     text-shadow: var(--tah-text-shadow);
     text-transform: uppercase;
 }
 
-.tah-subtitle > .fa,
-.tah-subtitle > .fas {
-    bottom: 2px;
+.tah-subtitle-text {
+    color: var(--tah-color-primary);
+}
+
+.tah-subtitle:hover:not(.disable-edit) {
+    color: var(--tah-color-primary-hover);
+    cursor: pointer;
+}
+
+.tah-subtitle > :is(.fa, .fas) {
+    bottom: 1px;
     font-size: 8px;
     pointer-events: none;
     position: relative;
     visibility: hidden;
 }
 
-.tah-subtitle:hover:not(.disable-edit) > .fa,
-.tah-subtitle:hover:not(.disable-edit) > .fas {
-    color: var(--tah-text-highlight-color);
-    cursor: pointer;
+.tah-subtitle:hover:not(.disable-edit) > :is(.fa, .fas) {
     visibility: visible;
-}
-
-.tah-subtitle:hover:not(.disable-edit),
-.tah-subtitle:hover:not(.disable-edit) {
-    color: var(--tah-text-highlight-color);
-    cursor: pointer;
 }
 
 /*
@@ -372,65 +413,6 @@
     width: 100%;
 }
 
-.tah-action button {
-    align-items: center;
-    color: var(--tah-button-color);
-    display: flex;
-    line-height: 1;
-    margin: 0;
-    min-height: var(--tah-button-height);
-    min-width: var(--tah-button-min-width);
-    padding: 0;
-    text-decoration: none;
-    text-shadow: var(--tah-text-shadow);
-    width: 100%;
-}
-
-.tah-action .active.activeText > .tah-action-button-content:after {
-    content: "*";
-}
-
-.tah-action.disabled button {
-    color: var(--tah-button-disabled-color);
-}
-
-.tah-action.disabled button:hover {
-    box-shadow: var(--tah-button-box-shadow);
-}
-
-.tah-action.active button,
-.tah-action.active.disabled button:hover {
-    background: var(--tah-button-active-background-color);
-    box-shadow: var(--tah-button-active-box-shadow);
-}
-
-.tah-action.shrink button {
-    min-width: min-content;
-}
-
-.tah-action.toggle:not(.disabled) button:hover {
-    background: var(--tah-button-toggle-hover-background-color);
-    box-shadow: var(--tah-button-toggle-hover-box-shadow);
-}
-
-.tah-action-button-content {
-    align-items: center;
-    display: inline-flex;
-    gap: var(--tah-gap);
-    min-height: var(--tah-button-height);
-    overflow: hidden;
-    padding: 0 10px 0 10px;
-    width: 100%;
-}
-
-.tah-action-button-text {
-    overflow: hidden;
-    text-align: left;
-    text-overflow: ellipsis;
-    max-height: 2em;
-    width: 100%;
-}
-
 /*
  * INFO TEXTS
  */
@@ -438,28 +420,21 @@
 .tah-info1,
 .tah-info2,
 .tah-info3 {
+    color: var(--tah-color-secondary);
     font-size: xx-small;
-}
-
-.tah-subtitle > .tah-info1,
-.tah-subtitle > .tah-info2,
-.tah-subtitle > .tah-info3 {
-    background: var(--tah-button-background-color);
-    border-radius: 5px;
-    margin: 1px;
-    padding: 1px 3px 1px 3px;
-}
-
-.tah-info1,
-.tah-info2,
-.tah-info3 {
-    color: var(--tah-info-color-primary);
 }
 
 .tah-info1.tah-spotlight,
 .tah-info2.tah-spotlight,
 .tah-info3.tah-spotlight {
-    color: var(--tah-info-spotlight-color);
+    color: var(--tah-color-tertiary);
+}
+
+.tah-subtitle > :is(.tah-info1, .tah-info2, .tah-info3) {
+    background: var(--tah-button-background-color-editable);
+    border-radius: 5px;
+    margin: 1px;
+    padding: 1px 3px 1px 3px;
 }
 
 .tah-button-image {
@@ -469,42 +444,15 @@
     width: var(--tah-button-min-width);
 }
 
-.tah-icon > .fa,
-.tah-icon > .fas {
+.tah-icon > :is(.fa, .fas) {
     font-size: x-small;
     margin: 0px 2px 0px 0px;
 }
 
 .tah-icon-disabled {
-    color: var(--tah-icon-disabled-color);
+    color: var(--tah-icon-color-disabled);
 }
 
-.tah-subtitle > .tah-icon > .fa,
-.tah-subtitle > .tah-icon > .fas {
+.tah-subtitle > .tah-icon > :is(.fa, .fas) {
     text-shadow: var(--tah-text-shadow);
-}
-
-/*
- * DIALOGS
- */
-
-.token-action-hud-taginput {
-    max-height: 300px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    width: 100%;
-}
-
-#tah-dialog-clear-tags {
-    background: rgba(255, 255, 240, 0.8);
-    border: 1px solid var(--color-border-light-primary);
-    margin-top: 2px;
-}
-
-#tah-dialog-reset-actions {
-    margin-top: 2px;
-}
-
-.tah-radio-group {
-    text-align: right;
 }

@@ -47,8 +47,24 @@ export const ITEM_MACRO_ICON = {
 }
 
 export const STYLE_CLASS = {
-    compact: 'tah-style-foundry-vtt',
-    foundryVTT: 'tah-style-foundry-vtt',
-    dorakoUI: 'tah-style-dorako-ui',
-    pathfinder: 'tah-style-pathfinder'
+    compact: {
+        class: 'tah-style-foundry-vtt',
+        primaryColor: '#dddddd',
+        secondaryColor: '#dddddd80',
+        tertiaryColor: '#ff6400'
+    },
+    dorakoUI: { class: 'tah-style-dorako-ui' },
+    foundryVTT: {
+        class: 'tah-style-foundry-vtt',
+        primaryColor: '#dddddd',
+        secondaryColor: '#dddddd80',
+        tertiaryColor: '#ff6400'
+    },
+    highContrast: {
+        class: 'tah-style-high-contrast',
+        primaryColor: '#ffff00',
+        secondaryColor: '#ffff00',
+        tertiaryColor: '#0C7BDC'
+    },
+    pathfinder: { class: 'tah-style-pathfinder' }
 }

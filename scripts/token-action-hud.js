@@ -150,9 +150,9 @@ export class TokenActionHud extends Application {
         const data = super.getData()
         data.hud = this.hud
         data.id = 'token-action-hud'
-        data.style = STYLE_CLASS[this.style]
+        data.style = STYLE_CLASS[this.style].class
         data.scale = this._getScale()
-        data.background = Utils.getSetting('background') ?? '#00000000'
+        data.background = '#00000000'
         Logger.debug('Application data', { data })
 
         return data
@@ -171,7 +171,7 @@ export class TokenActionHud extends Application {
             editHudButton: html.find('#tah-edit-hud'),
             groups: html.find('.tah-group'),
             subtitles: html.find('.tah-subtitle'),
-            titleButtons: html.find('.tah-button'),
+            groupButtons: html.find('.tah-group-button'),
             collapseHudButton: html.find('#tah-collapse-hud'),
             expandHudButton: html.find('#tah-expand-hud'),
             unlockButton: html.find('#tah-unlock'),
@@ -249,7 +249,7 @@ export class TokenActionHud extends Application {
         }
 
         // Bring HUD to top
-        elements.titleButtons.on('click', (event) => {
+        elements.groupButtons.on('click', (event) => {
             this.bringToTop()
             // Remove focus to allow core ESC interactions
             event.currentTarget.blur()
@@ -257,7 +257,7 @@ export class TokenActionHud extends Application {
 
         if (this.isClickOpen) {
             // When a category button is clicked...
-            elements.titleButtons.on('click', toggleGroup)
+            elements.groupButtons.on('click', toggleGroup)
         } else {
             // When a category button is hovered over...
             elements.tabGroups.get().forEach(element => {
@@ -267,8 +267,8 @@ export class TokenActionHud extends Application {
         }
 
         // When a category button is clicked and held...
-        elements.titleButtons.on('mousedown', (event) => this._dragEvent(event))
-        elements.titleButtons.get().forEach(element => {
+        elements.groupButtons.on('mousedown', (event) => this._dragEvent(event))
+        elements.groupButtons.get().forEach(element => {
             element.addEventListener('touchstart', (event) => this._dragEvent(event), { passive: true })
         })
 
@@ -292,7 +292,7 @@ export class TokenActionHud extends Application {
         }
 
         // When a category button is right-clicked...
-        elements.titleButtons.on('contextmenu', (event) => {
+        elements.groupButtons.on('contextmenu', (event) => {
             if (this.isUnlocked && event.currentTarget.parentElement.dataset.level === '1') {
                 openGroupDialog(event)
             }
@@ -327,7 +327,11 @@ export class TokenActionHud extends Application {
          * @param {object} event
          */
         const openActionDialog = (event) => {
-            const target = (event.target.classList.contains('tah-button-text')) ? event.currentTarget : event.target
+            const target = (event.target.classList.contains('tah-button-text'))
+                ? event.currentTarget
+                : (event.target.classList.contains('tah-subtitle-text'))
+                    ? event.target.parentElement
+                    : event.target
             if (!target?.parentElement?.dataset?.nestId) return
             const nestId = target?.parentElement?.dataset?.nestId
             const name = target?.parentElement?.dataset?.name ?? target.innerText ?? target.outerText
@@ -351,7 +355,7 @@ export class TokenActionHud extends Application {
             handleAction(event)
         })
 
-        elements.titleButtons.on('contextmenu', (event) => {
+        elements.groupButtons.on('contextmenu', (event) => {
             if (this.isUnlocked && event.currentTarget.parentElement.dataset.level !== '1') {
                 openActionDialog(event)
             }
@@ -394,7 +398,7 @@ export class TokenActionHud extends Application {
             elements.groups.removeClass('tah-hidden')
             elements.subtitles.removeClass('disable-edit')
             elements.subtitles.removeClass('tah-hidden')
-            elements.titleButtons.removeClass('disable-edit')
+            elements.groupButtons.removeClass('disable-edit')
             if (!this.isUnlocked) {
                 await Utils.setUserFlag('isUnlocked', true)
                 this.isUnlocked = true
@@ -428,7 +432,7 @@ export class TokenActionHud extends Application {
                     subtitleElement.classList.add('tah-hidden')
                 }
             }
-            elements.titleButtons.addClass('disable-edit')
+            elements.groupButtons.addClass('disable-edit')
             elements.subtitles.addClass('disable-edit')
             if (this.isUnlocked) {
                 await Utils.setUserFlag('isUnlocked', false)
@@ -742,7 +746,7 @@ export class TokenActionHud extends Application {
             if (!groupElement[0]) return
 
             if (this.isClickOpen) {
-                const button = groupElement.find('.tah-button')[0]
+                const button = groupElement.find('.tah-group-button')[0]
                 button.click()
             } else {
                 groupElement.mouseenter()
@@ -755,13 +759,16 @@ export class TokenActionHud extends Application {
      * @public
      */
     async toggleHud () {
+        const binding = Utils.humanizeBinding('toggleHud')
         if (this.isEnabled) {
             this.close()
             this.isEnabled = false
             await Utils.setSetting('enable', false)
+            Logger.info(game.i18n.format('tokenActionHud.settings.toggleHud.disabled', { binding }), true)
         } else {
             this.isEnabled = true
             await Utils.setSetting('enable', true)
+            Logger.info(game.i18n.format('tokenActionHud.settings.toggleHud.enabled', { binding }), true)
             Hooks.callAll('forceUpdateTokenActionHud')
         }
     }

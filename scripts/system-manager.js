@@ -27,6 +27,12 @@ export class SystemManager {
         await Utils.unsetUserFlag('default')
         const defaults = await this.doRegisterDefaultFlags() ?? []
         if (defaults) {
+            if (defaults?.categories) {
+                globalThis.logger.warn('Token Action HUD | SystemManager.doRegisterDefaultFlags expects \'layout\' to be returned instead of \'categories\'')
+            }
+            if (defaults?.subcategories) {
+                globalThis.logger.warn('Token Action HUD | SystemManager.doRegisterDefaultFlags expects \'groups\' to be returned instead of \'subcategories\'')
+            }
             game.tokenActionHud.defaults = defaults
         }
     }

@@ -262,6 +262,22 @@ export class Utils {
     }
 
     /**
+     * Humanize keybinding
+     * @param {object} key The keybinding key
+     * @returns {string}   The humanized keybinding
+     */
+    static humanizeBinding (key) {
+        const binding = game.keybindings.get(MODULE.ID, key)
+        if (!binding) return ''
+        const stringParts = binding[0].modifiers.reduce((parts, part) => {
+            if (KeyboardManager.MODIFIER_CODES[part]?.includes(binding[0].key)) return parts
+            parts.unshift(KeyboardManager.getKeycodeDisplayString(part))
+            return parts
+        }, [KeyboardManager.getKeycodeDisplayString(binding[0].key)])
+        return stringParts.join(' + ')
+    }
+
+    /**
      * Get the median
      * @public
      * @param {array} numbers The array of numbers
@@ -301,8 +317,9 @@ export class Utils {
     static switchCSS (settingValue) {
         const styles = [
             { setting: 'compact', file: 'tah-compact' },
-            { setting: 'foundryVTT', file: 'tah-foundry-vtt' },
             { setting: 'dorakoUI', file: 'tah-dorako' },
+            { setting: 'foundryVTT', file: 'tah-foundry-vtt' },
+            { setting: 'highContrast', file: 'tah-high-contrast' },
             { setting: 'pathfinder', file: 'tah-pathfinder' }
         ]
 

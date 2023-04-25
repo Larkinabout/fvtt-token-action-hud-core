@@ -52,9 +52,17 @@
         "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
         "name": "Button Background Color"
       },
-      "buttonBorderColor": {
-        "hint": "Set the border color of the HUD buttons. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
-        "name": "Button Border Color"
+      "primaryColor": {
+        "hint": "Set the primary color of the HUD",
+        "name": "Primary Color"
+      },
+      "secondaryColor": {
+        "hint": "Set the secondary color of the HUD",
+        "name": "Secondary Color"
+      },
+      "tertiaryColor": {
+        "hint": "Set the tertiary color of the HUD",
+        "name": "Tertiary Color"
       },
       "clickOpenCategory": {
         "hint": "Open categories by clicking instead of hovering",
@@ -121,6 +129,10 @@
       "style": {
         "hint": "Ustaw styl HUD",
         "name": "Styl"
+      },
+      "toggleHud": {
+        "disabled": "HUD disabled. To enable, press {binding}",
+        "enabled": "HUD enabled. To disable, press {binding}"
       }
     },
     "tagDialog": {

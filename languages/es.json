@@ -52,9 +52,17 @@
         "hint": "Establecer el color de fondo de los botones del HUD. Esta configuración se ignora con el Dorako UI",
         "name": "Color de Fondo del Botón"
       },
-      "buttonBorderColor": {
-        "hint": "Establecer el color del borde de los botones del HUD. Esta configuración se ignora con el Dorako UI",
-        "name": "Color del Borde del Botón"
+      "primaryColor": {
+        "hint": "Set the primary color of the HUD",
+        "name": "Primary Color"
+      },
+      "secondaryColor": {
+        "hint": "Set the secondary color of the HUD",
+        "name": "Secondary Color"
+      },
+      "tertiaryColor": {
+        "hint": "Set the tertiary color of the HUD",
+        "name": "Tertiary Color"
       },
       "clickOpenCategory": {
         "hint": "Si se activa, las categorías se abrirán al hacer clic en lugar de pasar por encima.",
@@ -121,6 +129,10 @@
       "style": {
         "hint": "Establecer el estilo de la HUD",
         "name": "Estilo"
+      },
+      "toggleHud": {
+        "disabled": "HUD disabled. To enable, press {binding}",
+        "enabled": "HUD enabled. To disable, press {binding}"
       }
     },
     "tagDialog": {
