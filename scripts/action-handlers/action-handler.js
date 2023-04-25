@@ -254,7 +254,7 @@ export class ActionHandler {
             ? game.tokenActionHud.defaults?.layout
             : game.tokenActionHud.defaults?.categories
         if (!defaultLayout) return {}
-        this.defaultLayout = await Utils.getSubcategories(defaultLayout)
+        this.defaultLayout = await Utils.getNestedGroups(defaultLayout)
     }
 
     /**

@@ -448,6 +448,34 @@ export class Utils {
     }
 
     /**
+     * Get nested groups by criteria
+     * @public
+     * @param {object} groups  The groups
+     * @param {object} data    The search data
+     * @returns {object}
+     */
+    static getNestedGroups (groups, data = {}) {
+        let order = 0
+        if (!groups) return
+        const groupId = data?.id
+        const groupType = data?.type
+        groups = (Array.isArray(groups)) ? groups : Object.values(groups)
+        const foundGroups = {}
+        for (const group of groups) {
+            if ((!groupId || group.id === groupId) && (!groupType || group.type === groupType)) {
+                order++
+                const level = group.nestId.split('_').length
+                foundGroups[group.nestId] = { ...group, order, level }
+            }
+            if (group.groups?.length > 0) {
+                const groups = this.getNestedGroups(group.groups, data)
+                if (groups) Object.assign(foundGroups, groups)
+            }
+        }
+        return (Object.keys(foundGroups).length > 0) ? foundGroups : null
+    }
+
+    /**
      * Get group by nest id
      * @public
      * @param {object} groups The groups

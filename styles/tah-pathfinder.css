@@ -279,14 +279,13 @@
     width: max-content;
 }
 
+.tah-tab-groups > .tah-tab-group {
+    padding-top: 3px;
+}
+
 .tah-tab-group,
 .tah-group {
     position: relative;
-}
-
-.tah-group,
-.tah-tab-groups > .tah-tab-group {
-    padding-top: 3px;
 }
 
 .tah-list-groups {
@@ -358,6 +357,13 @@
     > .tah-list-groups
     > .tah-group:not([data-show-title="false"]) {
     padding-left: 10px;
+}
+
+.tah-group[data-has-actions="true"]
+    > .tah-groups
+    > .tah-list-groups
+    > .tah-group[data-show-title="false"] {
+    padding-top: 1px;
 }
 
 .tah-group[data-show-title="false"] > .tah-subtitle {
