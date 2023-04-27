@@ -74,7 +74,7 @@ export class ActionHandler {
             this._buildMacroActions()
         ])
         await this.buildFurtherActions()
-        await this.setHasActions()
+        await this._setHasActions()
         await this._sortAvailableActions()
         await this._setCharacterLimit()
         await this.saveGroups(options)
@@ -219,9 +219,9 @@ export class ActionHandler {
     }
 
     /**
-     * Set hasActions
+     * Set property to indicate whether a group has actions within it
      */
-    async setHasActions () {
+    async _setHasActions () {
         for (const group of Object.values(this.groups)) {
             if (group.actions.some(action => action.selected)) {
                 group.hasActions = true
@@ -264,7 +264,11 @@ export class ActionHandler {
     async _getSavedActorGroups () {
         if (!this.actor) return new Map()
         Logger.debug('Retrieving groups from actor...', { actor: this.actor })
-        this.actorGroups = Utils.deepClone(this.actor.getFlag(MODULE.ID, 'groups') ?? [])
+        const actorGroups = Utils.deepClone(this.actor.getFlag(MODULE.ID, 'groups') ?? [])
+        for (const group of Object.entries(actorGroups)) {
+            group[1].nestId = group[0]
+        }
+        this.actorGroups = actorGroups
         Logger.debug('Groups from actor retrieved', { actorGroups: this.actorGroups, actor: this.actor })
     }
 
@@ -275,7 +279,11 @@ export class ActionHandler {
     async _getSavedUserGroups () {
         const user = game.user
         Logger.debug('Retrieving groups from user...', { user })
-        this.userGroups = Utils.getUserFlag('groups') ?? this.defaultLayout
+        const userGroups = Utils.getUserFlag('groups') ?? this.defaultLayout
+        for (const group of Object.entries(userGroups)) {
+            group[1].nestId = group[0]
+        }
+        this.userGroups = userGroups
         Logger.debug('Groups from user retrieved', { userGroups: this.userGroups, user })
     }
 
@@ -328,7 +336,8 @@ export class ActionHandler {
                 (!data.nestId || group.nestId.startsWith(data.nestId)) &&
                 (!data.type || group.type === data.type) &&
                 (!data.level || group.level === data.level)
-            ).sort((a, b) => {
+            )
+            .sort((a, b) => {
                 if (a.level === b.level) {
                     return a.order - b.order
                 } else {
@@ -350,7 +359,8 @@ export class ActionHandler {
                 (!data.nestId || group.nestId.startsWith(data.nestId)) &&
                 (!data.type || group.type === data.type) &&
                 (!data.level || group.level === data.level)
-            ).sort((a, b) => {
+            )
+            .sort((a, b) => {
                 if (a.level === b.level) {
                     return a.order - b.order
                 } else {
@@ -498,9 +508,7 @@ export class ActionHandler {
         Logger.debug('Saving actor groups...')
         const actorGroups = {}
         for (const group of Object.values(this.groups)) {
-            const groupClone = Utils.deepClone(group)
-            if (Object.hasOwn(groupClone, 'groups')) delete groupClone.groups
-            actorGroups[groupClone.nestId] = groupClone
+            actorGroups[group.nestId] = this._getReducedGroupData(group, true)
         }
         await Utils.unsetActorFlag('groups')
         await Utils.setActorFlag('groups', actorGroups)
@@ -517,15 +525,40 @@ export class ActionHandler {
         const userGroups = {}
         for (const group of Object.values(this.groups)) {
             if (group.type !== 'system-derived') {
-                const groupClone = Utils.deepClone(group)
-                if (Object.hasOwn(groupClone, 'actions')) delete groupClone.actions
-                if (Object.hasOwn(groupClone, 'groups')) delete groupClone.groups
-                userGroups[groupClone.nestId] = groupClone
+                userGroups[group.nestId] = this._getReducedGroupData(group, false)
             }
         }
         await Utils.unsetUserFlag('groups')
         await Utils.setUserFlag('groups', userGroups)
         Logger.debug('User groups saved', { userGroups })
+    }
+
+    /**
+     * Get reduced groups data for saving to flags
+     * @param {object} groupData    The group data
+     * @param {boolean} keepActions Whether to keep action data
+     * @returns                     The reduced group data
+     */
+    _getReducedGroupData (groupData, keepActions = false) {
+        const data = {
+            id: groupData.id,
+            name: groupData.name,
+            listName: groupData.listName,
+            isSelected: groupData.isSelected,
+            level: groupData.level,
+            order: groupData.order,
+            settings: groupData.settings,
+            type: groupData.type
+        }
+        if (keepActions) {
+            data.actions = groupData.actions.map(action => {
+                return {
+                    id: action.id,
+                    userSelected: action.userSelected
+                }
+            })
+        }
+        return data
     }
 
     /**

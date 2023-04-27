@@ -857,7 +857,7 @@ export class TokenActionHud extends Application {
             })
         }
 
-        const tokens = game.canvas.tokens.objects.children.filter(token => token.actor.getFlag(MODULE.ID, 'groups'))
+        const tokens = game.canvas.tokens.objects.children.filter(token => token?.actor?.getFlag(MODULE.ID, 'groups'))
         if (tokens) {
             tokens.forEach(token => {
                 Logger.debug(`Resetting flags for actor [${token.actor.id}]`, { actor: token.actor })
