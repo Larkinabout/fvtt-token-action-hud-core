@@ -344,9 +344,38 @@ export class TokenActionHud extends Application {
             )
         }
 
-        // When a subcategory title is clicked or right-clicked...
-        elements.subtitles.on('click contextmenu', (event) => {
+        const collapseExpandGroup = (event) => {
+            const target = (event.target.classList.contains('tah-subtitle-text'))
+                ? event.target.parentElement
+                : event.target
+            const nestId = target?.parentElement?.dataset?.nestId
+            const tabGroup = target.closest('.tah-tab-group.hover')
+            const groupsElement = target.parentElement.querySelector('.tah-groups')
+            const collapseIcon = target.querySelector('.tah-collapse-icon')
+            const expandIcon = target.querySelector('.tah-expand-icon')
+            if (groupsElement?.classList?.contains('tah-hidden')) {
+                groupsElement.classList.remove('tah-hidden')
+                collapseIcon.classList.remove('tah-hidden')
+                expandIcon.classList.add('tah-hidden')
+                this.actionHandler.saveGroupSettings({ nestId, settings: { collapse: false } })
+                this.categoryResizer.resizeCategory(this.actionHandler, tabGroup, this.autoDirection, this.isGrid)
+            } else {
+                groupsElement.classList.add('tah-hidden')
+                collapseIcon.classList.add('tah-hidden')
+                expandIcon.classList.remove('tah-hidden')
+                this.actionHandler.saveGroupSettings({ nestId, settings: { collapse: true } })
+            }
+        }
+
+        // When a subcategory title is right-clicked...
+        elements.subtitles.on('contextmenu', (event) => {
             if (this.isUnlocked) openActionDialog(event)
+        })
+
+        // When a subcategory title is clicked...
+        elements.subtitles.on('click', (event) => {
+            if (event.target.classList.contains('tah-button-text')) return
+            collapseExpandGroup(event)
         })
 
         // When an action is clicked or right-clicked...

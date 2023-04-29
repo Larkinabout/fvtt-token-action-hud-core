@@ -162,12 +162,13 @@ export class TagDialogHelper {
 
             // Get advanced category options
             const characterCount = formData?.characterCount
+            const collapse = formData?.collapse
             const grid = formData?.grid
             const image = formData?.image
             const showTitle = formData?.showTitle
             const sort = formData?.sort
             const style = formData?.style
-            groupData.settings = { characterCount, grid, image, showTitle, sort, style }
+            groupData.settings = { characterCount, collapse, grid, image, showTitle, sort, style }
 
             // Save subcategories to user action list
             await actionHandler.updateGroups(selectedGroups, groupData)

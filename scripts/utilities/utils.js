@@ -365,7 +365,8 @@ export class Utils {
             gte: function () { return reduceOp(arguments, (a, b) => a >= b) },
             and: function () { return reduceOp(arguments, (a, b) => a && b) },
             or: function () { return reduceOp(arguments, (a, b) => a || b) },
-            tf: function () { return reduceOp(arguments, (a) => a) }
+            true: function () { return reduceOp(arguments, (a) => a) },
+            false: function () { return reduceOp(arguments, (a) => !a) }
         })
 
         // Add asterisk to toggleable actions

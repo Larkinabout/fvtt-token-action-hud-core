@@ -18,14 +18,16 @@
     /* BUTTON */
     --tah-button-background-color-editable: #000000b3;
     --tah-button-border-color: none;
-    --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606, 0 0 5px #000000ff;
+    --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606,
+        0 0 5px #000000ff;
     --tah-button-color: var(--tah-color-primary);
     --tah-button-color-disabled: var(--tah-color-secondary);
     --tah-button-height: 32px;
     --tah-button-min-width: 32px;
 
     /* BUTTON HOVER */
-    --tah-button-hover-box-shadow: 0 2px 0 -1px var(--tah-color-tertiary), 0 0 0 1px red, 0 0 10px var(--tah-color-tertiary);
+    --tah-button-hover-box-shadow: 0 2px 0 -1px var(--tah-color-tertiary),
+        0 0 0 1px red, 0 0 10px var(--tah-color-tertiary);
     --tah-button-hover-color: #fff;
 
     /* BUTTON ACTIVE */
@@ -216,7 +218,9 @@
     padding: 0;
 }
 
-.tah-group-button:hover:not(.disable-edit) .tah-button-content > :is(.fa, .fas) {
+.tah-group-button:hover:not(.disable-edit)
+    .tah-button-content
+    > :is(.fa, .fas) {
     visibility: visible;
 }
 
@@ -270,12 +274,8 @@
 }
 
 .tah-tab-groups {
-    padding: 3px 0 3px 0;
+    padding: 5px 0 3px 0;
     width: max-content;
-}
-
-.tah-tab-groups > .tah-tab-group {
-    padding-top: 3px;
 }
 
 .tah-tab-group,
@@ -361,6 +361,14 @@
     padding-top: 1px;
 }
 
+.tah-tab-group[data-has-actions="true"] > .tah-groups,
+.tah-tab-group
+    > .tah-groups
+    > .tah-list-groups
+    > .tah-group[data-show-title="false"] {
+    padding-top: 3px;
+}
+
 .tah-group[data-show-title="false"] > .tah-subtitle {
     color: var(--tah-icon-color-disabled);
 }
@@ -371,6 +379,7 @@
 
 .tah-subtitle {
     align-items: center;
+    color: var(--tah-color-primary);
     display: inline-flex;
     flex-wrap: wrap;
     font-size: var(--tah-font-size-10);
@@ -380,16 +389,16 @@
     text-transform: uppercase;
 }
 
-.tah-subtitle-text {
-    color: var(--tah-color-primary);
-}
-
-.tah-subtitle:hover:not(.disable-edit) {
+.tah-subtitle:hover {
     color: var(--tah-color-primary-hover);
     cursor: pointer;
 }
 
-.tah-subtitle > :is(.fa, .fas) {
+.tah-subtitle-text {
+    color: var(--tah-color-primary);
+}
+
+.tah-subtitle > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {
     bottom: 1px;
     font-size: 8px;
     pointer-events: none;
@@ -397,7 +406,12 @@
     visibility: hidden;
 }
 
-.tah-subtitle:hover:not(.disable-edit) > :is(.fa, .fas) {
+.tah-subtitle:hover
+    > :is(
+        .tah-collapse-icon:not(.tah-hidden),
+        .tah-expand-icon:not(.tah-hidden)
+    ),
+.tah-subtitle:hover:not(.disable-edit) > .tah-edit-icon {
     visibility: visible;
 }
 

@@ -148,6 +148,10 @@
           "label": "Characters per Word",
           "hint": "Limit the characters per word of the actions"
         },
+        "collapse": {
+          "label": "Collapse Group",
+          "hint": "Collapse this group"
+        },
         "customWidth": {
           "label": "Custom Width",
           "units": "(Pixels)",

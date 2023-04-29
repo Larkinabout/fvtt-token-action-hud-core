@@ -6,43 +6,36 @@
     --tah-color-secondary: #ffff00;
     --tah-color-secondary-active: var(--tah-button-background-color-editable);
     --tah-color-secondary-hover: var(--tah-button-background-color-editable);
-    --tah-color-tertiary: #0C7BDC;
+    --tah-color-tertiary: #0c7bdc;
     --tah-color-tertiary-active: var(--tah-button-background-color-editable);
     --tah-color-tertiary-hover: var(--tah-button-background-color-editable);
     --tah-gap: 7px;
     --tah-icon-color-disabled: var(--tah-color-primary);
     --tah-text-shadow: none;
-
-    /* BUTTON */
     --tah-button-background-color-editable: #000000;
     --tah-button-box-shadow: 0 0 0 2px var(--tah-color-primary);
     --tah-button-color: var(--tah-color-primary);
     --tah-button-color-disabled: var(--tah-color-primary);
     --tah-button-height: 32px;
     --tah-button-min-width: 32px;
-
-    /* BUTTON HOVER */
     --tah-button-hover-background-color: var(--tah-color-primary);
-    --tah-button-hover-box-shadow:  0 0 0 2px var(--tah-button-background-color-editable);
+    --tah-button-hover-box-shadow: 0 0 0 2px
+        var(--tah-button-background-color-editable);
     --tah-button-hover-color: var(--tah-button-background-color-editable);
-
-    /* BUTTON ACTIVE */
     --tah-button-active-background-color: var(--tah-color-tertiary);
-    --tah-button-active-border-color: var(--tah-button-background-color-editable);
+    --tah-button-active-border-color: var(
+        --tah-button-background-color-editable
+    );
     --tah-button-active-color: var(--tah-button-background-color-editable);
-    --tah-button-active-box-shadow: 0 0 0 2px var(--tah-button-background-color-editable);
-
-    /* BUTTON TOGGLE */
-    --tah-button-toggle-background-color: var(--tah-button-background-color-editable);
-
-    /* BUTTON TOGGLE HOVER */
+    --tah-button-active-box-shadow: 0 0 0 2px
+        var(--tah-button-background-color-editable);
+    --tah-button-toggle-background-color: var(
+        --tah-button-background-color-editable
+    );
     --tah-button-toggle-hover-background-color: var(--tah-color-primary);
-    --tah-button-toggle-hover-box-shadow: 0 0 0 2px var(--tah-button-background-color-editable);
+    --tah-button-toggle-hover-box-shadow: 0 0 0 2px
+        var(--tah-button-background-color-editable);
 }
-
-/*
- * HUD
- */
 
 #token-action-hud {
     align-items: center;
@@ -68,8 +61,8 @@
     color: var(--tah-color-primary);
     font-size: var(--font-size-16);
     letter-spacing: 0.05em;
-    margin: 0;
-    padding: 1px 2px 1px 2px;
+    margin: 0px;
+    padding: 1px 2px;
     pointer-events: none;
     position: absolute;
     text-align: left;
@@ -80,10 +73,6 @@
 .tah-hidden {
     display: none !important;
 }
-
-/*
- * BUTTONS
- */
 
 #token-action-hud:hover #tah-collapse-hud,
 #token-action-hud:hover > #tah-buttons {
@@ -119,7 +108,7 @@
 }
 
 #tah-collapse-hud {
-    left: -7px;
+    left: -6px;
     position: relative;
 }
 
@@ -156,13 +145,13 @@
     color: var(--tah-button-color);
     font-weight: bold;
     height: var(--tah-button-height);
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
     position: relative;
     text-align: center;
     text-decoration: none;
     text-shadow: var(--tah-text-shadow);
-    transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out 0s;
     white-space: nowrap;
     z-index: 1;
 }
@@ -180,8 +169,6 @@
     min-width: var(--tah-button-min-width);
 }
 
-
-
 #tah-collapse-hud:hover,
 #tah-expand-hud:hover,
 #tah-buttons button:hover,
@@ -195,7 +182,7 @@
 
 #tah-collapse-hud:hover > :is(.fa, .fas),
 #tah-expand-hud:hover > :is(.fa, .fas),
-#tah-buttons button:hover >:is(.fa, .fas) {
+#tah-buttons button:hover > :is(.fa, .fas) {
     color: var(--tah-color-hover-primary);
     text-shadow: var(--tah-text-shadow);
 }
@@ -204,10 +191,10 @@
 .tah-action.button.active.disabled:hover {
     background: var(--tah-button-active-background-color);
     box-shadow: var(--tah-button-active-box-shadow);
-    color: var(--tah-button-active-color)
+    color: var(--tah-button-active-color);
 }
 
-.tah-action-button.active.activeText > .tah-action-button-content:after {
+.tah-action-button.active.activeText > .tah-action-button-content::after {
     content: "*";
 }
 
@@ -229,15 +216,17 @@
 }
 
 .tah-button-content {
-    padding: 0;
+    padding: 0px;
 }
 
-.tah-group-button:hover:not(.disable-edit) .tah-button-content > :is(.fa, .fas) {
+.tah-group-button:hover:not(.disable-edit)
+    .tah-button-content
+    > :is(.fa, .fas) {
     visibility: visible;
 }
 
 .tah-button-text {
-    padding: 0 10px 0 10px;
+    padding: 0px 10px;
 }
 
 .tah-button-content > :is(.fa, .fas) {
@@ -253,7 +242,7 @@
     display: flex;
     gap: var(--tah-gap);
     overflow: hidden;
-    padding: 0 10px 0 10px;
+    padding: 0px 10px;
     width: 100%;
 }
 
@@ -275,10 +264,6 @@
     font-size: var(--font-size-16);
 }
 
-/*
- * GROUPS
- */
-
 #tah-groups,
 .tah-tab-groups {
     display: flex;
@@ -287,22 +272,18 @@
 }
 
 .tah-tab-groups {
-    padding: 3px 0 3px 0;
+    padding: 7px 0 5px 0;
     width: max-content;
 }
 
-.tah-tab-group, .tah-group {
+.tah-tab-group,
+.tah-group {
     position: relative;
-}
-
-.tah-group,
-.tah-tab-groups > .tah-tab-group {
-    padding-top: 3px;
 }
 
 .tah-list-groups {
     left: -10px;
-    padding: 0 10px 0 10px;
+    padding: 0px 10px;
     position: relative;
 }
 
@@ -321,7 +302,7 @@
 .tah-tab-group > .tah-groups {
     display: none;
     left: -10px;
-    padding: 0 10px 0 10px;
+    padding: 0px 10px;
     position: absolute;
 }
 
@@ -371,23 +352,42 @@
     padding-left: 10px;
 }
 
+.tah-group[data-has-actions="true"]
+    > .tah-groups
+    > .tah-list-groups
+    > .tah-group[data-show-title="false"] {
+    padding-top: 1px;
+}
+
+.tah-tab-group[data-has-actions="true"] > .tah-groups,
+.tah-tab-group
+    > .tah-groups
+    > .tah-list-groups
+    > .tah-group[data-show-title="false"] {
+    padding-top: 5px;
+}
+
 .tah-group[data-show-title="false"] > .tah-subtitle {
     color: var(--tah-icon-color-disabled);
 }
 
-/*
- * SUBTITLES
- */
-
 .tah-subtitle {
     align-items: center;
+    color: var(--tah-color-primary);
     display: inline-flex;
     flex-wrap: wrap;
     font-size: var(--font-size-12);
     gap: var(--tah-gap);
     letter-spacing: 0.1em;
-    margin: 3px 0 3px 0;
+    margin: 3px 0px;
     text-shadow: var(--tah-text-shadow);
+}
+
+.tah-subtitle:hover {
+    background-color: var(--tah-button-background-color-editable);
+    border-radius: var(--tah-border-radius);
+    color: var(--tah-color-primary-hover);
+    cursor: pointer;
 }
 
 .tah-subtitle-text {
@@ -401,14 +401,7 @@
     background: var(--tah-button-background-color-editable);
 }
 
-.tah-subtitle:hover:not(.disable-edit) {
-    background-color: var(--tah-button-background-color-editable);
-    border-radius: var(--tah-border-radius);
-    color: var(--tah-color-primary-hover);
-    cursor: pointer;
-}
-
-.tah-subtitle > :is(.fa, .fas) {
+.tah-subtitle > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {
     border-radius: var(--tah-border-radius);
     bottom: 1px;
     font-size: 10px;
@@ -417,13 +410,14 @@
     visibility: hidden;
 }
 
-.tah-subtitle:hover:not(.disable-edit) > :is(.fa, .fas) {
+.tah-subtitle:hover
+    > :is(
+        .tah-collapse-icon:not(.tah-hidden),
+        .tah-expand-icon:not(.tah-hidden)
+    ),
+.tah-subtitle:hover:not(.disable-edit) > .tah-edit-icon {
     visibility: visible;
 }
-
-/*
- * ACTIONS
- */
 
 .tah-tab-group > .tah-actions {
     margin-top: 5px;
@@ -434,15 +428,11 @@
     display: flex;
     flex-flow: row wrap;
     gap: var(--tah-gap);
-    grid-column: 2;
+    grid-column: 2 / auto;
     margin-bottom: 2px;
     margin-top: 2px;
     width: 100%;
 }
-
-/*
- * INFO TEXTS
- */
 
 .tah-info1,
 .tah-info2,
@@ -471,19 +461,30 @@
     color: var(--tah-color-tertiary-active);
 }
 
-.tah-action.active button :is(.tah-info1.tah-spotlight, .tah-info2.tah-spotlight, .tah-info3.tah-spotlight) {
+.tah-action.active
+    button
+    :is(
+        .tah-info1.tah-spotlight,
+        .tah-info2.tah-spotlight,
+        .tah-info3.tah-spotlight
+    ) {
     color: var(--tah-color-tertiary-active);
 }
 
-.tah-action-button:hover :is(.tah-info1.tah-spotlight, .tah-info2.tah-spotlight, .tah-info3.tah-spotlight) {
+.tah-action-button:hover
+    :is(
+        .tah-info1.tah-spotlight,
+        .tah-info2.tah-spotlight,
+        .tah-info3.tah-spotlight
+    ) {
     color: var(--tah-color-tertiary-hover);
 }
- 
+
 .tah-subtitle > :is(.tah-info1, .tah-info2, .tah-info3) {
     background: var(--tah-button-background-color-editable);
     border-radius: 5px;
     margin: 1px;
-    padding: 1px 3px 1px 3px;
+    padding: 1px 3px;
 }
 
 .tah-button-image-wrapper {

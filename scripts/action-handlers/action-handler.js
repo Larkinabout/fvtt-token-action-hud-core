@@ -381,6 +381,19 @@ export class ActionHandler {
     }
 
     /**
+     * Save group settings
+     * @param {object} groupData The group data
+     */
+    async saveGroupSettings (groupData) {
+        const group = this._getGroup(groupData)
+        group.settings = { ...group.settings, ...groupData.settings }
+        await Utils.setActorFlag(`groups.${group.nestId}.settings`, group.settings)
+        if (groupData.type !== 'system-derived') {
+            Utils.setUserFlag(`groups.${group.nestId}.settings`, group.settings)
+        }
+    }
+
+    /**
      * Create group
      * @private
      * @param {object} groupData The group data

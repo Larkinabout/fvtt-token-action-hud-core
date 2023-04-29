@@ -148,6 +148,10 @@
           "label": "单词字数",
           "hint": "限制动作的字数"
         },
+        "collapse": {
+          "label": "Collapse Group",
+          "hint": "Collapse this group"
+        },
         "customWidth": {
           "label": "自定义宽度",
           "units": "(Pixels)",

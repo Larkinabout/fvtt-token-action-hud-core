@@ -1,5 +1,5 @@
 {{~#if (ne isSelected false)~}}
-<div class="tah-group" data-nest-id="{{nestId}}" data-has-actions="{{~#if (tf hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
+<div class="tah-group" data-nest-id="{{nestId}}" data-has-actions="{{~#if (true hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
     <div class="tah-subtitle{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}">
         {{~#if img~}}
         <div class="tah-button-image" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>
@@ -16,24 +16,26 @@
         {{~#if info2.text~}}
         <div class="tah-info2{{~#if info2.class}} {{info2.class}}{{~/if~}}" title="{{~#if info2.title}}{{info2.title}}{{~else~}}{{info2.text}}{{~/if}}">{{info2.text}}</div>
         {{~/if~}}
-        <i class="fa fa-pen-to-square" aria-hidden="true"></i>
+        <i class="tah-collapse-icon{{~#if (true settings.collapse)}} tah-hidden{{~/if}} fa fa-chevron-down"></i>
+        <i class="tah-expand-icon{{~#if (true settings.collapse)}}{{else}} tah-hidden{{~/if}} fa fa-chevron-up"></i>
+        <i class="tah-edit-icon fa fa-pen-to-square" aria-hidden="true"></i>
     </div>
-    <div class="tah-groups">
-        {{~#if (tf hasActions)~}}
+    <div class="tah-groups{{~#if (true settings.collapse)}} tah-hidden{{~/if~}}">
+        {{~#if (true hasActions)~}}
         <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
             {{#each actions}}
                 {{>"modules/token-action-hud-core/templates/action.hbs"}}
             {{/each}}
         </div>
         {{~/if~}}
-        {{~#if (tf groups.lists.length)~}}
+        {{~#if (true groups.lists.length)~}}
         <div class="tah-list-groups">
             {{#each groups.lists}}
                 {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
             {{/each}}
         </div>
         {{~/if~}}
-        {{~#if (tf groups.tabs.length)~}}
+        {{~#if (true groups.tabs.length)~}}
         <div class="tah-tab-groups">
             {{#each groups.tabs}}
                 {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}

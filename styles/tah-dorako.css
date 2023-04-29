@@ -13,34 +13,19 @@
     --header-bg: var(--primary);
     --body-padding: 0em 0em 0em 0em;
     --edge-margin: 5px;
-
-    /* BUTTON */
     --tah-button-border-color: none;
     --tah-button-color: var(--tah-color-primary);
     --tah-button-color-disabled: #dddddd80;
     --tah-button-height: 30px;
     --tah-button-min-width: 30px;
-
-    /* BUTTON HOVER */
     --tah-button-hover-color: var(--tah-color-primary-hover);
-
-    --dorako-bg-glass: rgba(120, 120, 120, 0.2);
     --dorako-bg-glass: rgba(120, 120, 120, 0.5);
     --dorako-sheet-light: rgba(20, 20, 20, 0.6);
     --dorako-orange: rgba(255, 100, 0, 0.5);
-    /* --dorako-bg-current: var(--dorako-bg-glass); */
     --dorako-bg-current: var(--dorako-sheet-light);
-    /* --dorako-bg-current: hsl(0,0%, 10%); */
-
     --blind-bg: #a57aa5;
     --whisper-bg: #e3e3ff;
-
     --dorako-vibrancy: none;
-    /* 
-    --dorako-vibrancy: brightness(2.0) contrast(1.2) blur(5px);
-    --dorako-vibrancy-active: brightness(1.5) contrast(1.0) blur(15px);
-    --dorako-vibrancy-inactive: brightness(0.5) contrast(1.0) blur(15px);
-    */
     --gold-and-glow: 0 0 0 1px var(--tertiary), 0 0 0 2px #9f725b,
         inset 0 0 3px rgba(255, 255, 255, 0.5);
     --glassy: 0px 0px 2px rgba(255, 255, 255, 0.4) inset,
@@ -48,15 +33,12 @@
         1px -1px 1px rgba(0, 0, 0, 1), -1px -1px 1px rgba(0, 0, 0, 1),
         -1px 1px 1px rgba(0, 0, 0, 1), 0px 0px 3px rgba(0, 0, 0, 1),
         0px 0px 4px rgba(0, 0, 0, 0.5);
-
     --primary-hue: 0;
     --primary-sat: 100%;
     --primary-lvl: 18%;
-
     --secondary-hue: 234;
     --secondary-sat: 64%;
     --secondary-lvl: 25%;
-
     --paizo-red-dark: hsl(
         var(--primary-hue),
         var(--primary-sat),
@@ -72,7 +54,6 @@
         var(--primary-sat),
         calc(var(--primary-lvl) + 10%)
     );
-
     --paizo-blue-dark: hsl(
         var(--secondary-hue),
         var(--secondary-sat),
@@ -88,17 +69,11 @@
         var(--secondary-sat),
         calc(var(--secondary-lvl) + 10%)
     );
-
     --color-shadow-highlight: var(--paizo-red);
     --color-shadow-primary: var(--paizo-blue);
-
     --dorako-text-shadow: 0px 0px 3px black;
     --dorako-box-shadow: 0px 0px 3px black;
 }
-
-/*
- * HUD
- */
 
 #token-action-hud {
     align-items: center;
@@ -121,8 +96,8 @@
 #tah-character-name {
     color: var(--tah-color-primary);
     font-size: var(--font-size-16);
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
     pointer-events: none;
     position: absolute;
     text-align: left;
@@ -133,10 +108,6 @@
 .tah-hidden {
     display: none !important;
 }
-
-/*
- * BUTTONS
- */
 
 #token-action-hud:hover #tah-collapse-hud,
 #token-action-hud:hover > #tah-buttons {
@@ -164,10 +135,10 @@
 #tah-collapse-hud,
 #tah-buttons button {
     background: transparent;
-    border: 0;
+    border: 0px;
     line-height: unset;
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
 }
 
 #tah-collapse-hud:hover,
@@ -216,12 +187,12 @@
     color: var(--tah-button-color);
     display: flex;
     height: var(--tah-button-height);
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
     position: relative;
     text-align: center;
     text-shadow: var(--dorako-text-shadow);
-    transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out 0s;
     white-space: nowrap;
     z-index: 1;
 }
@@ -240,8 +211,7 @@
     box-shadow: var(--glassy);
     color: var(--tah-button-hover-color);
     font-weight: inherit;
-    transition: backdrop-filter 0.15s ease-out;
-    transition: background-color 0.15s ease-out;
+    transition: background-color 0.15s ease-out 0s;
 }
 
 .tah-action-button.active,
@@ -249,7 +219,7 @@
     background-color: var(--paizo-blue) !important;
 }
 
-.tah-action-button.active.activeText > .tah-action-button-content:after {
+.tah-action-button.active.activeText > .tah-action-button-content::after {
     content: "*";
 }
 
@@ -274,20 +244,21 @@
     background-color: var(--paizo-blue);
     border: none;
     box-shadow: var(--glassy);
-    transition: backdrop-filter 0.15s ease-out;
-    transition: background-color 0.15s ease-out;
+    transition: background-color 0.15s ease-out 0s;
 }
 
 .tah-button-content {
-    padding: 0;
+    padding: 0px;
 }
 
-.tah-group-button:hover:not(.disable-edit) .tah-button-content > :is(.fa, .fas) {
+.tah-group-button:hover:not(.disable-edit)
+    .tah-button-content
+    > :is(.fa, .fas) {
     visibility: visible;
 }
 
 .tah-button-text {
-    padding: 0 10px 0 10px;
+    padding: 0px 10px;
 }
 
 .tah-button-content > :is(.fa, .fas) {
@@ -303,7 +274,7 @@
     display: flex;
     gap: var(--tah-gap);
     overflow: hidden;
-    padding: 0 10px 0 10px;
+    padding: 0px 10px;
     width: 100%;
 }
 
@@ -323,24 +294,16 @@
     font-size: var(--font-size-16);
 }
 
-/*
- * GROUPS
- */
-
- #tah-groups,
- .tah-tab-groups {
-     display: flex;
-     gap: var(--tah-gap);
-     position: relative;
- }
-
+#tah-groups,
 .tah-tab-groups {
-    padding: 3px 0 3px 0;
-    width: max-content;
+    display: flex;
+    gap: var(--tah-gap);
+    position: relative;
 }
 
-.tah-tab-groups > .tah-tab-group {
-    padding-top: 3px;
+.tah-tab-groups {
+    padding: 5px 0 3px 0;
+    width: max-content;
 }
 
 .tah-tab-group,
@@ -350,7 +313,7 @@
 
 .tah-list-groups {
     left: -10px;
-    padding: 0 10px 0 10px;
+    padding: 0px 10px;
     position: relative;
 }
 
@@ -369,7 +332,7 @@
 .tah-tab-group > .tah-groups {
     display: none;
     left: -10px;
-    padding: 0 10px 0 10px;
+    padding: 0px 10px;
     position: absolute;
 }
 
@@ -426,16 +389,21 @@
     padding-top: 1px;
 }
 
+.tah-tab-group[data-has-actions="true"] > .tah-groups,
+.tah-tab-group
+    > .tah-groups
+    > .tah-list-groups
+    > .tah-group[data-show-title="false"] {
+    padding-top: 3px;
+}
+
 .tah-group[data-show-title="false"] > .tah-subtitle {
     color: var(--tah-icon-color-disabled);
 }
 
-/*
- * SUBTITLES
- */
-
 .tah-subtitle {
     align-items: center;
+    color: var(--tah-color-primary);
     display: inline-flex;
     flex-wrap: wrap;
     gap: var(--tah-gap);
@@ -443,16 +411,16 @@
     text-shadow: var(--tah-text-shadow);
 }
 
-.tah-subtitle-text {
-    color: var(--tah-color-primary);
-}
-
-.tah-subtitle:hover:not(.disable-edit) {
+.tah-subtitle:hover {
     color: var(--tah-color-primary-hover);
     cursor: pointer;
 }
 
-.tah-subtitle > :is(.fa, .fas) {
+.tah-subtitle-text {
+    color: var(--tah-color-primary);
+}
+
+.tah-subtitle > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {
     bottom: 1px;
     font-size: 8px;
     pointer-events: none;
@@ -460,13 +428,14 @@
     visibility: hidden;
 }
 
-.tah-subtitle:hover:not(.disable-edit) > :is(.fa, .fas) {
+.tah-subtitle:hover
+    > :is(
+        .tah-collapse-icon:not(.tah-hidden),
+        .tah-expand-icon:not(.tah-hidden)
+    ),
+.tah-subtitle:hover:not(.disable-edit) > .tah-edit-icon {
     visibility: visible;
 }
-
-/*
- * ACTIONS
- */
 
 .tah-tab-group > .tah-actions {
     margin-top: 5px;
@@ -477,43 +446,37 @@
     display: flex;
     flex-flow: row wrap;
     gap: var(--tah-gap);
-    grid-column: 2;
+    grid-column: 2 / auto;
     margin-bottom: 2px;
     margin-top: 2px;
     width: 100%;
 }
 
-/*
- * INFO TEXTS
- */
+.tah-info1,
+.tah-info2,
+.tah-info3 {
+    color: var(--tah-color-secondary);
+    font-size: xx-small;
+}
 
- .tah-info1,
- .tah-info2,
- .tah-info3 {
-     color: var(--tah-color-secondary);
-     font-size: xx-small;
- }
- 
- .tah-info1.tah-spotlight,
- .tah-info2.tah-spotlight,
- .tah-info3.tah-spotlight {
-     color: var(--tah-color-tertiary);
- }
- 
- .tah-subtitle > :is(.tah-info1, .tah-info2, .tah-info3) {
-     background: var(--tah-button-background-color);
-     border-radius: 5px;
-     margin: 1px;
-     padding: 1px 3px 1px 3px;
- }
+.tah-info1.tah-spotlight,
+.tah-info2.tah-spotlight,
+.tah-info3.tah-spotlight {
+    color: var(--tah-color-tertiary);
+}
 
+.tah-subtitle > :is(.tah-info1, .tah-info2, .tah-info3) {
+    background: var(--tah-button-background-color);
+    border-radius: 5px;
+    margin: 1px;
+    padding: 1px 3px;
+}
 
 .tah-button-image {
     border-radius: 5px;
     height: calc(var(--tah-button-height) - 2px);
     min-width: var(--tah-button-min-width);
     width: var(--tah-button-min-width);
-    
 }
 
 .tah-icon > :is(.fa, .fas) {
@@ -526,7 +489,7 @@
 }
 
 .tah-subtitle > .tah-icon > :is(.fa, .fas) {
-    text-shadow: 0 0 1px rgb(255, 255, 255), 1px 1px 1px rgba(52, 52, 52, 1),
-        1px 1px 1px rgba(52, 52, 52, 1), 1px 1px 1px rgba(52, 52, 52, 1),
-        1px 1px 1px rgba(52, 52, 52, 1);
+    text-shadow: rgb(255, 255, 255) 0px 0px 1px, rgb(52, 52, 52) 1px 1px 1px,
+        rgb(52, 52, 52) 1px 1px 1px, rgb(52, 52, 52) 1px 1px 1px,
+        rgb(52, 52, 52) 1px 1px 1px;
 }

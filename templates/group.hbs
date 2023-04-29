@@ -11,14 +11,14 @@
         </span>
     </button>
     <div class="tah-groups expand-down">
-        {{~#if (tf groups.lists.length)~}}
+        {{~#if (true groups.lists.length)~}}
         <div class="tah-list-groups">
             {{#each groups.lists}}
             {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
             {{/each}}
         </div>
         {{~/if~}}
-        {{~#if (tf groups.tabs.length)~}}
+        {{~#if (true groups.tabs.length)~}}
         <div class="tah-tab-groups">
             {{#each groups.tabs}}
             {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}

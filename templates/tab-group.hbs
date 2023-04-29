@@ -1,5 +1,5 @@
 {{~#if (ne isSelected false)~}}
-<div class="tah-tab-group" id="tah-group-{{nestId}}" data-nest-id="{{nestId}}" data-has-actions="{{~#if (tf hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
+<div class="tah-tab-group" id="tah-group-{{nestId}}" data-nest-id="{{nestId}}" data-has-actions="{{~#if (true hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
     <button class="tah-group-button" value="{{id}}">
         {{~#if settings.image~}}<div class="tah-button-image" style="background: url({{settings.image}}) no-repeat center center; background-size:contain"></div>{{~/if~}}
         <span class="tah-button-content">
@@ -11,21 +11,21 @@
         </span>
     </button>
     <div class="tah-groups">
-        {{~#if (tf hasActions)~}}
+        {{~#if (true hasActions)~}}
         <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
         {{#each actions}}
             {{>"modules/token-action-hud-core/templates/action.hbs"}}
         {{/each}}
         </div>
         {{~/if~}}
-        {{~#if (tf groups.lists.length)~}}
+        {{~#if (true groups.lists.length)~}}
         <div class="tah-list-groups">
             {{#each groups.lists}}
                 {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
             {{/each}}
         </div>
         {{~/if~}}
-        {{~#if (tf groups.tabs.length)~}}
+        {{~#if (true groups.tabs.length)~}}
         <div class="tah-tab-groups">
             {{#each groups.tabs}}
                 {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
