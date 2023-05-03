@@ -9,7 +9,7 @@
     "compendiumEntry": "Compendium Entry",
     "compendiumMacro": "Compendium Macro",
     "compendiumPlaylist": "Compendium Playlist",
-    "editCategories": "Edit Categories",
+    "editHud": "Edit HUD",
     "endTurn": "End Turn",
     "expandHud": "Expand HUD",
     "handlerNotFound": "não encontrado, revertendo ao padrão.",
@@ -52,13 +52,98 @@
         "hint": "Defina a cor de fundo dos botões HUD. Esta configuração é ignorada com o Dorako UI",
         "name": "Cor de Fundo do Botão"
       },
-      "buttonBorderColor": {
-        "hint": "Defina a cor da borda dos botões HUD. Esta configuração é ignorada com o Dorako UI",
-        "name": "Cor da Borda do Botão"
-      },
+      
       "clickOpenCategory": {
         "hint": "As categorias serão abertas clicando sobre elas em vez de passar o mouse.",
         "name": "Abrir categorias com um clique"
+      },
+      "customStyle": {
+        "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
+        "label": "Customise Style",
+        "name": "Customise Style",
+        "form": {
+          "title": "Token Action HUD | Customise Style",
+          "active": "When Active",
+          "buttons": "Buttons",
+          "hovered": "When Hovered",
+          "text": "Text & Icons",
+          "toggleable": "Toggleable",
+          "reset": "Reset Defaults",
+          "save": "Save",
+          "backgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonHeight": {
+            "label": "Height",
+            "units": "(Pixels)"
+          },
+          "buttonBackgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonBorderPrimaryColor": {
+            "label": "Border Primary Color"
+          },
+          "buttonBorderSecondaryColor": {
+            "label": "Border Secondary Color"
+          },
+          "buttonTextColor": {
+            "label": "Button Text Color"
+          },
+          "buttonHoverBackgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonHoverBorderPrimaryColor": {
+            "label": "Border Primary Color"
+          },
+          "buttonHoverBorderSecondaryColor": {
+            "label": "Border Secondary Color"
+          },
+          "buttonHoverTextColor": {
+            "label": "Text Color"
+          },
+          "buttonToggleActiveBackgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonToggleActiveBorderPrimaryColor": {
+            "label": "Border Primary Color"
+          },
+          "buttonToggleActiveBorderSecondaryColor": {
+            "label": "Border Secondary Color"
+          },
+          "buttonToggleActiveTextColor": {
+            "label": "Text Color"
+          },
+          "buttonToggleHoverBackgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonToggleHoverTextColor": {
+            "label": "Text Color"
+          },
+          "buttonToggleHoverBorderPrimaryColor": {
+            "label": "Border Primary Color"
+          },
+          "buttonToggleHoverBorderSecondaryColor": {
+            "label": "Border Secondary Color"
+          },
+          "textPrimaryColor": {
+            "label": "Primary Color"
+          },
+          "textSecondaryColor": {
+            "label": "Secondary Color"
+          },
+          "textTertiaryColor": {
+            "label": "Tertiary Color"
+          },
+          "textHoverPrimaryColor": {
+            "label": "Primary Color"
+          },
+          "textHoverSecondaryColor": {
+            "label": "Secondary Color"
+          },
+          "textHoverTertiaryColor": {
+            "label": "Tertiary Color"
+          }
+        }
       },
       "debug": {
         "hint": "Ativar registro de depuração.",
@@ -121,18 +206,28 @@
       "style": {
         "hint": "Defina o estilo do HUD",
         "name": "Estilo"
+      },
+      "toggleHud": {
+        "disabled": "HUD disabled. To enable, press {binding}",
+        "enabled": "HUD enabled. To disable, press {binding}"
       }
     },
     "tagDialog": {
-      "actionDialogDescription": "Add and remove actions. Drag actions to change their order.",
+      "actionDialogDescription": "Add and remove groups and actions. Drag groups and actions to change their order.",
       "actionDialogTitle": "Customise Actions",
-      "categoryDialogDescription": "Add and remove categories. Drag categories to change their order.",
-      "categoryDialogTitle": "Customise Categories",
+      "groupDialogDescription": "Add and remove groups. Select groups with pre-defined actions from the list or enter free text for an empty groups. Drag groups to change their order.",
+      "groupDialogTitle": "Customise Groups",
+      "hudDialogDescription": "Add and remove groups. Drag groups to change their order.",
+      "hudDialogTitle": "Customise HUD",
       "clearButton": "Clear",
-      "options": {
+      "settings": {
         "characterCount": {
           "label": "Characters per Word",
           "hint": "Limit the characters per word of the actions"
+        },
+        "collapse": {
+          "label": "Collapse Group",
+          "hint": "Collapse this group"
         },
         "customWidth": {
           "label": "Custom Width",
@@ -153,11 +248,19 @@
         },
         "showSubcategoryTitle": {
           "label": "Show Title",
-          "hint": "Show this subcategory's title"
+          "hint": "Show this group's title"
         },
         "sort": {
           "label": "Sort Actions",
           "hint": "Sort actions into alphabetical order"
+        },
+        "style": {
+          "label": "Style",
+          "choice": {
+            "list": "List",
+            "tab": "Tab"
+          },
+          "hint": "Style of this group"
         }
       },
       "resetActions": {
@@ -171,8 +274,6 @@
           }
         }
       },
-      "subcategoryDialogDescription": "Add and remove subcategories. Select subcategories with pre-defined actions from the list or enter free text for an empty subcategory. Drag subcategories to change their order.",
-      "subcategoryDialogTitle": "Customise Subcategories",
       "tagPlaceholder": "Choices (split with semi-colon)"
     }
   }

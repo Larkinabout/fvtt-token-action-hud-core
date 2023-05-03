@@ -1,4 +1,4 @@
-import { MODULE } from '../constants.js'
+import { CSS_STYLE, CUSTOM_STYLE, MODULE } from '../constants.js'
 
 /**
  * Console logger
@@ -52,6 +52,7 @@ export class Timer {
 export class Utils {
     /**
     * Whether the user is allowed to use the HUD
+    * @public
     * @param {number} userRole The user's role
     * @returns {boolean}
     */
@@ -63,6 +64,7 @@ export class Utils {
 
     /**
      * Foundry VTT's deepClone function wrapped here to avoid code error highlighting due to missing definition.
+     * @public
      * @param {*} original
      * @param {*} options
      */
@@ -73,6 +75,7 @@ export class Utils {
 
     /**
      * Get actor from the token or actor object
+     * @public
      * @param {string} actorId The actor id
      * @param {string} tokenId The token id
      * @returns {object}       The actor
@@ -86,6 +89,7 @@ export class Utils {
 
     /**
      * Get image from entity
+     * @public
      * @param {object} entity       The entity, e.g., actor, item
      * @param {array} defaultImages Any default images to exclude
      * @returns {string}            The image URL
@@ -99,6 +103,7 @@ export class Utils {
 
     /**
      * Get item from the actor object
+     * @public
      * @param {object} actor  The actor
      * @param {string} itemId The item id
      * @returns {object}      The item
@@ -109,6 +114,7 @@ export class Utils {
 
     /**
      * Get token
+     * @public
      * @param {string} tokenId The token id
      * @returns {object}       The token
      */
@@ -118,6 +124,7 @@ export class Utils {
 
     /**
      * Get controlled tokens
+     * @public
      * @returns {array} The controlled tokens
      */
     static getControlledTokens () {
@@ -126,6 +133,7 @@ export class Utils {
 
     /**
      * Get first controlled tokens
+     * @public
      * @returns {object} The first controlled token
      */
     static getFirstControlledToken () {
@@ -134,6 +142,7 @@ export class Utils {
 
     /**
      * Get setting value
+     * @public
      * @param {string} key               The setting key
      * @param {string=null} defaultValue The setting default value
      * @returns {*}                      The setting value
@@ -150,6 +159,7 @@ export class Utils {
 
     /**
      * Set setting value
+     * @public
      * @param {string} key   The setting key
      * @param {string} value The setting value
      */
@@ -163,7 +173,37 @@ export class Utils {
     }
 
     /**
+     * Get module actor flag
+     * @public
+     * @param {string} key The flag key
+     * @returns {*}        The flag value
+     */
+    static getActorFlag (key) {
+        return game.tokenActionHud.actor.getFlag(MODULE.ID, key)
+    }
+
+    /**
+     * Set module actor flag
+     * @public
+     * @param {string} key The flag key
+     * @param {*} value    The flag value
+     */
+    static async setActorFlag (key, value) {
+        await game.tokenActionHud.actor.setFlag(MODULE.ID, key, value)
+    }
+
+    /**
+     * Unset module actor flag
+     * @public
+     * @param {string} key The flag key
+     */
+    static async unsetActorFlag (key) {
+        await game.tokenActionHud.actor.unsetFlag(MODULE.ID, key)
+    }
+
+    /**
      * Get module user flag
+     * @public
      * @param {string} key The flag key
      * @returns {*}        The flag value
      */
@@ -173,6 +213,7 @@ export class Utils {
 
     /**
      * Set module user flag
+     * @public
      * @param {string} key The flag key
      * @param {*} value    The flag value
      */
@@ -182,6 +223,7 @@ export class Utils {
 
     /**
      * Unset module user flag
+     * @public
      * @param {string} key The flag key
      */
     static async unsetUserFlag (key) {
@@ -190,6 +232,7 @@ export class Utils {
 
     /**
      * Language translation
+     * @public
      * @param {string} toTranslate The value to translate
      * @returns {string}           The translated value
      */
@@ -199,6 +242,7 @@ export class Utils {
 
     /**
      * Whether the given module is active
+     * @public
      * @param {string} moduleId The module id
      * @returns {boolean}
      */
@@ -209,6 +253,7 @@ export class Utils {
 
     /**
      * Get the given module's title
+     * @public
      * @param {string} moduleId The module id
      * @returns {string}        The module title
      */
@@ -217,7 +262,24 @@ export class Utils {
     }
 
     /**
+     * Humanize keybinding
+     * @param {object} key The keybinding key
+     * @returns {string}   The humanized keybinding
+     */
+    static humanizeBinding (key) {
+        const binding = game.keybindings.get(MODULE.ID, key)
+        if (!binding) return ''
+        const stringParts = binding[0].modifiers.reduce((parts, part) => {
+            if (KeyboardManager.MODIFIER_CODES[part]?.includes(binding[0].key)) return parts
+            parts.unshift(KeyboardManager.getKeycodeDisplayString(part))
+            return parts
+        }, [KeyboardManager.getKeycodeDisplayString(binding[0].key)])
+        return stringParts.join(' + ')
+    }
+
+    /**
      * Get the median
+     * @public
      * @param {array} numbers The array of numbers
      * @returns {number}      The median
      */
@@ -228,20 +290,34 @@ export class Utils {
     }
 
     /**
-     * Enable stylesheet based on setting and disable all other stylesheets
-     * @param {string} settingValue The 'style' setting value
+     * Sort items
+     * @public
+     * @param {object} items The items
+     * @returns {object}     The sorted items
      */
-    static switchCSS (settingValue) {
-        const styles = [
-            { setting: 'compact', file: 'tah-compact' },
-            { setting: 'foundryVTT', file: 'tah-foundry-vtt' },
-            { setting: 'dorakoUI', file: 'tah-dorako' },
-            { setting: 'pathfinder', file: 'tah-pathfinder' }
-        ]
+    static sortItems (items) {
+        return new Map([...items.entries()].sort((a, b) => a[1].sort.localeCompare(b[1].sort)))
+    }
 
-        for (const style of styles) {
-            const href = [`modules/${MODULE.ID}/`, `styles/${style.file}`]
-            if (style.setting === settingValue) {
+    /**
+     * Sort items by name
+     * @public
+     * @param {object} items The items
+     * @returns {object}     The sorted items
+     */
+    static sortItemsByName (items) {
+        return new Map([...items.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name)))
+    }
+
+    /**
+     * Enable stylesheet based on setting and disable all other stylesheets
+     * @public
+     * @param {string} style The 'style' setting value
+     */
+    static switchCSS (style) {
+        for (const [key, value] of Object.entries(CSS_STYLE)) {
+            const href = [`modules/${MODULE.ID}/`, `styles/${value.file}`]
+            if (key === style) {
                 Object.values(document.styleSheets).find(
                     (ss) => ss.href?.includes(href[0]) && ss.href?.includes(href[1])
                 ).disabled = false
@@ -251,10 +327,20 @@ export class Utils {
                 ).disabled = true
             }
         }
+
+        if (style === 'custom') {
+            for (const [key, value] of Object.entries(CUSTOM_STYLE)) {
+                const setting = Utils.getSetting(key)
+                if (setting) {
+                    document.querySelector(':root').style.setProperty(value.cssProperty, setting)
+                }
+            }
+        }
     }
 
     /**
      * Register Handlebar helpers
+     * @public
      */
     static registerHandlebars () {
         // Capitalise first character
@@ -280,7 +366,8 @@ export class Utils {
             gte: function () { return reduceOp(arguments, (a, b) => a >= b) },
             and: function () { return reduceOp(arguments, (a, b) => a && b) },
             or: function () { return reduceOp(arguments, (a, b) => a || b) },
-            tf: function () { return reduceOp(arguments, (a) => a) }
+            true: function () { return reduceOp(arguments, (a) => a) },
+            false: function () { return reduceOp(arguments, (a) => !a) }
         })
 
         // Add asterisk to toggleable actions
@@ -294,8 +381,9 @@ export class Utils {
 
     /**
      * Get the major, minor and patch parts of the module version
-     * @param {*} moduleVersion The module version
-     * @returns {object}        The module version parts
+     * @public
+     * @param {string} moduleVersion The module version
+     * @returns {object}             The module version parts
      */
     static getModuleVersionParts (moduleVersion) {
         if (!moduleVersion) {
@@ -312,6 +400,7 @@ export class Utils {
 
     /**
      * Whether the system module is compatible with the core module version
+     * @public
      * @param {object} systemModuleCoreModuleVersion The system module's required core module version
      * @returns {boolean}
      */
@@ -333,54 +422,140 @@ export class Utils {
     }
 
     /**
-     * Loop nested subcategories and return flattened
+     * Get subcategories by criteria
+     * @public
      * @param {object} subcategories  The subcategories
-     * @param {object} searchCriteria The search criteria
+     * @param {object} data           The search data
      * @returns {object}
      */
-    static getSubcategories (subcategories, searchCriteria = {}) {
+    static getSubcategories (subcategories, data = {}) {
+        let order = 0
         if (!subcategories) return
-        const subcategoryId = searchCriteria?.id
-        const subcategoryType = searchCriteria?.type
+        const subcategoryId = data?.id
+        const subcategoryType = data?.type
         subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories)
-        let foundSubcategories = []
+        const foundSubcategories = {}
         for (const subcategory of subcategories) {
-            if ((!subcategoryId || subcategory.id === subcategoryId) && (!subcategoryType || subcategory.type === subcategoryType)) foundSubcategories.push(subcategory)
-            if (subcategory.subcategories.length > 0) {
-                const subcategories = this.getSubcategories(subcategory.subcategories, searchCriteria)
-                if (subcategories) foundSubcategories = foundSubcategories.concat(subcategories.filter(subcategory => subcategory !== undefined))
+            if ((!subcategoryId || subcategory.id === subcategoryId) && (!subcategoryType || subcategory.type === subcategoryType)) {
+                order++
+                const level = subcategory.nestId.split('_').length
+                foundSubcategories[subcategory.nestId] = { ...subcategory, order, level }
+            }
+            if (subcategory.subcategories?.length > 0) {
+                const subcategories = this.getSubcategories(subcategory.subcategories, data)
+                if (subcategories) Object.assign(foundSubcategories, subcategories)
             }
         }
-        return (foundSubcategories.length > 0) ? foundSubcategories : null
+        return (Object.keys(foundSubcategories).length > 0) ? foundSubcategories : null
     }
 
     /**
-     * Loop nested subcategories, find subcategories matching nestId, and return flattened
-     * @param {object} subcategories
-     * @param {string} searchCriteria
+     * Get nested groups by criteria
+     * @public
+     * @param {object} groups  The groups
+     * @param {object} data    The search data
      * @returns {object}
      */
-    static async getSubcategoryByNestId (subcategories, searchCriteria = {}) {
-        const nestId = (typeof searchCriteria === 'string' ? searchCriteria : searchCriteria?.nestId)
-        const subcategoryType = searchCriteria?.type
+    static getNestedGroups (groups, data = {}) {
+        let order = 0
+        if (!groups) return
+        const groupId = data?.id
+        const groupType = data?.type
+        groups = (Array.isArray(groups)) ? groups : Object.values(groups)
+        const foundGroups = {}
+        for (const group of groups) {
+            if ((!groupId || group.id === groupId) && (!groupType || group.type === groupType)) {
+                order++
+                const level = group.nestId.split('_').length
+                foundGroups[group.nestId] = { ...group, order, level }
+            }
+            if (group.groups?.length > 0) {
+                const groups = this.getNestedGroups(group.groups, data)
+                if (groups) Object.assign(foundGroups, groups)
+            }
+        }
+        return (Object.keys(foundGroups).length > 0) ? foundGroups : null
+    }
+
+    /**
+     * Get group by nest id
+     * @public
+     * @param {object} groups The groups
+     * @param {string} data   The search data
+     * @returns {object}
+     */
+    static async getGroupByNestId (groups, data = {}) {
+        const nestId = (typeof data === 'string' ? data : data?.nestId)
+        const groupType = data?.type
         if (!nestId) return
 
         const parts = nestId.split('_')
-        return await findSubcategory(subcategories, parts)
+        return await findGroup(groups, parts)
 
-        async function findSubcategory (subcategories, parts) {
-            subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories)
-            for (const subcategory of subcategories) {
-                if (subcategory.id === parts[0]) {
+        async function findGroup (groups, parts) {
+            groups = (Array.isArray(groups)) ? groups : Object.values(groups)
+            for (const group of groups) {
+                if (group.id === parts[0]) {
                     if (parts.length === 1) {
-                        if (!subcategory.type || !subcategoryType || subcategory.type === subcategoryType) return subcategory
+                        if (!group.type || !groupType || group.type === groupType) return group
                         return
                     }
-                    if (subcategory.subcategories.length === 0) return
                     parts.shift()
-                    const foundSubcategory = await findSubcategory(subcategory.subcategories, parts)
-                    if (foundSubcategory) return foundSubcategory
+                    for (const groupStyle of Object.values(group.groups)) {
+                        if (groupStyle.length === 0) continue
+                        const foundGroup = await findGroup(groupStyle, parts)
+                        if (foundGroup) return foundGroup
+                    }
                 }
+            }
+        }
+    }
+
+    /**
+     * Delete group by nest id
+     * @public
+     * @param {object} groups The groups
+     * @param {string} data   The search data
+     */
+    static async deleteGroupByNestId (groups, data = {}) {
+        const nestId = (typeof data === 'string' ? data : data?.nestId)
+        if (!nestId) return
+
+        const parts = nestId.split('_')
+        return await findGroup(groups, parts)
+
+        async function findGroup (groups, parts) {
+            groups = (Array.isArray(groups)) ? groups : Object.values(groups)
+            for (const [index, group] of groups.entries()) {
+                if (group.id === parts[0]) {
+                    if (parts.length === 1) {
+                        groups.splice(index, 1)
+                        return
+                    }
+                    if (group.groups.length === 0) return
+                    parts.shift()
+                    const foundGroup = await findGroup(group.groups, parts)
+                    if (foundGroup) return
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete groups by id
+     * @public
+     * @param {object} groups The groups
+     * @param {string} data   The search data
+     */
+    static async deleteGroupsById (groups, data = {}) {
+        const id = (typeof data === 'string' ? data : data?.id)
+        if (!id) return
+
+        for (let i = groups.length - 1; i >= 0; i--) {
+            if (groups[i].id === id) {
+                groups.splice(i, 1)
+            } else if (groups[i].groups?.length > 0) {
+                this.deleteGroupsById(groups[i].groups, data)
             }
         }
     }

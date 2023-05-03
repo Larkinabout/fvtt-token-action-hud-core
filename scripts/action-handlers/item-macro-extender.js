@@ -7,9 +7,8 @@ import { Utils } from '../utilities/utils.js'
  */
 export class ItemMacroActionListExtender extends ActionListExtender {
     constructor (actionHandler) {
-        super(actionHandler.categoryManager)
+        super(actionHandler)
         this.actionHandler = actionHandler
-        this.categoryManager = actionHandler.categoryManager
         this.actor = this.actionHandler.actor
         this.token = this.actionHandler.token
     }
@@ -41,71 +40,70 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
         const replace = itemMacroSetting === 'itemMacro'
 
-        this.categoryManager.flattenedSubcategories.forEach(subcategory => {
-            this._addSubcategoryActions(itemIds, subcategory, replace)
+        this.actionHandler.groups.forEach(group => {
+            this._addGroupActions(itemIds, group, replace)
         })
     }
 
     /**
-     * Add subcategory actions
+     * Add group actions
      * @private
-     * @param {array} itemIds      The list of item IDs
-     * @param {object} subcategory The subcategory
-     * @param {boolean} replace    Whether to replace the action or not
+     * @param {array} itemIds   The list of item IDs
+     * @param {object} group    The group
+     * @param {boolean} replace Whether to replace the action or not
      */
-    _addSubcategoryActions (itemIds, subcategory, replace) {
+    _addGroupActions (itemIds, group, replace) {
         // Exit if no actions exist
-        if (!subcategory?.actions?.length) return
+        if (!group?.actions?.length) return
 
-        const macroActions = []
-        subcategory.actions.forEach(action => {
-            if (!itemIds.includes(action.id)) return
+        const actions = []
+        group.actions.forEach(existingAction => {
+            if (!itemIds.includes(existingAction.id)) return
 
-            const existingItemMacroAction = subcategory.actions.find(subcategoryAction => subcategoryAction.id === `itemMacro+${action.id}`)
-            const actionToReplace = existingItemMacroAction ?? action
+            const existingItemMacroAction = group.actions.find(action => action.id === `itemMacro+${existingAction.id}`)
+            const actionToReplace = existingItemMacroAction ?? existingAction
 
             if (existingItemMacroAction) {
                 replace = true
             }
 
-            const macroAction = this._createItemMacroAction(action, actionToReplace, replace)
+            const macroAction = this._createItemMacroAction(existingAction, actionToReplace, replace)
 
-            // Add action to action list
-            if (!replace) macroActions.push(macroAction)
+            if (!replace) actions.push(macroAction)
         })
 
-        this._addActionsToSubcategory(subcategory, macroActions)
+        this._addActions(actions, group)
     }
 
     /**
      * Create item macro action
      * @private
-     * @param {object} originalAction  The original action
+     * @param {object} existingAction  The existing action
      * @param {object} actionToReplace The action to replace
      * @param {boolean} replace        Whether to replace the action or not
      * @returns {object}               The item macro action
      */
-    _createItemMacroAction (originalAction, actionToReplace, replace) {
-        const itemMacroAction = (replace) ? actionToReplace : Utils.deepClone(originalAction)
-        itemMacroAction.id = `itemMacro+${originalAction.id}`
-        itemMacroAction.fullName = originalAction.fullName
-        itemMacroAction.listName = `Item Macro: ${originalAction.fullName}`
-        itemMacroAction.name = originalAction.name
-        itemMacroAction.encodedValue = `itemMacro${originalAction.encodedValue.substr(originalAction.encodedValue.indexOf(DELIMITER))}`
-        itemMacroAction.itemMacroIcon = `<i class="${ITEM_MACRO_ICON.ICON}" title="${ITEM_MACRO_ICON.TOOLTIP}"></i>`
-        return itemMacroAction
+    _createItemMacroAction (existingAction, actionToReplace, replace) {
+        const action = (replace) ? actionToReplace : Utils.deepClone(existingAction)
+        action.encodedValue = `itemMacro${existingAction.encodedValue.substr(existingAction.encodedValue.indexOf(DELIMITER))}`
+        action.id = `itemMacro+${existingAction.id}`
+        action.fullName = existingAction.fullName
+        action.listName = `Item Macro: ${existingAction.fullName}`
+        action.name = existingAction.name
+        action.itemMacroIcon = `<i class="${ITEM_MACRO_ICON.ICON}" title="${ITEM_MACRO_ICON.TOOLTIP}"></i>`
+        return action
     }
 
     /**
-     * Add actions to the subcategory
+     * Add actions to the group
      * @private
-     * @param {object} subcategory  The subcategory
-     * @param {object} macroActions The actions
+     * @param {object} actions The actions
+     * @param {object} group   The group
      */
-    _addActionsToSubcategory (subcategory, macroActions) {
-        macroActions.forEach((macroAction) => {
-            const index = subcategory.actions.findIndex((action) => action.id === macroAction.id) + 1
-            subcategory.actions.splice(index, 0, macroAction)
+    _addActions (actions, group) {
+        actions.forEach(macroAction => {
+            const index = group.actions.findIndex(action => action.id === macroAction.id) + 1
+            group.actions.splice(index, 0, macroAction)
         })
     }
 

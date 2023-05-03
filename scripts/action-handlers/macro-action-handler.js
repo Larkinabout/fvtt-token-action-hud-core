@@ -9,22 +9,16 @@ export class MacroActionHandler {
 
     constructor (actionHandler) {
         this.actionHandler = actionHandler
-        this.categoryManager = actionHandler.categoryManager
     }
 
     /**
-     * Build any macro actions
+     * Build macro actions
      * @override
      */
     async buildMacroActions () {
-        // Create subcategory data
-        const subcategoryData = { id: 'macros', type: 'core' }
-
-        // Get actions
-        const actions = await this._getActions()
-
-        // Add actions to action list
-        this.actionHandler.addActionsToActionList(actions, subcategoryData)
+        const groupData = { id: 'macros', type: 'core' }
+        const actionsData = await this._getActions()
+        this.actionHandler.addActions(actionsData, groupData)
     }
 
     /**
@@ -49,9 +43,9 @@ export class MacroActionHandler {
             return {
                 id,
                 name,
+                listName,
                 encodedValue,
-                img,
-                listName
+                img
             }
         })
     }

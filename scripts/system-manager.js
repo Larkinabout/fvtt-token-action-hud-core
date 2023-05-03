@@ -2,7 +2,6 @@ import { registerSettings } from './settings.js'
 import { ItemMacroActionListExtender } from './action-handlers/item-macro-extender.js'
 import { CompendiumMacroPreHandler } from './roll-handlers/compendium-macro-pre-handler.js'
 import { ItemMacroPreRollHandler } from './roll-handlers/pre-item-macro.js'
-import { CompendiumActionHandler } from './action-handlers/compendium-action-handler.js'
 import { MODULE } from './constants.js'
 import { Logger, Utils } from './utilities/utils.js'
 
@@ -10,8 +9,6 @@ export class SystemManager {
     constructor () {
         this.coreModuleId = MODULE.ID
     }
-
-    doGetCategoryManager () {}
 
     /** ACTION HANDLERS */
     /** OVERRIDDEN BY SYSTEM */
@@ -24,28 +21,36 @@ export class SystemManager {
 
     /**
      * Register default flags
+     * @public
      */
     async registerDefaultFlags () {
+        await Utils.unsetUserFlag('default')
         const defaults = await this.doRegisterDefaultFlags() ?? []
         if (defaults) {
-            await Utils.unsetUserFlag('default')
-            await Utils.setUserFlag('default', defaults)
+            if (defaults?.categories) {
+                globalThis.logger.warn('Token Action HUD | SystemManager.doRegisterDefaultFlags expects \'layout\' to be returned instead of \'categories\'')
+            }
+            if (defaults?.subcategories) {
+                globalThis.logger.warn('Token Action HUD | SystemManager.doRegisterDefaultFlags expects \'groups\' to be returned instead of \'subcategories\'')
+            }
+            game.tokenActionHud.defaults = defaults
         }
     }
 
     /**
      * Initialise the action handler
-     * @param {CategoryManager} categoryManager The CategoryManager class
+     * @public
      * @returns {ActionHandler}
      */
-    async getActionHandler (categoryManager) {
-        const actionHandler = this.doGetActionHandler(categoryManager)
+    async getActionHandler () {
+        const actionHandler = this.doGetActionHandler()
         this.addActionExtenders(actionHandler)
         return actionHandler
     }
 
     /**
      * Initialise action list extenders
+     * @public
      * @param {ActionHandler} actionHandler The ActionHandler class
      */
     addActionExtenders (actionHandler) {
@@ -53,17 +58,10 @@ export class SystemManager {
     }
 
     /**
-     * Initialise the category manager
-     * @returns {CategoryManager} The CategoryManager class
+     * Get the roll handler
+     * @public
+     * @returns {object} The roll handler
      */
-    async getCategoryManager () {
-        const categoryManager = this.doGetCategoryManager()
-        await categoryManager.init()
-        return categoryManager
-    }
-
-    /** ROLL HANDLERS */
-
     getRollHandler () {
         let rollHandlerId = Utils.getSetting('rollHandler')
 
@@ -78,21 +76,31 @@ export class SystemManager {
         return rollHandler
     }
 
+    /**
+     * Add pre-handlers
+     * @public
+     * @param {object} rollHandler
+     */
     addPreHandlers (rollHandler) {
         rollHandler.addPreRollHandler(new CompendiumMacroPreHandler())
 
         if (Utils.isModuleActive('itemacro')) { rollHandler.addPreRollHandler(new ItemMacroPreRollHandler()) }
     }
 
-    /** SETTINGS */
-
+    /**
+     * Register module settings
+     * @public
+     */
     registerSettings () {
         const rollHandlers = this.getAvailableRollHandlers()
         registerSettings(this, rollHandlers)
     }
 
-    /** UTILITY */
-
+    /**
+     * Add handler
+     * @param {array} choices The choices
+     * @param {string} id     The module id
+     */
     static addHandler (choices, id) {
         if (Utils.isModuleActive(id)) {
             const title = Utils.getModuleTitle(id)

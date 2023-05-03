@@ -9,39 +9,34 @@ export class CompendiumActionHandler {
 
     constructor (actionHandler) {
         this.actionHandler = actionHandler
-        this.categoryManager = actionHandler.categoryManager
     }
 
     /**
-     * Build any compendium actions
+     * Build compendium actions
      * @override
      */
     async buildCompendiumActions () {
         // Get compendium packs
         const packIds = game.packs
-            .filter((pack) => {
-                return COMPENDIUM_PACK_TYPES.includes(pack.documentName)
-            })
-            .filter((pack) => game.user.isGM || !pack.private)
-            .map((pack) => pack.metadata.id)
+            .filter(pack => COMPENDIUM_PACK_TYPES.includes(pack.documentName) && (!pack.private || game.user.isGM))
+            .map(pack => pack.metadata.id)
 
-        // Add actions to the action list
         for (const packId of packIds) {
-            const subcategoryId = packId.replace('.', '-')
-            const subcategoryData = { id: subcategoryId, type: 'core' }
-            const actions = await this._getCompendiumActions(packId)
-            this.actionHandler.addActionsToActionList(actions, subcategoryData)
+            const actionsData = await this._getCompendiumActions(packId)
+            const groupData = { id: packId.replace('.', '-'), type: 'core' }
+            this.actionHandler.addActions(actionsData, groupData)
         }
     }
 
     /**
      * Get compendium actions
+     * @private
      * @param {string} packKey The compendium pack key
      * @returns {object}       The actions
      */
     async _getCompendiumActions (packKey) {
-        const entries = await this.getCompendiumEntries(packKey)
-        const actionType = this.getCompendiumActionType(packKey)
+        const entries = await this._getCompendiumEntries(packKey)
+        const actionType = this._getCompendiumActionType(packKey)
         return entries.map((entry) => {
             const id = entry._id
             const name = entry.name
@@ -61,10 +56,11 @@ export class CompendiumActionHandler {
 
     /**
      * Get compendium entries
+     * @private
      * @param {string} packKey The compendium pack key
      * @returns                The compendium entries
      */
-    async getCompendiumEntries (packKey) {
+    async _getCompendiumEntries (packKey) {
         const pack = game.packs.get(packKey)
         if (!pack) return []
 
@@ -96,10 +92,11 @@ export class CompendiumActionHandler {
 
     /**
      * Get the compendium action type
+     * @private
      * @param {string} key The compendium pack key
      * @returns {string}   The action type
      */
-    getCompendiumActionType (key) {
+    _getCompendiumActionType (key) {
         const pack = game?.packs?.get(key)
         if (!pack) return ''
         const compendiumEntities = pack.documentName

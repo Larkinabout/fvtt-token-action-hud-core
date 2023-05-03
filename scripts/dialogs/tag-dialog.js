@@ -36,6 +36,7 @@ export class TagDialog extends FormApplication {
 
     /**
      * Activate listeners
+     * @public
      * @param {object} html The HTML element
      */
     activateListeners (html) {
@@ -50,7 +51,7 @@ export class TagDialog extends FormApplication {
     /**
      * Show dialog
      * @public
-     * @param {string} nestId          The nested subcategory ID
+     * @param {string} nestId          The nest id
      * @param {object} tags            The available and selected tags
      * @param {object} dialogData      The dialog data
      * @param {function*} dialogSubmit The dialog submit function
@@ -70,6 +71,7 @@ export class TagDialog extends FormApplication {
 
     /**
      * Prepare dialog hook
+     * @private
      * @param {object} tags The tags
      */
     static _prepareHook (tags) {
@@ -123,6 +125,10 @@ export class TagDialog extends FormApplication {
         })
     }
 
+    /**
+     * Reset actions
+     * @private
+     */
     async _resetActions () {
         const d = new Dialog({
             title: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.title'),
@@ -132,7 +138,7 @@ export class TagDialog extends FormApplication {
                     icon: '<i class="fas fa-check"></i>',
                     label: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.buttons.yes'),
                     callback: async () => {
-                        await game.tokenActionHud.resetActorFlag()
+                        await game.tokenActionHud.resetActorData()
                         Logger.info('Actions reset', true)
                     }
                 },
@@ -179,9 +185,7 @@ export class TagDialog extends FormApplication {
                 id: c.id,
                 listName: c.value,
                 name: c.name ?? c.value,
-                type: c.type,
-                level: c.level,
-                hasDerivedSubcategories: c.hasDerivedSubcategories
+                type: c.type
             }
         })
         await this.submit(selection, formData)

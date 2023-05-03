@@ -1,6 +1,6 @@
 
-<div id="{{id}}" style="top: {{top}}; left: {{left}}; {{~#if background~}}background: {{background}};{{~/if~}} transform: scale({{scale}}); transform-origin: top left">
-    {{~#if actions.actorId~}}
+<div id="{{id}}" class="{{style}}" style="top: {{top}}; left: {{left}}; transform: scale({{scale}}); transform-origin: top left;">
+    {{~#if hud.actorId~}}
     <div id="tah-collapse-expand">
         <button id="tah-collapse-hud" title="{{localize "tokenActionHud.collapseHud"}}">
             <i class="fas fa-caret-left"></i>
@@ -9,25 +9,25 @@
             <i class="fas fa-caret-right"></i>
         </button>
     </div>
-    <div id="tah-categories">
-      {{~#if actions.hudTitle~}}
-      <div id="tah-character-name">{{actions.hudTitle}}</div>
-      {{~/if~}}
-      {{#each actions.categories}}
-      {{>"modules/token-action-hud-core/templates/category.hbs" background=../background}}
-      {{/each}}
+    <div id="tah-groups">
+        {{~#if hud.title~}}
+        <div id="tah-character-name">{{hud.title}}</div>
+        {{~/if~}}
+        {{#each hud.groups}}
+        {{>"modules/token-action-hud-core/templates/group.hbs" background=../background}}
+        {{/each}}
     </div>
     {{#unless hovering}}
     <div id="tah-buttons" title="{{localize "tokenActionHud.unlockHud"}}">
-      <button id="tah-unlock">
-        <i class="fa fa-lock"></i>
-      </button>
-      <button id="tah-lock" class="tah-hidden" title="{{localize "tokenActionHud.lockHud"}}">
-        <i class="fa fa-lock-open"></i>
-      </button>
-      <button id="tah-edit-categories" class="tah-hidden" title="{{localize "tokenActionHud.editCategories"}}">
-        <i class="fa fa-book"></i>
-      </button>
+        <button id="tah-unlock">
+            <i class="fa fa-lock"></i>
+        </button>
+        <button id="tah-lock" class="tah-hidden" title="{{localize "tokenActionHud.lockHud"}}">
+            <i class="fa fa-lock-open"></i>
+        </button>
+        <button id="tah-edit-hud" class="tah-hidden" title="{{localize "tokenActionHud.editHud"}}">
+            <i class="fa fa-pen-to-square"></i>
+        </button>
     </div>
     {{/unless}}
     {{~/if~}}

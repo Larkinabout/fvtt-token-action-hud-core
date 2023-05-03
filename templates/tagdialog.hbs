@@ -1,96 +1,116 @@
 <form>
-  <section>
-    <div style="margin-bottom: 5px;">
-      <label>{{topLabel}}</label>
-    </div>
-    <div>
-      <input
-        name="token-action-hud-taginput"
-        class="token-action-hud-taginput"
-        placeholder="{{placeholder}}"
-      />
-    </div>
-    <div>
-      <button type="button" id="tah-dialog-clear-tags" class="tags--removeAllBtn">
-        <i class="fa-duotone fa-filter-circle-xmark"></i>{{clearButtonText}}
-      </button>
-    </div>
-    {{~#if (eq this.level "hud") ~}}
-    <div>
-      <button type="button" id="tah-dialog-reset-actions">
-        <i class="fa-solid fa-arrow-rotate-left"></i>{{localize "tokenActionHud.tagDialog.resetActions.button"}}
-      </button>
-    </div>
-    {{~/if~}}
-    {{~#if (eq this.level "category") ~}}
-    <div class="form-group slim">
-      <label>{{localize "tokenActionHud.tagDialog.options.showCategoryTitle.label"}}</label>
-      <div class="form-fields">
-          <input type="checkbox" name="showTitle" {{~#if advancedCategoryOptions.showTitle~}}checked{{~/if~}}/>
-      </div>
-      <p class="hint">{{localize "tokenActionHud.tagDialog.options.showCategoryTitle.hint"}}</p>
-    </div>
-    <div class="form-group">
-      <label>{{localize "tokenActionHud.tagDialog.options.image.label"}}</label>
-      <div class="form-fields">
-          <input type="text" id="image" name="image" data-dtype="text" value="{{advancedCategoryOptions.image}}">
-          {{filePicker target="image" type="image"}}
-      </div>
-      <p class="hint">{{localize "tokenActionHud.tagDialog.options.image.hint"}}</p>
-    </div>
-    {{~/if~}}
-    {{~#if (eq this.level "subcategory") ~}}
-    <div class="form-group slim">
-      <label>{{localize "tokenActionHud.tagDialog.options.showSubcategoryTitle.label"}}</label>
-      <div class="form-fields">
-          <input type="checkbox" name="showTitle" {{~#if advancedCategoryOptions.showTitle~}}checked{{~/if~}}/>
-      </div>
-      <p class="hint">{{localize "tokenActionHud.tagDialog.options.showSubcategoryTitle.hint"}}</p>
-    </div>
-    {{~/if~}}
-    <div class="form-group slim">
-      <label>{{localize "tokenActionHud.tagDialog.options.grid.label"}}</label>
-      <div class="form-fields">
-          <input type="checkbox" name="grid" {{~#if advancedCategoryOptions.grid}}checked{{~/if~}}/>
-      </div>
-      <p class="hint">{{localize "tokenActionHud.tagDialog.options.grid.hint"}}</p>
-    </div>
-    {{~#if (eq this.level "category") ~}}
-    <div class="form-group">
-      <label>{{localize "tokenActionHud.tagDialog.options.customWidth.label"}}
-        <span class="units">{{localize "tokenActionHud.tagDialog.options.customWidth.units"}}</span>
-      </label>
-      <div class="form-fields">
-        <input type="number" name="customWidth" value="{{advancedCategoryOptions.customWidth}}" />
-      </div>
-      <p class="hint">{{localize "tokenActionHud.tagDialog.options.customWidth.hint"}}</p>
-    </div>
-    {{~/if~}}
-    {{~#if (eq this.level "subcategory") ~}}
-    <div class="form-group slim">
-      <label>{{localize "tokenActionHud.tagDialog.options.sort.label"}}</label>
-      <div class="form-fields">
-          <input type="checkbox" name="sort" {{~#if advancedCategoryOptions.sort~}}checked{{~/if~}}/>
-      </div>
-      <p class="hint">{{localize "tokenActionHud.tagDialog.options.sort.hint"}}</p>
-    </div>
-    {{~/if~}}
-    {{~#if (ne this.level "hud") ~}}
-    <div class="form-group">
-      <label>{{localize "tokenActionHud.tagDialog.options.characterCount.label"}}</label>
-      <div class="form-fields">
-        <input type="number" name="characterCount" placeholder="No limit" value="{{advancedCategoryOptions.characterCount}}" />
-      </div>
-      <p class="hint">{{localize "tokenActionHud.tagDialog.options.characterCount.hint"}}</p> 
-    </div> 
-    {{~/if~}}
-  </section>
-  <footer class="sheet-footer flexrow" style="margin-top: 2px;">
-    <button type="submit" id="tah-dialog-submit" name="submit" class="">
-      <i class="fas fa-check"></i></i>{{localize "tokenActionHud.accept"}}
-    </button>
-    <button type="button" id="tah-dialog-cancel" name="cancel" class="">
-      <i class="fas fa-times"></i></i>{{localize "tokenActionHud.cancel"}}
-    </button>
-  </footer>
+    <section>
+        <div style="margin-bottom: 5px;">
+            <label>{{topLabel}}</label>
+        </div>
+        <div>
+            <input
+                name="token-action-hud-taginput"
+                class="token-action-hud-taginput"
+                placeholder="{{placeholder}}"
+            />
+        </div>
+        <div>
+            <button type="button" id="tah-dialog-clear-tags" class="tags--removeAllBtn">
+                <i class="fa-duotone fa-filter-circle-xmark"></i>{{clearButtonText}}
+            </button>
+        </div>
+        {{~#if (eq this.level "hud") ~}}
+        <div>
+            <button type="button" id="tah-dialog-reset-actions">
+                <i class="fa-solid fa-arrow-rotate-left"></i>{{localize "tokenActionHud.tagDialog.resetActions.button"}}
+            </button>
+        </div>
+        {{~/if~}}
+        {{~#if (eq this.level "category") ~}}
+        <div class="form-group slim">
+            <label>{{localize "tokenActionHud.tagDialog.settings.showCategoryTitle.label"}}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="showTitle" {{~#if settings.showTitle~}}checked{{~/if~}}/>
+            </div>
+            <p class="hint">{{localize "tokenActionHud.tagDialog.settings.showCategoryTitle.hint"}}</p>
+        </div>
+        <div class="form-group">
+            <label>{{localize "tokenActionHud.tagDialog.settings.image.label"}}</label>
+            <div class="form-fields">
+                <input type="text" id="image" name="image" data-dtype="text" value="{{settings.image}}">
+                {{filePicker target="image" type="image"}}
+            </div>
+            <p class="hint">{{localize "tokenActionHud.tagDialog.settings.image.hint"}}</p>
+        </div>
+        {{~/if~}}
+        {{~#if (eq this.level "subcategory") ~}}
+        <div class="form-group slim">
+            <label>{{localize "tokenActionHud.tagDialog.settings.showSubcategoryTitle.label"}}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="showTitle" {{~#if settings.showTitle~}}checked{{~/if~}}/>
+            </div>
+            <p class="hint">{{localize "tokenActionHud.tagDialog.settings.showSubcategoryTitle.hint"}}</p>
+        </div>
+        <div class="form-group slim">
+            <label>{{localize "tokenActionHud.tagDialog.settings.collapse.label"}}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="collapse" {{~#if settings.collapse~}}checked{{~/if~}}/>
+            </div>
+            <p class="hint">{{localize "tokenActionHud.tagDialog.settings.collapse.hint"}}</p>
+        </div>
+        <div class="form-group slim">
+            <label>{{localize "tokenActionHud.tagDialog.settings.style.label"}}</label>
+            <div class="form-fields">
+                <div class="tah-radio-group">
+                    <input type="radio" name="style" value="list" {{~#if (eq settings.style "list")~}}checked{{~/if~}}/>
+                    <label for="list">{{localize "tokenActionHud.tagDialog.settings.style.choice.list"}}</label>
+                    <input type="radio" name="style" style="margin-left: 20px;" value="tab" {{~#if (eq settings.style "tab")~}}checked{{~/if~}}/>
+                    <label for="tab">{{localize "tokenActionHud.tagDialog.settings.style.choice.tab"}}</label>
+                </div>
+            </div>
+            <p class="hint">{{localize "tokenActionHud.tagDialog.settings.style.hint"}}</p>
+        </div>
+        {{~/if~}}
+        <div class="form-group slim">
+            <label>{{localize "tokenActionHud.tagDialog.settings.grid.label"}}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="grid" {{~#if settings.grid}}checked{{~/if~}}/>
+            </div>
+            <p class="hint">{{localize "tokenActionHud.tagDialog.settings.grid.hint"}}</p>
+        </div>
+        {{~#if (eq this.level "category") ~}}
+        <div class="form-group">
+            <label>
+                {{localize "tokenActionHud.tagDialog.settings.customWidth.label"}}
+                <span class="units">{{localize "tokenActionHud.tagDialog.settings.customWidth.units"}}</span>
+            </label>
+            <div class="form-fields">
+                <input type="number" name="customWidth" value="{{settings.customWidth}}" />
+            </div>
+            <p class="hint">{{localize "tokenActionHud.tagDialog.settings.customWidth.hint"}}</p>
+        </div>
+        {{~/if~}}
+        {{~#if (eq this.level "subcategory") ~}}
+        <div class="form-group slim">
+            <label>{{localize "tokenActionHud.tagDialog.settings.sort.label"}}</label>
+            <div class="form-fields">
+                <input type="checkbox" name="sort" {{~#if settings.sort~}}checked{{~/if~}}/>
+            </div>
+            <p class="hint">{{localize "tokenActionHud.tagDialog.settings.sort.hint"}}</p>
+        </div>
+        {{~/if~}}
+        {{~#if (ne this.level "hud") ~}}
+        <div class="form-group">
+            <label>{{localize "tokenActionHud.tagDialog.settings.characterCount.label"}}</label>
+            <div class="form-fields">
+                <input type="number" name="characterCount" placeholder="No limit" value="{{settings.characterCount}}" />
+            </div>
+            <p class="hint">{{localize "tokenActionHud.tagDialog.settings.characterCount.hint"}}</p> 
+        </div> 
+        {{~/if~}}
+    </section>
+    <footer class="sheet-footer flexrow" style="margin-top: 2px;">
+        <button type="submit" id="tah-dialog-submit" name="submit" class="">
+            <i class="fas fa-check"></i></i>{{localize "tokenActionHud.accept"}}
+        </button>
+        <button type="button" id="tah-dialog-cancel" name="cancel" class="">
+            <i class="fas fa-times"></i></i>{{localize "tokenActionHud.cancel"}}
+        </button>
+    </footer>
 </form>

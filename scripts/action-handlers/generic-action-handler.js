@@ -1,4 +1,4 @@
-import { ACTION_TYPE, DELIMITER, SUBCATEGORY_TYPE } from '../constants.js'
+import { DELIMITER, GROUP_TYPE } from '../constants.js'
 import { Utils } from '../utilities/utils.js'
 
 /**
@@ -15,6 +15,7 @@ export class GenericActionHandler {
 
     /**
      * Build generic actions
+     * @public
      * @param {object} character The actor and/or token
      */
     buildGenericActions () {
@@ -43,7 +44,7 @@ export class GenericActionHandler {
      */
     _buildSingleTokenUtilities () {
         if (!this.token) return
-        const actions = []
+        const actionsData = []
 
         const actionType = 'utility'
 
@@ -65,12 +66,12 @@ export class GenericActionHandler {
             encodedValue: toggleCombatEncodedValue,
             selected: true
         }
-        actions.push(toggleCombatAction)
+        actionsData.push(toggleCombatAction)
 
         // Build Toggle Visibility action
         if (game.user.isGM) {
             const toggleVisibilityId = 'toggleVisibility'
-            const hidden = canvas.tokens.placeables.find((token) => token.id === this.token.id).document.hidden
+            const hidden = canvas.tokens.placeables.find(token => token.id === this.token.id).document.hidden
             const toggleVisibilityName = hidden
                 ? Utils.i18n('tokenActionHud.makeVisible')
                 : Utils.i18n('tokenActionHud.makeInvisible')
@@ -84,22 +85,22 @@ export class GenericActionHandler {
                 encodedValue: toggleVisbilityEncodedValue,
                 selected: true
             }
-            actions.push(toggleVisibilityAction)
+            actionsData.push(toggleVisibilityAction)
         }
 
-        const subcategoryId = 'token'
-        const subcategoryData = { id: subcategoryId, type: SUBCATEGORY_TYPE.SYSTEM }
+        const groupData = { id: 'token', type: GROUP_TYPE.SYSTEM }
 
-        // Add actions to action list
-        this.actionHandler.addActionsToActionList(actions, subcategoryData)
+        // Add actions to HUD
+        this.actionHandler.addActions(actionsData, groupData)
     }
 
     /**
      * Build utilities for multiple tokens
+     * @private
      */
     _buildMultipleTokenUtilities () {
         const tokens = Utils.getControlledTokens()
-        const actions = []
+        const actionsData = []
 
         const actionType = 'utility'
 
@@ -115,7 +116,7 @@ export class GenericActionHandler {
             name: toggleCombatName,
             encodedValue: toggleCombatEncodedValue
         }
-        actions.push(toggleCombatAction)
+        actionsData.push(toggleCombatAction)
 
         // Toggle Visibility
         if (game.user.isGM) {
@@ -130,13 +131,12 @@ export class GenericActionHandler {
                 name: toggleVisibilityname,
                 encodedValue: toggleVisbilityEncodedValue
             }
-            actions.push(toggleVisibilityAction)
+            actionsData.push(toggleVisibilityAction)
         }
 
-        const subcategoryId = 'token'
-        const subcategoryData = { id: subcategoryId, type: SUBCATEGORY_TYPE.SYSTEM }
+        const groupData = { id: 'token', type: GROUP_TYPE.SYSTEM }
 
-        // Add to Action List
-        this.actionHandler.addActionsToActionList(actions, subcategoryData)
+        // Add actions to HUD
+        this.actionHandler.addActions(actionsData, groupData)
     }
 }

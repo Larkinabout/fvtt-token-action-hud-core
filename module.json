@@ -29,9 +29,12 @@
     "./lib/dragsort/dragsort.js"
   ],
   "styles": [
-    "./styles/tah-compact.css", 
-    "./styles/tah-foundry-vtt.css", 
+    "./styles/token-action-hud.css",
+    "./styles/tah-compact.css",
+    "./styles/tah-custom.css", 
     "./styles/tah-dorako.css", 
+    "./styles/tah-foundry-vtt.css", 
+    "./styles/tah-high-contrast.css",
     "./styles/tah-pathfinder.css", 
     "./styles/lib/tagify/tagify.css",
     "./styles/lib/dragsort/dragsort.css"
@@ -91,25 +94,23 @@
   "packs": [],
   "relationships": {
     "systems": [],
-    "requires": [],
+    "requires": [
+      {
+        "id": "socketlib"
+      }
+    ],
     "optional": [{
       "id": "color-picker",
-      "reason": "To set colors within this module's settings. If both modules are enabled, Token Action HUD will use color-picker"
-    }, {
-      "id": "colorsettings",
-      "reason": "To set colors within this module's settings. If both modules are enabled, Token Action HUD will use color-picker"
+      "reason": "To enable color pickers in the module settings"
     }],
     "flags": {
       "optional": [{
         "id": "color-picker",
-        "reason": "To set colors within this module's settings. If both modules are enabled, Token Action HUD will use color-picker"
-      }, {
-        "id": "colorsettings",
-        "reason": "To set colors within this module's settings. If both modules are enabled, Token Action HUD will use color-picker"
+        "reason": "To enable color pickers in the module settings"
       }]
     }
   },
-  "socket": false,
+  "socket": true,
   "manifest": "This is auto replaced",
   "download": "This is auto replaced",
   "protected": false,
