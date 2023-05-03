@@ -1,8 +1,8 @@
 :root {
-    --tah-background: none;
+    --tah-background-color: none;
     --tah-border-radius: 3px;
-    --tah-color-primary: #ddd;
-    --tah-color-primary-hover: #fff;
+    --tah-text-primary-color: #ddd;
+    --tah-text-hover-primary-color: #fff;
     --tah-gap: 5px;
     --tah-icon-color-disabled: #dddddd80;
     --tah-text-shadow: 1px 1px 1px rgba(52, 52, 52, 1),
@@ -14,11 +14,11 @@
     --body-padding: 0em 0em 0em 0em;
     --edge-margin: 5px;
     --tah-button-border-color: none;
-    --tah-button-color: var(--tah-color-primary);
-    --tah-button-color-disabled: #dddddd80;
+    --tah-button-text-color: var(--tah-text-primary-color);
+    --tah-button-disabled-text-color: #dddddd80;
     --tah-button-height: 30px;
     --tah-button-min-width: 30px;
-    --tah-button-hover-color: var(--tah-color-primary-hover);
+    --tah-button-hover-text-color: var(--tah-text-hover-primary-color);
     --dorako-bg-glass: rgba(120, 120, 120, 0.5);
     --dorako-sheet-light: rgba(20, 20, 20, 0.6);
     --dorako-orange: rgba(255, 100, 0, 0.5);
@@ -94,7 +94,7 @@
 }
 
 #tah-character-name {
-    color: var(--tah-color-primary);
+    color: var(--tah-text-primary-color);
     font-size: var(--font-size-16);
     margin: 0px;
     padding: 0px;
@@ -135,10 +135,10 @@
 #tah-collapse-hud,
 #tah-buttons button {
     background: transparent;
-    border: 0px;
+    border: 0;
     line-height: unset;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 #tah-collapse-hud:hover,
@@ -150,7 +150,7 @@
 
 #tah-collapse-expand button > :is(.fa, .fas),
 #tah-buttons button > :is(.fa, .fas) {
-    color: var(--tah-color-primary);
+    color: var(--tah-text-primary-color);
     margin: 3px;
     padding: 3px;
     pointer-events: none;
@@ -184,7 +184,7 @@
     border: var(--tah-button-border-color);
     border-radius: var(--tah-border-radius);
     box-shadow: var(--glassy);
-    color: var(--tah-button-color);
+    color: var(--tah-button-text-color);
     display: flex;
     height: var(--tah-button-height);
     margin: 0px;
@@ -209,7 +209,7 @@
     background-color: var(--paizo-red);
     border: var(--tah-button-border-color);
     box-shadow: var(--glassy);
-    color: var(--tah-button-hover-color);
+    color: var(--tah-button-hover-text-color);
     font-weight: inherit;
     transition: background-color 0.15s ease-out 0s;
 }
@@ -219,12 +219,12 @@
     background-color: var(--paizo-blue) !important;
 }
 
-.tah-action-button.active.activeText > .tah-action-button-content::after {
+.tah-action-button.active.activeText > .tah-action-button-content:after {
     content: "*";
 }
 
 .tah-action-button.disabled {
-    color: var(--tah-button-color-disabled);
+    color: var(--tah-button-disabled-text-color);
 }
 
 .tah-action-button.disabled:hover {
@@ -248,7 +248,7 @@
 }
 
 .tah-button-content {
-    padding: 0px;
+    padding: 0;
 }
 
 .tah-group-button:hover:not(.disable-edit)
@@ -258,7 +258,7 @@
 }
 
 .tah-button-text {
-    padding: 0px 10px;
+    padding: 0 10px;
 }
 
 .tah-button-content > :is(.fa, .fas) {
@@ -274,7 +274,7 @@
     display: flex;
     gap: var(--tah-gap);
     overflow: hidden;
-    padding: 0px 10px;
+    padding: 0 10px;
     width: 100%;
 }
 
@@ -287,7 +287,7 @@
 
 #tah-collapse-expand:hover button > i,
 #tah-buttons button:hover > i {
-    color: var(--tah-color-primary-hover);
+    color: var(--tah-text-hover-primary-color);
 }
 
 #tah-edit-hud > :is(.fa, .fas) {
@@ -313,7 +313,7 @@
 
 .tah-list-groups {
     left: -10px;
-    padding: 0px 10px;
+    padding: 0 10px;
     position: relative;
 }
 
@@ -332,13 +332,14 @@
 .tah-tab-group > .tah-groups {
     display: none;
     left: -10px;
-    padding: 0px 10px;
+    margin-top: 1px;
+    padding: 0 10px;
     position: absolute;
 }
 
 .tah-list-groups,
 .tah-tab-groups > .tah-tab-group > .tah-groups > .tah-actions {
-    background: var(--tah-background);
+    background: var(--tah-background-color);
     border-radius: var(--tah-border-radius);
 }
 
@@ -352,6 +353,10 @@
 
 .tah-groups.expand-down {
     flex-direction: column;
+}
+
+.tah-tab-group > .tah-groups.expand-down {
+    padding-bottom: 10px;
 }
 
 .tah-tab-group > .tah-groups.expand-up {
@@ -389,6 +394,13 @@
     padding-top: 1px;
 }
 
+.tah-tab-group
+    > .tah-groups
+    > .tah-list-groups
+    > .tah-group[data-show-title="false"] {
+    padding-top: 3px;
+}
+
 .tah-tab-group[data-has-actions="true"] > .tah-groups,
 .tah-tab-group
     > .tah-groups
@@ -403,7 +415,7 @@
 
 .tah-subtitle {
     align-items: center;
-    color: var(--tah-color-primary);
+    color: var(--tah-text-primary-color);
     display: inline-flex;
     flex-wrap: wrap;
     gap: var(--tah-gap);
@@ -412,12 +424,12 @@
 }
 
 .tah-subtitle:hover {
-    color: var(--tah-color-primary-hover);
+    color: var(--tah-text-hover-primary-color);
     cursor: pointer;
 }
 
 .tah-subtitle-text {
-    color: var(--tah-color-primary);
+    color: var(--tah-text-primary-color);
 }
 
 .tah-subtitle > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {
@@ -455,14 +467,14 @@
 .tah-info1,
 .tah-info2,
 .tah-info3 {
-    color: var(--tah-color-secondary);
+    color: var(--tah-text-secondary-color);
     font-size: xx-small;
 }
 
 .tah-info1.tah-spotlight,
 .tah-info2.tah-spotlight,
 .tah-info3.tah-spotlight {
-    color: var(--tah-color-tertiary);
+    color: var(--tah-text-tertiary-color);
 }
 
 .tah-subtitle > :is(.tah-info1, .tah-info2, .tah-info3) {

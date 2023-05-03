@@ -1,4 +1,4 @@
-import { MODULE } from '../constants.js'
+import { CSS_STYLE, CUSTOM_STYLE, MODULE } from '../constants.js'
 
 /**
  * Console logger
@@ -312,20 +312,12 @@ export class Utils {
     /**
      * Enable stylesheet based on setting and disable all other stylesheets
      * @public
-     * @param {string} settingValue The 'style' setting value
+     * @param {string} style The 'style' setting value
      */
-    static switchCSS (settingValue) {
-        const styles = [
-            { setting: 'compact', file: 'tah-compact' },
-            { setting: 'dorakoUI', file: 'tah-dorako' },
-            { setting: 'foundryVTT', file: 'tah-foundry-vtt' },
-            { setting: 'highContrast', file: 'tah-high-contrast' },
-            { setting: 'pathfinder', file: 'tah-pathfinder' }
-        ]
-
-        for (const style of styles) {
-            const href = [`modules/${MODULE.ID}/`, `styles/${style.file}`]
-            if (style.setting === settingValue) {
+    static switchCSS (style) {
+        for (const [key, value] of Object.entries(CSS_STYLE)) {
+            const href = [`modules/${MODULE.ID}/`, `styles/${value.file}`]
+            if (key === style) {
                 Object.values(document.styleSheets).find(
                     (ss) => ss.href?.includes(href[0]) && ss.href?.includes(href[1])
                 ).disabled = false
@@ -333,6 +325,15 @@ export class Utils {
                 Object.values(document.styleSheets).find(
                     (ss) => ss.href?.includes(href[0]) && ss.href?.includes(href[1])
                 ).disabled = true
+            }
+        }
+
+        if (style === 'custom') {
+            for (const [key, value] of Object.entries(CUSTOM_STYLE)) {
+                const setting = Utils.getSetting(key)
+                if (setting) {
+                    document.querySelector(':root').style.setProperty(value.cssProperty, setting)
+                }
             }
         }
     }

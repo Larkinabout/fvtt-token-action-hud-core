@@ -52,25 +52,101 @@
         "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
         "name": "Button Background Color"
       },
-      "primaryColor": {
-        "hint": "Set the primary color of the HUD",
-        "name": "Primary Color"
-      },
-      "secondaryColor": {
-        "hint": "Set the secondary color of the HUD",
-        "name": "Secondary Color"
-      },
-      "tertiaryColor": {
-        "hint": "Set the tertiary color of the HUD",
-        "name": "Tertiary Color"
-      },
       "clickOpenCategory": {
         "hint": "Open categories by clicking instead of hovering",
         "name": "Click to Open Categories"
       },
+      "customStyle": {
+        "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
+        "label": "Customise Style",
+        "name": "Customise Style",
+        "form": {
+          "title": "Token Action HUD | Customise Style",
+          "active": "When Active",
+          "buttons": "Buttons",
+          "hovered": "When Hovered",
+          "text": "Text & Icons",
+          "toggleable": "Toggleable",
+          "reset": "Reset Defaults",
+          "save": "Save",
+          "backgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonHeight": {
+            "label": "Height",
+            "units": "(Pixels)"
+          },
+          "buttonBackgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonBorderPrimaryColor": {
+            "label": "Border Primary Color"
+          },
+          "buttonBorderSecondaryColor": {
+            "label": "Border Secondary Color"
+          },
+          "buttonTextColor": {
+            "label": "Button Text Color"
+          },
+          "buttonHoverBackgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonHoverBorderPrimaryColor": {
+            "label": "Border Primary Color"
+          },
+          "buttonHoverBorderSecondaryColor": {
+            "label": "Border Secondary Color"
+          },
+          "buttonHoverTextColor": {
+            "label": "Text Color"
+          },
+          "buttonToggleActiveBackgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonToggleActiveBorderPrimaryColor": {
+            "label": "Border Primary Color"
+          },
+          "buttonToggleActiveBorderSecondaryColor": {
+            "label": "Border Secondary Color"
+          },
+          "buttonToggleActiveTextColor": {
+            "label": "Text Color"
+          },
+          "buttonToggleHoverBackgroundColor": {
+            "label": "Background Color"
+          },
+          "buttonToggleHoverTextColor": {
+            "label": "Text Color"
+          },
+          "buttonToggleHoverBorderPrimaryColor": {
+            "label": "Border Primary Color"
+          },
+          "buttonToggleHoverBorderSecondaryColor": {
+            "label": "Border Secondary Color"
+          },
+          "textPrimaryColor": {
+            "label": "Primary Color"
+          },
+          "textSecondaryColor": {
+            "label": "Secondary Color"
+          },
+          "textTertiaryColor": {
+            "label": "Tertiary Color"
+          },
+          "textHoverPrimaryColor": {
+            "label": "Primary Color"
+          },
+          "textHoverSecondaryColor": {
+            "label": "Secondary Color"
+          },
+          "textHoverTertiaryColor": {
+            "label": "Tertiary Color"
+          }
+        }
+      },
       "debug": {
         "hint": "Enable debug logging in the console",
-        "name": "Enable Debugging"
+        "name": "Debug"
       },
       "direction": {
         "hint": "Ustaw kierunek, w którym HUD będzie się rozwijał",
@@ -143,7 +219,7 @@
       "hudDialogDescription": "Add and remove groups. Drag groups to change their order.",
       "hudDialogTitle": "Customise HUD",
       "clearButton": "Wyczyść",
-      "options": {
+      "settings": {
         "characterCount": {
           "label": "Characters per Word",
           "hint": "Limit the characters per word of the actions"

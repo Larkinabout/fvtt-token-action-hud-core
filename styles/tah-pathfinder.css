@@ -1,38 +1,35 @@
 :root {
-    --tah-background: #00000000;
+    --tah-background-color: #00000000;
     --tah-border-radius: 0;
-    --tah-color-primary: #dfc578;
-    --tah-color-primary-active: var(--tah-color-primary);
-    --tah-color-primary-hover: var(--tah-color-primary);
-    --tah-color-secondary: #5e0000;
-    --tah-color-secondary-active: var(--tah-color-secondary);
-    --tah-color-secondary-hover: var(--tah-color-secondary);
-    --tah-color-tertiary: #171f69;
-    --tah-color-tertiary-active: var(--tah-color-tertiary);
-    --tah-color-tertiary-hover: var(--tah-color-tertiary);
     --tah-font-size-10: 0.65rem;
     --tah-gap: 5px;
-    --tah-icon-color-disabled: #19181380;
-    --tah-subtitle-disabled-color: #75683f;
-    --tah-text-shadow: 1px 1px 1px rgb(0 0 0), 0px 1px 3px rgb(0 0 0);
+    --tah-subtitle-disabled-color: #75683F;
+
     --tah-button-background-color: #f3e9ca;
     --tah-button-background-image: url("../../../ui/parchment.jpeg") repeat;
     --tah-button-border-color: none;
     --tah-button-box-shadow: 0 0 0 1px #f3e9ca, 0 0 0 1px #f3e9ca,
         0 0 0 2px #a98f39, inset 0 0 8px 1px rgb(0 0 0 / 50%),
         inset 0 0 1px 1px #a98f39;
-    --tah-button-color: #191813;
-    --tah-button-color-disabled: #75683f;
+    --tah-button-disabled-text-color: #75683f;
+    --tah-button-text-color: #191813;
     --tah-button-font-family: var(--body-serif);
     --tah-button-height: 32px;
     --tah-button-min-width: 32px;
+    --tah-button-toggle-active-background-color: #ca6b6b;
     --tah-button-hover-background-color: #dfc578;
     --tah-button-hover-box-shadow: 0 0 0 1px #f3e9ca, 0 0 0 1px #f3e9ca,
         0 0 0 2px #a98f39, inset 0 0 8px 1px rgb(0 0 0 / 50%),
         inset 0 0 1px 1px #a98f39;
-    --tah-button-active-background-color: #ca6b6b;
-    --tah-button-toggle: #000000b3;
     --tah-button-toggle-hover-background-color: #d28c8c;
+    --tah-text-disabled-color: #19181380;
+    --tah-text-primary-color: #dfc578;
+    --tah-text-secondary-color: #5e0000;
+    --tah-text-tertiary-color: #171f69;
+    --tah-text-hover-primary-color: var(--tah-text-primary-color);
+    --tah-text-hover-secondary-color: var(--tah-text-secondary-color);
+    --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
+    --tah-text-shadow: 1px 1px 1px rgb(0 0 0), 0px 1px 3px rgb(0 0 0);
 }
 
 #token-action-hud {
@@ -54,11 +51,11 @@
 }
 
 #tah-character-name {
-    color: var(--tah-color-primary);
+    color: var(--tah-text-primary-color);
     font-size: var(--font-size-16);
     left: -2px;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     pointer-events: none;
     position: absolute;
     text-align: left;
@@ -100,10 +97,10 @@
 #tah-collapse-hud,
 #tah-buttons button {
     background: transparent;
-    border: 0px;
+    border: 0;
     line-height: unset;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 #tah-collapse-hud:hover,
@@ -115,7 +112,7 @@
 
 #tah-collapse-expand button > :is(.fa, .fas),
 #tah-buttons button > :is(.fa, .fas) {
-    color: var(--tah-color-primary);
+    color: var(--tah-text-primary-color);
     font-size: var(--font-size-12);
     margin: 3px;
     padding: 3px;
@@ -149,11 +146,11 @@
     border: var(--tah-button-border-color);
     border-radius: var(--tah-border-radius);
     box-shadow: var(--tah-button-box-shadow);
-    color: var(--tah-button-color);
+    color: var(--tah-button-text-color);
     display: flex;
     height: var(--tah-button-height);
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     position: relative;
     text-align: center;
     text-decoration: none;
@@ -175,20 +172,24 @@
 .tah-group-button:not(.disabled):hover {
     background-color: var(--tah-button-hover-background-color);
     box-shadow: var(--tah-button-hover-box-shadow);
-    color: var(--tah-button-hover-color);
+    color: var(--tah-button-hover-text-color);
+}
+
+.tah-action-button.toggle:not(.disabled):hover {
+    background: var(--tah-button-toggle-hover-background-color);
 }
 
 .tah-action-button.active,
 .tah-action.button.active.disabled:hover {
-    background: var(--tah-button-active-background-color);
+    background: var(--tah-button-toggle-active-background-color);
 }
 
-.tah-action-button.active.activeText > .tah-action-button-content::after {
+.tah-action-button.active.activeText > .tah-action-button-content:after {
     content: "*";
 }
 
 .tah-action-button.disabled {
-    color: var(--tah-button-color-disabled);
+    color: var(--tah-button-disabled-text-color);
 }
 
 .tah-action-button.disabled:hover {
@@ -199,12 +200,8 @@
     min-width: min-content;
 }
 
-.tah-action-button.toggle:not(.disabled):hover {
-    background: var(--tah-button-toggle-hover-background-color);
-}
-
 .tah-button-content {
-    padding: 0px;
+    padding: 0;
 }
 
 .tah-group-button:hover:not(.disable-edit)
@@ -214,7 +211,7 @@
 }
 
 .tah-button-text {
-    padding: 0px 10px;
+    padding: 0 10px;
 }
 
 .tah-button-content > :is(.fa, .fas) {
@@ -230,7 +227,7 @@
     display: flex;
     gap: var(--tah-gap);
     overflow: hidden;
-    padding: 0px 10px;
+    padding: 0 10px;
     width: 100%;
 }
 
@@ -243,7 +240,7 @@
 
 #tah-collapse-expand:hover button > i,
 #tah-buttons button:hover > i {
-    color: var(--tah-color-primary-hover);
+    color: var(--tah-text-hover-primary-color);
     text-shadow: 0 0 8px var(--color-shadow-primary);
 }
 
@@ -270,7 +267,7 @@
 
 .tah-list-groups {
     left: -10px;
-    padding: 0px 10px;
+    padding: 0 10px;
     position: relative;
 }
 
@@ -289,13 +286,14 @@
 .tah-tab-group > .tah-groups {
     display: none;
     left: -10px;
-    padding: 0px 10px;
+    margin-top: 1px;
+    padding: 0 10px;
     position: absolute;
 }
 
 .tah-list-groups,
 .tah-tab-groups > .tah-tab-group > .tah-groups > .tah-actions {
-    background: var(--tah-background);
+    background: var(--tah-background-color);
     border-radius: var(--tah-border-radius);
 }
 
@@ -309,6 +307,10 @@
 
 .tah-groups.expand-down {
     flex-direction: column;
+}
+
+.tah-tab-group > .tah-groups.expand-down {
+    padding-bottom: 10px;
 }
 
 .tah-tab-group > .tah-groups.expand-up {
@@ -346,6 +348,13 @@
     padding-top: 1px;
 }
 
+.tah-tab-group
+    > .tah-groups
+    > .tah-list-groups
+    > .tah-group[data-show-title="false"] {
+    padding-top: 5px;
+}
+
 .tah-tab-group[data-has-actions="true"] > .tah-groups,
 .tah-tab-group
     > .tah-groups
@@ -360,7 +369,7 @@
 
 .tah-subtitle {
     align-items: center;
-    color: var(--tah-color-primary);
+    color: var(--tah-text-primary-color);
     display: inline-flex;
     flex-wrap: wrap;
     font-size: var(--font-size-13);
@@ -371,12 +380,12 @@
 }
 
 .tah-subtitle:hover {
-    color: var(--tah-color-primary-hover);
+    color: var(--tah-text-hover-primary-color);
     cursor: pointer;
 }
 
 .tah-subtitle-text {
-    color: var(--tah-color-primary);
+    color: var(--tah-text-primary-color);
 }
 
 .tah-subtitle > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {
@@ -414,14 +423,14 @@
 .tah-info1,
 .tah-info2,
 .tah-info3 {
-    color: var(--tah-color-secondary);
+    color: var(--tah-text-secondary-color);
     font-size: xx-small;
 }
 
 .tah-info1.tah-spotlight,
 .tah-info2.tah-spotlight,
 .tah-info3.tah-spotlight {
-    color: var(--tah-color-tertiary);
+    color: var(--tah-text-tertiary-color);
 }
 
 .tah-subtitle > :is(.tah-info1, .tah-info2, .tah-info3) {
@@ -447,7 +456,7 @@
 }
 
 .tah-icon-disabled {
-    color: var(--tah-icon-color-disabled);
+    color: var(--tah-text-disabled-color);
 }
 
 .tah-subtitle > .tah-icon > :is(.fa, .fas) {

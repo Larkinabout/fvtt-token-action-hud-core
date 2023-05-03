@@ -1,3 +1,4 @@
+import { DataHandler } from '../data-handler.js'
 import { GenericActionHandler } from './generic-action-handler.js'
 import { CompendiumActionHandler } from './compendium-action-handler.js'
 import { MacroActionHandler } from './macro-action-handler.js'
@@ -264,7 +265,8 @@ export class ActionHandler {
     async _getSavedActorGroups () {
         if (!this.actor) return new Map()
         Logger.debug('Retrieving groups from actor...', { actor: this.actor })
-        const actorGroups = Utils.deepClone(this.actor.getFlag(MODULE.ID, 'groups') ?? [])
+        const actorGroups = await DataHandler.getData('actor', this.actor.id) ?? null
+        if (!actorGroups) return null
         for (const group of Object.entries(actorGroups)) {
             group[1].nestId = group[0]
         }
@@ -279,7 +281,7 @@ export class ActionHandler {
     async _getSavedUserGroups () {
         const user = game.user
         Logger.debug('Retrieving groups from user...', { user })
-        const userGroups = Utils.getUserFlag('groups') ?? this.defaultLayout
+        const userGroups = await DataHandler.getData('user', user.id) ?? this.defaultLayout
         for (const group of Object.entries(userGroups)) {
             group[1].nestId = group[0]
         }
@@ -387,10 +389,7 @@ export class ActionHandler {
     async saveGroupSettings (groupData) {
         const group = this._getGroup(groupData)
         group.settings = { ...group.settings, ...groupData.settings }
-        await Utils.setActorFlag(`groups.${group.nestId}.settings`, group.settings)
-        if (groupData.type !== 'system-derived') {
-            Utils.setUserFlag(`groups.${group.nestId}.settings`, group.settings)
-        }
+        this.saveGroups({ saveActor: true, saveUser: true })
     }
 
     /**
@@ -523,8 +522,7 @@ export class ActionHandler {
         for (const group of Object.values(this.groups)) {
             actorGroups[group.nestId] = this._getReducedGroupData(group, true)
         }
-        await Utils.unsetActorFlag('groups')
-        await Utils.setActorFlag('groups', actorGroups)
+        await DataHandler.saveData('actor', this.actor.id, actorGroups)
         Logger.debug('Actor groups saved', { actorGroups })
     }
 
@@ -541,8 +539,7 @@ export class ActionHandler {
                 userGroups[group.nestId] = this._getReducedGroupData(group, false)
             }
         }
-        await Utils.unsetUserFlag('groups')
-        await Utils.setUserFlag('groups', userGroups)
+        await DataHandler.saveData('user', game.userId, userGroups)
         Logger.debug('User groups saved', { userGroups })
     }
 

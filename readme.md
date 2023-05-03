@@ -39,7 +39,7 @@ Token Action HUD is a repositionable HUD of actions for a selected token.
 For other systems, continue to use the [original Token Action HUD](https://foundryvtt.com/packages/token-action-hud).
 
 ## Recommended Modules
-Token Action HUD uses either the [Color Picker](https://foundryvtt.com/packages/color-picker), [libThemer](https://foundryvtt.com/packages/lib-themer) or [VTTColorSettings](https://foundryvtt.com/packages/colorsettings) library modules for its color picker settings. Only one is required.
+Token Action HUD uses the [Color Picker](https://foundryvtt.com/packages/color-picker) library module for its color picker settings.
 
 # Support
 

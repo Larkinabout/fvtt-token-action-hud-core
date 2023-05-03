@@ -935,6 +935,7 @@ export class TokenActionHud extends Application {
         this.isUpdatePending = false
         this.isUpdating = true
         Logger.debug('Updating hud...', trigger)
+
         const previousActorId = this.actor?.id
         const controlledTokens = Utils.getControlledTokens()
         const character = this._getCharacter(controlledTokens)

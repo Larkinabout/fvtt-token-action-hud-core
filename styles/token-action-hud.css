@@ -22,3 +22,13 @@
 .tah-radio-group {
     text-align: right;
 }
+
+.tah-fieldset {
+    border: 2px groove #FFFFFF;
+    padding: 3px;
+  }
+
+.tah-fieldset > legend {
+    color: #6f6f6f;
+    text-shadow: 1px 1px 1px #FFFFFF;
+}

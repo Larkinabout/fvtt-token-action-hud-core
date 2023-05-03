@@ -1,4 +1,5 @@
-import { MODULE, STYLE_CLASS } from './constants.js'
+import { CustomStyleForm } from './utilities/custom-style-form.js'
+import { CUSTOM_STYLE, MODULE, STYLE_CLASS } from './constants.js'
 import { Logger, Utils } from './utilities/utils.js'
 
 function onChangeFunction (value) { if (game.tokenActionHud) game.tokenActionHud.updateSettings() }
@@ -26,19 +27,6 @@ export const registerSettings = function (systemManager, rollHandlers) {
         default: false
     })
 
-    game.settings.register(MODULE.ID, 'rollHandler', {
-        name: Utils.i18n('tokenActionHud.settings.rollHandler.name'),
-        hint: Utils.i18n('tokenActionHud.settings.rollHandler.hint'),
-        scope: 'world',
-        config: true,
-        type: String,
-        choices: rollHandlers,
-        default: 'core',
-        onChange: (value) => {
-            onChangeFunction(value)
-        }
-    })
-
     game.settings.register(MODULE.ID, 'style', {
         name: Utils.i18n('tokenActionHud.settings.style.name'),
         hint: Utils.i18n('tokenActionHud.settings.style.hint'),
@@ -51,11 +39,22 @@ export const registerSettings = function (systemManager, rollHandlers) {
             dorakoUI: 'Dorako UI',
             foundryVTT: 'Foundry VTT',
             highContrast: 'High Contrast',
-            pathfinder: 'Pathfinder'
+            pathfinder: 'Pathfinder',
+            custom: 'Custom'
         },
         onChange: (value) => {
             Utils.switchCSS(value)
         }
+    })
+
+    game.settings.registerMenu(MODULE.ID, 'customStyle', {
+        name: Utils.i18n('tokenActionHud.settings.customStyle.name'),
+        label: Utils.i18n('tokenActionHud.settings.customStyle.label'),
+        hint: Utils.i18n('tokenActionHud.settings.customStyle.hint'),
+        icon: 'fas fa-palette',
+        type: CustomStyleForm,
+        restricted: true,
+        scope: 'client'
     })
 
     game.settings.register(MODULE.ID, 'direction', {
@@ -116,8 +115,6 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
-    initColorSettings()
-
     game.settings.register(MODULE.ID, 'enable', {
         name: Utils.i18n('tokenActionHud.settings.enable.name'),
         hint: Utils.i18n('tokenActionHud.settings.enable.hint'),
@@ -125,6 +122,19 @@ export const registerSettings = function (systemManager, rollHandlers) {
         config: true,
         type: Boolean,
         default: true,
+        onChange: (value) => {
+            onChangeFunction(value)
+        }
+    })
+
+    game.settings.register(MODULE.ID, 'rollHandler', {
+        name: Utils.i18n('tokenActionHud.settings.rollHandler.name'),
+        hint: Utils.i18n('tokenActionHud.settings.rollHandler.hint'),
+        scope: 'world',
+        config: true,
+        type: String,
+        choices: rollHandlers,
+        default: 'core',
         onChange: (value) => {
             onChangeFunction(value)
         }
@@ -264,171 +274,23 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
+    registerCustomStyleSettings()
+
     systemManager.doRegisterSettings(onChangeFunction)
 
     Logger.debug('Available roll handlers', { rollHandlers })
 }
 
 /**
- * Initiate color settings
- */
-function initColorSettings () {
-    // Determine color picker module
-    let module = null
-    if (game.modules.get('lib-themer')?.active) {
-        module = 'lib-themer'
-    } else if (game.modules.get('color-picker')?.active) {
-        module = 'color-picker'
-    } else if (game.modules.get('colorsettings')?.active) {
-        module = 'colorsettings'
-    }
-
-    // Register settings based on module
-    switch (module) {
-    case 'lib-themer':
-        Hooks.once('lib-themer.Ready', (API) => {
-            API.register({
-                id: MODULE.ID,
-                title: game.modules.get(MODULE.ID).title,
-                '--tah-background': {
-                    name: 'tokenActionHud.settings.background.name',
-                    hint: 'tokenActionHud.settings.background.hint',
-                    type: 'color',
-                    default: '#00000000'
-                },
-                '--tah-button-background-color-editable': {
-                    name: 'tokenActionHud.settings.buttonBackgroundColor.name',
-                    hint: 'tokenActionHud.settings.buttonBackgroundColor.hint',
-                    type: 'color',
-                    default: '#00000080',
-                    colors: {
-                        buttons: true
-                    }
-                }
-            })
-        })
-        break
-    case 'color-picker':
-        if (typeof ColorPicker === 'object') {
-            registerColorSettings(module)
-        } else {
-            Hooks.once('colorPickerReady', () => {
-                registerColorSettings(module)
-            })
-        }
-        break
-    case 'colorsettings':
-        Hooks.once('ready', () => {
-            try {
-                window.Ardittristan.ColorSetting.tester
-                registerColorSettings(module)
-            } catch {}
-        })
-        break
-    }
-}
-
-/**
  * Register color settings
- * @param {*} module The color picker module
  */
-function registerColorSettings (module) {
-    const backgroundColor = {
-        key: 'background',
-        name: Utils.i18n('tokenActionHud.settings.background.name'),
-        hint: Utils.i18n('tokenActionHud.settings.background.hint'),
-        scope: 'client',
-        restricted: false,
-        default: '#00000000',
-        onChange: (value) => {
-            document
-                .querySelector(':root')
-                .style.setProperty('--tah-background', value)
-            onChangeFunction(value)
-        }
-    }
-
-    const buttonBackgroundColor = {
-        key: 'buttonBackgroundColor',
-        name: Utils.i18n('tokenActionHud.settings.buttonBackgroundColor.name'),
-        hint: Utils.i18n('tokenActionHud.settings.buttonBackgroundColor.hint'),
-        scope: 'client',
-        restricted: true,
-        default: '#00000080',
-        onChange: (value) => {
-            document.querySelector(':root').style.setProperty('--tah-button-background-color-editable', value)
-            onChangeFunction(value)
-        }
-    }
-
-    // Color Picker module
-    if (module === 'color-picker') {
-        const pickerOptions = {
-            format: 'hexa',
-            alphaChannel: true
-        }
-
-        ColorPicker.register(
-            MODULE.ID,
-            backgroundColor.key,
-            {
-                name: backgroundColor.name,
-                hint: backgroundColor.hint,
-                scope: backgroundColor.scope,
-                restricted: backgroundColor.restricted,
-                default: backgroundColor.default,
-                onChange: backgroundColor.onChange
-            },
-            pickerOptions
-        )
-
-        ColorPicker.register(
-            MODULE.ID,
-            buttonBackgroundColor.key,
-            {
-                name: buttonBackgroundColor.name,
-                hint: buttonBackgroundColor.hint,
-                scope: buttonBackgroundColor.scope,
-                restricted: buttonBackgroundColor.restricted,
-                default: buttonBackgroundColor.default,
-                onChange: buttonBackgroundColor.onChange
-            },
-            pickerOptions
-        )
-
-    // Color Settings module
-    } else if (module === 'colorsettings') {
-        new window.Ardittristan.ColorSetting(MODULE.ID, backgroundColor.key, {
-            name: backgroundColor.name,
-            hint: backgroundColor.hint,
-            scope: backgroundColor.scope,
-            restricted: backgroundColor.restricted,
-            defaultColor: backgroundColor.default,
-            onChange: backgroundColor.onChange,
-            insertAfter: `${MODULE.ID}.scale`
-        })
-
-        new window.Ardittristan.ColorSetting(MODULE.ID, buttonBackgroundColor.key, {
-            name: buttonBackgroundColor.name,
-            hint: buttonBackgroundColor.hint,
-            scope: buttonBackgroundColor.scope,
-            restricted: buttonBackgroundColor.restricted,
-            defaultColor: buttonBackgroundColor.default,
-            onChange: buttonBackgroundColor.onChange,
-            insertAfter: `${MODULE.ID}.${backgroundColor.key}`
+function registerCustomStyleSettings () {
+    for (const [key, value] of Object.entries(CUSTOM_STYLE)) {
+        game.settings.register(MODULE.ID, key, {
+            scope: 'client',
+            config: false,
+            type: value.type,
+            default: value.default
         })
     }
-
-    document
-        .querySelector(':root')
-        .style.setProperty(
-            '--tah-background',
-            Utils.getSetting('background') ?? '#00000000'
-        )
-    document
-        .querySelector(':root')
-        .style.setProperty(
-            '--tah-button-background-color-editable',
-            Utils.getSetting('buttonBackgroundColor') ?? '#000000b3'
-        )
 }

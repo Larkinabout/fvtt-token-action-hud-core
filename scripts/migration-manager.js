@@ -1,4 +1,5 @@
 import { MODULE } from './constants.js'
+import { DataHandler } from './data-handler.js'
 import { Logger, Utils } from './utilities/utils.js'
 
 /**
@@ -46,8 +47,7 @@ export class MigrationManager {
                                 userGroups[groupClone.nestId] = groupClone
                             }
                         }
-                        await Utils.unsetUserFlag('groups')
-                        await Utils.setUserFlag('groups', userGroups)
+                        await DataHandler.saveData('user', game.userId, userGroups)
                     }
                 }
 
@@ -68,11 +68,8 @@ export class MigrationManager {
                                 }
                                 actorGroups[groupClone.nestId] = groupClone
                             }
-                            await actor.unsetFlag(MODULE.ID, 'groups')
-                            await actor.setFlag(MODULE.ID, 'groups', actorGroups)
-                            if (actor.getFlag(MODULE.ID, 'groups')) {
-                                actor.unsetFlag(MODULE.ID, 'categories')
-                            }
+                            await DataHandler.saveData('actor', actor.id, actorGroups)
+                            actor.unsetFlag(MODULE.ID, 'categories')
                         }
                     }
                 }
@@ -94,18 +91,13 @@ export class MigrationManager {
                                 }
                                 actorGroups[groupClone.nestId] = groupClone
                             }
-                            await token.actor.unsetFlag(MODULE.ID, 'groups')
-                            await token.actor.setFlag(MODULE.ID, 'groups', actorGroups)
-                            if (token.actor.getFlag(MODULE.ID, 'groups')) {
-                                token.actor.unsetFlag(MODULE.ID, 'categories')
-                            }
+                            await DataHandler.saveData('actor', token.actor.id, actorGroups)
+                            token.actor.unsetFlag(MODULE.ID, 'categories')
                         }
                     }
                 }
 
-                if (Utils.getUserFlag('groups')) {
-                    Utils.unsetUserFlag('categories')
-                }
+                Utils.unsetUserFlag('categories')
             }
 
             Logger.info('Successfully migrated flags', true)
