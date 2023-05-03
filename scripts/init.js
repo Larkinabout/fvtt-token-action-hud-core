@@ -11,6 +11,14 @@ import { Logger, Utils } from './utilities/utils.js'
 
 let systemManager
 let module
+let socket
+
+Hooks.once('socketlib.ready', () => {
+    socket = socketlib.registerModule(MODULE.ID)
+    socket.register('createDirectories', DataHandler.createDirectories)
+    socket.register('saveData', DataHandler.saveData)
+    socket.register('getData', DataHandler.getData)
+})
 
 Hooks.on('ready', async () => {
     module = game.modules.get(MODULE.ID)
@@ -32,7 +40,7 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
     const isCompatible = await Utils.checkModuleCompatibility(systemModule.api.requiredCoreModuleVersion)
     if (!isCompatible) return
 
-    await DataHandler.createDirectories()
+    await socket.executeAsGM('createDirectories')
 
     // Create new SystemManager and register core and system module settings
     systemManager = new systemModule.api.SystemManager(MODULE.ID)
@@ -81,6 +89,7 @@ Hooks.on('canvasReady', async () => {
         // If no Token Action Hud application exists, create a new TokenActionHud and initialise it
         if (!game.tokenActionHud) {
             game.tokenActionHud = new TokenActionHud(module, systemManager)
+            game.tokenActionHud.socket = socket
             await game.tokenActionHud.init()
         }
 

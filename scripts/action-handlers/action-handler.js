@@ -265,7 +265,7 @@ export class ActionHandler {
     async _getSavedActorGroups () {
         if (!this.actor) return new Map()
         Logger.debug('Retrieving groups from actor...', { actor: this.actor })
-        const actorGroups = await DataHandler.getData('actor', this.actor.id) ?? null
+        const actorGroups = await game.tokenActionHud.socket.executeAsGM('getData', 'actor', this.actor.id) ?? null
         if (!actorGroups) return null
         for (const group of Object.entries(actorGroups)) {
             group[1].nestId = group[0]
@@ -281,7 +281,7 @@ export class ActionHandler {
     async _getSavedUserGroups () {
         const user = game.user
         Logger.debug('Retrieving groups from user...', { user })
-        const userGroups = await DataHandler.getData('user', user.id) ?? this.defaultLayout
+        const userGroups = await game.tokenActionHud.socket.executeAsGM('getData', 'user', user.id) ?? this.defaultLayout
         for (const group of Object.entries(userGroups)) {
             group[1].nestId = group[0]
         }
@@ -522,7 +522,7 @@ export class ActionHandler {
         for (const group of Object.values(this.groups)) {
             actorGroups[group.nestId] = this._getReducedGroupData(group, true)
         }
-        await DataHandler.saveData('actor', this.actor.id, actorGroups)
+        await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', this.actor.id, actorGroups)
         Logger.debug('Actor groups saved', { actorGroups })
     }
 
@@ -539,7 +539,7 @@ export class ActionHandler {
                 userGroups[group.nestId] = this._getReducedGroupData(group, false)
             }
         }
-        await DataHandler.saveData('user', game.userId, userGroups)
+        await game.tokenActionHud.socket.executeAsGM('saveData', 'user', game.userId, userGroups)
         Logger.debug('User groups saved', { userGroups })
     }
 

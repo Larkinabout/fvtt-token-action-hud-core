@@ -94,7 +94,11 @@
   "packs": [],
   "relationships": {
     "systems": [],
-    "requires": [],
+    "requires": [
+      {
+        "id": "socketlib"
+      }
+    ],
     "optional": [{
       "id": "color-picker",
       "reason": "To enable color pickers in the module settings"
@@ -106,7 +110,7 @@
       }]
     }
   },
-  "socket": false,
+  "socket": true,
   "manifest": "This is auto replaced",
   "download": "This is auto replaced",
   "protected": false,
