@@ -40,6 +40,7 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
     const isCompatible = await Utils.checkModuleCompatibility(systemModule.api.requiredCoreModuleVersion)
     if (!isCompatible) return
 
+    // Create directories for json data
     await socket.executeAsGM('createDirectories')
 
     // Create new SystemManager and register core and system module settings

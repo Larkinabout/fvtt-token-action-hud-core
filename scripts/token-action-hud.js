@@ -846,70 +846,67 @@ export class TokenActionHud extends Application {
      * @public
      */
     async reset () {
-        await this.resetUserFlags()
+        await this.resetUserData()
         this.resetPosition()
         Logger.info('HUD reset', true)
     }
 
     /**
-     * Reset the actor flag
+     * Reset actor data
      */
-    async resetActorFlag () {
-        Logger.debug('Resetting actor flag...')
+    async resetActorData () {
+        Logger.debug('Resetting actor data...')
 
-        await this.actor.unsetFlag(MODULE.ID, 'groups')
+        await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', this.actor.id, {})
 
-        const token = game.canvas.tokens.objects.children.find(token => token?.actor?.id === this.actor.id)
-        if (token) {
-            Logger.debug(`Resetting flags for actor [${token.actor.id}]`, { actor: token.actor })
-            await token.actor.unsetFlag(MODULE.ID, 'groups')
-        }
+        Logger.debug('Actor data reset')
 
-        Logger.debug('Actor flag reset')
-
-        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetActorFlag' } }
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetActorData' } }
         this.update(trigger)
     }
 
     /**
-     * Reset the actor flags
+     * Reset all actor data
      * @public
      */
-    async resetActorFlags () {
-        Logger.debug('Resetting actor flags...')
+    async resetAllActorData () {
+        Logger.debug('Resetting all actor data...')
 
-        const actors = game.actors.filter(actor => actor.getFlag(MODULE.ID, 'groups'))
-        if (actors) {
-            actors.forEach(actor => {
-                Logger.debug(`Resetting flags for actor [${actor.id}]`, { actor })
-                actor.unsetFlag(MODULE.ID, 'groups')
-            })
+        for (const actor of game.actors) {
+            Logger.debug(`Resetting flags for actor [${actor.id}]`, { actor })
+            await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', actor.id, {})
         }
+        Logger.debug('All actor data reset')
 
-        const tokens = game.canvas.tokens.objects.children.filter(token => token?.actor?.getFlag(MODULE.ID, 'groups'))
-        if (tokens) {
-            tokens.forEach(token => {
-                Logger.debug(`Resetting flags for actor [${token.actor.id}]`, { actor: token.actor })
-                token.actor.unsetFlag(MODULE.ID, 'groups')
-            })
-        }
-
-        Logger.debug('Actor flags reset')
-
-        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetActorFlags' } }
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetAllActorData' } }
         this.update(trigger)
     }
 
     /**
-     * Reset user flags
+     * Reset user data
      * @public
      */
-    async resetUserFlags () {
-        Logger.debug('Resetting user flags...')
-        await Utils.unsetUserFlag('groups')
-        Logger.debug('User flags reset')
+    async resetUserData () {
+        Logger.debug('Resetting user data...')
+        await game.tokenActionHud.socket.executeAsGM('saveData', 'user', game.userId, {})
+        Logger.debug('User data reset')
         this.actionHandler.resetActionHandler()
-        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetUserFlags' } }
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetUserData' } }
+        this.update(trigger)
+    }
+
+    /**
+     * Reset all user data
+     * @public
+     */
+    async resetAllUserData () {
+        Logger.debug('Resetting all user data...')
+        for (const user of game.users) {
+            await game.tokenActionHud.socket.executeAsGM('saveData', 'user', user.id, {})
+        }
+        Logger.debug('All user data reset')
+        this.actionHandler.resetActionHandler()
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetAllUserData' } }
         this.update(trigger)
     }
 

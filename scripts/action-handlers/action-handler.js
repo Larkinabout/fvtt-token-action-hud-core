@@ -281,7 +281,8 @@ export class ActionHandler {
     async _getSavedUserGroups () {
         const user = game.user
         Logger.debug('Retrieving groups from user...', { user })
-        const userGroups = await game.tokenActionHud.socket.executeAsGM('getData', 'user', user.id) ?? this.defaultLayout
+        const savedUserData = await game.tokenActionHud.socket.executeAsGM('getData', 'user', user.id) ?? {}
+        const userGroups = (Object.keys(savedUserData).length) ? savedUserData : this.defaultLayout
         for (const group of Object.entries(userGroups)) {
             group[1].nestId = group[0]
         }

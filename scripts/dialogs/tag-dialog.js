@@ -138,7 +138,7 @@ export class TagDialog extends FormApplication {
                     icon: '<i class="fas fa-check"></i>',
                     label: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.buttons.yes'),
                     callback: async () => {
-                        await game.tokenActionHud.resetActorFlag()
+                        await game.tokenActionHud.resetActorData()
                         Logger.info('Actions reset', true)
                     }
                 },
