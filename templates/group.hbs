@@ -10,21 +10,22 @@
             {{~#if info3~}}<div class="tah-info3">{{info3}}</div>{{~/if~}}
         </span>
     </button>
-    <div class="tah-groups expand-down">
-        {{~#if (true groups.lists.length)~}}
-        <div class="tah-list-groups">
-            {{#each groups.lists}}
-            {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
-            {{/each}}
+    <div class="tah-groups-container">
+        <div class="tah-groups">
+            {{~#if (true groups.lists.length)~}}
+            <div class="tah-list-groups">
+                {{#each groups.lists}}
+                {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
+                {{/each}}
+            </div>
+            {{~/if~}}
+            {{~#if (true groups.tabs.length)~}}
+            <div class="tah-tab-groups">
+                {{#each groups.tabs}}
+                {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
+                {{/each}}
+            </div>
+            {{~/if~}}
         </div>
-        {{~/if~}}
-        {{~#if (true groups.tabs.length)~}}
-        <div class="tah-tab-groups">
-            {{#each groups.tabs}}
-            {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
-            {{/each}}
-        </div>
-        {{~/if~}}
-        
     </div>
 </div>

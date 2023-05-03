@@ -636,16 +636,16 @@ export class TokenActionHud extends Application {
     applySettings () {
         this.autoDirection = this._getAutoDirection()
         if (this.autoDirection === 'up') {
-            $(document).find('.tah-groups').removeClass('expand-down')
-            $(document).find('.tah-groups').addClass('expand-up')
-            $(document).find('.tah-groups').removeClass('expand-down')
-            $(document).find('.tah-groups').addClass('expand-up')
+            $(document).find('.tah-groups-container').removeClass('expand-down')
+            $(document).find('.tah-groups-container').addClass('expand-up')
+            $(document).find('.tah-groups-container').removeClass('expand-down')
+            $(document).find('.tah-groups-container').addClass('expand-up')
             $(document).find('#tah-character-name').addClass('tah-hidden')
         } else {
-            $(document).find('.tah-groups').addClass('expand-down')
-            $(document).find('.tah-groups').removeClass('expand-up')
-            $(document).find('.tah-groups').addClass('expand-down')
-            $(document).find('.tah-groups').removeClass('expand-up')
+            $(document).find('.tah-groups-container').addClass('expand-down')
+            $(document).find('.tah-groups-container').removeClass('expand-up')
+            $(document).find('.tah-groups-container').addClass('expand-down')
+            $(document).find('.tah-groups-container').removeClass('expand-up')
             $(document).find('#tah-character-name').removeClass('tah-hidden')
         }
     }
