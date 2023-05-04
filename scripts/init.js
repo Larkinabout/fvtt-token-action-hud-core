@@ -40,6 +40,14 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
     const isCompatible = await Utils.checkModuleCompatibility(systemModule.api.requiredCoreModuleVersion)
     if (!isCompatible) return
 
+    if (!game.modules.get('socketlib') || !game.modules.get('socketlib')?.active) {
+        Logger.error(
+            'This module requires the \'socketlib\' module to be installed and enabled.',
+            true
+        )
+        return
+    }
+
     // Create directories for json data
     await socket.executeAsGM('createDirectories')
 
@@ -79,8 +87,9 @@ Hooks.on('canvasReady', async () => {
             ) {
                 const firstStartup = Utils.getSetting('startup') === false
                 if (firstStartup) {
-                    ui.notifications.notify(
-                        "Token Action Hud: To enable color pickers in this module's settings, install the 'Color Picker' module."
+                    Logger.info(
+                        'To enable color pickers in this module\'s settings, install the \'Color Picker\' module.',
+                        true
                     )
                     Utils.setSetting('startup', true)
                 }
