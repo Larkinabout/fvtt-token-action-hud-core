@@ -14,21 +14,21 @@ export class DataHandler {
                     Logger.debug('Failed to create directory: ' + moduleDirectory)
                 }
             })
-        const worldDirectory = `${MODULE.ID}\\${game.world.id}`
+        const worldDirectory = `${MODULE.ID}/${game.world.id}`
         await FilePicker.browse(DATA_FOLDER, worldDirectory)
             .catch(async _ => {
                 if (!await FilePicker.createDirectory(DATA_FOLDER, worldDirectory, {})) {
                     Logger.debug('Failed to create directory: ' + worldDirectory)
                 }
             })
-        const actorDirectory = `${worldDirectory}\\actor`
+        const actorDirectory = `${worldDirectory}/actor`
         await FilePicker.browse(DATA_FOLDER, actorDirectory)
             .catch(async _ => {
                 if (!await FilePicker.createDirectory(DATA_FOLDER, actorDirectory, {})) {
                     Logger.debug('Failed to create directory: ' + actorDirectory)
                 }
             })
-        const userDirectory = `${worldDirectory}\\user`
+        const userDirectory = `${worldDirectory}/user`
         await FilePicker.browse(DATA_FOLDER, userDirectory)
             .catch(async _ => {
                 if (!await FilePicker.createDirectory(DATA_FOLDER, userDirectory, {})) {
@@ -45,7 +45,7 @@ export class DataHandler {
      */
     static async saveData (type, id, data) {
         // Get the folder path
-        const folderPath = `${MODULE.ID}\\${game.world.id}\\${type}`
+        const folderPath = `${MODULE.ID}/${game.world.id}/${type}`
         // Generate the system safe filename
         const fileName = encodeURI(`${id}.json`)
         // Create the File and contents
@@ -63,9 +63,9 @@ export class DataHandler {
      * @returns {object}    The data
      */
     static async getData (type, id) {
-        const folderPath = `${MODULE.ID}\\${game.world.id}\\${type}`
+        const folderPath = `${MODULE.ID}/${game.world.id}/${type}`
         const fileName = encodeURI(`${id}.json`)
-        const filePath = `${folderPath}\\${fileName}`
+        const filePath = `${folderPath}/${fileName}`
         let exists = true
         try {
             await FilePicker.browse('data', filePath)
