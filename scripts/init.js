@@ -105,7 +105,7 @@ Hooks.on('canvasReady', async () => {
 
         Hooks.on('updateToken', (token, data, diff) => {
             // If it's an X or Y change, assume the token is just moving
-            if (Object.hasOwn(diff, 'y') || Object.hasOwn('diff', 'x')) return
+            if (Object.hasOwn(data, 'y') || Object.hasOwn(data, 'x')) return
             if (game.tokenActionHud.isValidTokenChange(token, data)) {
                 const trigger = { type: 'hook', name: 'updateToken', data: [token, data, diff] }
                 game.tokenActionHud.update(trigger)
