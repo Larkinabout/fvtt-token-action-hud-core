@@ -56,7 +56,7 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
     systemManager.registerSettings()
 
     // Initialise MigrationManager
-    const migrationManager = new MigrationManager(systemModule.id)
+    const migrationManager = new MigrationManager(systemModule.id, socket)
     await migrationManager.init()
 
     // Set stylesheet to 'style' core module setting
