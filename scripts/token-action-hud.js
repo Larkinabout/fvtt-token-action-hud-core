@@ -809,7 +809,7 @@ export class TokenActionHud extends Application {
      * @param {string|array} toUserIds The user ids to copy to
      */
     async copy (fromUserId, toUserIds) {
-        const isCopied = await this._copyUserFlags(fromUserId, toUserIds)
+        const isCopied = await this._copyUserData(fromUserId, toUserIds)
         if (isCopied) {
             Logger.info('HUD copied', true)
         } else {
@@ -823,21 +823,23 @@ export class TokenActionHud extends Application {
      * @param {string} fromUserId      The user id to copy from
      * @param {string|array} toUserIds The user ids to copy to
      */
-    async _copyUserFlags (fromUserId, toUserIds) {
+    async _copyUserData (fromUserId, toUserIds) {
         // Exit if parameters are missing
         if (!fromUserId || !toUserIds.length) return false
 
-        Logger.debug('Copying user flags...')
+        Logger.debug('Copying user data...')
 
-        const fromGroups = game.users.get(fromUserId).getFlag(MODULE.ID, 'groups')
+        const fromGroup = await game.tokenActionHud.socket.executeAsGM('getData', 'user', fromUserId)
 
         if (typeof toUserIds === 'string') {
-            game.users.get(toUserIds).setFlag(MODULE.ID, 'groups', fromGroups)
+            await game.tokenActionHud.socket.executeAsGM('saveData', 'user', toUserIds, fromGroup)
         } else if (Array.isArray(toUserIds)) {
-            toUserIds.forEach(userId => { game.users.get(userId).setFlag(MODULE.ID, 'groups', fromGroups) })
+            for (const userId of toUserIds) {
+                await game.tokenActionHud.socket.executeAsGM('saveData', 'user', userId, fromGroup)
+            }
         }
 
-        Logger.debug('User flags copied')
+        Logger.debug('User data copied')
         return true
     }
 

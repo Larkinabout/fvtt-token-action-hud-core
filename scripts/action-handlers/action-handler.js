@@ -75,6 +75,7 @@ export class ActionHandler {
             this._buildMacroActions()
         ])
         await this.buildFurtherActions()
+        await this._updateNonPresetActions()
         await this._setHasActions()
         await this._sortAvailableActions()
         await this._setCharacterLimit()
@@ -220,7 +221,24 @@ export class ActionHandler {
     }
 
     /**
+     * Update non-preset actions
+     * @private
+     */
+    async _updateNonPresetActions () {
+        const nonPresetActions = this.actions.filter(action => !action?.isPreset)
+        for (const action of nonPresetActions) {
+            const availableAction = this.availableActions.find(availableAction => availableAction.id === action.id)
+            if (availableAction) {
+                const systemSelected = availableAction.systemSelected ?? action.systemSelected
+                const userSelected = action.userSelected ?? availableAction.userSelected
+                Object.assign(action, this._createAction({ ...availableAction, systemSelected, userSelected }))
+            }
+        }
+    }
+
+    /**
      * Set property to indicate whether a group has actions within it
+     * @private
      */
     async _setHasActions () {
         for (const group of Object.values(this.groups)) {
@@ -565,6 +583,7 @@ export class ActionHandler {
             data.actions = groupData.actions.map(action => {
                 return {
                     id: action.id,
+                    isPreset: action.isPreset,
                     userSelected: action.userSelected
                 }
             })
@@ -643,17 +662,23 @@ export class ActionHandler {
         // Reorder actions based on order in dialog
         for (const actionData of actionsData) {
             if (actionData.id.includes('itemMacro')) continue
-            const action = this.availableActions.find(action => action.encodedValue === actionData.id)
-            if (action) {
-                const actionClone = { ...action, userSelected: true }
+            const existingAction = group.actions.find(action => action.id === actionData.id)
+            if (existingAction) {
+                const actionClone = { ...existingAction, userSelected: true }
                 reorderedActions.push(actionClone)
+            } else {
+                const availableAction = this.availableActions.find(action => action.id === actionData.id)
+                if (availableAction) {
+                    const actionClone = { ...availableAction, userSelected: true }
+                    reorderedActions.push(actionClone)
+                }
             }
         }
         // Set 'selected' to false for unselected actions
         for (const action of actions) {
             if (!action.id || action?.id.includes('itemMacro')) continue
 
-            const actionData = actionsData.find(actionData => actionData.id === action.encodedValue)
+            const actionData = actionsData.find(actionData => actionData.id === action.id)
             if (!actionData && action.isPreset) {
                 const actionClone = { ...action, userSelected: false }
                 reorderedActions.push(actionClone)
@@ -932,16 +957,6 @@ export class ActionHandler {
         const actions = actionsData.map(actionData => this._createAction(actionData))
         this._addToAvailableActions(actions)
 
-        // Update existing actions
-        for (const action of actions) {
-            const existingActions = this._getActions(action)
-            for (const existingAction of existingActions) {
-                const systemSelected = action.systemSelected ?? existingAction.systemSelected
-                const userSelected = existingAction.userSelected ?? action.userSelected
-                Object.assign(existingAction, this._createAction({ ...action, systemSelected, userSelected }))
-            }
-        }
-
         if (!groupData?.id) return
 
         const groups = this._getGroups(groupData)
@@ -1068,7 +1083,7 @@ export class ActionHandler {
      */
     _toActionTagifyEntry (data) {
         return {
-            id: data.encodedValue,
+            id: data.id,
             name: data.name,
             type: 'action',
             value: data.listName ?? data.name

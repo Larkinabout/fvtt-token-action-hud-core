@@ -65,26 +65,26 @@ export class DataHandler {
     static async getData (type, id) {
         const folderPath = `${MODULE.ID}/${game.world.id}/${type}`
         const fileName = encodeURI(`${id}.json`)
-        const filePath = `${folderPath}/${fileName}`
-        let exists = true
         try {
-            await FilePicker.browse('data', filePath)
+            const foundFolderPath = await FilePicker.browse('data', folderPath)
+            const foundFilePath = foundFolderPath.files.find(file => file.endsWith(fileName))
+            if (foundFilePath) {
+                return fetch(foundFilePath)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json()
+                        } else {
+                            return null
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error)
+                    })
+            } else {
+                return null
+            }
         } catch {
-            exists = false
-        }
-        if (exists) {
-            return fetch(filePath)
-                .then(response => {
-                    if (response.ok) {
-                        return response.json()
-                    } else {
-                    // handle non-2xx response codes
-                        return null
-                    }
-                })
-                .catch(error => {
-                    console.error(error)
-                })
+            return null
         }
     }
 }
