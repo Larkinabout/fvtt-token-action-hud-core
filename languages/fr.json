@@ -173,6 +173,10 @@
         "hint": " Si activée, le HUD est actif pour le joueur. Ne vient pas écraser les permissions données au joueur.",
         "name": "Activer le HUD pour le joueur actuel"
       },
+      "enableCustomization": {
+        "hint": "GM setting: Enable customization of the HUD",
+        "name": "Enable Customization"
+      },
       "grid": {
         "hint": "Use a grid layout for actions",
         "name": "Grid"

@@ -33,6 +33,7 @@ export class TokenActionHud extends Application {
         this.isAlwaysShow = false
         this.isClickOpen = false
         this.isCollapsed = false
+        this.isCustomizationEnabled = false
         this.isDisplayIcons = false
         this.isDraggable = false
         this.isEnabled = false
@@ -51,6 +52,7 @@ export class TokenActionHud extends Application {
         this.isAlwaysShow = Utils.getSetting('alwaysShowHud')
         this.isClickOpen = Utils.getSetting('clickOpenCategory')
         this.isCollapsed = Utils.getUserFlag('isCollapsed')
+        this.isCustomizationEnabled = Utils.getSetting('enableCustomization')
         this.isDebug = Utils.getSetting('debug')
         this.isDisplayIcons = Utils.getSetting('displayIcons')
         this.isDraggable = Utils.getSetting('drag')
@@ -75,14 +77,16 @@ export class TokenActionHud extends Application {
         this.direction = Utils.getSetting('direction')
         this.isAlwaysShow = Utils.getSetting('alwaysShowHud')
         this.isClickOpen = Utils.getSetting('clickOpenCategory')
+        this.isCustomizationEnabled = Utils.getSetting('enableCustomization')
+        this.actionHandler.isCustomizationEnabled = this.isCustomizationEnabled
         this.isDebug = Utils.getSetting('debug')
         this.isDisplayIcons = Utils.getSetting('displayIcons')
+        this.actionHandler.displayIcons = this.isDisplayIcons
         this.isDraggable = Utils.getSetting('drag')
         this.isEnabled = Utils.getSetting('enable')
         this.isHudEnabled = this._getHudEnabled()
         this.isGrid = Utils.getSetting('grid')
         this.style = Utils.getSetting('style')
-        this.actionHandler.displayIcons = Utils.getSetting('displayIcons')
         Logger.debug('Settings updated')
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
         this.update(trigger)
@@ -324,7 +328,7 @@ export class TokenActionHud extends Application {
 
         /**
          * Open the Action dialog
-         * @param {object} event
+         * @param {object} event The event
          */
         const openActionDialog = (event) => {
             const target = (event.target.classList.contains('tah-button-text'))
@@ -344,26 +348,41 @@ export class TokenActionHud extends Application {
             )
         }
 
-        const collapseExpandGroup = (event) => {
-            const target = (event.target.classList.contains('tah-subtitle-text'))
+        /**
+         * Collapse/expand group
+         * @param {object} event                   The event
+         * @param {boolean} isCustomizationEnabled Whether customization is enabled
+         */
+        const collapseExpandGroup = (event, isCustomizationEnabled) => {
+            const target = event.target.classList.contains('tah-subtitle-text')
                 ? event.target.parentElement
                 : event.target
-            const nestId = target?.parentElement?.dataset?.nestId
+            const parentElement = target?.parentElement
+            const nestId = parentElement?.dataset?.nestId
             const tabGroup = target.closest('.tah-tab-group.hover')
-            const groupsElement = target.parentElement.querySelector('.tah-groups')
+            const groupsElement = parentElement?.querySelector('.tah-groups')
             const collapseIcon = target.querySelector('.tah-collapse-icon')
             const expandIcon = target.querySelector('.tah-expand-icon')
-            if (groupsElement?.classList?.contains('tah-hidden')) {
-                groupsElement.classList.remove('tah-hidden')
-                collapseIcon.classList.remove('tah-hidden')
-                expandIcon.classList.add('tah-hidden')
-                this.actionHandler.saveGroupSettings({ nestId, settings: { collapse: false } })
+
+            const toggleGroupVisibility = () => {
+                groupsElement?.classList.toggle('tah-hidden')
+                collapseIcon?.classList.toggle('tah-hidden')
+                expandIcon?.classList.toggle('tah-hidden')
+            }
+
+            const saveGroupSettings = (collapse) => {
+                if (isCustomizationEnabled) {
+                    this.actionHandler.saveGroupSettings({ nestId, settings: { collapse } })
+                }
+            }
+
+            if (groupsElement?.classList.contains('tah-hidden')) {
+                toggleGroupVisibility()
+                saveGroupSettings(false)
                 this.categoryResizer.resizeCategory(this.actionHandler, tabGroup, this.autoDirection, this.isGrid)
             } else {
-                groupsElement.classList.add('tah-hidden')
-                collapseIcon.classList.add('tah-hidden')
-                expandIcon.classList.remove('tah-hidden')
-                this.actionHandler.saveGroupSettings({ nestId, settings: { collapse: true } })
+                toggleGroupVisibility()
+                saveGroupSettings(true)
             }
         }
 
@@ -375,7 +394,7 @@ export class TokenActionHud extends Application {
         // When a subcategory title is clicked...
         elements.subtitles.on('click', (event) => {
             if (event.target.classList.contains('tah-button-text')) return
-            collapseExpandGroup(event)
+            collapseExpandGroup(event, this.isCustomizationEnabled)
         })
 
         // When an action is clicked or right-clicked...
@@ -413,11 +432,11 @@ export class TokenActionHud extends Application {
          * Unlock the HUD
          * @param {object} event
          */
-        const unlockHud = async (event = null) => {
+        const unlockHud = async (event) => {
             if (event) {
                 event.preventDefault()
-                event = event || window.event
             }
+
             const target = event?.target || elements.unlockButton
             $(target).addClass('tah-hidden')
             elements.lockButton.removeClass('tah-hidden')
@@ -425,9 +444,9 @@ export class TokenActionHud extends Application {
             elements.topGroupsSection.addClass('tah-unlocked')
             elements.tabGroups.removeClass('tah-hidden')
             elements.groups.removeClass('tah-hidden')
-            elements.subtitles.removeClass('disable-edit')
-            elements.subtitles.removeClass('tah-hidden')
+            elements.subtitles.removeClass('disable-edit tah-hidden')
             elements.groupButtons.removeClass('disable-edit')
+
             if (!this.isUnlocked) {
                 await Utils.setUserFlag('isUnlocked', true)
                 this.isUnlocked = true
@@ -441,7 +460,6 @@ export class TokenActionHud extends Application {
         const lockHud = async (event = null) => {
             if (event) {
                 event.preventDefault()
-                event = event || window.event
             }
             const target = event?.target || elements.lockButton
             $(target).addClass('tah-hidden')
@@ -469,14 +487,20 @@ export class TokenActionHud extends Application {
             }
         }
 
-        // Set hud to locked or unlocked
-        if (this.isUnlocked) { unlockHud() } else { lockHud() }
+        // Set initial lock state
+        if (this.isUnlocked && this.isCustomizationEnabled) {
+            unlockHud()
+        } else {
+            lockHud()
+        }
 
-        // When the 'Unlock HUD' button is clicked...
-        elements.unlockButton.on('click', (event) => unlockHud(event))
+        if (!this.isCustomizationEnabled) {
+            elements.unlockButton.addClass('tah-hidden')
+        }
 
-        // When the 'Lock HUD' button is clicked...
-        elements.lockButton.on('click', (event) => lockHud(event))
+        // Add event listeners
+        elements.unlockButton.on('click', unlockHud)
+        elements.lockButton.on('click', lockHud)
     }
 
     /**
@@ -524,15 +548,16 @@ export class TokenActionHud extends Application {
         // Set initial state
         if (this.isCollapsed) { collapseHud() }
 
+        // Add event listeners
         // When the 'Collapse HUD' button is clicked...
-        elements.collapseHudButton.on('click', (event) => collapseHud(event))
+        elements.collapseHudButton.on('click', collapseHud)
 
         // When the 'Expand HUD' Button is clicked...
-        elements.expandHudButton.on('click', (event) => expandHud(event))
+        elements.expandHudButton.on('click', expandHud)
 
         // When the 'Expand HUD' button is clicked and held...
-        elements.expandHudButton.on('mousedown', (event) => this._dragEvent(event))
-        elements.expandHudButton.get(0).addEventListener('touchstart', (event) => this._dragEvent(event), { passive: true })
+        elements.expandHudButton.on('mousedown', this._dragEvent)
+        elements.expandHudButton.get(0).addEventListener('touchstart', this._dragEvent, { passive: true })
     }
 
     /**

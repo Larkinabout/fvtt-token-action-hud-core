@@ -172,6 +172,10 @@
         "hint": "現在のユーザに自動的にホットバーを使用できる状態で初期化します。プレイヤーは設定を変更することで自分の好みに変更することができます。",
         "name": "現在のユーザはホットバーを使用できる"
       },
+      "enableCustomization": {
+        "hint": "GM setting: Enable customization of the HUD",
+        "name": "Enable Customization"
+      },
       "grid": {
         "hint": "Use a grid layout for actions",
         "name": "Grid"

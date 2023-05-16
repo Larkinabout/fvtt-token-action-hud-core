@@ -28,6 +28,7 @@ export class ActionHandler {
         this.actions = []
         this.availableActions = []
         this.displayIcons = Utils.getSetting('displayIcons')
+        this.isCustomizationEnabled = Utils.getSetting('enableCustomization')
     }
 
     /**
@@ -281,7 +282,7 @@ export class ActionHandler {
      * @privatet
      */
     async _getSavedActorGroups () {
-        if (!this.actor) return new Map()
+        if (!this.actor || !this.isCustomizationEnabled) return new Map()
         Logger.debug('Retrieving groups from actor...', { actor: this.actor })
         const actorGroups = await game.tokenActionHud.socket.executeAsGM('getData', 'actor', this.actor.id) ?? null
         if (!actorGroups) return null
@@ -298,14 +299,22 @@ export class ActionHandler {
      */
     async _getSavedUserGroups () {
         const user = game.user
-        Logger.debug('Retrieving groups from user...', { user })
-        const savedUserData = await game.tokenActionHud.socket.executeAsGM('getData', 'user', user.id) ?? {}
-        const userGroups = (Object.keys(savedUserData).length) ? savedUserData : this.defaultLayout
-        for (const group of Object.entries(userGroups)) {
-            group[1].nestId = group[0]
+        const getUserGroups = (data) => {
+            const userGroups = Object.keys(data).length ? data : this.defaultLayout
+            for (const group of Object.entries(userGroups)) {
+                group[1].nestId = group[0]
+            }
+            return userGroups
         }
-        this.userGroups = userGroups
-        Logger.debug('Groups from user retrieved', { userGroups: this.userGroups, user })
+
+        if (this.isCustomizationEnabled) {
+            Logger.debug('Retrieving groups from user...', { user })
+            const savedUserData = await game.tokenActionHud.socket.executeAsGM('getData', 'user', user.id) ?? {}
+            this.userGroups = getUserGroups(savedUserData)
+            Logger.debug('Groups retrieved from user', { userGroups: this.userGroups, user })
+        } else {
+            this.userGroups = getUserGroups(this.defaultLayout)
+        }
     }
 
     /**
@@ -524,6 +533,7 @@ export class ActionHandler {
      * @public
      */
     async saveGroups (options = { saveActor: false, saveUser: false }) {
+        if (!this.isCustomizationEnabled) return
         Logger.debug('Saving groups...')
         if (options?.saveActor) await this._saveActorGroups()
         if (options?.saveUser) await this._saveUserGroups()

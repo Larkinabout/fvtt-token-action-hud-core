@@ -173,6 +173,10 @@
         "hint": "Enable the HUD",
         "name": "Enable HUD"
       },
+      "enableCustomization": {
+        "hint": "GM setting: Enable customization of the HUD",
+        "name": "Enable Customization"
+      },
       "grid": {
         "hint": "Use a grid layout for actions",
         "name": "Grid"
