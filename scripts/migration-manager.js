@@ -5,8 +5,7 @@ import { Logger, Utils } from './utilities/utils.js'
  * Manages migrations between module versions
  */
 export class MigrationManager {
-    constructor (systemModuleId, socket) {
-        this.systemModuleId = systemModuleId
+    constructor (socket) {
         this.socket = socket
     }
 

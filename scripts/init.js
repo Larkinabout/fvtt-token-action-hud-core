@@ -48,16 +48,9 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
         return
     }
 
-    // Create directories for json data
-    await socket.executeAsGM('createDirectories')
-
     // Create new SystemManager and register core and system module settings
     systemManager = new systemModule.api.SystemManager(MODULE.ID)
     systemManager.registerSettings()
-
-    // Initialise MigrationManager
-    const migrationManager = new MigrationManager(systemModule.id, socket)
-    await migrationManager.init()
 
     // Set stylesheet to 'style' core module setting
     Utils.switchCSS(Utils.getSetting('style'))
@@ -95,6 +88,14 @@ Hooks.on('canvasReady', async () => {
                 }
             }
         }
+
+        // Create directories for json data
+        const isCustomizationEnabled = Utils.getSetting('enableCustomization')
+        if (isCustomizationEnabled) { await socket.executeAsGM('createDirectories') }
+
+        // Initialise MigrationManager
+        const migrationManager = new MigrationManager(socket)
+        await migrationManager.init()
 
         // If no Token Action Hud application exists, create a new TokenActionHud and initialise it
         if (!game.tokenActionHud) {
