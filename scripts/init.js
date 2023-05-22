@@ -25,6 +25,7 @@ Hooks.on('ready', async () => {
     module.api = {
         ActionListExtender,
         ActionHandler,
+        DataHandler,
         Logger,
         PreRollHandler,
         RollHandler,
