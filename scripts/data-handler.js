@@ -69,7 +69,8 @@ export class DataHandler {
             const foundFolderPath = await FilePicker.browse('data', folderPath)
             const foundFilePath = foundFolderPath.files.find(file => file.endsWith(fileName))
             if (foundFilePath) {
-                return fetch(foundFilePath)
+                const ms = Date.now()
+                return await fetch(`${foundFilePath}?ms=${ms}`)
                     .then(response => {
                         if (response.ok) {
                             return response.json()

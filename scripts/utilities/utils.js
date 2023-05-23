@@ -241,10 +241,19 @@ export class Utils {
     }
 
     /**
+     * Whether a GM is active
+     * @public
+     * @returns {boolean} Whether a GM is active
+     */
+    static isGmActive () {
+        return game.users.some(user => user.isGM && user.active)
+    }
+
+    /**
      * Whether the given module is active
      * @public
      * @param {string} moduleId The module id
-     * @returns {boolean}
+     * @returns {boolean}       Whether the given module is active
      */
     static isModuleActive (moduleId) {
         const module = game.modules.get(moduleId)

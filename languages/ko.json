@@ -173,6 +173,10 @@
         "hint": "활성화시 HUD는 유저들에게 활성화 된다. 플레이어 권한 설정을 덮어쓰지 않는다.",
         "name": "현재 유저에게 HUD를 활성화"
       },
+      "enableCustomization": {
+        "hint": "GM setting: Enable customization of the HUD",
+        "name": "Enable Customization"
+      },
       "grid": {
         "hint": "Use a grid layout for actions",
         "name": "Grid"

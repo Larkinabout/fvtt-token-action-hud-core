@@ -56,7 +56,7 @@
     position: absolute;
     text-align: left;
     text-shadow: var(--tah-text-shadow);
-    top: -18px !important;
+    top: -20px !important;
 }
 
 .tah-hidden {
@@ -204,7 +204,7 @@
 }
 
 .tah-button-text {
-    padding: 0 10px;
+    padding: 0 5px;
 }
 
 .tah-button-content > :is(.fa, .fas) {
@@ -245,7 +245,7 @@
 }
 
 .tah-tab-groups {
-    padding: 5px 0 2px 0;
+    padding: 2px 0 2px 0;
     width: max-content;
 }
 
@@ -269,7 +269,7 @@
 .tah-tab-group >.tah-groups-container > .tah-groups {
     display: none;
     left: -10px;
-    margin-top: 1px;
+    margin-top: 3px;
     padding: 0 10px;
     position: relative;
 }
@@ -359,16 +359,12 @@
     padding-top: 3px;
 }
 
-.tah-group[data-show-title="false"] > .tah-subtitle {
-    color: var(--tah-text-disabled-color);
-}
-
 .tah-subtitle {
     align-items: center;
     color: var(--tah-text-primary-color);
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
-    font-size: var(--tah-font-size-10);
+    font-size: 0.55rem;
     gap: var(--tah-gap);
     letter-spacing: 0.1em;
     text-shadow: var(--tah-text-shadow);
@@ -382,6 +378,10 @@
 
 .tah-subtitle-text {
     color: var(--tah-text-primary-color);
+}
+
+.tah-group[data-show-title="false"] > .tah-subtitle > .tah-subtitle-text {
+    color: var(--tah-text-disabled-color);
 }
 
 .tah-subtitle > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {

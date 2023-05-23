@@ -156,6 +156,18 @@ export const registerSettings = function (systemManager, rollHandlers) {
         requiresReload: true
     })
 
+    game.settings.register(MODULE.ID, 'enableCustomization', {
+        name: Utils.i18n('tokenActionHud.settings.enableCustomization.name'),
+        hint: Utils.i18n('tokenActionHud.settings.enableCustomization.hint'),
+        scope: 'world',
+        config: true,
+        type: Boolean,
+        default: true,
+        onChange: (value) => {
+            onChangeFunction(value)
+        }
+    })
+
     game.settings.register(MODULE.ID, 'alwaysShowHud', {
         name: Utils.i18n('tokenActionHud.settings.alwaysShowHud.name'),
         hint: Utils.i18n('tokenActionHud.settings.alwaysShowHud.hint'),
