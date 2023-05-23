@@ -92,7 +92,7 @@ Hooks.on('canvasReady', async () => {
 
         // Create directories for json data
         const isCustomizationEnabled = Utils.getSetting('enableCustomization')
-        if (isCustomizationEnabled) { await socket.executeAsGM('createDirectories') }
+        if (isCustomizationEnabled && game.user.isGM) { await DataHandler.createDirectories() }
 
         // Initialise MigrationManager
         const migrationManager = new MigrationManager(socket)

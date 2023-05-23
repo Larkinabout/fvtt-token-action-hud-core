@@ -43,8 +43,6 @@ export class ActionHandler {
         this.defaultGroups = {}
         this.defaultLayout = {}
         this.groups = {}
-        this.actorGroups = {}
-        this.userGroups = {}
         this.actions = []
         this.availableActions = []
         this.displayIcons = Utils.getSetting('displayIcons')
@@ -63,9 +61,20 @@ export class ActionHandler {
      */
     async buildHud (options) {
         Logger.debug('Building HUD...', { actor: this.actor, token: this.token })
+        if (this.previousActor === this.actor) {
+            this.isSameActor = true
+        } else {
+            this.previousActor = this.actor
+            this.isSameActor = false
+        }
         this.resetActionHandler()
         await this._getDefaultGroups()
         await this._getDefaultLayout()
+        this.isGmActive = Utils.isGmActive()
+        if (!this.isGmActive && !this.isGmInactiveUserNotified) {
+            Logger.info('Cannot retrieve HUD layout without GM present', true)
+            this.isGmInactiveUserNotified = true
+        }
         await this._getSavedUserGroups()
         if (this.actor) await this._getSavedActorGroups()
         this.hud = await this._prepareHud()
@@ -282,10 +291,23 @@ export class ActionHandler {
      * @privatet
      */
     async _getSavedActorGroups () {
-        if (!this.actor || !this.isCustomizationEnabled) return new Map()
+        if (!this.actor) return
+
+        if (!this.isCustomizationEnabled) {
+            this.actorGroups = {}
+            return
+        }
+
+        if (this.isSameActor && Object.entries(this.actorGroups).length) return
+
+        if (!this.isGmActive) {
+            this.actorGroups = {}
+            return
+        }
+
         Logger.debug('Retrieving groups from actor...', { actor: this.actor })
         const actorGroups = await game.tokenActionHud.socket.executeAsGM('getData', 'actor', this.actor.id) ?? null
-        if (!actorGroups) return null
+        if (!actorGroups) return
         for (const group of Object.entries(actorGroups)) {
             group[1].nestId = group[0]
         }
@@ -307,14 +329,22 @@ export class ActionHandler {
             return userGroups
         }
 
-        if (this.isCustomizationEnabled) {
-            Logger.debug('Retrieving groups from user...', { user })
-            const savedUserData = await game.tokenActionHud.socket.executeAsGM('getData', 'user', user.id) ?? {}
-            this.userGroups = getUserGroups(savedUserData)
-            Logger.debug('Groups retrieved from user', { userGroups: this.userGroups, user })
-        } else {
+        if (!this.isCustomizationEnabled) {
             this.userGroups = getUserGroups(this.defaultLayout)
+            return
         }
+
+        if (Object.entries(this.userGroups).length) return
+
+        if (!this.isGmActive) {
+            this.userGroups = getUserGroups(this.defaultLayout)
+            return
+        }
+
+        Logger.debug('Retrieving groups from user...', { user })
+        const savedUserData = await game.tokenActionHud.socket.executeAsGM('getData', 'user', user.id) ?? {}
+        this.userGroups = getUserGroups(savedUserData)
+        Logger.debug('Groups retrieved from user', { userGroups: this.userGroups, user })
     }
 
     /**
@@ -548,11 +578,17 @@ export class ActionHandler {
         if (!Object.keys(this.groups).length) return
         Logger.debug('Saving actor groups...')
         const actorGroups = {}
+        this.actorGroups = {}
         for (const group of Object.values(this.groups)) {
+            this.actorGroups[group.nestId] = group
             actorGroups[group.nestId] = this._getReducedGroupData(group, true)
         }
-        await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', this.actor.id, actorGroups)
-        Logger.debug('Actor groups saved', { actorGroups })
+        if (Utils.isGmActive()) {
+            await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', this.actor.id, actorGroups)
+            Logger.debug('Actor groups saved', { actorGroups })
+        } else {
+            Logger.debug('Actor groups not saved as no GM present')
+        }
     }
 
     /**
@@ -563,13 +599,19 @@ export class ActionHandler {
         if (!Object.keys(this.groups).length) return
         Logger.debug('Saving user groups...')
         const userGroups = {}
+        this.userGroups = {}
         for (const group of Object.values(this.groups)) {
             if (group.type !== 'system-derived') {
+                this.userGroups[group.nestId] = group
                 userGroups[group.nestId] = this._getReducedGroupData(group, false)
             }
         }
-        await game.tokenActionHud.socket.executeAsGM('saveData', 'user', game.userId, userGroups)
-        Logger.debug('User groups saved', { userGroups })
+        if (Utils.isGmActive()) {
+            await game.tokenActionHud.socket.executeAsGM('saveData', 'user', game.userId, userGroups)
+            Logger.debug('User groups saved', { userGroups })
+        } else {
+            Logger.debug('User groups not saved as no GM present')
+        }
     }
 
     /**
