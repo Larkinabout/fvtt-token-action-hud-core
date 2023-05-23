@@ -272,7 +272,7 @@
 }
 
 .tah-tab-groups {
-    padding: 7px 0 5px 0;
+    padding: 5px 0 5px 0;
     width: max-content;
 }
 
@@ -296,7 +296,7 @@
 .tah-tab-group >.tah-groups-container > .tah-groups {
     display: none;
     left: -10px;
-    margin-top: 1px;
+    margin-top: 3px;
     padding: 0 10px;
     position: relative;
 }
@@ -386,14 +386,10 @@
     padding-top: 5px;
 }
 
-.tah-group[data-show-title="false"] > .tah-subtitle {
-    color: var(--tah-icon-color-disabled);
-}
-
 .tah-subtitle {
     align-items: center;
     color: var(--tah-text-primary-color);
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
     font-size: var(--font-size-12);
     gap: var(--tah-gap);
@@ -407,6 +403,10 @@
     border-radius: var(--tah-border-radius);
     color: var(--tah-text-hover-primary-color);
     cursor: pointer;
+}
+
+.tah-group[data-show-title="false"] > .tah-subtitle > .tah-subtitle-text {
+    color: var(--tah-text-disabled-color);
 }
 
 .tah-subtitle-text {

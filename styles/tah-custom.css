@@ -269,7 +269,7 @@
 }
 
 .tah-tab-groups {
-    padding: 5px 0 3px 0;
+    padding: 3px 0 3px 0;
     width: max-content;
 }
 
@@ -293,7 +293,7 @@
 .tah-tab-group >.tah-groups-container > .tah-groups {
     display: none;
     left: -10px;
-    margin-top: 1px;
+    margin-top: 3px;
     padding: 0 10px;
     position: relative;
 }
@@ -383,14 +383,10 @@
     padding-top: 3px;
 }
 
-.tah-group[data-show-title="false"] > .tah-subtitle {
-    color: var(--tah-icon-color-disabled);
-}
-
 .tah-subtitle {
     align-items: center;
     color: var(--tah-text-primary-color-editable);
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
     font-size: var(--tah-font-size-10);
     gap: var(--tah-gap);
@@ -402,6 +398,10 @@
 .tah-subtitle:hover {
     color: var(--tah-text-hover-primary-color-editable);
     cursor: pointer;
+}
+
+.tah-group[data-show-title="false"] > .tah-subtitle > .tah-subtitle-text {
+    color: var(--tah-text-disabled-color);
 }
 
 .tah-subtitle-text {

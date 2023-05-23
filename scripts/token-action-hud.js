@@ -218,6 +218,14 @@ export class TokenActionHud extends Application {
             if (game.tokenActionHud.rendering) return
             const group = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
             group.classList.remove('hover')
+            const closestGroupElement = group.closest('.tah-group')
+            let sibling = closestGroupElement?.nextElementSibling
+            while (sibling) {
+                if (sibling.classList.contains('tah-group')) {
+                    sibling.classList.remove('tah-hidden')
+                }
+                sibling = sibling.nextElementSibling
+            }
             this._clearHoveredGroup(group.id)
         }
 
@@ -228,6 +236,14 @@ export class TokenActionHud extends Application {
         const openGroup = async (event) => {
             const group = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
             group.classList.add('hover')
+            const closestGroupElement = group.closest('.tah-group')
+            let sibling = closestGroupElement?.nextElementSibling
+            while (sibling) {
+                if (sibling.classList.contains('tah-group')) {
+                    sibling.classList.add('tah-hidden')
+                }
+                sibling = sibling.nextElementSibling
+            }
             this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.isGrid)
             this._setHoveredGroup(group.id)
         }
@@ -797,7 +813,7 @@ export class TokenActionHud extends Application {
         for (const groupId of this.hoveredGroups) {
             const groupElement = $(`#${groupId}`)
 
-            if (!groupElement[0]) return
+            if (!groupElement[0]) continue
 
             if (this.isClickOpen) {
                 const button = groupElement.find('.tah-group-button')[0]
