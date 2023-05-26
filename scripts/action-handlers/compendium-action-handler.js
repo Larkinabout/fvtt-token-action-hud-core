@@ -18,7 +18,9 @@ export class CompendiumActionHandler {
     async buildCompendiumActions () {
         // Get compendium packs
         const packIds = game.packs
-            .filter(pack => COMPENDIUM_PACK_TYPES.includes(pack.documentName) && (!pack.private || game.user.isGM))
+            .filter(pack => 
+                COMPENDIUM_PACK_TYPES.includes(pack.documentName) &&
+                (game.version.startsWith('11') ? pack.visible : (!pack.private || game.user.isGM)))
             .map(pack => pack.metadata.id)
 
         for (const packId of packIds) {

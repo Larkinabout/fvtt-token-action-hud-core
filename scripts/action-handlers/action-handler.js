@@ -825,7 +825,7 @@ export class ActionHandler {
     async _getCompendiumGroups () {
         const packs = game.packs.filter(pack =>
             COMPENDIUM_PACK_TYPES.includes(pack.documentName) &&
-            (!pack.private || game.user.isGM)
+            (game.version.startsWith('11') ? pack.visible : (!pack.private || game.user.isGM))
         )
         const groups = packs.map(pack => {
             return {
