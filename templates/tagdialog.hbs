@@ -30,6 +30,7 @@
             </div>
             <p class="hint">{{localize "tokenActionHud.tagDialog.settings.showCategoryTitle.hint"}}</p>
         </div>
+        {{~/if~}}
         <div class="form-group">
             <label>{{localize "tokenActionHud.tagDialog.settings.image.label"}}</label>
             <div class="form-fields">
@@ -38,7 +39,6 @@
             </div>
             <p class="hint">{{localize "tokenActionHud.tagDialog.settings.image.hint"}}</p>
         </div>
-        {{~/if~}}
         {{~#if (eq this.level "subcategory") ~}}
         <div class="form-group slim">
             <label>{{localize "tokenActionHud.tagDialog.settings.showSubcategoryTitle.label"}}</label>

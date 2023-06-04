@@ -96,8 +96,8 @@
 #tah-character-name {
     color: var(--tah-text-primary-color);
     font-size: var(--font-size-16);
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     pointer-events: none;
     position: absolute;
     text-align: left;
@@ -187,8 +187,8 @@
     color: var(--tah-button-text-color);
     display: flex;
     height: var(--tah-button-height);
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     position: relative;
     text-align: center;
     text-shadow: var(--dorako-text-shadow);
@@ -308,6 +308,7 @@
 
 .tah-tab-group,
 .tah-group {
+    display: flex;
     position: relative;
 }
 
@@ -323,16 +324,25 @@
     display: flex;
 }
 
-.tah-tab-group >.tah-groups-container > .tah-groups {
-    display: none;
+.tah-tab-group > .tah-groups-container.expand-down > .tah-groups {
+    flex-direction: column;
     left: -10px;
-    margin-top: 3px;
-    padding: 0 10px;
+    padding: 10px;
     position: relative;
+    top: -10px;
+}
+
+.tah-tab-group > .tah-groups-container.expand-up > .tah-groups {
+    flex-direction: column;
+    left: -10px;
+    padding: 10px;
+    position: relative;
+    bottom: -10px;
 }
 
 .tah-tab-group > .tah-groups-container.expand-down {
     top: calc(100% - 10px);
+    padding-top: 13px;
 }
 
 .tah-tab-group > .tah-groups-container.expand-up {
@@ -340,17 +350,10 @@
     flex-direction: column-reverse;
 }
 
-.tah-list-groups {
-    left: -10px;
-    padding: 0 10px;
-    position: relative;
-}
-
-.expand-down .tah-list-groups {
-    flex-direction: column;
-}
-
-.expand-up .tah-list-groups {
+.tah-tab-group
+    > .tah-groups-container.expand-up
+    > .tah-groups
+    > .tah-list-groups {
     flex-direction: column-reverse;
 }
 
@@ -360,11 +363,26 @@
     border-radius: var(--tah-border-radius);
 }
 
+.tah-list-groups {
+    flex-direction: column;
+    display: flex;
+    gap: var(--tah-gap);
+}
+
 .tah-list-groups .tah-list-groups {
     background: none;
 }
 
+.tah-list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
 .tah-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tah-gap);
     width: max-content;
 }
 
@@ -381,39 +399,28 @@
 }
 
 .tah-group[data-show-title="false"]
+    > .tah-list-group
     > .tah-groups
     > .tah-list-groups
     > .tah-group:not([data-show-title="false"]) {
     padding-left: 0px;
 }
 
-.tah-group:not([data-show-title="false"])
+.tah-group:not([data-show-title="false"])[data-has-image="false"]
+    > .tah-list-group
     > .tah-groups
     > .tah-list-groups
-    > .tah-group:not([data-show-title="false"]) {
+    > .tah-group:not([data-show-title="false"])[data-has-image="false"] {
     padding-left: 10px;
 }
 
-.tah-group[data-has-actions="true"]
+.tah-unlocked
+    .tah-group
+    > .tah-list-group
     > .tah-groups
     > .tah-list-groups
-    > .tah-group[data-show-title="false"] {
-    padding-top: 1px;
-}
-
-.tah-tab-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group[data-show-title="false"] {
-    padding-top: 3px;
-}
-
-.tah-tab-group[data-has-actions="true"] > .tah-groups,
-.tah-tab-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group[data-show-title="false"] {
-    padding-top: 3px;
+    > .tah-group {
+    padding-left: 10px;
 }
 
 .tah-subtitle {
@@ -422,7 +429,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--tah-gap);
-    padding-bottom: 2px;
     text-shadow: var(--tah-text-shadow);
 }
 
@@ -431,12 +437,12 @@
     cursor: pointer;
 }
 
-.tah-group[data-show-title="false"] > .tah-subtitle > .tah-subtitle-text {
-    color: var(--tah-text-disabled-color);
-}
-
 .tah-subtitle-text {
     color: var(--tah-text-primary-color);
+}
+
+.tah-group[data-show-title="false"] > div > .tah-subtitle > .tah-subtitle-text {
+    color: var(--tah-text-disabled-color);
 }
 
 .tah-subtitle > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {
@@ -465,9 +471,6 @@
     display: flex;
     flex-flow: row wrap;
     gap: var(--tah-gap);
-    grid-column: 2 / auto;
-    margin-bottom: 2px;
-    margin-top: 2px;
     width: 100%;
 }
 
@@ -494,6 +497,15 @@
 .tah-button-image {
     border-radius: 5px;
     height: calc(var(--tah-button-height) - 2px);
+    min-width: var(--tah-button-min-width);
+    width: var(--tah-button-min-width);
+}
+
+.tah-list-image {
+    border-radius: 5px;
+    box-shadow: var(--glassy);
+    height: var(--tah-button-height);
+    margin-right: 5px;
     min-width: var(--tah-button-min-width);
     width: var(--tah-button-min-width);
 }

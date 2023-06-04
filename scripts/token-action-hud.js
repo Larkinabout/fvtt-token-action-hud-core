@@ -168,14 +168,15 @@ export class TokenActionHud extends Application {
      */
     activateListeners (html) {
         const elements = {
-            actions: html.find('.tah-action'),
+            action: html.find('.tah-action'),
             buttons: html.find('#tah-buttons'),
-            tabGroups: html.find('.tah-tab-group'),
-            topGroupsSection: html.find('#tah-groups'),
+            tabGroup: html.find('.tah-tab-group'),
+            groups: html.find('#tah-groups'),
             editHudButton: html.find('#tah-edit-hud'),
-            groups: html.find('.tah-group'),
-            subtitles: html.find('.tah-subtitle'),
-            groupButtons: html.find('.tah-group-button'),
+            listGroups: html.find('.tah-list-groups'),
+            group: html.find('.tah-group'),
+            subtitle: html.find('.tah-subtitle'),
+            groupButton: html.find('.tah-group-button'),
             collapseHudButton: html.find('#tah-collapse-hud'),
             expandHudButton: html.find('#tah-expand-hud'),
             unlockButton: html.find('#tah-unlock'),
@@ -269,7 +270,7 @@ export class TokenActionHud extends Application {
         }
 
         // Bring HUD to top
-        elements.groupButtons.on('click', (event) => {
+        elements.groupButton.on('click', (event) => {
             this.bringToTop()
             // Remove focus to allow core ESC interactions
             event.currentTarget.blur()
@@ -277,18 +278,18 @@ export class TokenActionHud extends Application {
 
         if (this.isClickOpen) {
             // When a category button is clicked...
-            elements.groupButtons.on('click', toggleGroup)
+            elements.groupButton.on('click', toggleGroup)
         } else {
             // When a category button is hovered over...
-            elements.tabGroups.get().forEach(element => {
+            elements.tabGroup.get().forEach(element => {
                 element.addEventListener('touchstart', toggleGroup, { passive: true })
             })
-            elements.tabGroups.hover(openGroup, closeGroup)
+            elements.tabGroup.hover(openGroup, closeGroup)
         }
 
         // When a category button is clicked and held...
-        elements.groupButtons.on('mousedown', (event) => this._dragEvent(event))
-        elements.groupButtons.get().forEach(element => {
+        elements.groupButton.on('mousedown', (event) => this._dragEvent(event))
+        elements.groupButton.get().forEach(element => {
             element.addEventListener('touchstart', (event) => this._dragEvent(event), { passive: true })
         })
 
@@ -312,7 +313,7 @@ export class TokenActionHud extends Application {
         }
 
         // When a category button is right-clicked...
-        elements.groupButtons.on('contextmenu', (event) => {
+        elements.groupButton.on('contextmenu', (event) => {
             if (this.isUnlocked && event.currentTarget.parentElement.dataset.level === '1') {
                 openGroupDialog(event)
             }
@@ -348,15 +349,13 @@ export class TokenActionHud extends Application {
          */
         const openActionDialog = (event) => {
             const target = (event.target.classList.contains('tah-button-text'))
-                ? event.currentTarget
-                : (event.target.classList.contains('tah-subtitle-text'))
-                    ? event.target.parentElement
-                    : event.target
-            if (!target?.parentElement?.dataset?.nestId) return
-            const nestId = target?.parentElement?.dataset?.nestId
-            const name = target?.parentElement?.dataset?.name ?? target.innerText ?? target.outerText
-            const level = parseInt(target?.parentElement?.dataset?.level) || null
-            const type = target?.parentElement?.dataset?.type
+                ? event.target.closest('.tah-tab-group')
+                : event.target.closest('.tah-group')
+            if (!target?.dataset?.nestId) return
+            const nestId = target?.dataset?.nestId
+            const name = event.target.innerText ?? event.target.outerText
+            const level = parseInt(target?.dataset?.level) || null
+            const type = target?.dataset?.type
 
             TagDialogHelper.showActionDialog(
                 this.actionHandler,
@@ -373,17 +372,19 @@ export class TokenActionHud extends Application {
             const target = event.target.classList.contains('tah-subtitle-text')
                 ? event.target.parentElement
                 : event.target
-            const parentElement = target?.parentElement
-            const nestId = parentElement?.dataset?.nestId
+            const groupElement = target?.closest('.tah-group')
+            const nestId = groupElement?.dataset?.nestId
             const tabGroup = target.closest('.tah-tab-group.hover')
-            const groupsElement = parentElement?.querySelector('.tah-groups')
+            const groupsElement = groupElement?.querySelector('.tah-groups')
             const collapseIcon = target.querySelector('.tah-collapse-icon')
             const expandIcon = target.querySelector('.tah-expand-icon')
+            const imageElement = groupElement.querySelector('.tah-list-image')
 
             const toggleGroupVisibility = () => {
                 groupsElement?.classList.toggle('tah-hidden')
                 collapseIcon?.classList.toggle('tah-hidden')
                 expandIcon?.classList.toggle('tah-hidden')
+                imageElement?.classList.toggle('tah-hidden')
             }
 
             const saveGroupSettings = (collapse) => {
@@ -403,23 +404,23 @@ export class TokenActionHud extends Application {
         }
 
         // When a subcategory title is right-clicked...
-        elements.subtitles.on('contextmenu', (event) => {
+        elements.subtitle.on('contextmenu', (event) => {
             if (this.isUnlocked) openActionDialog(event)
         })
 
         // When a subcategory title is clicked...
-        elements.subtitles.on('click', (event) => {
+        elements.subtitle.on('click', (event) => {
             if (event.target.classList.contains('tah-button-text')) return
             collapseExpandGroup(event, this.isCustomizationEnabled)
         })
 
         // When an action is clicked or right-clicked...
-        elements.actions.on('click contextmenu', (event) => {
+        elements.action.on('click contextmenu', (event) => {
             event.preventDefault()
             handleAction(event)
         })
 
-        elements.groupButtons.on('contextmenu', (event) => {
+        elements.groupButton.on('contextmenu', (event) => {
             if (this.isUnlocked && event.currentTarget.parentElement.dataset.level !== '1') {
                 openActionDialog(event)
             }
@@ -455,13 +456,14 @@ export class TokenActionHud extends Application {
 
             const target = event?.target || elements.unlockButton
             $(target).addClass('tah-hidden')
-            elements.lockButton.removeClass('tah-hidden')
             elements.editHudButton.removeClass('tah-hidden')
-            elements.topGroupsSection.addClass('tah-unlocked')
-            elements.tabGroups.removeClass('tah-hidden')
-            elements.groups.removeClass('tah-hidden')
-            elements.subtitles.removeClass('disable-edit tah-hidden')
-            elements.groupButtons.removeClass('disable-edit')
+            elements.group.removeClass('tah-hidden')
+            elements.groupButton.removeClass('disable-edit')
+            elements.groups.addClass('tah-unlocked')
+            elements.listGroups.removeClass('tah-hidden')
+            elements.lockButton.removeClass('tah-hidden')
+            elements.tabGroup.removeClass('tah-hidden')
+            elements.subtitle.removeClass('disable-edit tah-hidden')
 
             if (!this.isUnlocked) {
                 await Utils.setUserFlag('isUnlocked', true)
@@ -481,22 +483,27 @@ export class TokenActionHud extends Application {
             $(target).addClass('tah-hidden')
             elements.unlockButton.removeClass('tah-hidden')
             elements.editHudButton.addClass('tah-hidden')
-            elements.topGroupsSection.removeClass('tah-unlocked')
-            for (const topGroupElement of elements.tabGroups) {
+            elements.groups.removeClass('tah-unlocked')
+            for (const topGroupElement of elements.tabGroup) {
                 const hasActions = (topGroupElement.getElementsByClassName('tah-action').length > 0)
                 if (!hasActions) topGroupElement.classList.add('tah-hidden')
             }
-            for (const groupElement of elements.groups) {
+            for (const groupElement of elements.group) {
                 const hasActions = (groupElement.getElementsByClassName('tah-action').length > 0)
                 if (!hasActions) groupElement.classList.add('tah-hidden')
             }
-            for (const subtitleElement of elements.subtitles) {
-                if (subtitleElement.parentElement.dataset.showTitle === 'false') {
+            for (const listGroupsElement of elements.listGroups) {
+                const hasActions = (listGroupsElement.getElementsByClassName('tah-action').length > 0)
+                if (!hasActions) listGroupsElement.classList.add('tah-hidden')
+            }
+            for (const subtitleElement of elements.subtitle) {
+                const groupElement = subtitleElement.closest('.tah-group')
+                if (groupElement?.dataset?.showTitle === 'false') {
                     subtitleElement.classList.add('tah-hidden')
                 }
             }
-            elements.groupButtons.addClass('disable-edit')
-            elements.subtitles.addClass('disable-edit')
+            elements.groupButton.addClass('disable-edit')
+            elements.subtitle.addClass('disable-edit')
             if (this.isUnlocked) {
                 await Utils.setUserFlag('isUnlocked', false)
                 this.isUnlocked = false
@@ -536,7 +543,7 @@ export class TokenActionHud extends Application {
             const target = event?.target || elements.collapseHudButton
             $(target).addClass('tah-hidden')
             elements.expandHudButton.removeClass('tah-hidden')
-            elements.topGroupsSection.addClass('tah-hidden')
+            elements.groups.addClass('tah-hidden')
             elements.buttons.addClass('tah-hidden')
             if (!this.isCollapsed) {
                 Utils.setUserFlag('isCollapsed', true)
@@ -553,7 +560,7 @@ export class TokenActionHud extends Application {
             event = event || window.event
             $(event.target).addClass('tah-hidden')
             elements.collapseHudButton.removeClass('tah-hidden')
-            elements.topGroupsSection.removeClass('tah-hidden')
+            elements.groups.removeClass('tah-hidden')
             elements.buttons.removeClass('tah-hidden')
             if (this.isCollapsed) {
                 Utils.setUserFlag('isCollapsed', false)

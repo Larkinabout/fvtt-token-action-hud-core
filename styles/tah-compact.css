@@ -2,31 +2,38 @@
     --tah-background-color: #00000000;
     --tah-border-radius: 3px;
     --tah-font-size-10: 0.65rem;
-    --tah-gap: 5px;
+    --tah-gap: 3px;
     --tah-text-shadow: 1px 1px 1px rgb(0 0 0), 0px 1px 3px rgb(0 0 0);
-    --tah-button-background-color: #000000B3;
+    --tah-button-background-color: #000000b3;
     --tah-button-border-color: none;
-    --tah-button-box-shadow: 0 2px 0 -1px #0C0C0C, 0 0 0 1px #060606,
-        0 0 5px #000000FF;
-    --tah-button-disabled-text-color: var(--tah-text-secondary-color);
-    --tah-button-text-color: var(--tah-text-primary-color);
+    --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606,
+        0 0 5px #000000ff;
+    --tah-button-disabled-text-color: var(
+    --tah-text-secondary-color);
+    --tah-button-text-color: var(
+    --tah-text-primary-color);
     --tah-button-height: 22px;
     --tah-button-min-width: 22px;
-    --tah-button-hover-box-shadow: 0 2px 0 -1px var(--tah-text-tertiary-color),
+    --tah-button-hover-box-shadow: 0 2px 0 -1px var(
+    --tah-text-tertiary-color),
         0 0 0 1px red, 0 0 10px var(--tah-text-tertiary-color);
     --tah-button-hover-text-color: #fff;
-    --tah-button-active-background-color: #3C0078BF;
-    --tah-button-active-box-shadow: 0 0 0 1px #9B8DFF, inset 0 0 10px #9B8DFF;
-    --tah-button-toggle-background-color: #000000B3;
-    --tah-button-toggle-hover-background-color: #3C0078BF;
-    --tah-button-toggle-hover-box-shadow: 0 0 0 1px #9B8DFF, 0 0 10px #9B8DFF;
-    --tah-text-disabled-color: var(--tah-text-secondary-color);
-    --tah-text-primary-color: #DDDDDD;
-    --tah-text-secondary-color: #DDDDDD80;
-    --tah-text-tertiary-color: #FF6400;
-    --tah-text-hover-primary-color: var(--tah-text-primary-color);
-    --tah-text-hover-secondary-color: var(--tah-text-secondary-color);
-    --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
+    --tah-button-active-background-color: #3c0078bf;
+    --tah-button-active-box-shadow: 0 0 0 1px #9b8dff, inset 0 0 10px #9b8dff;
+    --tah-button-toggle-background-color: #000000b3;
+    --tah-button-toggle-hover-background-color: #3c0078bf;
+    --tah-button-toggle-hover-box-shadow: 0 0 0 1px #9b8dff, 0 0 10px #9b8dff;
+    --tah-text-disabled-color: var(
+    --tah-text-secondary-color);
+    --tah-text-primary-color: #dddddd;
+    --tah-text-secondary-color: #dddddd80;
+    --tah-text-tertiary-color: #ff6400;
+    --tah-text-hover-primary-color: var(
+    --tah-text-primary-color);
+    --tah-text-hover-secondary-color: var(
+    --tah-text-secondary-color);
+    --tah-text-hover-tertiary-color: var(
+    --tah-text-tertiary-color);
 }
 
 #token-action-hud {
@@ -251,6 +258,7 @@
 
 .tah-tab-group,
 .tah-group {
+    display: flex;
     position: relative;
 }
 
@@ -266,34 +274,36 @@
     display: flex;
 }
 
-.tah-tab-group >.tah-groups-container > .tah-groups {
-    display: none;
+.tah-tab-group > .tah-groups-container.expand-down > .tah-groups {
+    flex-direction: column;
     left: -10px;
-    margin-top: 3px;
-    padding: 0 10px;
+    padding: 10px;
     position: relative;
+    top: -10px;
+}
+
+.tah-tab-group > .tah-groups-container.expand-up > .tah-groups {
+    flex-direction: column;
+    left: -10px;
+    padding: 10px;
+    position: relative;
+    bottom: -10px;
 }
 
 .tah-tab-group > .tah-groups-container.expand-down {
     top: calc(100% - 10px);
+    padding-top: 13px;
 }
 
 .tah-tab-group > .tah-groups-container.expand-up {
-    bottom: calc(100% + 3px + -10px);
+    bottom: calc(100% + 5px + -10px);
     flex-direction: column-reverse;
 }
 
-.tah-list-groups {
-    left: -10px;
-    padding: 0 10px;
-    position: relative;
-}
-
-.expand-down .tah-list-groups {
-    flex-direction: column;
-}
-
-.expand-up .tah-list-groups {
+.tah-tab-group
+    > .tah-groups-container.expand-up
+    > .tah-groups
+    > .tah-list-groups {
     flex-direction: column-reverse;
 }
 
@@ -303,11 +313,26 @@
     border-radius: var(--tah-border-radius);
 }
 
+.tah-list-groups {
+    flex-direction: column;
+    display: flex;
+    gap: var(--tah-gap);
+}
+
 .tah-list-groups .tah-list-groups {
     background: none;
 }
 
+.tah-list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
 .tah-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tah-gap);
     width: max-content;
 }
 
@@ -324,39 +349,28 @@
 }
 
 .tah-group[data-show-title="false"]
+    > .tah-list-group
     > .tah-groups
     > .tah-list-groups
     > .tah-group:not([data-show-title="false"]) {
     padding-left: 0px;
 }
 
-.tah-group:not([data-show-title="false"])
+.tah-group:not([data-show-title="false"])[data-has-image="false"]
+    > .tah-list-group
     > .tah-groups
     > .tah-list-groups
-    > .tah-group:not([data-show-title="false"]) {
+    > .tah-group:not([data-show-title="false"])[data-has-image="false"] {
     padding-left: 10px;
 }
 
-.tah-group[data-has-actions="true"]
+.tah-unlocked
+    .tah-group
+    > .tah-list-group
     > .tah-groups
     > .tah-list-groups
-    > .tah-group[data-show-title="false"] {
-    padding-top: 1px;
-}
-
-.tah-tab-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group[data-show-title="false"] {
-    padding-top: 3px;
-}
-
-.tah-tab-group[data-has-actions="true"] > .tah-groups,
-.tah-tab-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group[data-show-title="false"] {
-    padding-top: 3px;
+    > .tah-group {
+    padding-left: 10px;
 }
 
 .tah-subtitle {
@@ -367,6 +381,7 @@
     font-size: 0.55rem;
     gap: var(--tah-gap);
     letter-spacing: 0.1em;
+    line-height: 1;
     text-shadow: var(--tah-text-shadow);
     text-transform: uppercase;
 }
@@ -380,7 +395,7 @@
     color: var(--tah-text-primary-color);
 }
 
-.tah-group[data-show-title="false"] > .tah-subtitle > .tah-subtitle-text {
+.tah-group[data-show-title="false"] > div > .tah-subtitle > .tah-subtitle-text {
     color: var(--tah-text-disabled-color);
 }
 
@@ -410,9 +425,6 @@
     display: flex;
     flex-flow: row wrap;
     gap: var(--tah-gap);
-    grid-column: 2;
-    margin-bottom: 2px;
-    margin-top: 2px;
     width: 100%;
 }
 
@@ -439,6 +451,15 @@
 .tah-button-image {
     border-radius: var(--tah-border-radius);
     height: var(--tah-button-height);
+    min-width: var(--tah-button-min-width);
+    width: var(--tah-button-min-width);
+}
+
+.tah-list-image {
+    border-radius: var(--tah-border-radius);
+    box-shadow: var(--tah-button-box-shadow);
+    height: var(--tah-button-height);
+    margin-right: 5px;
     min-width: var(--tah-button-min-width);
     width: var(--tah-button-min-width);
 }

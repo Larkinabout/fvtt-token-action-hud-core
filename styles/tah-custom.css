@@ -8,44 +8,43 @@
     --tah-button-height-editable: 32;
     --tah-button-height: calc(var(--tah-button-height-editable) * 1px);
     --tah-button-min-width: var(--tah-button-height);
-    --tah-button-background-color-editable: #000000B3;
+    --tah-button-background-color-editable: #000000b3;
     --tah-button-border-color: none;
-    --tah-button-border-primary-color-editable: #0C0C0CFF;
-    --tah-button-border-secondary-color-editable: #060606FF;
-    --tah-button-box-shadow:
-        0 2px 0 -1px var(--tah-button-border-primary-color-editable),
+    --tah-button-border-primary-color-editable: #0c0c0cff;
+    --tah-button-border-secondary-color-editable: #060606ff;
+    --tah-button-box-shadow: 0 2px 0 -1px var(--tah-button-border-primary-color-editable),
         0 0 0 1px var(--tah-button-border-secondary-color-editable),
-        0 0 5px #000000FF;
-    --tah-button-text-color-editable: #DDDDDDFF;
-    --tah-button-disabled-text-color-editable: #DDDDDD80;
-    --tah-button-hover-background-color-editable: #000000B3;
-    --tah-button-hover-border-primary-color-editable: #FF6400FF;
-    --tah-button-hover-border-secondary-color-editable: #FF0000FF;
-    --tah-button-hover-box-shadow:
-        0 2px 0 -1px var(--tah-button-hover-border-primary-color-editable),
+        0 0 5px #000000ff;
+    --tah-button-text-color-editable: #ddddddff;
+    --tah-button-disabled-text-color-editable: #dddddd80;
+    --tah-button-hover-background-color-editable: #000000b3;
+    --tah-button-hover-border-primary-color-editable: #ff6400ff;
+    --tah-button-hover-border-secondary-color-editable: #ff0000ff;
+    --tah-button-hover-box-shadow: 0 2px 0 -1px var(--tah-button-hover-border-primary-color-editable),
         0 0 0 1px var(--tah-button-hover-border-secondary-color-editable),
         0 0 10px var(--tah-button-hover-border-primary-color-editable);
-    --tah-button-hover-text-color-editable: #FFFFFFFF;
-    --tah-button-toggle-active-background-color-editable: #3C0078BF;
-    --tah-button-toggle-active-border-primary-color-editable: #9B8DFFFF;
-    --tah-button-toggle-active-border-secondary-color-editable: #9B8DFFFF;
-    --tah-button-toggle-active-box-shadow:
-        0 0 0 1px var(--tah-button-toggle-active-border-primary-color-editable),
-        inset 0 0 10px var(--tah-button-toggle-active-border-secondary-color-editable);
-    --tah-button-toggle-active-text-color-editable: #FFFFFFFF;
-    --tah-button-toggle-hover-background-color-editable: #3C0078BF;
-    --tah-button-toggle-hover-border-primary-color-editable: #9B8DFFFF;
-    --tah-button-toggle-hover-border-secondary-color-editable: #9B8DFFFF;
-    --tah-button-toggle-hover-box-shadow:
-        0 0 0 1px var(--tah-button-toggle-hover-border-primary-color-editable),
+    --tah-button-hover-text-color-editable: #ffffffff;
+    --tah-button-toggle-active-background-color-editable: #3c0078bf;
+    --tah-button-toggle-active-border-primary-color-editable: #9b8dffff;
+    --tah-button-toggle-active-border-secondary-color-editable: #9b8dffff;
+    --tah-button-toggle-active-box-shadow: 0 0 0 1px
+            var(--tah-button-toggle-active-border-primary-color-editable),
+        inset 0 0 10px
+            var(--tah-button-toggle-active-border-secondary-color-editable);
+    --tah-button-toggle-active-text-color-editable: #ffffffff;
+    --tah-button-toggle-hover-background-color-editable: #3c0078bf;
+    --tah-button-toggle-hover-border-primary-color-editable: #9b8dffff;
+    --tah-button-toggle-hover-border-secondary-color-editable: #9b8dffff;
+    --tah-button-toggle-hover-box-shadow: 0 0 0 1px
+            var(--tah-button-toggle-hover-border-primary-color-editable),
         0 0 10px var(--tah-button-toggle-hover-border-primary-color-editable);
-    --tah-button-toggle-hover-text-color-editable: #FFFFFFFF;
-    --tah-text-primary-color-editable: #DDDDDDFF;
-    --tah-text-hover-primary-color-editable: #DDDDDDFF;
-    --tah-text-secondary-color-editable: #DDDDDD80;
-    --tah-text-hover-secondary-color-editable: #DDDDDD80;
-    --tah-text-tertiary-color-editable: #FF6400FF;
-    --tah-text-hover-tertiary-color-editable: #FF6400FF;
+    --tah-button-toggle-hover-text-color-editable: #ffffffff;
+    --tah-text-primary-color-editable: #ddddddff;
+    --tah-text-hover-primary-color-editable: #ddddddff;
+    --tah-text-secondary-color-editable: #dddddd80;
+    --tah-text-hover-secondary-color-editable: #dddddd80;
+    --tah-text-tertiary-color-editable: #ff6400ff;
+    --tah-text-hover-tertiary-color-editable: #ff6400ff;
 }
 
 #token-action-hud {
@@ -275,6 +274,7 @@
 
 .tah-tab-group,
 .tah-group {
+    display: flex;
     position: relative;
 }
 
@@ -290,16 +290,25 @@
     display: flex;
 }
 
-.tah-tab-group >.tah-groups-container > .tah-groups {
-    display: none;
+.tah-tab-group > .tah-groups-container.expand-down > .tah-groups {
+    flex-direction: column;
     left: -10px;
-    margin-top: 3px;
-    padding: 0 10px;
+    padding: 10px;
     position: relative;
+    top: -10px;
+}
+
+.tah-tab-group > .tah-groups-container.expand-up > .tah-groups {
+    flex-direction: column;
+    left: -10px;
+    padding: 10px;
+    position: relative;
+    bottom: -10px;
 }
 
 .tah-tab-group > .tah-groups-container.expand-down {
     top: calc(100% - 10px);
+    padding-top: 15px;
 }
 
 .tah-tab-group > .tah-groups-container.expand-up {
@@ -307,17 +316,10 @@
     flex-direction: column-reverse;
 }
 
-.tah-list-groups {
-    left: -10px;
-    padding: 0 10px;
-    position: relative;
-}
-
-.expand-down .tah-list-groups {
-    flex-direction: column;
-}
-
-.expand-up .tah-list-groups {
+.tah-tab-group
+    > .tah-groups-container.expand-up
+    > .tah-groups
+    > .tah-list-groups {
     flex-direction: column-reverse;
 }
 
@@ -327,11 +329,26 @@
     border-radius: var(--tah-border-radius);
 }
 
+.tah-list-groups {
+    flex-direction: column;
+    display: flex;
+    gap: var(--tah-gap);
+}
+
 .tah-list-groups .tah-list-groups {
     background: none;
 }
 
+.tah-list-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
 .tah-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tah-gap);
     width: max-content;
 }
 
@@ -348,39 +365,28 @@
 }
 
 .tah-group[data-show-title="false"]
+    > .tah-list-group
     > .tah-groups
     > .tah-list-groups
     > .tah-group:not([data-show-title="false"]) {
     padding-left: 0px;
 }
 
-.tah-group:not([data-show-title="false"])
+.tah-group:not([data-show-title="false"])[data-has-image="false"]
+    > .tah-list-group
     > .tah-groups
     > .tah-list-groups
-    > .tah-group:not([data-show-title="false"]) {
+    > .tah-group:not([data-show-title="false"])[data-has-image="false"] {
     padding-left: 10px;
 }
 
-.tah-group[data-has-actions="true"]
+.tah-unlocked
+    .tah-group
+    > .tah-list-group
     > .tah-groups
     > .tah-list-groups
-    > .tah-group[data-show-title="false"] {
-    padding-top: 1px;
-}
-
-.tah-tab-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group[data-show-title="false"] {
-    padding-top: 3px;
-}
-
-.tah-tab-group[data-has-actions="true"] > .tah-groups,
-.tah-tab-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group[data-show-title="false"] {
-    padding-top: 3px;
+    > .tah-group {
+    padding-left: 10px;
 }
 
 .tah-subtitle {
@@ -391,6 +397,7 @@
     font-size: var(--tah-font-size-10);
     gap: var(--tah-gap);
     letter-spacing: 0.1em;
+    line-height: 1;
     text-shadow: var(--tah-text-shadow);
     text-transform: uppercase;
 }
@@ -400,12 +407,12 @@
     cursor: pointer;
 }
 
-.tah-group[data-show-title="false"] > .tah-subtitle > .tah-subtitle-text {
-    color: var(--tah-text-disabled-color);
-}
-
 .tah-subtitle-text {
     color: var(--tah-text-primary-color-editable);
+}
+
+.tah-group[data-show-title="false"] > div > .tah-subtitle > .tah-subtitle-text {
+    color: var(--tah-text-disabled-color);
 }
 
 .tah-subtitle > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {
@@ -434,9 +441,6 @@
     display: flex;
     flex-flow: row wrap;
     gap: var(--tah-gap);
-    grid-column: 2;
-    margin-bottom: 2px;
-    margin-top: 2px;
     width: 100%;
 }
 
@@ -463,6 +467,15 @@
 .tah-button-image {
     border-radius: var(--tah-border-radius);
     height: var(--tah-button-height);
+    min-width: var(--tah-button-min-width);
+    width: var(--tah-button-min-width);
+}
+
+.tah-list-image {
+    border-radius: var(--tah-border-radius);
+    box-shadow: var(--tah-button-box-shadow);
+    height: var(--tah-button-height);
+    margin-right: 5px;
     min-width: var(--tah-button-min-width);
     width: var(--tah-button-min-width);
 }
