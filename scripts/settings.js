@@ -108,8 +108,13 @@ export const registerSettings = function (systemManager, rollHandlers) {
         hint: Utils.i18n('tokenActionHud.settings.drag.hint'),
         scope: 'client',
         config: true,
-        type: Boolean,
-        default: true,
+        type: String,
+        default: 'whenUnlocked',
+        choices: {
+            always: Utils.i18n('tokenActionHud.settings.drag.choices.always'),
+            whenUnlocked: Utils.i18n('tokenActionHud.settings.drag.choices.whenUnlocked'),
+            never: Utils.i18n('tokenActionHud.settings.drag.choices.never')
+        },
         onChange: (value) => {
             onChangeFunction(value)
         }
@@ -199,6 +204,23 @@ export const registerSettings = function (systemManager, rollHandlers) {
         config: true,
         type: Boolean,
         default: true,
+        onChange: (value) => {
+            onChangeFunction(value)
+        }
+    })
+
+    game.settings.register(MODULE.ID, 'tooltips', {
+        name: Utils.i18n('tokenActionHud.settings.tooltips.name'),
+        hint: Utils.i18n('tokenActionHud.settings.tooltips.hint'),
+        scope: 'client',
+        config: true,
+        type: String,
+        default: 'full',
+        choices: {
+            full: Utils.i18n('tokenActionHud.settings.tooltips.choices.full'),
+            nameOnly: Utils.i18n('tokenActionHud.settings.tooltips.choices.nameOnly'),
+            none: Utils.i18n('tokenActionHud.settings.tooltips.choices.none')
+        },
         onChange: (value) => {
             onChangeFunction(value)
         }

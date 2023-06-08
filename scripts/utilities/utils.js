@@ -299,6 +299,17 @@ export class Utils {
     }
 
     /**
+     * Get modifier
+     * @param {number} value The value
+     * @returns {string}     The modifier
+     */
+    static getModifier (value) {
+        if (!value) return ''
+        const sign = (value >= 0) ? '+' : ''
+        return `${sign}${value}`
+    }
+
+    /**
      * Sort items
      * @public
      * @param {object} items The items

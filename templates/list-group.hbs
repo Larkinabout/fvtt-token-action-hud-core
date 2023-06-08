@@ -1,11 +1,8 @@
 {{~#if (ne isSelected false)~}}
 <div class="tah-group" data-nest-id="{{nestId}}" data-has-actions="{{~#if (true hasActions)~}}true{{~else~}}false{{~/if~}}" data-has-image="{{~#if (true settings.image)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
-    {{~#if settings.image~}}<div class="tah-list-image{{~#if (true settings.collapse)}} tah-hidden{{~/if}}" style="background: url({{settings.image}}) no-repeat center center; background-size:contain" data-tooltip="{{name}}"></div>{{~/if~}}
+    {{~#if settings.image~}}<div class="tah-list-image{{~#if (true settings.collapse)}} tah-hidden{{~/if}}" style="background: url({{settings.image}}) no-repeat center center; background-size:contain" {{~#if tooltip~}} data-tooltip="{{tooltip}}" data-tooltip-class="tah-tooltip"{{~/if~}}></div>{{~/if~}}
     <div class="tah-list-group">
         <div class="tah-subtitle{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}">
-            {{~#if img~}}
-            <div class="tah-button-image" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>
-            {{~/if~}}
             {{~#if icon~}}
             <div class="tah-icon">{{{icon}}}</div>
             {{~/if~}}

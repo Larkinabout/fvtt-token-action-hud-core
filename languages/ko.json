@@ -166,8 +166,13 @@
         "name": "액션 아이콘 표시"
       },
       "drag": {
-        "hint": "Move the HUD by dragging one of the category buttons",
-        "name": "Enable Dragging"
+        "hint": "Choose when the HUD can be moved by clicking and dragging one of the top-level buttons",
+        "name": "Dragging",
+        "choices": {
+          "always": "Always",
+          "whenUnlocked": "When Unlocked",
+          "never": "Never"
+        }
       },
       "enable": {
         "hint": "활성화시 HUD는 유저들에게 활성화 된다. 플레이어 권한 설정을 덮어쓰지 않는다.",
@@ -209,6 +214,15 @@
       "style": {
         "hint": "HUD의 스타일 설정",
         "name": "스타일"
+      },
+      "tooltips": {
+        "hint": "Where available, choose how tooltips are displayed when actions are hovered",
+        "name": "Tooltip Display",
+        "choices": {
+          "full": "Full Tooltip",
+          "nameOnly": "Name Only",
+          "none": "No Tooltips"
+        }
       },
       "toggleHud": {
         "disabled": "HUD disabled. To enable, press {binding}",

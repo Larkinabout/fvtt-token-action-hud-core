@@ -35,7 +35,7 @@ export class TokenActionHud extends Application {
         this.isCollapsed = false
         this.isCustomizationEnabled = false
         this.isDisplayIcons = false
-        this.isDraggable = false
+        this.drag = 'whenUnlocked'
         this.isEnabled = false
         this.isHudEnabled = false
         this.isGrid = false
@@ -55,7 +55,7 @@ export class TokenActionHud extends Application {
         this.isCustomizationEnabled = Utils.getSetting('enableCustomization')
         this.isDebug = Utils.getSetting('debug')
         this.isDisplayIcons = Utils.getSetting('displayIcons')
-        this.isDraggable = Utils.getSetting('drag')
+        this.drag = Utils.getSetting('drag')
         this.isEnabled = Utils.getSetting('enable')
         this.isHudEnabled = this._getHudEnabled()
         this.isGrid = Utils.getSetting('grid')
@@ -82,11 +82,13 @@ export class TokenActionHud extends Application {
         this.isDebug = Utils.getSetting('debug')
         this.isDisplayIcons = Utils.getSetting('displayIcons')
         this.actionHandler.displayIcons = this.isDisplayIcons
-        this.isDraggable = Utils.getSetting('drag')
+        this.drag = Utils.getSetting('drag')
         this.isEnabled = Utils.getSetting('enable')
         this.isHudEnabled = this._getHudEnabled()
         this.isGrid = Utils.getSetting('grid')
         this.style = Utils.getSetting('style')
+        this.tooltips = Utils.getSetting('tooltips')
+        this.actionHandler.tooltips = this.tooltips
         Logger.debug('Settings updated')
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
         this.update(trigger)
@@ -132,6 +134,14 @@ export class TokenActionHud extends Application {
             tabs: [],
             scrollY: []
         })
+    }
+
+    /**
+     * Whether the HUD can be dragged
+     * @returns {boolean} Whether the HUD can be dragged
+     */
+    _isDraggable () {
+        return ((this.drag === 'always') || (this.drag === 'whenUnlocked' && this.isUnlocked))
     }
 
     /**
@@ -589,7 +599,7 @@ export class TokenActionHud extends Application {
      * @param {object} event The event
      */
     _dragEvent (event) {
-        if (!this.isDraggable) return
+        if (!this._isDraggable()) return
 
         // Get the main element
         const element = document.getElementById('token-action-hud')
