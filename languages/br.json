@@ -167,8 +167,13 @@
         "name": "Mostrar ícones nos botões"
       },
       "drag": {
-        "hint": "Move the HUD by dragging one of the category buttons",
-        "name": "Enable Dragging"
+        "hint": "Choose when the HUD can be moved by clicking and dragging one of the top-level buttons",
+        "name": "Dragging",
+        "choices": {
+          "always": "Always",
+          "whenUnlocked": "When Unlocked",
+          "never": "Never"
+        }
       },
       "enable": {
         "hint": "O HUD fica ativo para o usuário. Não substitui a configuração de permissão do jogador.",
@@ -183,12 +188,12 @@
         "name": "Grid"
       },
       "itemMacro": {
-        "hint": "Show item macros, denoted by an (M)",
-        "name": "Show Item Macros",
+        "hint": "Choose how item macros are displayed",
+        "name": "Item Macro Display",
         "choices": {
-            "both": "Show original item and item macro",
-            "itemMacro": "Show item macro only",
-            "original": "Show original item only"
+            "both": "Original Item and Macro",
+            "itemMacro": "Macro Only",
+            "original": "Original Item Only"
         }
       },
       "renderItemOnRightClick": {
@@ -210,6 +215,15 @@
       "style": {
         "hint": "Defina o estilo do HUD",
         "name": "Estilo"
+      },
+      "tooltips": {
+        "hint": "Where available, choose how tooltips are displayed when actions are hovered",
+        "name": "Tooltip Display",
+        "choices": {
+          "full": "Full Tooltip",
+          "nameOnly": "Name Only",
+          "none": "No Tooltips"
+        }
       },
       "toggleHud": {
         "disabled": "HUD disabled. To enable, press {binding}",

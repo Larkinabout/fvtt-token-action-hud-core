@@ -32,3 +32,76 @@
     color: #6f6f6f;
     text-shadow: 1px 1px 1px #FFFFFF;
 }
+
+#tooltip.tah-tooltip,
+#tooltip.active:has(.tah-tooltip-wrapper) {
+    font-size: var(--font-size-14);
+}
+
+#tooltip.active.tah-tooltip,
+#tooltip.active:has(.tah-tooltip-wrapper) {
+    transition: visibility 0s 500ms, opacity 500ms 500ms;
+}
+
+#tooltip:not(.active).tah-tooltip,
+#tooltip:not(.active):has(.tah-tooltip-wrapper)  {
+    transition: visibility 0s, opacity 0s;
+}
+
+#tooltip.tah-tooltip h3,
+#tooltip.active:has(.tah-tooltip-wrapper) h3 {
+    padding-bottom: 8px;
+    text-align: left;
+}
+
+#tooltip.tah-tooltip h4,
+#tooltip.active:has(.tah-tooltip-wrapper) h4 {
+    font-weight: 600;
+    text-align: left;
+}
+
+#tooltip.tah-tooltip :is(ul, h3, h4, p),
+#tooltip.active:has(.tah-tooltip-wrapper) :is(ul, h3, h4, p) {
+    text-align: left;
+}
+
+#tooltip.tah-tooltip :is(a.content-link, a.inline-roll),
+#tooltip.active:has(.tah-tooltip-wrapper) :is(a.content-link, a.inline-roll) {
+    background: none;
+    border: none;
+    color: var(--color-text-light-7);
+    font-weight: 600;
+    line-height: 1em;
+    margin: 0;
+    padding: 0;
+}
+
+#tooltip.tah-tooltip :is(a.content-link i, a.inline-roll i),
+#tooltip.active:has(.tah-tooltip-wrapper) :is(a.content-link i, a.inline-roll i) {
+    color: var(--color-text-light-7);
+}
+
+#tooltip.tah-tooltip strong,
+#tooltip.active:has(.tah-tooltip-wrapper) strong {
+    font-weight: 600;
+}
+
+#tooltip .tah-properties {
+    text-align: left;
+}
+
+#tooltip .tah-property {
+    border-right: 1px solid var(--color-text-light-7);
+    color: var(--color-text-light-7);
+    font-size: var(--font-size-12);
+    padding: 0 5px;
+}
+
+#tooltip .tah-property:first-child {
+    padding-left: 0;
+}
+
+#tooltip .tah-property:last-child {
+    border-right: none;
+    padding-right: 0;
+}

@@ -29,6 +29,7 @@ export class ActionHandler {
         this.availableActions = []
         this.displayIcons = Utils.getSetting('displayIcons')
         this.isCustomizationEnabled = Utils.getSetting('enableCustomization')
+        this.tooltips = Utils.getSetting('tooltips')
     }
 
     /**
@@ -46,6 +47,7 @@ export class ActionHandler {
         this.actions = []
         this.availableActions = []
         this.displayIcons = Utils.getSetting('displayIcons')
+        this.tooltips = Utils.getSetting('tooltips')
     }
 
     /**
@@ -61,7 +63,7 @@ export class ActionHandler {
      */
     async buildHud (options) {
         Logger.debug('Building HUD...', { actor: this.actor, token: this.token })
-        if (this.previousActor === this.actor) {
+        if (this.previousActor?.id === this.actor?.id) {
             this.isSameActor = true
         } else {
             this.previousActor = this.actor
@@ -306,6 +308,7 @@ export class ActionHandler {
         }
 
         Logger.debug('Retrieving groups from actor...', { actor: this.actor })
+        this.actorGroups = {}
         const actorGroups = await game.tokenActionHud.socket.executeAsGM('getData', 'actor', this.actor.id) ?? null
         if (!actorGroups) return
         for (const group of Object.entries(actorGroups)) {
@@ -342,6 +345,7 @@ export class ActionHandler {
         }
 
         Logger.debug('Retrieving groups from user...', { user })
+        this.userGroups = {}
         const savedUserData = await game.tokenActionHud.socket.executeAsGM('getData', 'user', user.id) ?? {}
         this.userGroups = getUserGroups(savedUserData)
         Logger.debug('Groups retrieved from user', { userGroups: this.userGroups, user })
@@ -462,9 +466,9 @@ export class ActionHandler {
         if (!groupDataClone?.settings) groupDataClone.settings = {}
         if (typeof groupDataClone?.settings?.showTitle === 'undefined') groupDataClone.settings.showTitle = true
         groupDataClone.subtitleClass = (!groupDataClone?.settings?.showTitle) ? 'tah-hidden' : ''
-
         const nestIdParts = groupData.nestId.split('_')
         const level = nestIdParts.length ?? 1
+        const tooltip = this.#getTooltip(groupData?.tooltip, groupDataClone?.name)
 
         if (level === 1) {
             if (typeof groupDataClone?.settings?.style === 'undefined') groupDataClone.settings.style = 'tab'
@@ -479,6 +483,7 @@ export class ActionHandler {
                 nestId: groupDataClone?.nestId ?? groupDataClone?.id,
                 order: groupDataClone.order,
                 settings: groupDataClone?.settings ?? { style: 'tab' },
+                tooltip,
                 type: 'custom'
             }
         } else {
@@ -492,6 +497,7 @@ export class ActionHandler {
                 level: groupDataClone.level ?? level,
                 order: groupDataClone.order,
                 settings: groupDataClone?.settings ?? { showTitle: true, style: 'list' },
+                tooltip,
                 type: groupDataClone?.type ?? GROUP_TYPE.CUSTOM,
                 subtitleClass: groupDataClone?.subtitleClass ?? '',
                 info1: groupDataClone?.info1 ?? '',
@@ -654,17 +660,36 @@ export class ActionHandler {
     }
 
     /**
+     * Get tooltip based on module setting
+     * @param {string} tooltip The tooltip
+     * @param {string} name    The name
+     * @returns {string}       The tooltip
+     */
+    #getTooltip (tooltip, name) {
+        if (this.tooltips === 'none') return null
+        if (this.tooltips === 'nameOnly') return name
+        if (this.tooltips === 'full' && tooltip) {
+            return (tooltip.includes('tah-tooltip-wrapper'))
+                ? tooltip
+                : `<div class="tah-tooltip-wrapper">${tooltip}</div>`
+        }
+        return name
+    }
+
+    /**
      * Create action
      * @private
      * @param {object} actionData The action data
      * @returns {object}          The action
      */
     _createAction (actionData) {
+        const fullName = actionData.fullName ?? actionData.name
+        const tooltip = this.#getTooltip(actionData?.tooltip, fullName)
         return {
             encodedValue: actionData.encodedValue,
             id: actionData.id,
             name: actionData.name,
-            fullName: actionData.fullName ?? actionData.name,
+            fullName,
             listName: actionData.listName ?? actionData.name,
             cssClass: actionData.cssClass ?? '',
             icons: actionData.icon ?? {},
@@ -694,7 +719,8 @@ export class ActionHandler {
             systemSelected: actionData.systemSelected ?? true,
             selected: (!actionData.systemSelected)
                 ? false
-                : actionData.userSelected ?? actionData.systemSelected ?? true
+                : actionData.userSelected ?? actionData.systemSelected ?? true,
+            tooltip
         }
     }
 
@@ -904,7 +930,7 @@ export class ActionHandler {
                             delete groupData.info
                         }
 
-                        Object.assign(existingGroup, { ...groupData })
+                        Object.assign(existingGroup, this._createGroup({ ...existingGroup, ...groupData }))
                     }
                 }
             } else {
@@ -936,7 +962,7 @@ export class ActionHandler {
                     delete groupData.info
                 }
 
-                Object.assign(existingGroup, { ...groupData })
+                Object.assign(existingGroup, this._createGroup({ ...existingGroup, ...groupData }))
             }
         }
 
@@ -1027,7 +1053,10 @@ export class ActionHandler {
                 if (action) {
                     const systemSelected = action.systemSelected ?? existingAction.systemSelected
                     const userSelected = existingAction.userSelected ?? action.userSelected
-                    Object.assign(existingAction, this._createAction({ ...action, isPreset: true, systemSelected, userSelected }))
+                    const selected = (!systemSelected)
+                        ? false
+                        : userSelected ?? systemSelected ?? true
+                    Object.assign(existingAction, { ...action, isPreset: true, selected, systemSelected, userSelected })
                 } else if (!existingAction.selected && existingAction.isPreset) {
                     const systemSelected = false
                     Object.assign(existingAction, this._createAction({ ...existingAction, systemSelected }))

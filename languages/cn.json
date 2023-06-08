@@ -168,7 +168,12 @@
       },
       "drag": {
         "hint": "拖拽分类按钮以移动HD",
-        "name": "启用拖拽"
+        "name": "启用拖拽",
+        "choices": {
+          "always": "Always",
+          "whenUnlocked": "When Unlocked",
+          "never": "Never"
+        }
       },
       "enable": {
         "hint": "启用后，当前用户HUD激活。不会覆盖玩家的权限设置。",
@@ -210,6 +215,15 @@
       "style": {
         "hint": "设置HUD样式",
         "name": "风格"
+      },
+      "tooltips": {
+        "hint": "Where available, choose how tooltips are displayed when actions are hovered",
+        "name": "Tooltip Display",
+        "choices": {
+          "full": "Full Tooltip",
+          "nameOnly": "Name Only",
+          "none": "No Tooltips"
+        }
       },
       "toggleHud": {
         "disabled": "HUD disabled. To enable, press {binding}",
