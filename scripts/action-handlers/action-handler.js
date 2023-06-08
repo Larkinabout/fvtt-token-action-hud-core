@@ -460,7 +460,7 @@ export class ActionHandler {
      * @param {object} groupData The group data
      * @returns {object}         The group
      */
-    _createGroup (groupData) {
+    _createGroup (groupData, keepData = false) {
         const groupDataClone = Utils.deepClone(groupData)
         // New option for 1.1.0 - Define default showTitle for existing data
         if (!groupDataClone?.settings) groupDataClone.settings = {}
@@ -468,14 +468,17 @@ export class ActionHandler {
         groupDataClone.subtitleClass = (!groupDataClone?.settings?.showTitle) ? 'tah-hidden' : ''
         const nestIdParts = groupData.nestId.split('_')
         const level = nestIdParts.length ?? 1
+
+        const actions = (keepData) ? groupData?.actions ?? [] : []
+        const groups = (keepData) ? groupData?.groups ?? { lists: [], tabs: [] } : { lists: [], tabs: [] }
         const tooltip = this.#getTooltip(groupData?.tooltip, groupDataClone?.name)
 
         if (level === 1) {
             if (typeof groupDataClone?.settings?.style === 'undefined') groupDataClone.settings.style = 'tab'
             return {
-                actions: [],
+                actions,
                 cssClass: '',
-                groups: { lists: [], tabs: [] },
+                groups,
                 id: groupDataClone?.id,
                 isSelected: groupDataClone?.isSelected ?? true,
                 level: groupDataClone?.level ?? nestIdParts.length ?? 1,
@@ -503,8 +506,8 @@ export class ActionHandler {
                 info1: groupDataClone?.info1 ?? '',
                 info2: groupDataClone?.info2 ?? '',
                 info3: groupDataClone?.info3 ?? '',
-                groups: { lists: [], tabs: [] },
-                actions: []
+                actions,
+                groups
             }
         }
     }
@@ -930,7 +933,7 @@ export class ActionHandler {
                             delete groupData.info
                         }
 
-                        Object.assign(existingGroup, this._createGroup({ ...existingGroup, ...groupData }))
+                        Object.assign(existingGroup, this._createGroup({ ...existingGroup, ...groupData }, true))
                     }
                 }
             } else {
@@ -962,7 +965,7 @@ export class ActionHandler {
                     delete groupData.info
                 }
 
-                Object.assign(existingGroup, this._createGroup({ ...existingGroup, ...groupData }))
+                Object.assign(existingGroup, this._createGroup({ ...existingGroup, ...groupData }, true))
             }
         }
 
