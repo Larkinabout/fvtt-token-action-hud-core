@@ -27,8 +27,11 @@ export class RollHandler {
      * @param {object} event        The event
      * @param {string} encodedValue The encoded value
      */
-    async handleActionEvent (event, encodedValue) {
+    async handleActionEvent (event, encodedValue, actionHandler) {
         Logger.debug(`Handling event for action [${encodedValue}]`, { event })
+        // Update variables with current action context
+        this.actor = actionHandler.actor;
+        this.token = actionHandler.token;
 
         this.registerKeyPresses(event)
 
@@ -36,7 +39,7 @@ export class RollHandler {
         this.preRollHandlers.forEach((handler) => {
             if (handled) return
 
-            handled = handler.prehandleActionEvent(event, encodedValue)
+            handled = handler.prehandleActionEvent(event, encodedValue, actionHandler)
         })
 
         if (handled) return

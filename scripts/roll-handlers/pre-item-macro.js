@@ -4,7 +4,9 @@ import { Logger, Utils } from '../utilities/utils.js'
 
 export class ItemMacroPreRollHandler extends PreRollHandler {
     /** @override */
-    prehandleActionEvent (event, encodedValue) {
+    prehandleActionEvent (event, encodedValue, actionHandler) {
+        // Update variables with current action context
+        this.actor = actionHandler.actor;
         const payload = encodedValue.split(DELIMITER)
 
         if (payload.length !== 2) return false

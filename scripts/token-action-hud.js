@@ -336,7 +336,7 @@ export class TokenActionHud extends Application {
             if (target.tagName !== 'BUTTON') target = event.currentTarget.children[0]
             const value = target.value
             try {
-                this.rollHandler.handleActionEvent(event, value)
+                this.rollHandler.handleActionEvent(event, value, this.actionHandler)
                 target.blur()
             } catch (error) {
                 Logger.error(event)

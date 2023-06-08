@@ -18,6 +18,10 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      * @override
      */
     extendActionList () {
+        // Update actor and token with current action handler context
+        this.actor = this.actionHandler.actor;
+        this.token = this.actionHandler.token;
+
         if (!this.actor) return
         const items = this.actor.items.filter((item) => item.flags?.itemacro?.macro?.command)
 
@@ -40,7 +44,8 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
         const replace = itemMacroSetting === 'itemMacro'
 
-        this.actionHandler.groups.forEach(group => {
+        Object.keys(this.actionHandler.groups).forEach(groupKey => {
+            const group = this.actionHandler.groups[groupKey]
             this._addGroupActions(itemIds, group, replace)
         })
     }
