@@ -589,8 +589,8 @@ export class TokenActionHud extends Application {
         elements.expandHudButton.on('click', expandHud)
 
         // When the 'Expand HUD' button is clicked and held...
-        elements.expandHudButton.on('mousedown', this._dragEvent)
-        elements.expandHudButton.get(0).addEventListener('touchstart', this._dragEvent, { passive: true })
+        elements.expandHudButton.on('mousedown', (event) => this._dragEvent(event))
+        elements.expandHudButton.get(0).addEventListener('touchstart', (event) => this._dragEvent(event), { passive: true })
     }
 
     /**
