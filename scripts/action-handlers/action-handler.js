@@ -723,7 +723,8 @@ export class ActionHandler {
             selected: (!actionData.systemSelected)
                 ? false
                 : actionData.userSelected ?? actionData.systemSelected ?? true,
-            tooltip
+            tooltip,
+            useRawHtmlName: actionData.useRawHtmlName ?? false
         }
     }
 
