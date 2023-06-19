@@ -32,15 +32,42 @@ export const COMPENDIUM_ACTION_TYPES = ['compendiumEntry', 'compendiumMacro', 'c
 export const COMPENDIUM_PACK_TYPES = ['JournalEntry', 'Macro', 'RollTable']
 
 /**
- * CSS styles
+ * CSS Styles
  */
 export const CSS_STYLE = {
-    compact: { file: 'tah-compact' },
-    dorakoUI: { file: 'tah-dorako' },
-    foundryVTT: { file: 'tah-foundry-vtt' },
-    highContrast: { file: 'tah-high-contrast' },
-    pathfinder: { file: 'tah-pathfinder' },
-    custom: { file: 'tah-custom' }
+    compact: {
+        class: 'tah-style-foundry-vtt',
+        file: 'tah-compact',
+        primaryColor: '#dddddd',
+        secondaryColor: '#dddddd80',
+        tertiaryColor: '#ff6400'
+    },
+    custom: {
+        class: 'tah-style-custom',
+        file: 'tah-custom'
+    },
+    dorakoUI: {
+        class: 'tah-style-dorako-ui',
+        file: 'tah-dorako'
+    },
+    foundryVTT: {
+        class: 'tah-style-foundry-vtt',
+        file: 'tah-foundry-vtt',
+        primaryColor: '#dddddd',
+        secondaryColor: '#dddddd80',
+        tertiaryColor: '#ff6400'
+    },
+    highContrast: {
+        class: 'tah-style-high-contrast',
+        file: 'tah-high-contrast',
+        primaryColor: '#ffff00',
+        secondaryColor: '#ffff00',
+        tertiaryColor: '#0C7BDC'
+    },
+    pathfinder: {
+        class: 'tah-style-pathfinder',
+        file: 'tah-pathfinder'
+    }
 }
 
 /**
@@ -86,28 +113,4 @@ export const GROUP_TYPE = {
 export const ITEM_MACRO_ICON = {
     ICON: 'fas fa-sd-card',
     TOOLTIP: 'Item Macro'
-}
-
-export const STYLE_CLASS = {
-    compact: {
-        class: 'tah-style-foundry-vtt',
-        primaryColor: '#dddddd',
-        secondaryColor: '#dddddd80',
-        tertiaryColor: '#ff6400'
-    },
-    custom: { class: 'tah-style-custom' },
-    dorakoUI: { class: 'tah-style-dorako-ui' },
-    foundryVTT: {
-        class: 'tah-style-foundry-vtt',
-        primaryColor: '#dddddd',
-        secondaryColor: '#dddddd80',
-        tertiaryColor: '#ff6400'
-    },
-    highContrast: {
-        class: 'tah-style-high-contrast',
-        primaryColor: '#ffff00',
-        secondaryColor: '#ffff00',
-        tertiaryColor: '#0C7BDC'
-    },
-    pathfinder: { class: 'tah-style-pathfinder' }
 }

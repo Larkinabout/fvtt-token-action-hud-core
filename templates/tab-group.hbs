@@ -1,7 +1,7 @@
 {{~#if (ne isSelected false)~}}
 <div class="tah-tab-group" id="tah-group-{{nestId}}" data-nest-id="{{nestId}}" data-has-actions="{{~#if (true hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
     <button class="tah-group-button" value="{{id}}">
-        {{~#if settings.image~}}<div class="tah-button-image" style="background: url({{settings.image}}) no-repeat center center; background-size:contain" {{~#if tooltip~}} data-tooltip="{{tooltip}}"{{~/if~}}></div>{{~/if~}}
+        {{~#if settings.image~}}<img class="tah-button-image" src="{{settings.image}}" {{~#if tooltip~}} data-tooltip="{{tooltip}}"{{~/if~}}>{{~/if~}}
         <span class="tah-button-content">
             {{~#if settings.showTitle~}}<div class="tah-button-text">{{cap name}}</div>{{~/if~}}
             <i class="fa fa-pen-to-square" aria-hidden="true"></i>

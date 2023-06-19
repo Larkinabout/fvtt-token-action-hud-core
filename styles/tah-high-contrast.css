@@ -524,6 +524,7 @@
 }
 
 .tah-button-image {
+    border: none;
     border-radius: var(--tah-border-radius);
     height: var(--tah-button-height);
     min-width: var(--tah-button-min-width);
@@ -531,6 +532,7 @@
 }
 
 .tah-list-image {
+    border: none;
     border-radius: var(--tah-border-radius);
     box-shadow: var(--tah-button-box-shadow);
     height: var(--tah-button-height);

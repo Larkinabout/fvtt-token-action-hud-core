@@ -1,24 +1,21 @@
 :root {
     --tah-background-color: none;
     --tah-border-radius: 3px;
-    --tah-text-primary-color: #ddd;
-    --tah-text-hover-primary-color: #fff;
     --tah-gap: 5px;
-    --tah-icon-color-disabled: #dddddd80;
-    --tah-text-shadow: 1px 1px 1px rgba(52, 52, 52, 1),
-        1px 1px 1px rgba(52, 52, 52, 1), 1px 1px 1px rgba(52, 52, 52, 1),
-        1px 1px 1px rgba(52, 52, 52, 1);
-    --border-width: 1px;
-    --header-color: #fff;
-    --header-bg: var(--primary);
-    --body-padding: 0em 0em 0em 0em;
-    --edge-margin: 5px;
+  
+    --tah-button-background-color: var(--dorako-bg-current);
     --tah-button-border-color: none;
+    --tah-button-box-shadow: var(--glassy);
     --tah-button-text-color: var(--tah-text-primary-color);
     --tah-button-disabled-text-color: #dddddd80;
     --tah-button-height: 30px;
     --tah-button-min-width: 30px;
+    --tah-button-hover-box-shadow: var(--glassy);
     --tah-button-hover-text-color: var(--tah-text-hover-primary-color);
+    --tah-text-primary-color: #ddd;
+    --tah-text-hover-primary-color: #fff;
+    --tah-text-shadow: var(--dorako-text-shadow);
+
     --dorako-bg-glass: rgba(120, 120, 120, 0.5);
     --dorako-sheet-light: rgba(20, 20, 20, 0.6);
     --dorako-orange: rgba(255, 100, 0, 0.5);
@@ -73,6 +70,15 @@
     --color-shadow-primary: var(--paizo-blue);
     --dorako-text-shadow: 0px 0px 3px black;
     --dorako-box-shadow: 0px 0px 3px black;
+    --tah-icon-color-disabled: #dddddd80;
+    --tah-text-shadow: 1px 1px 1px rgba(52, 52, 52, 1),
+        1px 1px 1px rgba(52, 52, 52, 1), 1px 1px 1px rgba(52, 52, 52, 1),
+        1px 1px 1px rgba(52, 52, 52, 1);
+    --border-width: 1px;
+    --header-color: #fff;
+    --header-bg: var(--primary);
+    --body-padding: 0em 0em 0em 0em;
+    --edge-margin: 5px;
 }
 
 #token-action-hud {
@@ -180,10 +186,10 @@
 .tah-group-button:focus {
     align-items: center;
     backdrop-filter: var(--dorako-vibrancy);
-    background-color: var(--dorako-bg-current);
+    background-color: var(--tah-button-background-color);
     border: var(--tah-button-border-color);
     border-radius: var(--tah-border-radius);
-    box-shadow: var(--glassy);
+    box-shadow: var(--tah-button-box-shadow);
     color: var(--tah-button-text-color);
     display: flex;
     height: var(--tah-button-height);
@@ -191,7 +197,7 @@
     padding: 0;
     position: relative;
     text-align: center;
-    text-shadow: var(--dorako-text-shadow);
+    text-shadow: var(--tah-text-shadow);
     transition: all 0.1s ease-in-out 0s;
     white-space: nowrap;
     z-index: 1;
@@ -208,7 +214,7 @@
 .tah-group-button:not(.disabled):hover {
     background-color: var(--paizo-red);
     border: var(--tah-button-border-color);
-    box-shadow: var(--glassy);
+    box-shadow: var(--tah-button-hover-box-shadow);
     color: var(--tah-button-hover-text-color);
     font-weight: inherit;
     transition: background-color 0.15s ease-out 0s;
@@ -228,7 +234,7 @@
 }
 
 .tah-action-button.disabled:hover {
-    box-shadow: var(--glassy);
+    box-shadow: var(--tah-button-box-shadow);
 }
 
 .tah-action-button .tah-button-image {
@@ -243,7 +249,7 @@
 .tah-action-button.toggle:not(.disabled):hover {
     background-color: var(--paizo-blue);
     border: none;
-    box-shadow: var(--glassy);
+    box-shadow: var(--tah-button-box-shadow);
     transition: background-color 0.15s ease-out 0s;
 }
 
@@ -302,7 +308,6 @@
 }
 
 .tah-tab-groups {
-    padding: 3px 0 3px 0;
     width: max-content;
 }
 
@@ -429,6 +434,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--tah-gap);
+    line-height: 1;
     text-shadow: var(--tah-text-shadow);
 }
 
@@ -495,15 +501,16 @@
 }
 
 .tah-button-image {
-    border-radius: 5px;
+    border-radius: var(--tah-border-radius);
     height: calc(var(--tah-button-height) - 2px);
     min-width: var(--tah-button-min-width);
     width: var(--tah-button-min-width);
 }
 
 .tah-list-image {
-    border-radius: 5px;
-    box-shadow: var(--glassy);
+    border: none;
+    border-radius: var(--tah-border-radius);
+    box-shadow: var(--tah-button-box-shadow);
     height: var(--tah-button-height);
     margin-right: 5px;
     min-width: var(--tah-button-min-width);

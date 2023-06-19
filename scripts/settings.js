@@ -1,5 +1,5 @@
 import { CustomStyleForm } from './utilities/custom-style-form.js'
-import { CUSTOM_STYLE, MODULE, STYLE_CLASS } from './constants.js'
+import { CUSTOM_STYLE, MODULE } from './constants.js'
 import { Logger, Utils } from './utilities/utils.js'
 
 function onChangeFunction (value) { if (game.tokenActionHud) game.tokenActionHud.updateSettings() }

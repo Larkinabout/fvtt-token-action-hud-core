@@ -1,6 +1,6 @@
 import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
 import { CategoryResizer } from './utilities/category-resizer.js'
-import { MODULE, STYLE_CLASS } from './constants.js'
+import { MODULE, CSS_STYLE } from './constants.js'
 import { Logger, Timer, Utils } from './utilities/utils.js'
 
 /**
@@ -132,7 +132,8 @@ export class TokenActionHud extends Application {
             title: 'token-action-hud',
             dragDrop: [],
             tabs: [],
-            scrollY: []
+            scrollY: [],
+            zIndex: 100
         })
     }
 
@@ -164,7 +165,7 @@ export class TokenActionHud extends Application {
         const data = super.getData()
         data.hud = this.hud
         data.id = 'token-action-hud'
-        data.style = STYLE_CLASS[this.style].class
+        data.style = CSS_STYLE[this.style].class
         data.scale = this._getScale()
         data.background = '#00000000'
         Logger.debug('Application data', { data })
@@ -848,7 +849,7 @@ export class TokenActionHud extends Application {
     async toggleHud () {
         const binding = Utils.humanizeBinding('toggleHud')
         if (this.isEnabled) {
-            this.close()
+            this.#close()
             this.isEnabled = false
             await Utils.setSetting('enable', false)
             Logger.info(game.i18n.format('tokenActionHud.settings.toggleHud.disabled', { binding }), true)
@@ -1000,7 +1001,7 @@ export class TokenActionHud extends Application {
         const multipleTokens = controlledTokens.length > 1 && !character
 
         if ((!character && !multipleTokens) || !this.isHudEnabled) {
-            this.close()
+            this.#close()
             this.hoveredGroups = []
             Logger.debug('Hud update aborted as no character(s) found or hud is disabled')
             this.isUpdating = false
@@ -1012,7 +1013,7 @@ export class TokenActionHud extends Application {
         this.hud = await this.actionHandler.buildHud(options)
 
         if (this.hud.length === 0) {
-            this.close()
+            this.#close()
             this.hoveredGroups = []
             Logger.debug('Hud update aborted as action list empty')
             this.isUpdating = false
@@ -1021,10 +1022,21 @@ export class TokenActionHud extends Application {
 
         this.rendering = true
         this.render(true)
+        if (!ui.windows[this.appId]) {
+            ui.windows[this.appId] = this
+        }
         this.isUpdating = false
 
         Hooks.callAll('tokenActionHudCoreHudUpdated', this.module)
         Logger.debug('Hud updated')
+    }
+
+    /**
+     * Close application
+     * @private
+     */
+    #close () {
+        this.close()
     }
 
     /**

@@ -1,8 +1,12 @@
+:root {
+    --tah-font-size-10: 0.65rem;
+}
+
 /*
  * DIALOGS
  */
 
- .token-action-hud-taginput {
+.token-action-hud-taginput {
     max-height: 300px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -24,13 +28,13 @@
 }
 
 .tah-fieldset {
-    border: 2px groove #FFFFFF;
+    border: 2px groove #ffffff;
     padding: 3px;
-  }
+}
 
 .tah-fieldset > legend {
     color: #6f6f6f;
-    text-shadow: 1px 1px 1px #FFFFFF;
+    text-shadow: 1px 1px 1px #ffffff;
 }
 
 #tooltip.tah-tooltip,
@@ -44,7 +48,7 @@
 }
 
 #tooltip:not(.active).tah-tooltip,
-#tooltip:not(.active):has(.tah-tooltip-wrapper)  {
+#tooltip:not(.active):has(.tah-tooltip-wrapper) {
     transition: visibility 0s, opacity 0s;
 }
 
@@ -77,7 +81,8 @@
 }
 
 #tooltip.tah-tooltip :is(a.content-link i, a.inline-roll i),
-#tooltip.active:has(.tah-tooltip-wrapper) :is(a.content-link i, a.inline-roll i) {
+#tooltip.active:has(.tah-tooltip-wrapper)
+    :is(a.content-link i, a.inline-roll i) {
     color: var(--color-text-light-7);
 }
 
@@ -87,14 +92,18 @@
 }
 
 #tooltip .tah-properties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
     text-align: left;
 }
 
 #tooltip .tah-property {
+    line-break: strict;
     border-right: 1px solid var(--color-text-light-7);
     color: var(--color-text-light-7);
-    font-size: var(--font-size-12);
-    padding: 0 5px;
+    font-size: var(--font-size-11);
+    padding-right: 5px;
 }
 
 #tooltip .tah-property:first-child {

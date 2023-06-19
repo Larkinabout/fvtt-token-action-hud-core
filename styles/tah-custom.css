@@ -1,7 +1,6 @@
 :root {
     --tah-background-color: #00000000;
     --tah-border-radius: 3px;
-    --tah-font-size-10: 0.65rem;
     --tah-gap: 5px;
     --tah-icon-color-disabled: var(--tah-text-secondary-color-editable);
     --tah-text-shadow: 1px 1px 1px rgb(0 0 0), 0px 1px 3px rgb(0 0 0);

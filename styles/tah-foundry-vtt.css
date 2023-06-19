@@ -1,7 +1,6 @@
 :root {
     --tah-background-color: #00000000;
     --tah-border-radius: 3px;
-    --tah-font-size-10: 0.65rem;
     --tah-gap: 5px;
 
     --tah-button-background-color: #000000b3;
@@ -288,7 +287,7 @@
 
 .tah-tab-group > .tah-groups-container.expand-down {
     top: calc(100% - 10px);
-    padding-top: 13px;
+    padding-top: 15px;
 }
 
 .tah-tab-group > .tah-groups-container.expand-up {
@@ -452,6 +451,7 @@
 }
 
 .tah-list-image {
+    border: none;
     border-radius: var(--tah-border-radius);
     box-shadow: var(--tah-button-box-shadow);
     height: var(--tah-button-height);

@@ -356,6 +356,12 @@ export class Utils {
                 }
             }
         }
+
+        const tahElement = document.querySelector('#token-action-hud')
+        if (tahElement) {
+            tahElement.classList.remove(...tahElement.classList)
+            tahElement.classList.add(CSS_STYLE[style].class)
+        }
     }
 
     /**

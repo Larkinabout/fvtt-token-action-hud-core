@@ -1,9 +1,8 @@
 :root {
     --tah-background-color: #00000000;
     --tah-border-radius: 0;
-    --tah-font-size-10: 0.65rem;
     --tah-gap: 5px;
-    --tah-subtitle-disabled-color: #75683F;
+    --tah-subtitle-disabled-color: #75683f;
 
     --tah-button-background-color: #f3e9ca;
     --tah-button-background-image: url("../../../ui/parchment.jpeg") repeat;
@@ -278,7 +277,7 @@
     display: flex;
 }
 
-.tah-tab-group >.tah-groups-container.expand-down > .tah-groups {
+.tah-tab-group > .tah-groups-container.expand-down > .tah-groups {
     flex-direction: column;
     left: -10px;
     padding: 10px;
@@ -286,7 +285,7 @@
     top: -10px;
 }
 
-.tah-tab-group >.tah-groups-container.expand-up > .tah-groups {
+.tah-tab-group > .tah-groups-container.expand-up > .tah-groups {
     flex-direction: column;
     left: -10px;
     padding: 10px;
@@ -304,8 +303,10 @@
     flex-direction: column-reverse;
 }
 
-
-.tah-tab-group > .tah-groups-container.expand-up > .tah-groups > .tah-list-groups {
+.tah-tab-group
+    > .tah-groups-container.expand-up
+    > .tah-groups
+    > .tah-list-groups {
     flex-direction: column-reverse;
 }
 
@@ -367,7 +368,7 @@
 }
 
 .tah-unlocked
-.tah-group
+    .tah-group
     > .tah-list-group
     > .tah-groups
     > .tah-list-groups
@@ -460,6 +461,7 @@
 }
 
 .tah-list-image {
+    border: none;
     border-radius: var(--tah-border-radius);
     box-shadow: var(--tah-button-box-shadow);
     height: var(--tah-button-height);
