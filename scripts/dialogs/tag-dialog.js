@@ -19,10 +19,13 @@ export class TagDialog extends FormApplication {
     static get defaultOptions () {
         const defaults = super.defaultOptions
         const overrides = {
+            classes: ['tah-dialog'],
             closeOnSubmit: true,
             id: 'token-action-hud-dialog',
+            resizable: true,
             template: `modules/${MODULE.ID}/templates/tagdialog.hbs`,
-            width: 500
+            height: 600,
+            width: 600
         }
 
         const mergedOptions = foundry.utils.mergeObject(defaults, overrides)
@@ -76,8 +79,6 @@ export class TagDialog extends FormApplication {
      */
     static _prepareHook (tags) {
         Hooks.once('renderTagDialog', (app, html, options) => {
-            html.css('height', 'auto')
-
             const $index = html.find('select[id="token-action-hud-index"]')
             if ($index.length > 0) {
                 $index.css('background', '#fff')

@@ -23,6 +23,30 @@
     margin-top: 2px;
 }
 
+.window-app.tah-dialog .window-content {
+    padding: 0;
+}
+
+.tah-dialog .window-content > div {
+    height: 100%;
+    flex-wrap: nowrap;
+}
+
+.tah-dialog .categories {
+    height: 100%;
+}
+
+.tah-dialog .categories .scrollable {
+    flex: 1;
+    overflow: hidden auto;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+}
+
+.tah-dialog .categories footer {
+    margin: 0.5rem;
+    flex: 0;
+}
+
 .tah-radio-group {
     text-align: right;
 }
@@ -35,6 +59,12 @@
 .tah-fieldset > legend {
     color: #6f6f6f;
     text-shadow: 1px 1px 1px #ffffff;
+}
+
+.tah-scrollable {
+    flex: 1;
+    overflow: hidden auto;
+    padding: 1rem;
 }
 
 #tooltip.tah-tooltip,
