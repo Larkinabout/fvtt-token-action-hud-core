@@ -8,7 +8,7 @@ function onChangeFunction (value) { if (game.tokenActionHud) game.tokenActionHud
 Hooks.on('init', async () => {
     game.keybindings.register(MODULE.ID, 'toggleHud', {
         name: Utils.i18n('tokenActionHud.toggleHud'),
-        editable: [{ key: 'KeyH', modifiers: [] }],
+        editable: [],
         onDown: () => { game.tokenActionHud.toggleHud() }
     })
 })

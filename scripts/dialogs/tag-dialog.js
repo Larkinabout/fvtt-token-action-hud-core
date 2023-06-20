@@ -24,7 +24,6 @@ export class TagDialog extends FormApplication {
             id: 'token-action-hud-dialog',
             resizable: true,
             template: `modules/${MODULE.ID}/templates/tagdialog.hbs`,
-            height: 600,
             width: 600
         }
 
@@ -79,6 +78,8 @@ export class TagDialog extends FormApplication {
      */
     static _prepareHook (tags) {
         Hooks.once('renderTagDialog', (app, html, options) => {
+            html.css('maxHeight', '600px')
+
             const $index = html.find('select[id="token-action-hud-index"]')
             if ($index.length > 0) {
                 $index.css('background', '#fff')
