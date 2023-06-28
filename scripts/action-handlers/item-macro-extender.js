@@ -19,8 +19,8 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      */
     extendActionList () {
         // Update actor and token with current action handler context
-        this.actor = this.actionHandler.actor;
-        this.token = this.actionHandler.token;
+        this.actor = this.actionHandler.actor
+        this.token = this.actionHandler.token
 
         if (!this.actor) return
         const items = this.actor.items.filter((item) => item.flags?.itemacro?.macro?.command)
@@ -28,7 +28,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
         let itemIds
         if (Utils.isModuleActive('midi-qol')) {
             itemIds = items
-                .filter(this._isUnsupportedByMidiQoL)
+                .filter(this.#isUnsupportedByMidiQoL)
                 .map((item) => item.id)
         } else {
             itemIds = items.map((item) => item.id)
@@ -46,7 +46,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
 
         Object.keys(this.actionHandler.groups).forEach(groupKey => {
             const group = this.actionHandler.groups[groupKey]
-            this._addGroupActions(itemIds, group, replace)
+            this.#addGroupActions(itemIds, group, replace)
         })
     }
 
@@ -57,7 +57,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      * @param {object} group    The group
      * @param {boolean} replace Whether to replace the action or not
      */
-    _addGroupActions (itemIds, group, replace) {
+    #addGroupActions (itemIds, group, replace) {
         // Exit if no actions exist
         if (!group?.actions?.length) return
 
@@ -72,12 +72,12 @@ export class ItemMacroActionListExtender extends ActionListExtender {
                 replace = true
             }
 
-            const macroAction = this._createItemMacroAction(existingAction, actionToReplace, replace)
+            const macroAction = this.#createItemMacroAction(existingAction, actionToReplace, replace)
 
             if (!replace) actions.push(macroAction)
         })
 
-        this._addActions(actions, group)
+        this.#addActions(actions, group)
     }
 
     /**
@@ -88,14 +88,14 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      * @param {boolean} replace        Whether to replace the action or not
      * @returns {object}               The item macro action
      */
-    _createItemMacroAction (existingAction, actionToReplace, replace) {
+    #createItemMacroAction (existingAction, actionToReplace, replace) {
         const action = (replace) ? actionToReplace : Utils.deepClone(existingAction)
-        action.encodedValue = `itemMacro${existingAction.encodedValue.substr(existingAction.encodedValue.indexOf(DELIMITER))}`
+        action.encodedValue = `itemMacro${existingAction.encodedValue?.substr(existingAction.encodedValue.indexOf(DELIMITER))}`
         action.id = `itemMacro+${existingAction.id}`
         action.fullName = existingAction.fullName
         action.listName = `Item Macro: ${existingAction.fullName}`
         action.name = existingAction.name
-        action.itemMacroIcon = `<i class="${ITEM_MACRO_ICON.ICON}" title="${ITEM_MACRO_ICON.TOOLTIP}"></i>`
+        action.itemMacroIcon = `<i class="${ITEM_MACRO_ICON.ICON}" data-tooltip="${ITEM_MACRO_ICON.TOOLTIP}"></i>`
         return action
     }
 
@@ -105,7 +105,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      * @param {object} actions The actions
      * @param {object} group   The group
      */
-    _addActions (actions, group) {
+    #addActions (actions, group) {
         actions.forEach(macroAction => {
             const index = group.actions.findIndex(action => action.id === macroAction.id) + 1
             group.actions.splice(index, 0, macroAction)
@@ -118,7 +118,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      * @param {object} item The item
      * @returns {boolean}
      */
-    _isUnsupportedByMidiQoL (item) {
+    #isUnsupportedByMidiQoL (item) {
         const flag = item.getFlag('midi-qol', 'onUseMacroName')
         return !flag
     }

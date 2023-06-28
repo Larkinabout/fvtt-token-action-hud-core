@@ -6,7 +6,7 @@ export class ItemMacroPreRollHandler extends PreRollHandler {
     /** @override */
     prehandleActionEvent (event, encodedValue, actionHandler) {
         // Update variables with current action context
-        this.actor = actionHandler.actor;
+        this.actor = actionHandler.actor
         const payload = encodedValue.split(DELIMITER)
 
         if (payload.length !== 2) return false
@@ -21,7 +21,7 @@ export class ItemMacroPreRollHandler extends PreRollHandler {
             return true
         }
 
-        return this._tryExecuteItemMacro(actionId)
+        return this.#tryExecuteItemMacro(actionId)
     }
 
     /**
@@ -30,7 +30,7 @@ export class ItemMacroPreRollHandler extends PreRollHandler {
      * @param {string} actionId The action id
      * @returns {boolean}       Whether the item macro executed
      */
-    _tryExecuteItemMacro (actionId) {
+    #tryExecuteItemMacro (actionId) {
         const item = Utils.getItem(this.actor, actionId)
 
         try {
