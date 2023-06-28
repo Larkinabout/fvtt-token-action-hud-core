@@ -919,6 +919,7 @@ export class TokenActionHud extends Application {
         Logger.debug('Resetting actor data...')
 
         await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', this.actor.id, {})
+        this.actionHandler.hardResetActionHandler()
 
         Logger.debug('Actor data reset')
 
@@ -937,6 +938,8 @@ export class TokenActionHud extends Application {
             Logger.debug(`Resetting flags for actor [${actor.id}]`, { actor })
             await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', actor.id, {})
         }
+        this.actionHandler.hardResetActionHandler()
+
         Logger.debug('All actor data reset')
 
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetAllActorData' } }
@@ -951,7 +954,7 @@ export class TokenActionHud extends Application {
         Logger.debug('Resetting user data...')
         await game.tokenActionHud.socket.executeAsGM('saveData', 'user', game.userId, {})
         Logger.debug('User data reset')
-        this.actionHandler.resetActionHandler()
+        this.actionHandler.hardResetActionHandler()
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetUserData' } }
         this.update(trigger)
     }
@@ -966,7 +969,7 @@ export class TokenActionHud extends Application {
             await game.tokenActionHud.socket.executeAsGM('saveData', 'user', user.id, {})
         }
         Logger.debug('All user data reset')
-        this.actionHandler.resetActionHandler()
+        this.actionHandler.hardResetActionHandler()
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetAllUserData' } }
         this.update(trigger)
     }

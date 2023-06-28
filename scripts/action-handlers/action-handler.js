@@ -33,10 +33,10 @@ export class ActionHandler {
     }
 
     /**
-     * Reset action handler variables
+     * Reset action handler variables except actorGroups and userGroups
      * @public
      */
-    resetActionHandler () {
+    softResetActionHandler () {
         this.genericActionHandler = new GenericActionHandler(this)
         this.compendiumActionHandler = new CompendiumActionHandler(this)
         this.macroActionHandler = new MacroActionHandler(this)
@@ -48,6 +48,16 @@ export class ActionHandler {
         this.availableActions = []
         this.displayIcons = Utils.getSetting('displayIcons')
         this.tooltips = Utils.getSetting('tooltips')
+    }
+
+    /**
+     * Reset all action handler variables
+     * @public
+     */
+    hardResetActionHandler () {
+        this.softResetActionHandler()
+        this.actorGroups = {}
+        this.userGroups = {}
     }
 
     /**
@@ -69,7 +79,7 @@ export class ActionHandler {
             this.previousActor = this.actor
             this.isSameActor = false
         }
-        this.resetActionHandler()
+        this.softResetActionHandler()
         await this._getDefaultGroups()
         await this._getDefaultLayout()
         this.isGmActive = Utils.isGmActive()

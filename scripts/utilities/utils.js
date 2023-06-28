@@ -88,6 +88,21 @@ export class Utils {
     }
 
     /**
+     * Get status effect from actor based on the status id
+     * @param {object} actor    The actor
+     * @param {string} statusId The status id
+     * @returns {object}        The status effect
+     */
+    static getStatusEffect (actor, statusId) {
+        if (game.version.startsWith('11')) {
+            return actor.effects.find((effect) => effect.statuses.every((status) => status === statusId))
+        } else {
+            // V10
+            return actor.effects.find((effect) => effect.flags?.core?.statusId === statusId)
+        }
+    }
+
+    /**
      * Get image from entity
      * @public
      * @param {object} entity       The entity, e.g., actor, item

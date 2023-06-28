@@ -47,7 +47,7 @@ export class TagDialog extends FormApplication {
         cancel.on('click', this.close.bind(this))
 
         const resetActions = html.find('#tah-dialog-reset-actions')
-        resetActions.on('click', this._resetActions)
+        resetActions.on('click', this.#resetActions)
     }
 
     /**
@@ -131,7 +131,7 @@ export class TagDialog extends FormApplication {
      * Reset actions
      * @private
      */
-    async _resetActions () {
+    async #resetActions () {
         const d = new Dialog({
             title: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.title'),
             content: `<p>${Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.content')}</p>`,
