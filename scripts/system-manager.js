@@ -54,7 +54,7 @@ export class SystemManager {
      * @param {ActionHandler} actionHandler The ActionHandler class
      */
     addActionExtenders (actionHandler) {
-        if (Utils.isModuleActive('itemacro')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler)) }
+        if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler)) }
     }
 
     /**
@@ -84,7 +84,7 @@ export class SystemManager {
     addPreHandlers (rollHandler) {
         rollHandler.addPreRollHandler(new CompendiumMacroPreHandler())
 
-        if (Utils.isModuleActive('itemacro')) { rollHandler.addPreRollHandler(new ItemMacroPreRollHandler()) }
+        if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) { rollHandler.addPreRollHandler(new ItemMacroPreRollHandler()) }
     }
 
     /**

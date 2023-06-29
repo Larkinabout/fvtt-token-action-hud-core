@@ -250,7 +250,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
-    if (game.modules.get('itemacro')?.active) {
+    if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) {
         game.settings.register(MODULE.ID, 'itemMacro', {
             name: Utils.i18n('tokenActionHud.settings.itemMacro.name'),
             hint: Utils.i18n('tokenActionHud.settings.itemMacro.hint'),

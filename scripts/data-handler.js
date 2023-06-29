@@ -7,14 +7,16 @@ export class DataHandler {
      */
     static async createDirectories () {
         const DATA_FOLDER = 'data'
-        const moduleDirectory = MODULE.ID
+        const moduleDirectory = (game.version.startsWith('11') && typeof ForgeVTT === 'undefined')
+            ? `modules/${MODULE.ID}/storage`
+            : MODULE.ID
         await FilePicker.browse(DATA_FOLDER, moduleDirectory)
             .catch(async _ => {
                 if (!await FilePicker.createDirectory(DATA_FOLDER, moduleDirectory, {})) {
                     Logger.debug('Failed to create directory: ' + moduleDirectory)
                 }
             })
-        const worldDirectory = `${MODULE.ID}/${game.world.id}`
+        const worldDirectory = `${moduleDirectory}/${game.world.id}`
         await FilePicker.browse(DATA_FOLDER, worldDirectory)
             .catch(async _ => {
                 if (!await FilePicker.createDirectory(DATA_FOLDER, worldDirectory, {})) {
@@ -45,7 +47,9 @@ export class DataHandler {
      */
     static async saveData (type, id, data) {
         // Get the folder path
-        const folderPath = `${MODULE.ID}/${game.world.id}/${type}`
+        const folderPath = (game.version.startsWith('11') && typeof ForgeVTT === 'undefined')
+            ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
+            : `${MODULE.ID}/${game.world.id}/${type}`
         // Generate the system safe filename
         const fileName = encodeURI(`${id}.json`)
         // Create the File and contents
@@ -63,7 +67,9 @@ export class DataHandler {
      * @returns {object}    The data
      */
     static async getData (type, id) {
-        const folderPath = `${MODULE.ID}/${game.world.id}/${type}`
+        const folderPath = (game.version.startsWith('11') && typeof ForgeVTT === 'undefined')
+            ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
+            : `${MODULE.ID}/${game.world.id}/${type}`
         const fileName = encodeURI(`${id}.json`)
         try {
             const foundFolderPath = await FilePicker.browse('data', folderPath)

@@ -19,7 +19,7 @@
   "version": "This is auto replaced",
   "compatibility": {
     "minimum": "10",
-    "verified": "11.300"
+    "verified": "11.304"
   },
   "esmodules": [
     "./scripts/token-action-hud-core.min.js"
@@ -115,5 +115,6 @@
   "download": "This is auto replaced",
   "protected": false,
   "coreTranslation": false,
-  "library": true
+  "library": true,
+  "persistentStorage": true
 }
