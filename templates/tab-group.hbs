@@ -1,4 +1,4 @@
-{{~#if (ne isSelected false)~}}
+{{~#if (ne selected false)~}}
 <div class="tah-tab-group" id="tah-group-{{nestId}}" data-nest-id="{{nestId}}" data-has-actions="{{~#if (true hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
     <button class="tah-group-button" value="{{id}}">
         {{~#if settings.image~}}<img class="tah-button-image" src="{{settings.image}}" {{~#if tooltip~}} data-tooltip="{{tooltip}}"{{~/if~}}>{{~/if~}}

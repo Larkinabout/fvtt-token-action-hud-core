@@ -80,27 +80,27 @@ export class ActionHandler {
             this.isSameActor = false
         }
         this.softResetActionHandler()
-        await this._getDefaultGroups()
-        await this._getDefaultLayout()
+        await this.#getDefaultGroups()
+        await this.#getDefaultLayout()
         this.isGmActive = Utils.isGmActive()
         if (!this.isGmActive && !this.isGmInactiveUserNotified) {
             Logger.info('Cannot retrieve HUD layout without GM present', true)
             this.isGmInactiveUserNotified = true
         }
-        await this._getSavedUserGroups()
-        if (this.actor) await this._getSavedActorGroups()
-        this.hud = await this._prepareHud()
+        await this.#getSavedUserGroups()
+        if (this.actor) await this.#getSavedActorGroups()
+        this.hud = await this.#prepareHud()
         await Promise.all([
-            this._buildSystemActions(),
-            this._buildGenericActions(),
-            this._buildCompendiumActions(),
-            this._buildMacroActions()
+            this.#buildSystemActions(),
+            this.#buildGenericActions(),
+            this.#buildCompendiumActions(),
+            this.#buildMacroActions()
         ])
         await this.buildFurtherActions()
-        await this._updateNonPresetActions()
-        await this._setHasActions()
-        await this._sortAvailableActions()
-        await this._setCharacterLimit()
+        await this.#updateNonPresetActions()
+        await this.#setHasActions()
+        await this.#sortAvailableActions()
+        await this.#setCharacterLimit()
         await this.saveGroups(options)
         Logger.debug('HUD built', { hud: this.hud, actor: this.actor, token: this.token })
         return this.hud
@@ -111,7 +111,7 @@ export class ActionHandler {
      * @private
      * @returns {object} The HUD
      */
-    async _prepareHud () {
+    async #prepareHud () {
         Logger.debug('Preparing HUD...', { actor: this.actor, token: this.token })
 
         const title = (Utils.getSetting('displayCharacterName'))
@@ -127,17 +127,17 @@ export class ActionHandler {
         }
 
         if (Object.keys(this.userGroups).length) {
-            const userGroups = this._getUserGroups()
+            const userGroups = this.#getUserGroups()
             for (const userGroup of userGroups) {
                 if (userGroup.level === 1) {
-                    const group = this._createGroup(userGroup)
+                    const group = this.#createGroup(userGroup)
                     hud.groups.push(group)
                     this.groups[group.nestId] = group
                 } else {
                     const parentNestId = userGroup.nestId.split('_', userGroup.level - 1).join('_')
                     const parentGroup = await Utils.getGroupByNestId(hud.groups, { nestId: parentNestId })
                     if (parentGroup) {
-                        const group = this._createGroup(userGroup)
+                        const group = this.#createGroup(userGroup)
                         if (group.settings.style === 'tab') {
                             parentGroup.groups.tabs.push(group)
                         } else {
@@ -150,7 +150,7 @@ export class ActionHandler {
         }
 
         if (Object.keys(this.actorGroups).length) {
-            const actorGroups = this._getActorGroups()
+            const actorGroups = this.#getActorGroups()
             for (const actorGroup of actorGroups) {
                 const parentNestId = actorGroup.nestId.split('_', actorGroup.level - 1).join('_')
                 const existingGroup = await Utils.getGroupByNestId(hud.groups, { nestId: actorGroup.nestId })
@@ -165,7 +165,7 @@ export class ActionHandler {
                 } else {
                     const parentGroup = await Utils.getGroupByNestId(hud.groups, { nestId: parentNestId })
                     if (parentGroup && actorGroup.type === 'system-derived') {
-                        const group = this._createGroup(actorGroup)
+                        const group = this.#createGroup(actorGroup)
                         if (actorGroup.actions?.length) {
                             group.actions = actorGroup.actions
                             this.actions.push(...group.actions)
@@ -197,7 +197,7 @@ export class ActionHandler {
      * Build system-specific actions
      * @private
      */
-    async _buildSystemActions () {
+    async #buildSystemActions () {
         Logger.debug('Building system actions...', { actor: this.actor, token: this.token })
         const groupIds = Object.values(this.groups).map(group => group.id)
         await this.buildSystemActions(groupIds)
@@ -208,7 +208,7 @@ export class ActionHandler {
      * Build compendium-specific actions
      * @private
      */
-    async _buildCompendiumActions () {
+    async #buildCompendiumActions () {
         Logger.debug('Building compendium actions...')
         await this.compendiumActionHandler.buildCompendiumActions()
         Logger.debug('Compendium actions built', { hud: this.hud })
@@ -218,7 +218,7 @@ export class ActionHandler {
      * Build generic actions
      * @private
      */
-    _buildGenericActions () {
+    #buildGenericActions () {
         Logger.debug('Building generic actions...', { actor: this.actor, token: this.token })
         this.genericActionHandler.buildGenericActions()
         Logger.debug('Generic actions built', { hud: this.hud, actor: this.actor, token: this.token })
@@ -228,7 +228,7 @@ export class ActionHandler {
      * Build macro-specific actions
      * @private
      */
-    async _buildMacroActions () {
+    async #buildMacroActions () {
         Logger.debug('Building macro actions...')
         await this.macroActionHandler.buildMacroActions()
         Logger.debug('Macro actions built', { hud: this.hud })
@@ -246,14 +246,14 @@ export class ActionHandler {
      * Update non-preset actions
      * @private
      */
-    async _updateNonPresetActions () {
+    async #updateNonPresetActions () {
         const nonPresetActions = this.actions.filter(action => !action?.isPreset)
         for (const action of nonPresetActions) {
             const availableAction = this.availableActions.find(availableAction => availableAction.id === action.id)
             if (availableAction) {
                 const systemSelected = availableAction.systemSelected ?? action.systemSelected
                 const userSelected = action.userSelected ?? availableAction.userSelected
-                Object.assign(action, this._createAction({ ...availableAction, systemSelected, userSelected }))
+                Object.assign(action, this.#createAction({ ...availableAction, systemSelected, userSelected }))
             }
         }
     }
@@ -262,7 +262,7 @@ export class ActionHandler {
      * Set property to indicate whether a group has actions within it
      * @private
      */
-    async _setHasActions () {
+    async #setHasActions () {
         for (const group of Object.values(this.groups)) {
             if (group.actions.some(action => action.selected)) {
                 group.hasActions = true
@@ -276,7 +276,7 @@ export class ActionHandler {
      * Get the default groups
      * @private
      */
-    async _getDefaultGroups () {
+    async #getDefaultGroups () {
         const defaultGroups = (game.tokenActionHud.defaults?.groups?.length)
             ? game.tokenActionHud.defaults?.groups
             : game.tokenActionHud.defaults?.subcategories
@@ -290,7 +290,7 @@ export class ActionHandler {
      * Get the default layout
      * @private
      */
-    async _getDefaultLayout () {
+    async #getDefaultLayout () {
         const defaultLayout = (game.tokenActionHud.defaults?.layout?.length)
             ? game.tokenActionHud.defaults?.layout
             : game.tokenActionHud.defaults?.categories
@@ -302,7 +302,7 @@ export class ActionHandler {
      * Get the saved groups from the actor flag
      * @privatet
      */
-    async _getSavedActorGroups () {
+    async #getSavedActorGroups () {
         if (!this.actor) return
 
         if (!this.isCustomizationEnabled) {
@@ -332,7 +332,7 @@ export class ActionHandler {
      * Get the saved groups from the user flag
      * @private
      */
-    async _getSavedUserGroups () {
+    async #getSavedUserGroups () {
         const user = game.user
         const getUserGroups = (data) => {
             const userGroups = Object.keys(data).length ? data : this.defaultLayout
@@ -367,7 +367,7 @@ export class ActionHandler {
      * @param {object} [data = {}] The search data
      * @returns {array}            The groups
      */
-    _getGroup (data = {}) {
+    #getGroup (data = {}) {
         if (data?.nestId) {
             return this.groups[data.nestId]
         } else {
@@ -386,14 +386,14 @@ export class ActionHandler {
      * @param {object} [data = {}] The search data
      * @returns {array}            The groups
      */
-    _getGroups (data = {}) {
+    #getGroups (data = {}) {
         return Object.values(this.groups).filter(
             group =>
                 (!data.id || group.id === data.id) &&
                 (!data.nestId || group.nestId.startsWith(data.nestId)) &&
                 (!data.type || group.type === data.type) &&
                 (!data.level || group.level === data.level) &&
-                (!data.isSelected || group.isSelected === data.isSelected)
+                (!data.selected || group.selected === data.selected)
         )
     }
 
@@ -403,7 +403,7 @@ export class ActionHandler {
      * @param {object} [data = {}] The search data
      * @returns {array}            The groups
      */
-    _getActorGroups (data = {}) {
+    #getActorGroups (data = {}) {
         return Object.values(this.actorGroups)
             .filter(group =>
                 (!data.id || group.id === data.id) &&
@@ -426,7 +426,7 @@ export class ActionHandler {
      * @param {object} [data = {}] The search data
      * @returns {array}            The groups
      */
-    _getUserGroups (data = {}) {
+    #getUserGroups (data = {}) {
         return Object.values(this.userGroups)
             .filter(group =>
                 (!data.id || group.id === data.id) &&
@@ -450,7 +450,7 @@ export class ActionHandler {
      * @returns {object}         The group settings
      */
     async getGroupSettings (groupData) {
-        const group = this._getGroup(groupData)
+        const group = this.#getGroup(groupData)
         return group?.settings ?? null
     }
 
@@ -459,7 +459,7 @@ export class ActionHandler {
      * @param {object} groupData The group data
      */
     async saveGroupSettings (groupData) {
-        const group = this._getGroup(groupData)
+        const group = this.#getGroup(groupData)
         group.settings = { ...group.settings, ...groupData.settings }
         this.saveGroups({ saveActor: true, saveUser: true })
     }
@@ -470,7 +470,7 @@ export class ActionHandler {
      * @param {object} groupData The group data
      * @returns {object}         The group
      */
-    _createGroup (groupData, keepData = false) {
+    #createGroup (groupData, keepData = false) {
         const groupDataClone = Utils.deepClone(groupData)
         // New option for 1.1.0 - Define default showTitle for existing data
         if (!groupDataClone?.settings) groupDataClone.settings = {}
@@ -490,7 +490,7 @@ export class ActionHandler {
                 cssClass: '',
                 groups,
                 id: groupDataClone?.id,
-                isSelected: groupDataClone?.isSelected ?? true,
+                selected: groupDataClone?.selected ?? groupDataClone?.isSelected ?? groupDataClone?.defaultSelected ?? true,
                 level: groupDataClone?.level ?? nestIdParts.length ?? 1,
                 name: groupDataClone?.name,
                 nestId: groupDataClone?.nestId ?? groupDataClone?.id,
@@ -506,7 +506,7 @@ export class ActionHandler {
                 nestId: groupDataClone?.nestId,
                 name: groupDataClone?.name,
                 listName: groupDataClone?.listName,
-                isSelected: groupDataClone?.isSelected ?? true,
+                selected: groupDataClone?.selected ?? groupDataClone?.isSelected ?? groupDataClone?.defaultSelected ?? true,
                 level: groupDataClone.level ?? level,
                 order: groupDataClone.order,
                 settings: groupDataClone?.settings ?? { showTitle: true, style: 'list' },
@@ -535,12 +535,12 @@ export class ActionHandler {
         const childGroupData = { level }
         if (parentGroupData?.nestId) childGroupData.nestId = parentGroupData.nestId
 
-        const existingGroups = this._getGroups(childGroupData)
+        const existingGroups = this.#getGroups(childGroupData)
 
         // Remove any groups that are no longer present
         for (const existingGroup of existingGroups) {
             if (existingGroup.type === 'system-derived') {
-                existingGroup.isSelected = false
+                existingGroup.selected = false
             } else {
                 if (!groupsData.find(groupData => groupData.id === existingGroup.id)) {
                     delete this.groups[existingGroup.nestId]
@@ -554,15 +554,15 @@ export class ActionHandler {
             groupData.nestId = (parentGroupData?.nestId)
                 ? `${parentGroupData.nestId}_${groupData.id}`
                 : groupData.id
-            groupData.isSelected = groupData.isSelected ?? true
+            groupData.selected = groupData.selected ?? true
             groupData.order = order
 
-            const existingGroup = this._getGroup(groupData)
+            const existingGroup = this.#getGroup(groupData)
 
             if (existingGroup) {
                 Object.assign(existingGroup, groupData)
             } else {
-                const group = this._createGroup(groupData)
+                const group = this.#createGroup(groupData)
                 this.groups[groupData.nestId] = group
             }
             order++
@@ -570,7 +570,7 @@ export class ActionHandler {
 
         // Update parent group settings
         if (parentGroupData?.settings) {
-            const existingParentGroup = this._getGroup(parentGroupData)
+            const existingParentGroup = this.#getGroup(parentGroupData)
             if (existingParentGroup) {
                 existingParentGroup.settings = parentGroupData.settings
             }
@@ -584,8 +584,8 @@ export class ActionHandler {
     async saveGroups (options = { saveActor: false, saveUser: false }) {
         if (!this.isCustomizationEnabled) return
         Logger.debug('Saving groups...')
-        if (options?.saveActor) await this._saveActorGroups()
-        if (options?.saveUser) await this._saveUserGroups()
+        if (options?.saveActor) await this.#saveActorGroups()
+        if (options?.saveUser) await this.#saveUserGroups()
         Logger.debug('Groups saved', { groups: this.groups })
     }
 
@@ -593,14 +593,14 @@ export class ActionHandler {
      * Save groups to the actor flag
      * @private
      */
-    async _saveActorGroups () {
+    async #saveActorGroups () {
         if (!Object.keys(this.groups).length) return
         Logger.debug('Saving actor groups...')
         const actorGroups = {}
         this.actorGroups = {}
         for (const group of Object.values(this.groups)) {
             this.actorGroups[group.nestId] = group
-            actorGroups[group.nestId] = this._getReducedGroupData(group, true)
+            actorGroups[group.nestId] = this.#getReducedGroupData(group, true)
         }
         if (Utils.isGmActive()) {
             await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', this.actor.id, actorGroups)
@@ -614,7 +614,7 @@ export class ActionHandler {
      * Save groups to the user flag
      * @private
      */
-    async _saveUserGroups () {
+    async #saveUserGroups () {
         if (!Object.keys(this.groups).length) return
         Logger.debug('Saving user groups...')
         const userGroups = {}
@@ -622,7 +622,7 @@ export class ActionHandler {
         for (const group of Object.values(this.groups)) {
             if (group.type !== 'system-derived') {
                 this.userGroups[group.nestId] = group
-                userGroups[group.nestId] = this._getReducedGroupData(group, false)
+                userGroups[group.nestId] = this.#getReducedGroupData(group, false)
             }
         }
         if (Utils.isGmActive()) {
@@ -639,12 +639,12 @@ export class ActionHandler {
      * @param {boolean} keepActions Whether to keep action data
      * @returns                     The reduced group data
      */
-    _getReducedGroupData (groupData, keepActions = false) {
+    #getReducedGroupData (groupData, keepActions = false) {
         const data = {
             id: groupData.id,
             name: groupData.name,
             listName: groupData.listName,
-            isSelected: groupData.isSelected,
+            selected: groupData.selected,
             level: groupData.level,
             order: groupData.order,
             settings: groupData.settings,
@@ -668,7 +668,7 @@ export class ActionHandler {
      * @param {object} actionData The action data
      * @returns {array}           The actions
      */
-    _getActions (actionData) {
+    #getActions (actionData) {
         return this.actions.filter(action => action.id === actionData.id)
     }
 
@@ -695,7 +695,7 @@ export class ActionHandler {
      * @param {object} actionData The action data
      * @returns {object}          The action
      */
-    _createAction (actionData) {
+    #createAction (actionData) {
         const fullName = actionData.fullName ?? actionData.name
         const tooltip = this.#getTooltip(actionData?.tooltip, fullName)
         return {
@@ -745,7 +745,7 @@ export class ActionHandler {
      * @param {object} groupData  The group data
      */
     async updateActions (actionsData, groupData) {
-        const group = this._getGroup(groupData)
+        const group = this.#getGroup(groupData)
         const actions = group.actions
 
         const reorderedActions = []
@@ -791,7 +791,7 @@ export class ActionHandler {
      * @private
      * @param {array} actions The actions
      */
-    _addToAvailableActions (actions) {
+    #addToAvailableActions (actions) {
         for (const action of actions) {
             const existingAction = this.availableActions.find(availableAction => availableAction.id === action.id)
             if (!existingAction) this.availableActions.push(action)
@@ -802,7 +802,7 @@ export class ActionHandler {
      * Sort available actions
      * @private
      */
-    async _sortAvailableActions () {
+    async #sortAvailableActions () {
         this.availableActions.sort((a, b) => a.listName.localeCompare(b.listName))
     }
 
@@ -813,7 +813,7 @@ export class ActionHandler {
      * @returns {array}          The available actions
      */
     async getAvailableActions () {
-        return this.availableActions.map(action => this._toActionTagifyEntry(action))
+        return this.availableActions.map(action => this.#toActionTagifyEntry(action))
     }
 
     /**
@@ -823,11 +823,11 @@ export class ActionHandler {
      * @returns {array}          The selected actions
      */
     async getSelectedActions (groupData) {
-        const group = this._getGroup(groupData)
+        const group = this.#getGroup(groupData)
         if (!group) return
         return group.actions
             .filter(action => action.selected === true)
-            .map(action => this._toActionTagifyEntry(action))
+            .map(action => this.#toActionTagifyEntry(action))
     }
 
     /**
@@ -837,10 +837,10 @@ export class ActionHandler {
      * @returns {object}         The selected groups
      */
     async getSelectedGroups (groupData = {}) {
-        groupData.isSelected = true
+        groupData.selected = true
         groupData.level = (groupData.level || 0) + 1
-        const groups = this._getGroups(groupData)
-        return groups?.map(group => this._toGroupTagifyEntry(group)) ?? []
+        const groups = this.#getGroups(groupData)
+        return groups?.map(group => this.#toGroupTagifyEntry(group)) ?? []
     }
 
     /**
@@ -850,10 +850,10 @@ export class ActionHandler {
      * @returns {object}         The groups
      */
     async getAvailableGroups (groupData) {
-        const derivedGroups = await this._getDerivedGroups(groupData)
-        const systemGroups = await this._getSystemGroups()
-        const compendiumGroups = await this._getCompendiumGroups()
-        const macroGroups = await this._getMacroGroups()
+        const derivedGroups = await this.#getDerivedGroups(groupData)
+        const systemGroups = await this.#getSystemGroups()
+        const compendiumGroups = await this.#getCompendiumGroups()
+        const macroGroups = await this.#getMacroGroups()
         return [...derivedGroups, ...systemGroups, ...compendiumGroups, ...macroGroups]
     }
 
@@ -862,7 +862,7 @@ export class ActionHandler {
      * @private
      * @returns {object} The compendium groups
      */
-    async _getCompendiumGroups () {
+    async #getCompendiumGroups () {
         const packs = game.packs.filter(pack =>
             COMPENDIUM_PACK_TYPES.includes(pack.documentName) &&
             (game.version.startsWith('11') ? pack.visible : (!pack.private || game.user.isGM))
@@ -875,7 +875,7 @@ export class ActionHandler {
                 type: 'core'
             }
         })
-        return groups.map(group => this._toGroupTagifyEntry(group))
+        return groups.map(group => this.#toGroupTagifyEntry(group))
     }
 
     /**
@@ -884,12 +884,12 @@ export class ActionHandler {
      * @param {object} groupData The group data
      * @returns {object}         The derived groups
      */
-    async _getDerivedGroups (groupData) {
-        const derivedGroups = this._getGroups({
+    async #getDerivedGroups (groupData) {
+        const derivedGroups = this.#getGroups({
             nestId: groupData?.nestId,
             type: GROUP_TYPE.SYSTEM_DERIVED
         })
-        return derivedGroups?.map(group => this._toGroupTagifyEntry(group)) ?? []
+        return derivedGroups?.map(group => this.#toGroupTagifyEntry(group)) ?? []
     }
 
     /**
@@ -897,8 +897,8 @@ export class ActionHandler {
      * @private
      * @returns {object} The macro groups
      */
-    async _getMacroGroups () {
-        return [this._toGroupTagifyEntry({
+    async #getMacroGroups () {
+        return [this.#toGroupTagifyEntry({
             id: 'macros',
             listName: `Group: ${Utils.i18n('tokenActionHud.macros')}`,
             name: Utils.i18n('tokenActionHud.macros'),
@@ -911,8 +911,8 @@ export class ActionHandler {
      * @private
      * @returns {object} The system groups
      */
-    async _getSystemGroups () {
-        return Object.values(this.defaultGroups).map(group => this._toGroupTagifyEntry(group))
+    async #getSystemGroups () {
+        return Object.values(this.defaultGroups).map(group => this.#toGroupTagifyEntry(group))
     }
 
     /**
@@ -928,12 +928,12 @@ export class ActionHandler {
 
         if (!parentGroupData?.id && !parentGroupData?.nestId) return
 
-        const parentGroups = this._getGroups(parentGroupData)
+        const parentGroups = this.#getGroups(parentGroupData)
         if (!parentGroups?.length) return
 
         for (const parentGroup of parentGroups) {
             const nestId = `${parentGroup.nestId}_${groupData.id}`
-            const existingGroups = this._getGroups({ ...groupData, nestId })
+            const existingGroups = this.#getGroups({ ...groupData, nestId })
 
             if (existingGroups.length) {
                 if (update) {
@@ -944,11 +944,11 @@ export class ActionHandler {
                             delete groupData.info
                         }
 
-                        Object.assign(existingGroup, this._createGroup({ ...existingGroup, ...groupData }, true))
+                        Object.assign(existingGroup, this.#createGroup({ ...existingGroup, ...groupData }, true))
                     }
                 }
             } else {
-                const group = this._createGroup({ ...groupData, nestId })
+                const group = this.#createGroup({ ...groupData, nestId })
                 if (group.settings.style === 'tab') {
                     parentGroup.groups.tabs.push(group)
                 } else {
@@ -976,20 +976,20 @@ export class ActionHandler {
                     delete groupData.info
                 }
 
-                Object.assign(existingGroup, this._createGroup({ ...existingGroup, ...groupData }, true))
+                Object.assign(existingGroup, this.#createGroup({ ...existingGroup, ...groupData }, true))
             }
         }
 
         if (parentGroupData) {
-            const parentGroups = this._getGroups(parentGroupData)
+            const parentGroups = this.#getGroups(parentGroupData)
             for (const parentGroup of parentGroups) {
                 const nestId = `${parentGroup.nestId}_${groupData.id}`
-                const existingGroups = this._getGroups({ ...groupData, nestId })
+                const existingGroups = this.#getGroups({ ...groupData, nestId })
 
                 updateExistingGroups(existingGroups)
             }
         } else {
-            const existingGroups = this._getGroups(groupData)
+            const existingGroups = this.#getGroups(groupData)
 
             updateExistingGroups(existingGroups)
         }
@@ -1005,7 +1005,7 @@ export class ActionHandler {
             Utils.deleteGroupsById(this.hud.groups, groupData.id)
         }
 
-        const groups = this._getGroups(groupData)
+        const groups = this.#getGroups(groupData)
         if (!groups?.length) return
 
         for (const group of groups) {
@@ -1027,7 +1027,7 @@ export class ActionHandler {
 
         if (!groupId || !groupInfo) return
 
-        const groups = this._getGroups(groupData)
+        const groups = this.#getGroups(groupData)
 
         groups.forEach(group => {
             group.info1 = groupInfo.info1
@@ -1046,12 +1046,12 @@ export class ActionHandler {
         if (!actionsData.length) return
 
         // Create actions
-        const actions = actionsData.map(actionData => this._createAction(actionData))
-        this._addToAvailableActions(actions)
+        const actions = actionsData.map(actionData => this.#createAction(actionData))
+        this.#addToAvailableActions(actions)
 
         if (!groupData?.id) return
 
-        const groups = this._getGroups(groupData)
+        const groups = this.#getGroups(groupData)
 
         if (!groups) return
 
@@ -1073,14 +1073,14 @@ export class ActionHandler {
                     Object.assign(existingAction, { ...action, isPreset: true, selected, systemSelected, userSelected })
                 } else if (!existingAction.selected && existingAction.isPreset) {
                     const systemSelected = false
-                    Object.assign(existingAction, this._createAction({ ...existingAction, systemSelected }))
+                    Object.assign(existingAction, this.#createAction({ ...existingAction, systemSelected }))
                 }
             }
 
             // Loop the generated actions and add any not previously saved
             for (const action of actions) {
                 const existingAction = existingActions.find(existingAction => existingAction.id === action.id)
-                if (!existingAction) reorderedActions.push(this._createAction({ ...action, isPreset: true }))
+                if (!existingAction) reorderedActions.push(this.#createAction({ ...action, isPreset: true }))
             }
 
             // Sort actions alphabetically
@@ -1097,13 +1097,13 @@ export class ActionHandler {
      * Set character limit for action names based on the 'Character per Word' setting
      * @private
      */
-    async _setCharacterLimit () {
-        const topLevelGroups = this._getGroups({ level: 1 })
+    async #setCharacterLimit () {
+        const topLevelGroups = this.#getGroups({ level: 1 })
 
         for (const topLevelGroup of topLevelGroups) {
             const topLevelGroupCharacterCount = topLevelGroup?.settings?.characterCount
 
-            const groups = this._getGroups({ nestId: topLevelGroup.nestId })
+            const groups = this.#getGroups({ nestId: topLevelGroup.nestId })
 
             for (const group of groups) {
                 const actions = group.actions
@@ -1151,7 +1151,7 @@ export class ActionHandler {
      * @returns {boolean}
      */
     isLinkedCompendium (id) {
-        const group = this._getGroup({ id })
+        const group = this.#getGroup({ id })
         return !!group
     }
 
@@ -1161,7 +1161,7 @@ export class ActionHandler {
      * @param {object} data
      * @returns {object}
      */
-    _toGroupTagifyEntry (data) {
+    #toGroupTagifyEntry (data) {
         return {
             id: data.id,
             name: data.name,
@@ -1176,7 +1176,7 @@ export class ActionHandler {
      * @param {object} data The data
      * @returns {object}    Tagify entry
      */
-    _toActionTagifyEntry (data) {
+    #toActionTagifyEntry (data) {
         return {
             id: data.id,
             name: data.name,
