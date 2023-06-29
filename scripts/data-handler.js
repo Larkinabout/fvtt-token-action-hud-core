@@ -8,7 +8,8 @@ export class DataHandler {
     static async createDirectories () {
         const DATA_FOLDER = 'data'
         const moduleDirectory = (game.version.startsWith('11') && typeof ForgeVTT === 'undefined')
-            ? `modules/${MODULE.ID}/storage`
+            ? MODULE.ID
+            // ? `modules/${MODULE.ID}/storage`
             : MODULE.ID
         await FilePicker.browse(DATA_FOLDER, moduleDirectory)
             .catch(async _ => {
@@ -48,7 +49,8 @@ export class DataHandler {
     static async saveData (type, id, data) {
         // Get the folder path
         const folderPath = (game.version.startsWith('11') && typeof ForgeVTT === 'undefined')
-            ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
+            ? `${MODULE.ID}/${game.world.id}/${type}`
+            // ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
             : `${MODULE.ID}/${game.world.id}/${type}`
         // Generate the system safe filename
         const fileName = encodeURI(`${id}.json`)
@@ -68,7 +70,8 @@ export class DataHandler {
      */
     static async getData (type, id) {
         const folderPath = (game.version.startsWith('11') && typeof ForgeVTT === 'undefined')
-            ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
+            ? `${MODULE.ID}/${game.world.id}/${type}`
+            // ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
             : `${MODULE.ID}/${game.world.id}/${type}`
         const fileName = encodeURI(`${id}.json`)
         try {
