@@ -27,6 +27,14 @@ export const registerSettings = function (systemManager, rollHandlers) {
         default: false
     })
 
+    game.settings.register(MODULE.ID, 'migrationVersion', {
+        name: 'Migration Version',
+        scope: 'world',
+        config: false,
+        type: String,
+        default: '0.0'
+    })
+
     game.settings.register(MODULE.ID, 'style', {
         name: Utils.i18n('tokenActionHud.settings.style.name'),
         hint: Utils.i18n('tokenActionHud.settings.style.hint'),

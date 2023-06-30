@@ -14,97 +14,53 @@ export class MigrationManager {
      * @public
      */
     async init () {
-        await this._migrateGroups()
+        if (!game.user.isGM) return
+
+        const migrationVersion = '1.4.10'
+        if (Utils.getSetting('migrationVersion') === migrationVersion) return
+
+        let isSuccess = true
+        isSuccess = await this.#unsetOldFlags()
+
+        if (isSuccess) {
+            Utils.setSetting('migrationVersion', migrationVersion)
+        }
     }
 
     /**
-     * Migrate user flags
+     * Unset old flags
      * @private
      */
-    async _migrateGroups () {
-        if (!Utils.getUserFlag('categories')) return
+    async #unsetOldFlags () {
         try {
-            if (Utils.getUserFlag('default')) {
-                Utils.unsetUserFlag('default')
-            }
-            const categories = Utils.getUserFlag('categories')
-            if (categories) {
-                const groups = Utils.getSubcategories(categories)
-                if (groups) {
-                    if (Object.keys(groups).length) {
-                        const userGroups = {}
-                        for (const group of Object.values(groups)) {
-                            if (group.type !== 'system-derived') {
-                                const groupClone = Utils.deepClone(group)
-                                if (Object.hasOwn(groupClone, 'actions')) delete groupClone.actions
-                                if (Object.hasOwn(groupClone, 'subcategories')) delete groupClone.subcategories
-                                if (Object.hasOwn(groupClone, 'hasDerivedSubcategories')) delete groupClone.hasDerivedSubcategories
-                                if (Object.hasOwn(groupClone, 'advancedCategoryOptions')) {
-                                    groupClone.settings = groupClone.advancedCategoryOptions
-                                    delete groupClone.advancedCategoryOptions
-                                }
-                                userGroups[groupClone.nestId] = groupClone
-                            }
-                        }
-                        await this.socket.executeAsGM('saveData', 'user', game.userId, userGroups)
-                    }
-                }
-
-                if (game.user.isGM) {
-                    const actors = game.actors.filter(actor => actor.getFlag(MODULE.ID, 'categories'))
-                    for (const actor of actors) {
-                        const categories = actor.getFlag(MODULE.ID, 'categories')
-                        const groups = Utils.getSubcategories(categories)
-                        if (groups) {
-                            if (Object.keys(groups).length) {
-                                const actorGroups = {}
-                                for (const group of Object.values(groups)) {
-                                    const groupClone = Utils.deepClone(group)
-                                    if (Object.hasOwn(groupClone, 'subcategories')) delete groupClone.subcategories
-                                    if (Object.hasOwn(groupClone, 'hasDerivedSubcategories')) delete groupClone.hasDerivedSubcategories
-                                    if (Object.hasOwn(groupClone, 'advancedCategoryOptions')) {
-                                        groupClone.settings = groupClone.advancedCategoryOptions
-                                        delete groupClone.advancedCategoryOptions
-                                    }
-                                    actorGroups[groupClone.nestId] = groupClone
-                                }
-                                await this.socket.executeAsGM('saveData', 'actor', actor.id, actorGroups)
-                                actor.unsetFlag(MODULE.ID, 'categories')
-                            }
-                        }
-                    }
-
-                    const tokens = game.canvas.tokens.objects.children.filter(token => token.actor?.getFlag(MODULE.ID, 'categories'))
-                    for (const token of tokens) {
-                        const categories = token.actor.getFlag(MODULE.ID, 'categories')
-                        const groups = Utils.getSubcategories(categories)
-                        if (groups) {
-                            if (Object.keys(groups).length) {
-                                const actorGroups = {}
-                                for (const group of Object.values(groups)) {
-                                    const groupClone = Utils.deepClone(group)
-                                    if (Object.hasOwn(groupClone, 'subcategories')) delete groupClone.subcategories
-                                    if (Object.hasOwn(groupClone, 'hasDerivedSubcategories')) delete groupClone.hasDerivedSubcategories
-                                    if (Object.hasOwn(groupClone, 'advancedCategoryOptions')) {
-                                        groupClone.settings = groupClone.advancedCategoryOptions
-                                        delete groupClone.advancedCategoryOptions
-                                    }
-                                    actorGroups[groupClone.nestId] = groupClone
-                                }
-                                await this.socket.executeAsGM('saveData', 'actor', token.actor.id, actorGroups)
-                                token.actor.unsetFlag(MODULE.ID, 'categories')
-                            }
-                        }
-                    }
-                }
-
-                Utils.unsetUserFlag('categories')
+            const users = game.users.filter(user => user.getFlag(MODULE.ID, 'categories'))
+            for (const user of users) {
+                user.unsetFlag(MODULE.ID, 'categories')
+                user.unsetFlag(MODULE.ID, 'defaults')
             }
 
-            Logger.info('Successfully migrated flags', true)
+            const actors = game.actors.filter(actor => actor.getFlag(MODULE.ID, 'categories'))
+            for (const actor of actors) {
+                actor.unsetFlag(MODULE.ID, 'categories')
+            }
+
+            const tokens = game.canvas.tokens.objects.children.filter(token => token.actor?.getFlag(MODULE.ID, 'categories'))
+            for (const token of tokens) {
+                token.actor?.unsetFlag(MODULE.ID, 'categories')
+            }
+
+            for (const scene of game.scenes) {
+                const tokens = scene.tokens.filter(token => token.actor?.getFlag(MODULE.ID, 'categories'))
+                for (const token of tokens) {
+                    token.actor?.unsetFlag(MODULE.ID, 'categories')
+                }
+            }
+
+            return true
         } catch (err) {
-            Logger.error('Failed to migrate flags', true)
             Logger.debug(err.message, err)
+
+            return false
         }
     }
 }

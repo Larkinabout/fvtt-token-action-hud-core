@@ -286,6 +286,16 @@ export class Utils {
     }
 
     /**
+     * Get the given module's version
+     * @public
+     * @param {string} moduleId The module id
+     * @returns {string}        The module version
+     */
+    static getModuleVersion (moduleId) {
+        return game.modules.get(moduleId)?.version ?? ''
+    }
+
+    /**
      * Humanize keybinding
      * @param {object} key The keybinding key
      * @returns {string}   The humanized keybinding
