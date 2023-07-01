@@ -152,7 +152,14 @@ export class Utils {
      * @returns {object} The first controlled token
      */
     static getFirstControlledToken () {
-        return game.canvas.tokens.controlled[0]
+        const controlledToken = game.canvas.tokens.controlled[0]
+        if (controlledToken) {
+            return controlledToken
+        }
+        const character = game.user?.character
+        if (character) {
+            return canvas.tokens.placeables.find(token => token.actor?.id === character.id)
+        }
     }
 
     /**
