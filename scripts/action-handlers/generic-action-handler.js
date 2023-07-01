@@ -19,30 +19,23 @@ export class GenericActionHandler {
      * @param {object} character The actor and/or token
      */
     buildGenericActions () {
-        this._buildConditions()
-        this._buildUtilities()
+        this.#buildUtilities()
     }
-
-    /**
-     * Build conditions
-     * @private
-     */
-    _buildConditions () {}
 
     /**
      * Build utilities
      * @private
      */
-    _buildUtilities () {
-        if (this.actor) return this._buildSingleTokenUtilities()
-        this._buildMultipleTokenUtilities()
+    #buildUtilities () {
+        if (this.actor) return this.#buildSingleTokenUtilities()
+        this.#buildMultipleTokenUtilities()
     }
 
     /**
      * Build utilities for a single token
      * @private
      */
-    _buildSingleTokenUtilities () {
+    #buildSingleTokenUtilities () {
         if (!this.token) return
         const actionsData = []
 
@@ -50,10 +43,7 @@ export class GenericActionHandler {
 
         // Build Toggle Combat action
         const toggleCombatId = 'toggleCombat'
-        const inCombat = canvas.tokens.placeables.find(
-            (token) => token.id === this.token.id
-        ).inCombat
-        const toggleCombatName = inCombat
+        const toggleCombatName = this.token?.inCombat
             ? Utils.i18n('tokenActionHud.removeFromCombat')
             : Utils.i18n('tokenActionHud.addToCombat')
         const toggleCombatEncodedValue = [
@@ -63,16 +53,14 @@ export class GenericActionHandler {
         const toggleCombatAction = {
             id: toggleCombatId,
             name: toggleCombatName,
-            encodedValue: toggleCombatEncodedValue,
-            selected: true
+            encodedValue: toggleCombatEncodedValue
         }
         actionsData.push(toggleCombatAction)
 
         // Build Toggle Visibility action
         if (game.user.isGM) {
             const toggleVisibilityId = 'toggleVisibility'
-            const hidden = canvas.tokens.placeables.find(token => token.id === this.token.id).document.hidden
-            const toggleVisibilityName = hidden
+            const toggleVisibilityName = this.token?.document?.hidden
                 ? Utils.i18n('tokenActionHud.makeVisible')
                 : Utils.i18n('tokenActionHud.makeInvisible')
             const toggleVisbilityEncodedValue = [
@@ -82,8 +70,7 @@ export class GenericActionHandler {
             const toggleVisibilityAction = {
                 id: toggleVisibilityId,
                 name: toggleVisibilityName,
-                encodedValue: toggleVisbilityEncodedValue,
-                selected: true
+                encodedValue: toggleVisbilityEncodedValue
             }
             actionsData.push(toggleVisibilityAction)
         }
@@ -98,7 +85,7 @@ export class GenericActionHandler {
      * Build utilities for multiple tokens
      * @private
      */
-    _buildMultipleTokenUtilities () {
+    #buildMultipleTokenUtilities () {
         const tokens = Utils.getControlledTokens()
         const actionsData = []
 
@@ -106,8 +93,7 @@ export class GenericActionHandler {
 
         // Toggle Combat
         const toggleCombatId = 'toggleCombat'
-        const inCombat = tokens.every((token) => token.inCombat)
-        const toggleCombatName = inCombat
+        const toggleCombatName = tokens.every((token) => token.inCombat)
             ? Utils.i18n('tokenActionHud.removeFromCombat')
             : Utils.i18n('tokenActionHud.addToCombat')
         const toggleCombatEncodedValue = [actionType, toggleCombatId].join(DELIMITER)
@@ -121,8 +107,7 @@ export class GenericActionHandler {
         // Toggle Visibility
         if (game.user.isGM) {
             const toggleVisibilityId = 'toggleVisibility'
-            const hidden = tokens.every((token) => token.document.hidden)
-            const toggleVisibilityname = hidden
+            const toggleVisibilityname = tokens.every((token) => token.document?.hidden)
                 ? Utils.i18n('tokenActionHud.makeVisible')
                 : Utils.i18n('tokenActionHud.makeInvisible')
             const toggleVisbilityEncodedValue = [actionType, toggleVisibilityId].join(DELIMITER)
