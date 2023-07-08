@@ -1,151 +1,151 @@
 {
   "tokenActionHud": {
-    "accept": "Accept",
-    "addToCombat": "Zum Kampf Hinzufügen",
+    "accept": "Akzeptieren",
+    "addToCombat": "Zum Kampf hinzufügen",
     "blockListLabel": "blockList: hide / allowlist: show",
-    "cancel": "Cancel",
-    "collapseHud": "Collapse HUD",
+    "cancel": "Abbrechen",
+    "collapseHud": "HUD einklappen",
     "combat": "Kampf",
     "compendiumEntry": "Compendium Entry",
     "compendiumMacro": "Compendium Macro",
     "compendiumPlaylist": "Compendium Playlist",
-    "editHud": "Edit HUD",
-    "endTurn": "End Turn",
-    "expandHud": "Expand HUD",
+    "editHud": "HUD anpassen",
+    "endTurn": "Zug beenden",
+    "expandHud": "HUD ausklappen",
     "handlerNotFound": "not found, reverting to core roller.",
-    "lockHud": "Lock HUD",
-    "macro": "Macro",
-    "macros": "Macros",
-    "makeInvisible": "Unsichtbar Machen",
-    "makeVisible": "Sichtbar Machen",
-    "pushLabelExplanation": "Show categories on which side?",
-    "removeFromCombat": "Aus Kampf Entfernen",
+    "lockHud": "HUD sperren",
+    "macro": "Makro",
+    "macros": "Makros",
+    "makeInvisible": "Unsichtbar machen",
+    "makeVisible": "Sichtbar machen",
+    "pushLabelExplanation": "Kategorien auf welche Seite anzeigen?",
+    "removeFromCombat": "Aus Kampf entfernen",
     "title": "Token Action HUD",
-    "toggleHud": "Toggle HUD",
+    "toggleHud": "HUD umschalten",
     "token": "Token",
-    "unlockHud": "Unlock HUD",
+    "unlockHud": "HUD entsperren",
     "utility": "Nützliches",
     "settings": {
       "activeCssAsText": {
-        "hint":  "Mark active actions with an asterisk",
-        "name": "Mark Active Actions with Asterisk"
+        "hint": "Aktive Aktionen mit einem Sternchen markieren",
+        "name": "Aktive Aktionen mit einem Sternchen markieren"
       },
       "allow": {
-        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
-        "name": "Allow HUD",
+        "hint": "SL-Einstellung: Spielern mit der folgenden sowie höheren Rollen die Verwendung des HUD erlauben (Erfordert ein erneutes Laden)",
+        "name": "HUD erlauben",
         "choices" : {
-          "4": "Game Master",
-          "3": "Assistant GM",
-          "2": "Trusted Player",
-          "1": "Player"
+          "4": "Spielleitung",
+          "3": "SL-Assistent",
+          "2": "Seriöser Spieler",
+          "1": "Spieler"
         }
       },
       "alwaysShowHud": {
-        "hint": "Show the user's assigned character even when no token is selected",
-        "name": "Always Show HUD"
+        "hint": "Dem Spieler zugewiesener Charakter immer anzeigen, auch wenn kein Token ausgewählt ist",
+        "name": "HUD immer anzeigen"
       },
       "background": {
-        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
-        "name": "HUD Background Color"
+        "hint": "Hintergrundfarbe des HUD festlegen. Diese Einstellung wird mit dem 'Dorako UI' Design ignoriert und erfordert eines der folgenden Module: 'Color Picker', 'Color Settings' oder 'libThemer'",
+        "name": "HUD Hintergrundfarbe"
       },
       "buttonBackgroundColor": {
-        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
-        "name": "Button Background Color"
+        "hint": "Hintergrundfarbe der HUD Buttons festlegen. Diese Einstellung wird mit dem 'Dorako UI' Design ignoriert und erfordert eines der folgenden Module: 'Color Picker', 'Color Settings' oder 'libThemer'",
+        "name": "Button Hintergrundfarbe"
       },
       "clickOpenCategory": {
-        "hint": "Open groups by clicking instead of hovering",
-        "name": "Click to Open"
+        "hint": "Öffnet Gruppen durch einen Klick anstelle des darüber fahren",
+        "name": "Klicken um zu öffnen"
       },
       "customStyle": {
-        "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
-        "label": "Customise Style",
-        "name": "Customise Style",
+        "hint": "Passt das Design des HUD an. Zum aktivieren, lege das Design auf 'Custom' fest",
+        "label": "Design anpassen",
+        "name": "Design anpassen",
         "form": {
-          "title": "Token Action HUD | Customise Style",
-          "active": "When Active",
+          "title": "Token Action HUD | Design Anpassen",
+          "active": "Wenn aktiv",
           "buttons": "Buttons",
-          "hovered": "When Hovered",
-          "text": "Text & Icons",
-          "toggleable": "Toggleable",
-          "reset": "Reset Defaults",
-          "save": "Save",
+          "hovered": "Bei Schwebezustand",
+          "text": "Text & Symbole",
+          "toggleable": "Umschaltbar",
+          "reset": "Auf Standard zurücksetzen",
+          "save": "Speichern",
           "backgroundColor": {
-            "label": "Background Color"
+            "label": "Hintergrundfarbe"
           },
           "buttonHeight": {
-            "label": "Height",
-            "units": "(Pixels)"
+            "label": "Höhe",
+            "units": "(Pixel)"
           },
           "buttonBackgroundColor": {
-            "label": "Background Color"
+            "label": "Hintergrundfarbe"
           },
           "buttonBorderPrimaryColor": {
-            "label": "Border Primary Color"
+            "label": "Primäre Randfarbe"
           },
           "buttonBorderSecondaryColor": {
-            "label": "Border Secondary Color"
+            "label": "Sekundäre Randfarbe"
           },
           "buttonTextColor": {
-            "label": "Button Text Color"
+            "label": "Button Textfarbe"
           },
           "buttonHoverBackgroundColor": {
-            "label": "Background Color"
+            "label": "Hintergrundfarbe"
           },
           "buttonHoverBorderPrimaryColor": {
-            "label": "Border Primary Color"
+            "label": "Primäre Randfarbe"
           },
           "buttonHoverBorderSecondaryColor": {
-            "label": "Border Secondary Color"
+            "label": "Sekundäre Randfarbe"
           },
           "buttonHoverTextColor": {
-            "label": "Text Color"
+            "label": "Textfarbe"
           },
           "buttonToggleActiveBackgroundColor": {
-            "label": "Background Color"
+            "label": "Hintergrundfarbe"
           },
           "buttonToggleActiveBorderPrimaryColor": {
-            "label": "Border Primary Color"
+            "label": "Primäre Randfarbe"
           },
           "buttonToggleActiveBorderSecondaryColor": {
-            "label": "Border Secondary Color"
+            "label": "Sekundäre Randfarbe"
           },
           "buttonToggleActiveTextColor": {
-            "label": "Text Color"
+            "label": "Textfarbe"
           },
           "buttonToggleHoverBackgroundColor": {
-            "label": "Background Color"
+            "label": "Hintergrundfarbe"
           },
           "buttonToggleHoverTextColor": {
-            "label": "Text Color"
+            "label": "Textfarbe"
           },
           "buttonToggleHoverBorderPrimaryColor": {
-            "label": "Border Primary Color"
+            "label": "Primäre Randfarbe"
           },
           "buttonToggleHoverBorderSecondaryColor": {
-            "label": "Border Secondary Color"
+            "label": "Sekundäre Randfarbe"
           },
           "textPrimaryColor": {
-            "label": "Primary Color"
+            "label": "Primärfarbe"
           },
           "textSecondaryColor": {
-            "label": "Secondary Color"
+            "label": "Sekundärfarbe"
           },
           "textTertiaryColor": {
-            "label": "Tertiary Color"
+            "label": "Teritärfarbe"
           },
           "textHoverPrimaryColor": {
-            "label": "Primary Color"
+            "label": "Primärfarbe"
           },
           "textHoverSecondaryColor": {
-            "label": "Secondary Color"
+            "label": "Sekundärfarbe"
           },
           "textHoverTertiaryColor": {
-            "label": "Tertiary Color"
+            "label": "Teritärfarbe"
           }
         }
       },
       "debug": {
-        "hint": "Enable debug logging in the console",
+        "hint": "Debug Protokollierung in der Konsole aktivieren",
         "name": "Debug"
       },
       "direction": {
@@ -158,140 +158,140 @@
         }
       },
       "displayCharacterName": {
-        "hint": "When the 'Direction' setting is set to 'Down', display the character name above the hud",
-        "name": "Display Character Name"
+        "hint": "Wenn die Richtungseinstellung auf 'Runter' gesetzt ist, wird der Charaktername über dem HUD dargestellt",
+        "name": "Charakternamen anzeigen"
       },
       "displayIcons": {
-        "hint": "Where available, choose whether to display icons on the actions",
-        "name": "Icon Display"
+        "hint": "Soweit verfügbar werden bei den Aktionen Symbole angezeigt",
+        "name": "Symbole anzeigen"
       },
       "drag": {
-        "hint": "Choose when the HUD can be moved by clicking and dragging one of the top-level buttons",
-        "name": "Dragging",
+        "hint": "Wähle aus, wann das HUD verschoben werden kann, indem du auf eine der Schaltflächen der obersten Ebene klickst und diese ziehst",
+        "name": "Verschiebbar",
         "choices": {
-          "always": "Always",
-          "whenUnlocked": "When Unlocked",
-          "never": "Never"
+          "always": "Immer",
+          "whenUnlocked": "Wenn entsperrt",
+          "never": "Niemals"
         }
       },
       "enable": {
-        "hint": "Enable the HUD",
-        "name": "Enable HUD"
+        "hint": "Aktiviert das HUD",
+        "name": "HUD aktivieren"
       },
       "enableCustomization": {
-        "hint": "GM setting: Enable customization of the HUD",
-        "name": "Enable Customization"
+        "hint": "SL-Einstellung: Anpassungen des HUD aktivieren",
+        "name": "Anpassung aktivieren"
       },
       "grid": {
-        "hint": "Use a grid layout for actions",
-        "name": "Grid"
+        "hint": "Verwende ein Rasterlayout für Aktionen",
+        "name": "Raster"
       },
       "itemMacro": {
-        "hint": "Choose how item macros are displayed",
-        "name": "Item Macro Display",
+        "hint": "Auswählen wie Gegenstandsmakros angezeigt werden",
+        "name": "Gegenstandsmakros anzeigen",
         "choices": {
-            "both": "Original Item and Macro",
-            "itemMacro": "Macro Only",
-            "original": "Original Item Only"
+            "both": "Ursprünglicher Gegenstand und Makro",
+            "itemMacro": "Nur Makro",
+            "original": "Nur ursprünglicher Gegenstand"
         }
       },
       "renderItemOnRightClick": {
-        "hint": "When right-clicking an item, open the item's sheet",
-        "name": "Open Item Sheet on Right-Click"
+        "hint": "Bei einem Rechtsklick wird der Gegenstandsbogen geöffnet",
+        "name": "Gegenstandsbogen bei Rechtsklick öffnen"
       },
       "reset": {
-        "hint": "WARNING!!! This will reset the hud to its default configuration",
-        "name": "Reset HUD"
+        "hint": "WARNUNG!!! Dies setzt das HUD auf die Standardeinstellungen zurück",
+        "name": "HUD zurücksetzen"
       },
       "rollHandler": {
-        "hint": "GM setting: Set the module for the HUD to use for handling rolls",
-        "name": "Roll Handler"
+        "hint": "SL-Einstellung: Legt das für das Würfeln zuständige Modul fest",
+        "name": "Würfel Handler"
       },
       "scale": {
-        "hint": "Adjust the scale of the HUD (1 is the default)",
-        "name": "HUD Scale"
+        "hint": "Passt die Skalierung des HUD an (1 ist der Standard)",
+        "name": "HUD Skalierung"
       },
       "style": {
-        "hint": "Set the style of the HUD",
-        "name": "Style"
+        "hint": "Lege das Design des HUD fest",
+        "name": "Design"
       },
       "tooltips": {
-        "hint": "Where available, choose how tooltips are displayed when actions are hovered",
-        "name": "Tooltip Display",
+        "hint": "Wähle aus, soweit verfügbar, wie Tooltips beim darüberfahren angezeigt werden",
+        "name": "Tooltip anzeige",
         "choices": {
-          "full": "Full Tooltip",
-          "nameOnly": "Name Only",
-          "none": "No Tooltips"
+          "full": "Vollständiger Tooltip",
+          "nameOnly": "Nur Name",
+          "none": "Kein Tooltip"
         }
       },
       "toggleHud": {
-        "disabled": "HUD disabled. To enable, press {binding}",
-        "enabled": "HUD enabled. To disable, press {binding}"
+        "disabled": "HUD deaktiviert. Zum aktivieren drücke {binding}",
+        "enabled": "HUD aktiviert. Zum deaktivieren drücke {binding}"
       }
     },
     "tagDialog": {
-      "actionDialogDescription": "Add and remove groups and actions. Drag groups and actions to change their order.",
-      "actionDialogTitle": "Customise Actions",
-      "groupDialogDescription": "Add and remove groups. Select groups with pre-defined actions from the list or enter free text for an empty groups. Drag groups to change their order.",
-      "groupDialogTitle": "Customise Groups",
-      "hudDialogDescription": "Add and remove groups. Drag groups to change their order.",
-      "hudDialogTitle": "Customise HUD",
-      "clearButton": "Clear",
+      "actionDialogDescription": "Hinzufügen und Entfernen von Gruppen und Aktionen. Ziehen Gruppen und Aktionen, um ihre Reihenfolge zu ändern.",
+      "actionDialogTitle": "Aktionen anpassen",
+      "groupDialogDescription": "Hinzufügen und Entfernen von Gruppen. Wähle Gruppen mit vordefinierten Aktionen aus der Liste oder gebe einen beliebigen Text für eine leere Gruppe ein.",
+      "groupDialogTitle": "Gruppen anpassen",
+      "hudDialogDescription": "Hinzufügen und Entfernen von Gruppen. Ziehe Gruppen, um ihre Reihenfolge zu ändern.",
+      "hudDialogTitle": "HUD anpassen",
+      "clearButton": "Löschen",
       "settings": {
         "characterCount": {
-          "label": "Characters per Word",
-          "hint": "Limit the characters per word of the actions"
+          "label": "Zeichen pro Wort",
+          "hint": "Begrenze die Zeichen pro Wort der Aktion"
         },
         "collapse": {
-          "label": "Collapse Group",
-          "hint": "Collapse this group"
+          "label": "Gruppe einklappen",
+          "hint": "Diese Gruppe einklappen"
         },
         "customWidth": {
-          "label": "Custom Width",
-          "units": "(Pixels)",
-          "hint": "Custom width for the subcategories"
+          "label": "Benutzerdefinierte Breite",
+          "units": "(Pixel)",
+          "hint": "Benutzerdefinierte Breite für diese Unterkategorie"
         },
         "grid": {
-          "label": "Grid",
-          "hint": "Grid layout for actions"
+          "label": "Raster",
+          "hint": "Verwende ein Rasterlayout für Aktionen"
         },
         "image": {
-          "label": "Image",
-          "hint": "Image on this button"
+          "label": "Bild",
+          "hint": "Bild für diesen Button"
         },
         "showCategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this button's title"
+          "label": "Titel anzeigen",
+          "hint": "Zeige den Titel dieses Button an"
         },
         "showSubcategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this group's title"
+          "label": "Titel anzeigen",
+          "hint": "Zeige den Titel dieser Gruppe an"
         },
         "sort": {
-          "label": "Sort Actions",
-          "hint": "Sort actions into alphabetical order"
+          "label": "Aktionen sortieren",
+          "hint": "Sortiert Aktionen alphabetisch"
         },
         "style": {
-          "label": "Style",
+          "label": "Stil",
           "choice": {
-            "list": "List",
-            "tab": "Tab"
+            "list": "Liste",
+            "tab": "Reiter"
           },
-          "hint": "Style of this group"
+          "hint": "Stil dieser Gruppe"
         }
       },
       "resetActions": {
-        "button": "Reset Actions",
+        "button": "Aktionen zurücksetzen",
         "dialog": {
-          "title": "Reset Actions",
-          "content": "This will reset all actions for this actor. Do you wish to continue?",
+          "title": "Aktionen zurücksetzen",
+          "content": "Dies setzt alle Aktionen des Akteuers zurück. Möchtest du fortfahren?",
           "buttons": {
-            "yes": "Yes",
-            "no": "No"
+            "yes": "Ja",
+            "no": "Nein"
           }
         }
       },
-      "tagPlaceholder": "Choices (split with semi-colon)"
+      "tagPlaceholder": "Auswahlmöglichkeiten (mit Semikolon getrennt)"
     }
   }
 }
