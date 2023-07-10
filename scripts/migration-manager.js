@@ -1,4 +1,5 @@
 import { MODULE } from './constants.js'
+import { DataHandler } from './data-handler.js'
 import { Logger, Utils } from './utilities/utils.js'
 
 /**
@@ -16,14 +17,16 @@ export class MigrationManager {
     async init () {
         if (!game.user.isGM) return
 
-        const migrationVersion = '1.4.10'
-        if (Utils.getSetting('migrationVersion') === migrationVersion) return
+        const moduleVersion = game.modules.get('token-action-hud-core').version
+        const migrationVersion = Utils.getSetting('migrationVersion')
+        if (moduleVersion === migrationVersion) return
 
         let isSuccess = true
-        isSuccess = await this.#unsetOldFlags()
+        isSuccess = (!migrationVersion || migrationVersion < '1.4.10') ? await this.#unsetOldFlags() : true
+        isSuccess = (DataHandler.isPersistantStorage()) ? await this.#migrateFiles() : true
 
         if (isSuccess) {
-            Utils.setSetting('migrationVersion', migrationVersion)
+            Utils.setSetting('migrationVersion', moduleVersion)
         }
     }
 
@@ -60,6 +63,30 @@ export class MigrationManager {
         } catch (err) {
             Logger.debug(err.message, err)
 
+            return false
+        }
+    }
+
+    async #migrateFiles () {
+        try {
+            Logger.info('Migrating files to persistent storage...', true)
+            for (const user of game.users) {
+                const data = await DataHandler.getDataMigrate('user', user.id)
+                if (data) {
+                    await DataHandler.saveData('user', user.id, data)
+                }
+            }
+
+            for (const actor of game.actors) {
+                const data = await DataHandler.getDataMigrate('actor', actor.id)
+                if (data) {
+                    await DataHandler.saveData('actor', actor.id, data)
+                }
+            }
+            Logger.info('Successfully migrated files to persistent storage', true)
+            return true
+        } catch {
+            Logger.info('Failed to migrate files to persistent storage', true)
             return false
         }
     }
