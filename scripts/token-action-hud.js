@@ -1,6 +1,6 @@
 import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
 import { CategoryResizer } from './utilities/category-resizer.js'
-import { MODULE, CSS_STYLE } from './constants.js'
+import { MODULE, CSS_STYLE, TEMPLATE } from './constants.js'
 import { Logger, Timer, Utils } from './utilities/utils.js'
 
 /**
@@ -117,7 +117,7 @@ export class TokenActionHud extends Application {
      */
     static get defaultOptions () {
         return mergeObject(super.defaultOptions, {
-            template: `/modules/${MODULE.ID}/templates/template.hbs`,
+            template: TEMPLATE.hud,
             id: 'token-action-hud',
             classes: [],
             width: this.defaultWidth,

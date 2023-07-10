@@ -231,13 +231,13 @@
       }
     },
     "tagDialog": {
-      "actionDialogDescription": "Add and remove groups and actions. Drag groups and actions to change their order.",
-      "actionDialogTitle": "Customise Actions",
-      "groupDialogDescription": "Add and remove groups. Select groups with pre-defined actions from the list or enter free text for an empty groups. Drag groups to change their order.",
-      "groupDialogTitle": "Customise Groups",
-      "hudDialogDescription": "Add and remove groups. Drag groups to change their order.",
-      "hudDialogTitle": "Customise HUD",
-      "clearButton": "Clear",
+      "groupDetail": "Click available items to select them, click and drag selected items to change their order and click the <strong>X</strong> on selected items to unselect them. Click an empty area of the <strong>Selected Items</strong> box and start typing to filter the available items.",
+      "groupTitle": "Customise Actions",
+      "hudDetail": "Click an empty area of the <strong>Selected Items</strong> box, type the name of the item then press <strong>Enter</strong> to add it. Click and drag items to change their order.",
+      "hudTitle": "Customise HUD",
+      "availableItems": "Available Items",
+      "selectedItems": "Selected Items",
+      "unselectAll": "Unselect All",
       "settings": {
         "characterCount": {
           "label": "Characters per Word",

@@ -6,8 +6,8 @@ import { PreRollHandler } from './roll-handlers/pre-roll-handler.js'
 import { RollHandler } from './roll-handlers/roll-handler.js'
 import { SystemManager } from './system-manager.js'
 import { TokenActionHud } from './token-action-hud.js'
-import { MODULE } from './constants.js'
-import { Logger, Utils } from './utilities/utils.js'
+import { MODULE, TEMPLATE } from './constants.js'
+import { Logger, Timer, Utils } from './utilities/utils.js'
 
 let systemManager
 let module
@@ -30,6 +30,7 @@ Hooks.on('ready', async () => {
         PreRollHandler,
         RollHandler,
         SystemManager,
+        Timer,
         Utils
     }
 
@@ -61,12 +62,15 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
 
     // Load templates
     loadTemplates([
-        `modules/${MODULE.ID}/templates/custom-style-form.hbs`,
-        `modules/${MODULE.ID}/templates/group.hbs`,
-        `modules/${MODULE.ID}/templates/list-group.hbs`,
-        `modules/${MODULE.ID}/templates/tab-group.hbs`,
-        `modules/${MODULE.ID}/templates/action.hbs`,
-        `modules/${MODULE.ID}/templates/tagdialog.hbs`
+        TEMPLATE.action,
+        TEMPLATE.customStyleForm,
+        TEMPLATE.group,
+        TEMPLATE.hud,
+        TEMPLATE.listGroup,
+        TEMPLATE.tabGroup,
+        TEMPLATE.tagDialogGroup,
+        TEMPLATE.tagDialogHud,
+        TEMPLATE.tagDialogTopLevelGroup
     ])
 
     Hooks.callAll('tokenActionHudCoreReady')

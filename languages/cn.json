@@ -231,13 +231,13 @@
       }
     },
     "tagDialog": {
-      "actionDialogDescription": "增加和移除动作。拖拽动作来改变顺序。",
-      "actionDialogTitle": "自定义动作",
-      "groupDialogDescription": "增加和移除子分类。选择列表中的多个子分类，或为宏填入文本。拖拽子分类来改变顺序。",
-      "groupDialogTitle": "自定义子分类",
-      "hudDialogDescription": "增加和移除分类。拖拽分类来改变顺序。",
-      "hudDialogTitle": "自定义分类",
-      "clearButton": "清除",
+      "groupDetail": "Click available items to select them, click and drag selected items to change their order and click the <strong>X</strong> on selected items to unselect them. Click an empty area of the <strong>Selected Items</strong> box and start typing to filter the available items.",
+      "groupTitle": "Customise Group",
+      "hudDetail": "Click an empty area of the <strong>Selected Items</strong> box, type the name of the item then press <strong>Enter</strong> to add it. Click and drag items to change their order.",
+      "hudTitle": "Customise HUD",
+      "availableItems": "Available Items",
+      "selectedItems": "Selected Items",
+      "unselectAll": "清除",
       "settings": {
         "characterCount": {
           "label": "单词字数",

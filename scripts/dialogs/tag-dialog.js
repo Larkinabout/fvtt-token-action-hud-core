@@ -1,4 +1,4 @@
-import { MODULE } from '../constants.js'
+import { MODULE, TEMPLATE } from '../constants.js'
 import { Logger, Utils } from '../utilities/utils.js'
 
 /**
@@ -19,11 +19,12 @@ export class TagDialog extends FormApplication {
     static get defaultOptions () {
         const defaults = super.defaultOptions
         const overrides = {
-            classes: ['tah-dialog'],
+            classes: ['tah-dialog', 'sheet'],
             closeOnSubmit: true,
             id: 'token-action-hud-dialog',
+            popOut: true,
             resizable: true,
-            template: `modules/${MODULE.ID}/templates/tagdialog.hbs`,
+            height: 'auto',
             width: 600
         }
 
@@ -53,20 +54,34 @@ export class TagDialog extends FormApplication {
     /**
      * Show dialog
      * @public
+     * @param {string} dialogType      The dialog type
      * @param {string} nestId          The nest id
      * @param {object} tags            The available and selected tags
      * @param {object} dialogData      The dialog data
      * @param {function*} dialogSubmit The dialog submit function
      */
-    static showDialog (nestId, tags, dialogData, dialogSubmit) {
+    static showDialog (dialogType, nestId, tags, dialogData, dialogSubmit) {
         this.nestId = nestId
         TagDialog._prepareHook(tags)
 
-        const dialog = new TagDialog({
+        const data = {
             title: dialogData.title,
             content: dialogData.content,
             submit: dialogSubmit
-        })
+        }
+
+        let dialog
+        switch (dialogType) {
+        case 'hud':
+            dialog = new TagDialogHud(data)
+            break
+        case 'topLevelGroup':
+            dialog = new TagDialogTopLevelGroup(data)
+            break
+        case 'group':
+            dialog = new TagDialogGroup(data)
+            break
+        }
 
         dialog.render(true)
     }
@@ -78,31 +93,30 @@ export class TagDialog extends FormApplication {
      */
     static _prepareHook (tags) {
         Hooks.once('renderTagDialog', (app, html, options) => {
-            html.css('maxHeight', '600px')
-
-            const $index = html.find('select[id="token-action-hud-index"]')
-            if ($index.length > 0) {
-                $index.css('background', '#fff')
-                $index.css('color', '#000')
-            }
-
-            const $tagFilter = html.find('input[class="token-action-hud-taginput"]')
+            const $tagFilter = html.find('input[class="tah-dialog-tagify"]')
 
             if ($tagFilter.length > 0) {
-                const options = {
+                const tagifyOptions = {
                     delimiters: ';',
                     maxTags: 'Infinity',
                     dropdown: {
-                        maxItems: 500, // <- maximum allowed rendered suggestions
-                        classname: 'tags-look', // <- custom classname for this dropdown, so it could be targeted
-                        enabled: 0, // <- show suggestions on focus
-                        closeOnSelect: false // <- do not hide the suggestions dropdown once an item has been selected
+                        position: 'manual',
+                        maxItems: Infinity, // <- maximum allowed rendered suggestions
+                        classname: 'tah-dialog-tags-dropdown', // <- custom classname for this dropdown, so it could be targeted
+                        enabled: 0 // <- show suggestions on focus
+                    },
+                    templates: {
+                        dropdownItemNoMatch () {
+                            return '<div class=\'empty\'>Nothing Found</div>'
+                        }
                     }
                 }
 
-                if (tags.available) options.whitelist = tags.available
+                if (tags.available) tagifyOptions.whitelist = tags.available
 
-                TagDialog.tagify = new Tagify($tagFilter[0], options)
+                TagDialog.tagify = new Tagify($tagFilter[0], tagifyOptions)
+
+                if (tags.selected) TagDialog.tagify.addTags(tags.selected)
 
                 TagDialog.dragSort = new DragSort(TagDialog.tagify.DOM.scope, {
                     selector: '.' + TagDialog.tagify.settings.classNames.tag,
@@ -113,16 +127,32 @@ export class TagDialog extends FormApplication {
                     TagDialog.tagify.updateValueByDOMTags()
                 }
 
-                const $tagifyBox = $(document).find('.tagify')
-
-                $tagifyBox.css('background', '#fff')
-                $tagifyBox.css('color', '#000')
-
-                if (tags.selected) TagDialog.tagify.addTags(tags.selected)
+                html.find('.tagify__input').on('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault()
+                        TagDialog.tagify.addTags(TagDialog.tagify.state.inputText, !0)
+                    }
+                })
 
                 // "remove all tags" button event listener
-                const clearBtn = html.find('#tah-dialog-clear-tags')
-                clearBtn.on('click', TagDialog.tagify.removeAllTags.bind(TagDialog.tagify))
+                const unselectAllButton = html.find('#tah-dialog-unselect-all')
+                unselectAllButton.on('click', TagDialog.tagify.removeAllTags.bind(TagDialog.tagify))
+
+                if (app.constructor.name === 'TagDialogHud') return
+
+                TagDialog.tagify.dropdown.show()
+                const dropdownLabelElement = document.createElement('div')
+                dropdownLabelElement.classList.add('tah-dialog-label')
+                dropdownLabelElement.innerHTML = Utils.i18n('tokenActionHud.tagDialog.availableItems')
+                TagDialog.tagify.DOM.scope.parentNode.appendChild(dropdownLabelElement)
+                TagDialog.tagify.DOM.scope.parentNode.appendChild(TagDialog.tagify.DOM.dropdown)
+            }
+        })
+
+        Hooks.on('renderApplication', (app, html, options) => {
+            if (app.constructor.name.startsWith('TagDialog')) {
+                app.setPosition()
+                app.setPosition({ top: 50 })
             }
         })
     }
@@ -191,5 +221,40 @@ export class TagDialog extends FormApplication {
             }
         })
         await this.submit(selection, formData)
+    }
+}
+
+export class TagDialogHud extends TagDialog {
+    static get defaultOptions () {
+        return foundry.utils.mergeObject(super.defaultOptions,
+            {
+                template: TEMPLATE.tagDialogHud
+            })
+    }
+}
+
+export class TagDialogTopLevelGroup extends TagDialog {
+    static get defaultOptions () {
+        return foundry.utils.mergeObject(super.defaultOptions, {
+            template: TEMPLATE.tagDialogTopLevelGroup,
+            tabs: [{
+                navSelector: '.tabs',
+                contentSelector: 'form',
+                initial: 'groups'
+            }]
+        })
+    }
+}
+
+export class TagDialogGroup extends TagDialog {
+    static get defaultOptions () {
+        return foundry.utils.mergeObject(super.defaultOptions, {
+            template: TEMPLATE.tagDialogGroup,
+            tabs: [{
+                navSelector: '.tabs',
+                contentSelector: 'form',
+                initial: 'groups'
+            }]
+        })
     }
 }

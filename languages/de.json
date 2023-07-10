@@ -230,13 +230,13 @@
       }
     },
     "tagDialog": {
-      "actionDialogDescription": "Hinzufügen und Entfernen von Gruppen und Aktionen. Ziehen Gruppen und Aktionen, um ihre Reihenfolge zu ändern.",
-      "actionDialogTitle": "Aktionen anpassen",
-      "groupDialogDescription": "Hinzufügen und Entfernen von Gruppen. Wähle Gruppen mit vordefinierten Aktionen aus der Liste oder gebe einen beliebigen Text für eine leere Gruppe ein.",
-      "groupDialogTitle": "Gruppen anpassen",
-      "hudDialogDescription": "Hinzufügen und Entfernen von Gruppen. Ziehe Gruppen, um ihre Reihenfolge zu ändern.",
-      "hudDialogTitle": "HUD anpassen",
-      "clearButton": "Löschen",
+      "groupDetail": "Klicken Sie auf verfügbare Elemente, um sie auszuwählen, klicken Sie auf ausgewählte Elemente und ziehen Sie sie, um ihre Reihenfolge zu ändern, und klicken Sie auf das <strong>X</strong> bei ausgewählten Elementen, um die Auswahl aufzuheben. Klicken Sie auf einen leeren Bereich des Felds <strong>Ausgewählte Elemente</strong> und beginnen Sie mit der Eingabe, um die verfügbaren Elemente zu filtern.",
+      "groupTitle": "Gruppe anpassen",
+      "hudDetail": "Klicken Sie auf einen leeren Bereich des Felds <strong>Ausgewählte Elemente</strong>, geben Sie den Namen des Elements ein und drücken Sie dann die <strong>Eingabetaste</strong>, um es hinzuzufügen. Klicken und ziehen Sie Elemente, um ihre Reihenfolge zu ändern.",
+      "hudTitle": "HUD anpassen",
+      "unselectAll": "Löschen",
+      "availableItems": "Available Items",
+      "selectedItems": "Selected Items",
       "settings": {
         "characterCount": {
           "label": "Zeichen pro Wort",

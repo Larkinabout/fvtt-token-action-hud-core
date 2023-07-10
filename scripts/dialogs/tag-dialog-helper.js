@@ -1,3 +1,4 @@
+import { TEMPLATE } from '../constants.js'
 import { TagDialog } from './tag-dialog.js'
 import { Utils } from '../utilities/utils.js'
 
@@ -19,14 +20,13 @@ export class TagDialogHelper {
 
         // Set dialog data
         const dialogData = {
-            title: Utils.i18n('tokenActionHud.tagDialog.hudDialogTitle'),
+            title: Utils.i18n('tokenActionHud.tagDialog.hudTitle'),
             content: {
-                topLabel: Utils.i18n('tokenActionHud.tagDialog.hudDialogDescription'),
+                topLabel: Utils.i18n('tokenActionHud.tagDialog.hudDetail'),
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
                 indexExplanationLabel: Utils.i18n('tokenActionHud.pushLabelExplanation'),
-                settings: { grid },
-                level: 'hud'
+                settings: { grid }
             }
         }
 
@@ -40,7 +40,7 @@ export class TagDialogHelper {
         }
 
         // Show dialog
-        TagDialog.showDialog(null, tags, dialogData, dialogSubmit)
+        TagDialog.showDialog('hud', null, tags, dialogData, dialogSubmit)
     }
 
     /**
@@ -63,13 +63,12 @@ export class TagDialogHelper {
 
         // Set dialog data
         const dialogData = {
-            title: Utils.i18n('tokenActionHud.tagDialog.groupDialogTitle') + ` (${name})`,
+            title: Utils.i18n('tokenActionHud.tagDialog.groupTitle') + ` (${name})`,
             content: {
-                topLabel: Utils.i18n('tokenActionHud.tagDialog.groupDialogDescription'),
+                topLabel: Utils.i18n('tokenActionHud.tagDialog.groupDetail'),
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
-                settings: await actionHandler.getGroupSettings(groupData),
-                level: 'category'
+                settings: await actionHandler.getGroupSettings(groupData)
             }
         }
 
@@ -106,6 +105,7 @@ export class TagDialogHelper {
         }
 
         TagDialog.showDialog(
+            'topLevelGroup',
             nestId,
             tags,
             dialogData,
@@ -137,14 +137,13 @@ export class TagDialogHelper {
 
         // Set dialog data
         const dialogData = {
-            title: `${Utils.i18n('tokenActionHud.tagDialog.actionDialogTitle')} (${name})`,
+            title: `${Utils.i18n('tokenActionHud.tagDialog.groupTitle')} (${name})`,
             content: {
-                topLabel: Utils.i18n('tokenActionHud.tagDialog.actionDialogDescription'),
+                topLabel: Utils.i18n('tokenActionHud.tagDialog.groupDetail'),
                 placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
                 clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
                 indexExplanationLabel: Utils.i18n('tokenActionHud.blockListLabel'),
-                settings: await actionHandler.getGroupSettings(groupData),
-                level: 'subcategory'
+                settings: await actionHandler.getGroupSettings(groupData)
             }
         }
 
@@ -179,6 +178,7 @@ export class TagDialogHelper {
         }
 
         TagDialog.showDialog(
+            'group',
             nestId,
             tags,
             dialogData,

@@ -6,6 +6,20 @@ export const MODULE = {
     NAME: 'Token Action HUD'
 }
 
+const TEMPLATE_DIR = `modules/${MODULE.ID}/templates`
+
+export const TEMPLATE = {
+    action: `${TEMPLATE_DIR}/action.hbs`,
+    customStyleForm: `${TEMPLATE_DIR}/custom-style-form.hbs`,
+    group: `${TEMPLATE_DIR}/group.hbs`,
+    hud: `${TEMPLATE_DIR}/hud.hbs`,
+    listGroup: `${TEMPLATE_DIR}/list-group.hbs`,
+    tabGroup: `${TEMPLATE_DIR}/tab-group.hbs`,
+    tagDialogGroup: `${TEMPLATE_DIR}/tag-dialog-group.hbs`,
+    tagDialogHud: `${TEMPLATE_DIR}/tag-dialog-hud.hbs`,
+    tagDialogTopLevelGroup: `${TEMPLATE_DIR}/tag-dialog-top-level-group.hbs`
+}
+
 /**
  * Delimiter character
  */

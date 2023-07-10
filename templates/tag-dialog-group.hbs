@@ -1,38 +1,37 @@
-<div class="flexrow">
-    <form class="categories flexcol">
-        <div class="scrollable">
-            <section>
-                <div style="margin-bottom: 5px;">
-                    <label>{{topLabel}}</label>
+<form class="flexcol">
+    <nav class="sheet-tabs tabs" style="flex: none;">
+        <a class="item active" data-tab="items">
+            <i class="fa-solid fa-ballot-check"></i>
+            {{localize "tokenActionHud.tagDialog.items"}}
+        </a>
+        <a class="item" data-tab="other">
+            <i class="fa-solid fa-gear"></i>
+            {{localize "tokenActionHud.tagDialog.otherSettings"}}
+        </a>
+    </nav>
+    <div class="flexcol">
+        <section class="tab active" data-tab="items">
+            <div class="tah-dialog-col-group">
+                <div class="tah-dialog-detail">
+                    <label>{{{localize "tokenActionHud.tagDialog.groupDetail"}}}</label>
                 </div>
-                <div>
+                <div>{{localize "tokenActionHud.tagDialog.selectedItems"}}</div>
+                <div class="tah-dialog-col-group">
                     <input
-                        name="token-action-hud-taginput"
-                        class="token-action-hud-taginput"
+                        name="tah-dialog-tagify"
+                        class="tah-dialog-tagify"s
                         placeholder="{{placeholder}}"
                     />
                 </div>
-                <div>
-                    <button type="button" id="tah-dialog-clear-tags" class="tags--removeAllBtn">
-                        <i class="fa-duotone fa-filter-circle-xmark"></i>{{clearButtonText}}
+                <div class="tah-dialog-col-group">
+                    <button type="button" id="tah-dialog-unselect-all" class="tah-dialog-light-button tags--removeAllBtn">
+                        <i class="fa-regular fa-filter-slash"></i>{{localize "tokenActionHud.tagDialog.unselectAll"}}
                     </button>
                 </div>
-                {{~#if (eq this.level "hud") ~}}
-                <div>
-                    <button type="button" id="tah-dialog-reset-actions">
-                        <i class="fa-solid fa-arrow-rotate-left"></i>{{localize "tokenActionHud.tagDialog.resetActions.button"}}
-                    </button>
-                </div>
-                {{~/if~}}
-                {{~#if (eq this.level "category") ~}}
-                <div class="form-group slim">
-                    <label>{{localize "tokenActionHud.tagDialog.settings.showCategoryTitle.label"}}</label>
-                    <div class="form-fields">
-                        <input type="checkbox" name="showTitle" {{~#if settings.showTitle~}}checked{{~/if~}}/>
-                    </div>
-                    <p class="hint">{{localize "tokenActionHud.tagDialog.settings.showCategoryTitle.hint"}}</p>
-                </div>
-                {{~/if~}}
+            </div>
+        </section>
+        <section class="tab" data-tab="other">
+            <div class="tah-dialog-col-group">
                 <div class="form-group">
                     <label>{{localize "tokenActionHud.tagDialog.settings.image.label"}}</label>
                     <div class="form-fields">
@@ -41,7 +40,6 @@
                     </div>
                     <p class="hint">{{localize "tokenActionHud.tagDialog.settings.image.hint"}}</p>
                 </div>
-                {{~#if (eq this.level "subcategory") ~}}
                 <div class="form-group slim">
                     <label>{{localize "tokenActionHud.tagDialog.settings.showSubcategoryTitle.label"}}</label>
                     <div class="form-fields">
@@ -68,7 +66,6 @@
                     </div>
                     <p class="hint">{{localize "tokenActionHud.tagDialog.settings.style.hint"}}</p>
                 </div>
-                {{~/if~}}
                 <div class="form-group slim">
                     <label>{{localize "tokenActionHud.tagDialog.settings.grid.label"}}</label>
                     <div class="form-fields">
@@ -76,19 +73,6 @@
                     </div>
                     <p class="hint">{{localize "tokenActionHud.tagDialog.settings.grid.hint"}}</p>
                 </div>
-                {{~#if (eq this.level "category") ~}}
-                <div class="form-group">
-                    <label>
-                        {{localize "tokenActionHud.tagDialog.settings.customWidth.label"}}
-                        <span class="units">{{localize "tokenActionHud.tagDialog.settings.customWidth.units"}}</span>
-                    </label>
-                    <div class="form-fields">
-                        <input type="number" name="customWidth" value="{{settings.customWidth}}" />
-                    </div>
-                    <p class="hint">{{localize "tokenActionHud.tagDialog.settings.customWidth.hint"}}</p>
-                </div>
-                {{~/if~}}
-                {{~#if (eq this.level "subcategory") ~}}
                 <div class="form-group slim">
                     <label>{{localize "tokenActionHud.tagDialog.settings.sort.label"}}</label>
                     <div class="form-fields">
@@ -96,25 +80,22 @@
                     </div>
                     <p class="hint">{{localize "tokenActionHud.tagDialog.settings.sort.hint"}}</p>
                 </div>
-                {{~/if~}}
-                {{~#if (ne this.level "hud") ~}}
                 <div class="form-group">
                     <label>{{localize "tokenActionHud.tagDialog.settings.characterCount.label"}}</label>
                     <div class="form-fields">
                         <input type="number" name="characterCount" placeholder="No limit" value="{{settings.characterCount}}" />
                     </div>
                     <p class="hint">{{localize "tokenActionHud.tagDialog.settings.characterCount.hint"}}</p> 
-                </div> 
-                {{~/if~}}
-            </section>
-        </div>
-        <footer class="sheet-footer flexrow">
-            <button type="submit" id="tah-dialog-submit" name="submit" class="">
-                <i class="fas fa-check"></i></i>{{localize "tokenActionHud.accept"}}
-            </button>
-            <button type="button" id="tah-dialog-cancel" name="cancel" class="">
-                <i class="fas fa-times"></i></i>{{localize "tokenActionHud.cancel"}}
-            </button>
-        </footer>
-    </form>
-</div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer class="sheet-footer flexrow" style="padding-top: 5px;">
+        <button type="submit" id="tah-dialog-submit" name="submit" class="">
+            <i class="fas fa-check"></i></i>{{localize "tokenActionHud.accept"}}
+        </button>
+        <button type="button" id="tah-dialog-cancel" name="cancel" class="">
+            <i class="fas fa-times"></i></i>{{localize "tokenActionHud.cancel"}}
+        </button>
+    </footer>
+</form>
