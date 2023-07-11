@@ -94,8 +94,8 @@ Hooks.on('tokenActionHudCoreReady', async () => {
     }
 
     // Create directories for json data
-    const isCustomizationEnabled = Utils.getSetting('enableCustomization')
-    if (isCustomizationEnabled && game.user.isGM) { await DataHandler.createDirectories() }
+    const enableCustomizationSetting = Utils.getSetting('enableCustomization')
+    if (enableCustomizationSetting && game.user.isGM) { await DataHandler.createDirectories() }
 
     // Initialise MigrationManager
     const migrationManager = new MigrationManager(socket)

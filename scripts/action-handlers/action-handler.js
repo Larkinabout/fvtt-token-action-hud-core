@@ -27,9 +27,9 @@ export class ActionHandler {
         this.userGroups = {}
         this.actions = []
         this.availableActions = []
-        this.displayIcons = Utils.getSetting('displayIcons')
-        this.isCustomizationEnabled = Utils.getSetting('enableCustomization')
-        this.tooltips = Utils.getSetting('tooltips')
+        this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
+        this.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
+        this.tooltipsSetting = Utils.getSetting('tooltips')
     }
 
     /**
@@ -46,8 +46,6 @@ export class ActionHandler {
         this.groups = {}
         this.actions = []
         this.availableActions = []
-        this.displayIcons = Utils.getSetting('displayIcons')
-        this.tooltips = Utils.getSetting('tooltips')
     }
 
     /**
@@ -114,7 +112,7 @@ export class ActionHandler {
     async #prepareHud () {
         Logger.debug('Preparing HUD...', { actor: this.actor, token: this.token })
 
-        const title = (Utils.getSetting('displayCharacterName'))
+        const title = (this.displayCharacterNameSetting)
             ? this.characterName ?? 'Multiple'
             : ''
         const actorId = this.actor?.id ?? 'multi'
@@ -305,7 +303,7 @@ export class ActionHandler {
     async #getSavedActorGroups () {
         if (!this.actor) return
 
-        if (!this.isCustomizationEnabled) {
+        if (!this.enableCustomizationSetting) {
             this.actorGroups = {}
             return
         }
@@ -342,7 +340,7 @@ export class ActionHandler {
             return userGroups
         }
 
-        if (!this.isCustomizationEnabled) {
+        if (!this.enableCustomizationSetting) {
             this.userGroups = getUserGroups(this.defaultLayout)
             return
         }
@@ -582,7 +580,7 @@ export class ActionHandler {
      * @public
      */
     async saveGroups (options = { saveActor: false, saveUser: false }) {
-        if (!this.isCustomizationEnabled) return
+        if (!this.enableCustomizationSetting) return
         Logger.debug('Saving groups...')
         if (options?.saveActor) await this.#saveActorGroups()
         if (options?.saveUser) await this.#saveUserGroups()
@@ -679,9 +677,9 @@ export class ActionHandler {
      * @returns {string}       The tooltip
      */
     #getTooltip (tooltip, name) {
-        if (this.tooltips === 'none') return null
-        if (this.tooltips === 'nameOnly') return name
-        if (this.tooltips === 'full' && tooltip) {
+        if (this.tooltipsSetting === 'none') return null
+        if (this.tooltipsSetting === 'nameOnly') return name
+        if (this.tooltipsSetting === 'full' && tooltip) {
             return (tooltip.includes('tah-tooltip-wrapper'))
                 ? tooltip
                 : `<div class="tah-tooltip-wrapper">${tooltip}</div>`

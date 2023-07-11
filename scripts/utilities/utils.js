@@ -15,7 +15,7 @@ export class Logger {
     }
 
     static debug (message, data) {
-        const isDebug = (game.tokenActionHud) ? game.tokenActionHud.isDebug : Utils.getSetting('debug')
+        const isDebug = (game.tokenActionHud) ? game.tokenActionHud.debugSetting : Utils.getSetting('debug')
         if (isDebug) {
             if (!data) {
                 console.log(`Token Action HUD Debug | ${message}`)
@@ -112,7 +112,7 @@ export class Utils {
     static getImage (entity, defaultImages = []) {
         defaultImages.push('icons/svg/mystery-man.svg')
         let result = ''
-        if (game.tokenActionHud.isDisplayIcons) result = (typeof entity === 'string') ? entity : entity?.img ?? entity?.icon ?? ''
+        if (game.tokenActionHud.displayIconsSetting) result = (typeof entity === 'string') ? entity : entity?.img ?? entity?.icon ?? ''
         return !defaultImages.includes(result) ? result : ''
     }
 

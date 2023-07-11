@@ -29,18 +29,17 @@ export class TokenActionHud extends Application {
         this.module = module
         this.systemManager = systemManager
         this.autoDirection = 'down'
-        this.direction = 'down'
-        this.isAlwaysShow = false
-        this.isClickOpen = false
+        this.directionSetting = 'down'
+        this.alwaysShowSetting = false
+        this.clickOpenSetting = false
         this.isCollapsed = false
-        this.isCustomizationEnabled = false
-        this.isDisplayIcons = false
-        this.drag = 'whenUnlocked'
-        this.isEnabled = false
+        this.enableCustomizationSetting = false
+        this.dragSetting = 'whenUnlocked'
+        this.enableSetting = false
         this.isHudEnabled = false
-        this.isGrid = false
+        this.gridSetting = false
         this.isUnlocked = false
-        this.style = null
+        this.styleSetting = null
     }
 
     /**
@@ -48,22 +47,29 @@ export class TokenActionHud extends Application {
      * @public
      */
     async init () {
-        this.direction = Utils.getSetting('direction')
-        this.isAlwaysShow = Utils.getSetting('alwaysShowHud')
-        this.isClickOpen = Utils.getSetting('clickOpenCategory')
+        this.alwaysShowSetting = Utils.getSetting('alwaysShowHud')
+        this.clickOpenSetting = Utils.getSetting('clickOpenCategory')
+        this.directionSetting = Utils.getSetting('direction')
+        this.debugSetting = Utils.getSetting('debug')
+        this.displayIconsSetting = Utils.getSetting('displayIcons')
+        this.dragSetting = Utils.getSetting('drag')
+        this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
+        this.enableSetting = Utils.getSetting('enable')
+        this.gridSetting = Utils.getSetting('grid')
+        this.styleSetting = Utils.getSetting('style')
+
         this.isCollapsed = Utils.getUserFlag('isCollapsed')
-        this.isCustomizationEnabled = Utils.getSetting('enableCustomization')
-        this.isDebug = Utils.getSetting('debug')
-        this.isDisplayIcons = Utils.getSetting('displayIcons')
-        this.drag = Utils.getSetting('drag')
-        this.isEnabled = Utils.getSetting('enable')
         this.isHudEnabled = this._getHudEnabled()
-        this.isGrid = Utils.getSetting('grid')
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
-        this.style = Utils.getSetting('style')
+
         await this.systemManager.registerDefaultFlags()
-        this.categoryResizer = new CategoryResizer()
+
         this.actionHandler = await this.systemManager.getActionHandler()
+        this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
+        this.actionHandler.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
+        this.actionHandler.tooltipsSetting = Utils.getSetting('tooltips')
+
+        this.categoryResizer = new CategoryResizer()
         this.rollHandler = this.systemManager.getRollHandler()
     }
 
@@ -74,21 +80,20 @@ export class TokenActionHud extends Application {
     updateSettings () {
         Logger.debug('Updating settings...')
         this.updateRollHandler()
-        this.direction = Utils.getSetting('direction')
-        this.isAlwaysShow = Utils.getSetting('alwaysShowHud')
-        this.isClickOpen = Utils.getSetting('clickOpenCategory')
-        this.isCustomizationEnabled = Utils.getSetting('enableCustomization')
-        this.actionHandler.isCustomizationEnabled = this.isCustomizationEnabled
-        this.isDebug = Utils.getSetting('debug')
-        this.isDisplayIcons = Utils.getSetting('displayIcons')
-        this.actionHandler.displayIcons = this.isDisplayIcons
-        this.drag = Utils.getSetting('drag')
-        this.isEnabled = Utils.getSetting('enable')
+        this.directionSetting = Utils.getSetting('direction')
+        this.alwaysShowSetting = Utils.getSetting('alwaysShowHud')
+        this.clickOpenSetting = Utils.getSetting('clickOpenCategory')
+        this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
+        this.debugSetting = Utils.getSetting('debug')
+        this.displayIconsSetting = Utils.getSetting('displayIcons')
+        this.dragSetting = Utils.getSetting('drag')
+        this.enableSetting = Utils.getSetting('enable')
         this.isHudEnabled = this._getHudEnabled()
-        this.isGrid = Utils.getSetting('grid')
-        this.style = Utils.getSetting('style')
-        this.tooltips = Utils.getSetting('tooltips')
-        this.actionHandler.tooltips = this.tooltips
+        this.gridSetting = Utils.getSetting('grid')
+        this.styleSetting = Utils.getSetting('style')
+        this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
+        this.actionHandler.idisplayCharacterNameSetting = Utils.getSetting('displayCharacterNameSetting')
+        this.actionHandler.tooltipsSetting = Utils.getSetting('tooltips')
         Logger.debug('Settings updated')
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
         this.update(trigger)
@@ -142,7 +147,7 @@ export class TokenActionHud extends Application {
      * @returns {boolean} Whether the HUD can be dragged
      */
     _isDraggable () {
-        return ((this.drag === 'always') || (this.drag === 'whenUnlocked' && this.isUnlocked))
+        return ((this.dragSetting === 'always') || (this.dragSetting === 'whenUnlocked' && this.isUnlocked))
     }
 
     /**
@@ -165,7 +170,7 @@ export class TokenActionHud extends Application {
         const data = super.getData()
         data.hud = this.hud
         data.id = 'token-action-hud'
-        data.style = CSS_STYLE[this.style].class
+        data.style = CSS_STYLE[this.styleSetting].class
         data.scale = this._getScale()
         data.background = '#00000000'
         Logger.debug('Application data', { data })
@@ -212,7 +217,7 @@ export class TokenActionHud extends Application {
         if (this.hoveredGroups.length) {
             for (const groupId of this.hoveredGroups) {
                 const group = document.querySelector(`#${groupId}`)
-                this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.isGrid)
+                this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.gridSetting)
             }
         }
     }
@@ -228,7 +233,7 @@ export class TokenActionHud extends Application {
          */
         const closeGroup = (event) => {
             if (game.tokenActionHud.rendering) return
-            const group = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
+            const group = (this.clickOpenSetting) ? event.currentTarget.parentElement : event.currentTarget
             group.classList.remove('hover')
             const closestGroupElement = group.closest('.tah-group')
             let sibling = closestGroupElement?.nextElementSibling
@@ -246,7 +251,7 @@ export class TokenActionHud extends Application {
          * @param {object} event The event
          */
         const openGroup = async (event) => {
-            const group = (this.isClickOpen) ? event.currentTarget.parentElement : event.currentTarget
+            const group = (this.clickOpenSetting) ? event.currentTarget.parentElement : event.currentTarget
             group.classList.add('hover')
             const closestGroupElement = group.closest('.tah-group')
             let sibling = closestGroupElement?.nextElementSibling
@@ -256,7 +261,7 @@ export class TokenActionHud extends Application {
                 }
                 sibling = sibling.nextElementSibling
             }
-            this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.isGrid)
+            this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.gridSetting)
             this._setHoveredGroup(group.id)
         }
 
@@ -287,7 +292,7 @@ export class TokenActionHud extends Application {
             event.currentTarget.blur()
         })
 
-        if (this.isClickOpen) {
+        if (this.clickOpenSetting) {
             // When a category button is clicked...
             elements.groupButton.on('click', toggleGroup)
         } else {
@@ -377,9 +382,9 @@ export class TokenActionHud extends Application {
         /**
          * Collapse/expand group
          * @param {object} event                   The event
-         * @param {boolean} isCustomizationEnabled Whether customization is enabled
+         * @param {boolean} enableCustomizationSetting Whether customization is enabled
          */
-        const collapseExpandGroup = (event, isCustomizationEnabled) => {
+        const collapseExpandGroup = (event, enableCustomizationSetting) => {
             const target = event.target.classList.contains('tah-subtitle-text')
                 ? event.target.parentElement
                 : event.target
@@ -399,7 +404,7 @@ export class TokenActionHud extends Application {
             }
 
             const saveGroupSettings = (collapse) => {
-                if (isCustomizationEnabled) {
+                if (enableCustomizationSetting) {
                     this.actionHandler.saveGroupSettings({ nestId, settings: { collapse } })
                 }
             }
@@ -407,7 +412,7 @@ export class TokenActionHud extends Application {
             if (groupsElement?.classList.contains('tah-hidden')) {
                 toggleGroupVisibility()
                 saveGroupSettings(false)
-                this.categoryResizer.resizeCategory(this.actionHandler, tabGroup, this.autoDirection, this.isGrid)
+                this.categoryResizer.resizeCategory(this.actionHandler, tabGroup, this.autoDirection, this.gridSetting)
             } else {
                 toggleGroupVisibility()
                 saveGroupSettings(true)
@@ -422,7 +427,7 @@ export class TokenActionHud extends Application {
         // When a subcategory title is clicked...
         elements.subtitle.on('click', (event) => {
             if (event.target.classList.contains('tah-button-text')) return
-            collapseExpandGroup(event, this.isCustomizationEnabled)
+            collapseExpandGroup(event, this.enableCustomizationSetting)
         })
 
         // When an action is clicked or right-clicked...
@@ -522,13 +527,13 @@ export class TokenActionHud extends Application {
         }
 
         // Set initial lock state
-        if (this.isUnlocked && this.isCustomizationEnabled) {
+        if (this.isUnlocked && this.enableCustomizationSetting) {
             unlockHud()
         } else {
             lockHud()
         }
 
-        if (!this.isCustomizationEnabled) {
+        if (!this.enableCustomizationSetting) {
             elements.unlockButton.addClass('tah-hidden')
         }
 
@@ -684,7 +689,7 @@ export class TokenActionHud extends Application {
      * @returns {string} The direction
      */
     _getAutoDirection () {
-        if (this.direction === 'up' || (this.direction === 'auto' && this.topPos > window.innerHeight / 2)) return 'up'
+        if (this.directionSetting === 'up' || (this.directionSetting === 'auto' && this.topPos > window.innerHeight / 2)) return 'up'
         return 'down'
     }
 
@@ -833,7 +838,7 @@ export class TokenActionHud extends Application {
 
             if (!groupElement[0]) continue
 
-            if (this.isClickOpen) {
+            if (this.clickOpenSetting) {
                 const button = groupElement.find('.tah-group-button')[0]
                 button.click()
             } else {
@@ -848,13 +853,13 @@ export class TokenActionHud extends Application {
      */
     async toggleHud () {
         const binding = Utils.humanizeBinding('toggleHud')
-        if (this.isEnabled) {
+        if (this.enableSetting) {
             this.#close()
-            this.isEnabled = false
+            this.enableSetting = false
             await Utils.setSetting('enable', false)
             Logger.info(game.i18n.format('tokenActionHud.settings.toggleHud.disabled', { binding }), true)
         } else {
-            this.isEnabled = true
+            this.enableSetting = true
             await Utils.setSetting('enable', true)
             Logger.info(game.i18n.format('tokenActionHud.settings.toggleHud.enabled', { binding }), true)
             Hooks.callAll('forceUpdateTokenActionHud')
@@ -1050,7 +1055,7 @@ export class TokenActionHud extends Application {
      */
     isValidTokenChange (token, data = null) {
         if (data?.actorData?.flags) return false
-        if (this.isAlwaysShow) {
+        if (this.alwaysShowSetting) {
             return (this._isRelevantToken(token) || token.actorId === game.user.character?.id)
         } else {
             return this._isRelevantToken(token)
@@ -1162,7 +1167,7 @@ export class TokenActionHud extends Application {
 
             character.token = token
             character.actor = actor
-        } else if (controlled.length === 0 && game.user.character && this.isAlwaysShow) {
+        } else if (controlled.length === 0 && game.user.character && this.alwaysShowSetting) {
             character.actor = game.user.character
             character.token = canvas.tokens.placeables.find(t => t.actor?.id === character.actor.id)
         }
