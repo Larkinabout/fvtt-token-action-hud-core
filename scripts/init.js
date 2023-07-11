@@ -229,6 +229,11 @@ Hooks.on('tokenActionHudCoreReady', async () => {
         game.tokenActionHud.update(trigger)
     })
 
+    Hooks.on('closeSettingsConfig', () => {
+        const trigger = { type: 'hook', name: 'closeSettingsConfig' }
+        game.tokenActionHud.update(trigger)
+    })
+
     const trigger = { type: 'hook', name: 'canvasReady' }
     game.tokenActionHud.update(trigger)
 })

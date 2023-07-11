@@ -27,6 +27,7 @@ export class ActionHandler {
         this.userGroups = {}
         this.actions = []
         this.availableActions = []
+        this.customLayoutSetting = Utils.getSetting('customLayout')
         this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
         this.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
         this.tooltipsSetting = Utils.getSetting('tooltips')
@@ -80,6 +81,7 @@ export class ActionHandler {
         this.softResetActionHandler()
         await this.#getDefaultGroups()
         await this.#getDefaultLayout()
+        await this.#getCustomLayout()
         this.isGmActive = Utils.isGmActive()
         if (!this.isGmActive && !this.isGmInactiveUserNotified) {
             Logger.info('Cannot retrieve HUD layout without GM present', true)
@@ -289,11 +291,23 @@ export class ActionHandler {
      * @private
      */
     async #getDefaultLayout () {
+        if (this.defaultLayout) return
         const defaultLayout = (game.tokenActionHud.defaults?.layout?.length)
             ? game.tokenActionHud.defaults?.layout
             : game.tokenActionHud.defaults?.categories
         if (!defaultLayout) return {}
         this.defaultLayout = await Utils.getNestedGroups(defaultLayout)
+    }
+
+    /**
+     * Get custom layout
+     * @private
+     */
+    async #getCustomLayout () {
+        if (this.customLayoutSetting) {
+            
+            this.customLayout = await game.tokenActionHud.socket.executeAsGM('getData', { file: this.customLayoutSetting }) ?? null
+        }
     }
 
     /**
@@ -317,7 +331,7 @@ export class ActionHandler {
 
         Logger.debug('Retrieving groups from actor...', { actor: this.actor })
         this.actorGroups = {}
-        const actorGroups = await game.tokenActionHud.socket.executeAsGM('getData', 'actor', this.actor.id) ?? null
+        const actorGroups = await game.tokenActionHud.socket.executeAsGM('getData', { type: 'actor', id: this.actor.id }) ?? null
         if (!actorGroups) return
         for (const group of Object.entries(actorGroups)) {
             group[1].nestId = group[0]
@@ -332,8 +346,10 @@ export class ActionHandler {
      */
     async #getSavedUserGroups () {
         const user = game.user
+        const layout = this.customLayout ?? this.defaultLayout
+
         const getUserGroups = (data) => {
-            const userGroups = Object.keys(data).length ? data : this.defaultLayout
+            const userGroups = Object.keys(data).length ? data : layout
             for (const group of Object.entries(userGroups)) {
                 group[1].nestId = group[0]
             }
@@ -341,20 +357,20 @@ export class ActionHandler {
         }
 
         if (!this.enableCustomizationSetting) {
-            this.userGroups = getUserGroups(this.defaultLayout)
+            this.userGroups = getUserGroups(layout)
             return
         }
 
         if (Object.entries(this.userGroups).length) return
 
         if (!this.isGmActive) {
-            this.userGroups = getUserGroups(this.defaultLayout)
+            this.userGroups = getUserGroups(layout)
             return
         }
 
         Logger.debug('Retrieving groups from user...', { user })
         this.userGroups = {}
-        const savedUserData = await game.tokenActionHud.socket.executeAsGM('getData', 'user', user.id) ?? {}
+        const savedUserData = await game.tokenActionHud.socket.executeAsGM('getData', { type: 'user', id: user.id }) ?? {}
         this.userGroups = getUserGroups(savedUserData)
         Logger.debug('Groups retrieved from user', { userGroups: this.userGroups, user })
     }

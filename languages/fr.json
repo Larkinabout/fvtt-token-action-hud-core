@@ -56,6 +56,10 @@
         "hint": "Si activée, les catégories s'ouvriront sur un clic plutôt qu'un survol.",
         "name": "Clic pour ouvrir les catégories"
       },
+      "customLayout": {
+        "hint": "Select a layout to use as the default for all users. Leave blank to use the default layout",
+        "name": "Custom Layout"
+      },
       "customStyle": {
         "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
         "label": "Customise Style",

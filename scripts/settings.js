@@ -2,7 +2,7 @@ import { CustomStyleForm } from './utilities/custom-style-form.js'
 import { CUSTOM_STYLE, MODULE } from './constants.js'
 import { Logger, Utils } from './utilities/utils.js'
 
-function onChangeFunction (value) { if (game.tokenActionHud) game.tokenActionHud.updateSettings() }
+function onChangeFunction (setting, value) { if (game.tokenActionHud) game.tokenActionHud.updateSettings(setting, value) }
 
 // Register key bindings
 Hooks.on('init', async () => {
@@ -55,6 +55,15 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
+    game.settings.register(MODULE.ID, 'customLayout', {
+        name: Utils.i18n('tokenActionHud.settings.customLayout.name'),
+        hint: Utils.i18n('tokenActionHud.settings.customLayout.hint'),
+        scope: 'world',
+        config: true,
+        type: String,
+        filePicker: true
+    })
+
     game.settings.registerMenu(MODULE.ID, 'customStyle', {
         name: Utils.i18n('tokenActionHud.settings.customStyle.name'),
         label: Utils.i18n('tokenActionHud.settings.customStyle.label'),
@@ -78,7 +87,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
             down: Utils.i18n('tokenActionHud.settings.direction.choices.down')
         },
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('direction', value)
         }
     })
 
@@ -90,7 +99,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: false,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('grid', value)
         }
     })
 
@@ -107,7 +116,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         },
         default: 1,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('scale', value)
         }
     })
 
@@ -124,7 +133,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
             never: Utils.i18n('tokenActionHud.settings.drag.choices.never')
         },
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('drag', value)
         }
     })
 
@@ -136,7 +145,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: true,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('enable', value)
         }
     })
 
@@ -149,7 +158,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         choices: rollHandlers,
         default: 'core',
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('rollHandler', value)
         }
     })
 
@@ -177,7 +186,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: true,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('enableCustomization', value)
         }
     })
 
@@ -189,7 +198,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: true,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('alwaysShowHud', value)
         }
     })
 
@@ -201,7 +210,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: true,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('displayCharacterName', value)
         }
     })
 
@@ -213,7 +222,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: true,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('displayIcons', value)
         }
     })
 
@@ -230,7 +239,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
             none: Utils.i18n('tokenActionHud.settings.tooltips.choices.none')
         },
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('tooltips', value)
         }
     })
 
@@ -242,7 +251,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: false,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('clickOpenCategory', value)
         }
     })
 
@@ -254,7 +263,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: true,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('renderItemOnRightClick', value)
         }
     })
 
@@ -272,7 +281,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
             },
             default: 'both',
             onChange: (value) => {
-                onChangeFunction(value)
+                onChangeFunction('itemMacro', value)
             }
         })
     }
@@ -285,7 +294,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: false,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('activeCssAsText', value)
         }
     })
 
@@ -297,7 +306,7 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: Boolean,
         default: false,
         onChange: (value) => {
-            onChangeFunction(value)
+            onChangeFunction('debug', value)
         }
     })
 

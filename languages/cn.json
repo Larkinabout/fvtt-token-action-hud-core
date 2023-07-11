@@ -57,6 +57,10 @@
         "hint": "启用后，需要点击而非悬浮来展开分类。",
         "name": "点击打开分类"
       },
+      "customLayout": {
+        "hint": "Select a layout to use as the default for all users. Leave blank to use the default layout",
+        "name": "Custom Layout"
+      },
       "customStyle": {
         "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
         "label": "Customise Style",

@@ -56,6 +56,10 @@
         "hint": "활성화시 마우스 포인터를 올리는 대신 클릭해야 카테고리가 열린다",
         "name": "클릭하여 카테고리 열기"
       },
+      "customLayout": {
+        "hint": "Select a layout to use as the default for all users. Leave blank to use the default layout",
+        "name": "Custom Layout"
+      },
       "customStyle": {
         "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
         "label": "Customise Style",

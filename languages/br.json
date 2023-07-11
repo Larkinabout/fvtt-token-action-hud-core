@@ -57,6 +57,10 @@
         "hint": "As categorias serão abertas clicando sobre elas em vez de passar o mouse.",
         "name": "Abrir categorias com um clique"
       },
+      "customLayout": {
+        "hint": "Select a layout to use as the default for all users. Leave blank to use the default layout",
+        "name": "Custom Layout"
+      },
       "customStyle": {
         "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
         "label": "Customise Style",

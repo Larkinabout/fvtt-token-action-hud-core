@@ -1,6 +1,19 @@
 import { MODULE } from './constants.js'
 import { Logger } from './utilities/utils.js'
 
+/**
+     * Get file parts
+     * @param {string} file The file
+     * @returns {object}    The file parts
+     */
+function getFileParts (file) {
+    const arr = file.split('/')
+    const fileName = arr[arr.length - 1]
+    const folder = file.split('/').slice(0, -1).join('/') ?? ''
+
+    return { folder, fileName }
+}
+
 export class DataHandler {
     static isPersistentStorage () {
         return (game.version >= '11.305' && typeof ForgeVTT === 'undefined')
@@ -70,13 +83,23 @@ export class DataHandler {
      * @param {string} id   The actor or user id
      * @returns {object}    The data
      */
-    static async getData (type, id) {
-        const folderPath = (DataHandler.isPersistentStorage())
-            ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
-            : `${MODULE.ID}/${game.world.id}/${type}`
-        const fileName = encodeURI(`${id}.json`)
+    static async getData (options) {
+        const { file, type, id } = options
+
+        let folder
+        let fileName
+
+        if (file) {
+            ({ folder, fileName } = getFileParts(file))
+        } else {
+            folder = (DataHandler.isPersistentStorage())
+                ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
+                : `${MODULE.ID}/${game.world.id}/${type}`
+            fileName = encodeURI(`${id}.json`)
+        }
+
         try {
-            const foundFolderPath = await FilePicker.browse('data', folderPath)
+            const foundFolderPath = await FilePicker.browse('data', folder)
             const foundFilePath = foundFolderPath.files.find(file => file.endsWith(fileName))
             if (foundFilePath) {
                 const ms = Date.now()
@@ -97,6 +120,19 @@ export class DataHandler {
         } catch {
             return null
         }
+    }
+
+    /**
+     * Get file parts
+     * @param {string} file The file
+     * @returns {object}    The file parts
+     */
+    getFileParts (file) {
+        const arr = file.split('/')
+        const filename = arr[arr.length - 1]
+        const folder = file.split('/').slice(0, -1).join('/')
+
+        return { folder, filename }
     }
 
     /**

@@ -69,6 +69,10 @@ export class TokenActionHud extends Application {
         await this.systemManager.registerDefaultFlags()
 
         this.actionHandler = await this.systemManager.getActionHandler()
+        this.actionHandler.customLayoutSetting = Utils.getSetting('customLayout')
+        if (this.customLayoutSetting) {
+            this.actionHandler.customLayout = await game.tokenActionHud.socket.executeAsGM('getData', { file: this.customLayoutSetting })
+        }
         this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
         this.actionHandler.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
         this.actionHandler.tooltipsSetting = Utils.getSetting('tooltips')
@@ -81,32 +85,70 @@ export class TokenActionHud extends Application {
      * Update Token Action HUD following change to module settings
      * @public
      */
-    updateSettings () {
-        Logger.debug('Updating settings...')
-        this.updateRollHandler()
-        this.activeCssAsTextSetting = Utils.getSetting('activeCssAsTextSetting')
-        this.allowSetting = Utils.getSetting('allow')
-        this.alwaysShowSetting = Utils.getSetting('alwaysShowHud')
-        this.clickOpenSetting = Utils.getSetting('clickOpenCategory')
-        this.debugSetting = Utils.getSetting('debug')
-        this.directionSetting = Utils.getSetting('direction')
-        this.displayIconsSetting = Utils.getSetting('displayIcons')
-        this.dragSetting = Utils.getSetting('drag')
-        this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
-        this.enableSetting = Utils.getSetting('enable')
-        this.gridSetting = Utils.getSetting('grid')
-        this.scaleSetting = Utils.getSetting('scale')
-        this.styleSetting = Utils.getSetting('style')
-
-        this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
-        this.actionHandler.idisplayCharacterNameSetting = Utils.getSetting('displayCharacterNameSetting')
-        this.actionHandler.tooltipsSetting = Utils.getSetting('tooltips')
-
-        this.isHudEnabled = this.#getHudEnabled()
-
-        Logger.debug('Settings updated')
-        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
-        this.update(trigger)
+    async updateSettings (setting, value) {
+        if (!this.updateSettingsPending) {
+            this.updateSettingsPending = true
+            Logger.debug('Updating settings...')
+        }
+        switch (setting) {
+        case 'activeCssAsText':
+            this.activeCssAsTextSetting = value
+            break
+        case 'allow':
+            this.allowSetting = value
+            this.isHudEnabled = this.#getHudEnabled()
+            break
+        case 'alwaysShowHud':
+            this.alwaysShowSetting = value
+            break
+        case 'clickOpenCategory':
+            this.clickOpenSetting = value
+            break
+        case 'customLayout':
+            this.customLayoutSetting = value
+            if (this.customLayoutSetting) {
+                this.actionHandler.customLayout = await game.tokenActionHud.socket.executeAsGM('getData', { file: this.customLayoutSetting })
+            }
+            break
+        case 'debug':
+            this.debugSetting = value
+            break
+        case 'direction':
+            this.directionSetting = value
+            break
+        case 'displayCharacterName':
+            this.actionHandler.displayCharacterNameSetting = value
+            break
+        case 'displayIcons':
+            this.displayIconsSetting = value
+            break
+        case 'drag':
+            this.dragSetting = value
+            break
+        case 'enable':
+            this.enableSetting = value
+            this.isHudEnabled = this.#getHudEnabled()
+            break
+        case 'enableCustomization':
+            this.enableCustomizationSetting = value
+            this.actionHandler.enableCustomizationSetting = value
+            break
+        case 'grid':
+            this.gridSetting = value
+            break
+        case 'rollHandler':
+            this.updateRollHandler()
+            break
+        case 'scale':
+            this.scaleSetting = value
+            break
+        case 'style':
+            this.styleSetting = value
+            break
+        case 'tooltips':
+            this.actionHandler.tooltipsSetting = value
+            break
+        }
     }
 
     /**
@@ -751,13 +793,13 @@ export class TokenActionHud extends Application {
                 const element = document.getElementById('token-action-hud')
                 if (element) {
                     element.style.bottom = null
-                    this.topPos = pos.top < 5 || pos.top > window.innerHeight + 5
+                    this.topPos = this.position.top < 5 || this.position.top > window.innerHeight + 5
                         ? defaultTopPos
-                        : pos.top
+                        : this.position.top
                     element.style.top = `${this.topPos}px`
-                    this.leftPos = pos.left < 5 || pos.left > window.innerWidth + 5
+                    this.leftPos = this.position.left < 5 || this.position.left > window.innerWidth + 5
                         ? defaultLeftPos
-                        : pos.left
+                        : this.position.left
                     element.style.left = `${this.leftPos}px`
                     element.style.position = 'fixed'
                     resolve()
@@ -867,7 +909,7 @@ export class TokenActionHud extends Application {
 
         Logger.debug('Copying user data...')
 
-        const fromGroup = await game.tokenActionHud.socket.executeAsGM('getData', 'user', fromUserId)
+        const fromGroup = await game.tokenActionHud.socket.executeAsGM('getData', { type: 'user', id: fromUserId })
 
         if (typeof toUserIds === 'string') {
             await game.tokenActionHud.socket.executeAsGM('saveData', 'user', toUserIds, fromGroup)
@@ -968,6 +1010,12 @@ export class TokenActionHud extends Application {
      * @param {object} trigger The trigger for the update
      */
     async #updateHud (trigger) {
+        if (trigger.name === 'closeSettingsConfig' && !this.updateSettingsPending) {
+            return
+        } else {
+            this.updateSettingsPending = false
+            Logger.debug('Settings updated')
+        }
         if (this.isUpdatePending) await this.updateTimer.abort()
         this.isUpdatePending = true
         await this.updateTimer.start()

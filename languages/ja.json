@@ -55,6 +55,10 @@
         "hint": "有効にすると、ホバーではなくクリックでカテゴリを開きます。",
         "name": "クリックでカテゴリーを開く"
       },
+      "customLayout": {
+        "hint": "Select a layout to use as the default for all users. Leave blank to use the default layout",
+        "name": "Custom Layout"
+      },
       "customStyle": {
         "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
         "label": "Customise Style",
