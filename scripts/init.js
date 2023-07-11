@@ -206,7 +206,8 @@ Hooks.on('tokenActionHudCoreReady', async () => {
         game.tokenActionHud.update(trigger)
     })
 
-    Hooks.on('updateCombatant', (combat, combatant) => {
+    Hooks.on('updateCombatant', (combatant, data, options, userId) => {
+        if (!game.tokenActionHud.isSelectedActor(combatant.actor)) return
         const trigger = { type: 'hook', name: 'updateCombatant', data: [combat, combatant] }
         game.tokenActionHud.update(trigger)
     })
@@ -216,12 +217,14 @@ Hooks.on('tokenActionHudCoreReady', async () => {
         game.tokenActionHud.update(trigger)
     })
 
-    Hooks.on('createActiveEffect', () => {
+    Hooks.on('createActiveEffect', (activeEffect, options, userId) => {
+        if (!game.tokenActionHud.isSelectedActor(activeEffect.parent)) return
         const trigger = { type: 'hook', name: 'createActiveEffect' }
         game.tokenActionHud.update(trigger)
     })
 
-    Hooks.on('deleteActiveEffect', () => {
+    Hooks.on('deleteActiveEffect', (activeEffect, options, userId) => {
+        if (!game.tokenActionHud.isSelectedActor(activeEffect.parent)) return
         const trigger = { type: 'hook', name: 'deleteActiveEffect' }
         game.tokenActionHud.update(trigger)
     })

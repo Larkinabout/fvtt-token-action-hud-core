@@ -22,7 +22,7 @@ export class TokenActionHud extends Application {
     tokens = null
     isUpdatePending = false
     isUpdating = false
-    updateTimer = new Timer(20)
+    updateTimer = new Timer(10)
 
     constructor (module, systemManager) {
         super()
@@ -989,7 +989,6 @@ export class TokenActionHud extends Application {
      * @param {object} trigger The trigger for the update
      */
     async _updateHud (trigger) {
-        if (this.isUpdating) return
         if (this.isUpdatePending) await this.updateTimer.abort()
         this.isUpdatePending = true
         await this.updateTimer.start()
@@ -1082,6 +1081,7 @@ export class TokenActionHud extends Application {
      * @returns {boolean}    Whether the actor or item update is valid for a HUD update
      */
     isValidActorOrItemUpdate (actor, data) {
+        if (!this.isSelectedActor(actor)) return false
         if (data?.flags) {
             Logger.debug('Flags set, do not update hud', { actor, data })
             return false
@@ -1101,6 +1101,11 @@ export class TokenActionHud extends Application {
             Logger.debug('Different actor, do not update hud', { actor, data })
             return false
         }
+    }
+
+    isSelectedActor (actor) {
+        if (actor.id === this.actor?.id) return true
+        return false
     }
 
     /**

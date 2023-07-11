@@ -31,7 +31,7 @@ export class Logger {
  * Timer for setting and aborting timeouts
  */
 export class Timer {
-    contructor (milliseconds) {
+    constructor (milliseconds) {
         this.milliseconds = milliseconds
         this.timer = null
     }
@@ -39,7 +39,7 @@ export class Timer {
     async start () {
         if (this.timer) this.abort()
         return new Promise(resolve => {
-            this.timer = setTimeout(resolve, this.milliseconds)
+            this.timer = setTimeout(() => { resolve() }, this.milliseconds ?? 100)
         })
     }
 
