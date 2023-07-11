@@ -47,6 +47,8 @@ export class TokenActionHud extends Application {
      * @public
      */
     async init () {
+        this.activeCssAsTextSetting = Utils.getSetting('activeCssAsTextSetting')
+        this.allowSetting = Utils.getSetting('allow')
         this.alwaysShowSetting = Utils.getSetting('alwaysShowHud')
         this.clickOpenSetting = Utils.getSetting('clickOpenCategory')
         this.directionSetting = Utils.getSetting('direction')
@@ -56,10 +58,12 @@ export class TokenActionHud extends Application {
         this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
         this.enableSetting = Utils.getSetting('enable')
         this.gridSetting = Utils.getSetting('grid')
+        this.scaleSetting = Utils.getSetting('scale')
         this.styleSetting = Utils.getSetting('style')
 
         this.isCollapsed = Utils.getUserFlag('isCollapsed')
-        this.isHudEnabled = this._getHudEnabled()
+        this.isHudEnabled = this.#getHudEnabled()
+        this.position = Utils.getUserFlag('position')
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
 
         await this.systemManager.registerDefaultFlags()
@@ -80,20 +84,26 @@ export class TokenActionHud extends Application {
     updateSettings () {
         Logger.debug('Updating settings...')
         this.updateRollHandler()
-        this.directionSetting = Utils.getSetting('direction')
+        this.activeCssAsTextSetting = Utils.getSetting('activeCssAsTextSetting')
+        this.allowSetting = Utils.getSetting('allow')
         this.alwaysShowSetting = Utils.getSetting('alwaysShowHud')
         this.clickOpenSetting = Utils.getSetting('clickOpenCategory')
-        this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
         this.debugSetting = Utils.getSetting('debug')
+        this.directionSetting = Utils.getSetting('direction')
         this.displayIconsSetting = Utils.getSetting('displayIcons')
         this.dragSetting = Utils.getSetting('drag')
+        this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
         this.enableSetting = Utils.getSetting('enable')
-        this.isHudEnabled = this._getHudEnabled()
         this.gridSetting = Utils.getSetting('grid')
+        this.scaleSetting = Utils.getSetting('scale')
         this.styleSetting = Utils.getSetting('style')
+
         this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
         this.actionHandler.idisplayCharacterNameSetting = Utils.getSetting('displayCharacterNameSetting')
         this.actionHandler.tooltipsSetting = Utils.getSetting('tooltips')
+
+        this.isHudEnabled = this.#getHudEnabled()
+
         Logger.debug('Settings updated')
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#updateSettings' } }
         this.update(trigger)
@@ -146,7 +156,7 @@ export class TokenActionHud extends Application {
      * Whether the HUD can be dragged
      * @returns {boolean} Whether the HUD can be dragged
      */
-    _isDraggable () {
+    #isDraggable () {
         return ((this.dragSetting === 'always') || (this.dragSetting === 'whenUnlocked' && this.isUnlocked))
     }
 
@@ -155,8 +165,8 @@ export class TokenActionHud extends Application {
      * @private
      * @returns {number} The scale
      */
-    _getScale () {
-        const scale = parseFloat(Utils.getSetting('scale'))
+    #getScale () {
+        const scale = parseFloat(this.scaleSetting)
         if (scale < 0.5) return 0.5
         if (scale > 2) return 2
         return scale
@@ -171,7 +181,7 @@ export class TokenActionHud extends Application {
         data.hud = this.hud
         data.id = 'token-action-hud'
         data.style = CSS_STYLE[this.styleSetting].class
-        data.scale = this._getScale()
+        data.scale = this.#getScale()
         data.background = '#00000000'
         Logger.debug('Application data', { data })
 
@@ -200,18 +210,18 @@ export class TokenActionHud extends Application {
         }
 
         // Bind event listeners
-        this._bindGroupEvents(elements)
-        this._bindActionEvents(elements)
-        this._bindEditHudButton(elements)
-        this._bindLockUnlockButtons(elements)
-        this._bindCollapseExpandButtons(elements)
+        this.#bindGroupEvents(elements)
+        this.#bindActionEvents(elements)
+        this.#bindEditHudButton(elements)
+        this.#bindLockUnlockButtons(elements)
+        this.#bindCollapseExpandButtons(elements)
     }
 
     /**
      * Post-render HUD
      */
     postRender () {
-        this.applySettings()
+        this.#applySettings()
 
         // Resize category
         if (this.hoveredGroups.length) {
@@ -226,7 +236,7 @@ export class TokenActionHud extends Application {
     * Bind category events
     * @private
     */
-    _bindGroupEvents (elements) {
+    #bindGroupEvents (elements) {
         /**
          * Close the group
          * @param {object} event The event
@@ -243,7 +253,7 @@ export class TokenActionHud extends Application {
                 }
                 sibling = sibling.nextElementSibling
             }
-            this._clearHoveredGroup(group.id)
+            this.#clearHoveredGroup(group.id)
         }
 
         /**
@@ -262,7 +272,7 @@ export class TokenActionHud extends Application {
                 sibling = sibling.nextElementSibling
             }
             this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.gridSetting)
-            this._setHoveredGroup(group.id)
+            this.#setHoveredGroup(group.id)
         }
 
         /**
@@ -277,7 +287,7 @@ export class TokenActionHud extends Application {
                 const groupElements = group.parentElement.querySelectorAll('.tah-tab-group')
                 for (const groupElement of groupElements) {
                     groupElement.classList.remove('hover')
-                    this._clearHoveredGroup(groupElement.id)
+                    this.#clearHoveredGroup(groupElement.id)
                 }
                 openGroup(event)
             }
@@ -304,9 +314,9 @@ export class TokenActionHud extends Application {
         }
 
         // When a category button is clicked and held...
-        elements.groupButton.on('mousedown', (event) => this._dragEvent(event))
+        elements.groupButton.on('mousedown', (event) => this.#dragEvent(event))
         elements.groupButton.get().forEach(element => {
-            element.addEventListener('touchstart', (event) => this._dragEvent(event), { passive: true })
+            element.addEventListener('touchstart', (event) => this.#dragEvent(event), { passive: true })
         })
 
         /**
@@ -341,7 +351,7 @@ export class TokenActionHud extends Application {
      * @private
      * @param {object} elements The DOM elements
      */
-    _bindActionEvents (elements) {
+    #bindActionEvents (elements) {
         /**
          * Handle action event
          * @param {object} event The event
@@ -447,7 +457,7 @@ export class TokenActionHud extends Application {
      * Bind 'Edit HUD' button
      * @private
      */
-    _bindEditHudButton (elements) {
+    #bindEditHudButton (elements) {
         // When the 'Edit HUD' button is clicked...
         elements.editHudButton.on('click', (event) => {
             event.preventDefault()
@@ -460,7 +470,7 @@ export class TokenActionHud extends Application {
      * Bind lock and unlock buttons
      * @private
      */
-    _bindLockUnlockButtons (elements) {
+    #bindLockUnlockButtons (elements) {
         /**
          * Unlock the HUD
          * @param {object} event
@@ -546,7 +556,7 @@ export class TokenActionHud extends Application {
      * Bind collapse and expand buttons
      * @private
      */
-    _bindCollapseExpandButtons (elements) {
+    #bindCollapseExpandButtons (elements) {
         /**
          * Collapse the HUD
          * @param {object} event The event
@@ -595,8 +605,8 @@ export class TokenActionHud extends Application {
         elements.expandHudButton.on('click', expandHud)
 
         // When the 'Expand HUD' button is clicked and held...
-        elements.expandHudButton.on('mousedown', (event) => this._dragEvent(event))
-        elements.expandHudButton.get(0).addEventListener('touchstart', (event) => this._dragEvent(event), { passive: true })
+        elements.expandHudButton.on('mousedown', (event) => this.#dragEvent(event))
+        elements.expandHudButton.get(0).addEventListener('touchstart', (event) => this.#dragEvent(event), { passive: true })
     }
 
     /**
@@ -604,8 +614,8 @@ export class TokenActionHud extends Application {
      * @private
      * @param {object} event The event
      */
-    _dragEvent (event) {
-        if (!this._isDraggable()) return
+    #dragEvent (event) {
+        if (!this.#isDraggable()) return
 
         // Get the main element
         const element = document.getElementById('token-action-hud')
@@ -666,10 +676,11 @@ export class TokenActionHud extends Application {
 
             this.topPos = newElementTop
 
-            this.applySettings()
+            this.#applySettings()
 
             // Save the new position to the user's flags
-            Utils.setUserFlag('position', { top: newElementTop, left: newElementLeft })
+            this.position = { top: newElementTop, left: newElementLeft }
+            Utils.setUserFlag('position', this.position)
 
             Logger.debug(`Set position to x: ${newElementTop}px, y: ${newElementLeft}px`)
         }
@@ -688,17 +699,17 @@ export class TokenActionHud extends Application {
      * @private
      * @returns {string} The direction
      */
-    _getAutoDirection () {
+    #getAutoDirection () {
         if (this.directionSetting === 'up' || (this.directionSetting === 'auto' && this.topPos > window.innerHeight / 2)) return 'up'
         return 'down'
     }
 
     /**
      * Apply settings
-     * @public
+     * @private
      */
-    applySettings () {
-        this.autoDirection = this._getAutoDirection()
+    #applySettings () {
+        this.autoDirection = this.#getAutoDirection()
         if (this.autoDirection === 'up') {
             $(document).find('.tah-groups-container').removeClass('expand-down')
             $(document).find('.tah-groups-container').addClass('expand-up')
@@ -720,15 +731,8 @@ export class TokenActionHud extends Application {
      */
     setPosition () {
         if (!this.hud) return
-
-        const hudTitle = $(document).find('#tah-character-name')
-        if (hudTitle.length > 0) { hudTitle.css('top', -hudTitle[0].getBoundingClientRect().height) }
-
-        const token = canvas?.tokens?.placeables.find(
-            (t) => t.id === this.hud?.tokenId
-        )
-        this._setPositionFromFlag()
-        this._restoreHoveredGroups()
+        this.#setPositionFromFlag()
+        this.#restoreHoveredGroups()
         this.rendering = false
     }
 
@@ -736,10 +740,8 @@ export class TokenActionHud extends Application {
      * Set the position of the HUD based on user flag
      * @private
      */
-    _setPositionFromFlag () {
-        const pos = Utils.getUserFlag('position')
-
-        if (!pos) return
+    #setPositionFromFlag () {
+        if (!this.position) return
 
         const defaultLeftPos = this.defaultLeftPos
         const defaultTopPos = this.defaultTopPos
@@ -760,40 +762,11 @@ export class TokenActionHud extends Application {
                     element.style.position = 'fixed'
                     resolve()
                 } else {
-                    setTimeout(check, 30)
+                    setTimeout(check, 10)
                 }
             }
 
             check()
-        })
-    }
-
-    /**
-     * Set the position of the HUD based on the controlled token
-     * @private
-     * @param {object} token
-     */
-    _setPositionFromToken (token) {
-        return new Promise((resolve) => {
-            function check (token) {
-                const element = $('#token-action-hud')
-                if (element) {
-                    element.css('bottom', null)
-                    element.css(
-                        'left',
-                        token.worldTransform.tx +
-                        (token.width * canvas.dimensions.size + 55) *
-                        canvas.scene._viewPosition.scale + 'px'
-                    )
-                    element.css('top', token.worldTransform.ty + 0 + 'px')
-                    element.css('position', 'fixed')
-                    resolve()
-                } else {
-                    setTimeout(check, 30)
-                }
-            }
-
-            check(token)
         })
     }
 
@@ -803,7 +776,8 @@ export class TokenActionHud extends Application {
      */
     async resetPosition () {
         Logger.debug('Resetting position...')
-        await Utils.setUserFlag('position', { top: this.defaultTopPos, left: this.defaultLeftPos })
+        this.position = { top: this.defaultTopPos, left: this.defaultLeftPos }
+        await Utils.setUserFlag('position', this.position)
         Logger.debug(`Position reset to x: ${this.defaultTopPos}px, y: ${this.defaultLeftPos}px`)
     }
 
@@ -812,7 +786,7 @@ export class TokenActionHud extends Application {
      * @private
      * @param {string} groupId The group id
      */
-    _setHoveredGroup (groupId) {
+    #setHoveredGroup (groupId) {
         if (this.hoveredGroups.length > 10) { this.hoveredGroups = [] }
         this.hoveredGroups.push(groupId)
     }
@@ -822,7 +796,7 @@ export class TokenActionHud extends Application {
      * @private
      * @param {string} groupId The group id
      */
-    _clearHoveredGroup (groupId) {
+    #clearHoveredGroup (groupId) {
         this.hoveredGroups = this.hoveredGroups.filter(id => id !== groupId)
     }
 
@@ -830,7 +804,7 @@ export class TokenActionHud extends Application {
      * Restore the hovered category state on the HUD
      * @private
      */
-    _restoreHoveredGroups () {
+    #restoreHoveredGroups () {
         if (!this.hoveredGroups.length) return
 
         for (const groupId of this.hoveredGroups) {
@@ -873,7 +847,7 @@ export class TokenActionHud extends Application {
      * @param {string|array} toUserIds The user ids to copy to
      */
     async copy (fromUserId, toUserIds) {
-        const isCopied = await this._copyUserData(fromUserId, toUserIds)
+        const isCopied = await this.#copyUserData(fromUserId, toUserIds)
         if (isCopied) {
             Logger.info('HUD copied', true)
         } else {
@@ -887,7 +861,7 @@ export class TokenActionHud extends Application {
      * @param {string} fromUserId      The user id to copy from
      * @param {string|array} toUserIds The user ids to copy to
      */
-    async _copyUserData (fromUserId, toUserIds) {
+    async #copyUserData (fromUserId, toUserIds) {
         // Exit if parameters are missing
         if (!fromUserId || !toUserIds.length) return false
 
@@ -985,7 +959,7 @@ export class TokenActionHud extends Application {
      * @param {object} trigger The trigger for the update
      */
     update (trigger = null) {
-        this._updateHud(trigger)
+        this.#updateHud(trigger)
     }
 
     /**
@@ -993,7 +967,7 @@ export class TokenActionHud extends Application {
      * @private
      * @param {object} trigger The trigger for the update
      */
-    async _updateHud (trigger) {
+    async #updateHud (trigger) {
         if (this.isUpdatePending) await this.updateTimer.abort()
         this.isUpdatePending = true
         await this.updateTimer.start()
@@ -1003,7 +977,7 @@ export class TokenActionHud extends Application {
 
         const previousActorId = this.actor?.id
         const controlledTokens = Utils.getControlledTokens()
-        const character = this._getCharacter(controlledTokens)
+        const character = this.#getCharacter(controlledTokens)
 
         const multipleTokens = controlledTokens.length > 1 && !character
 
@@ -1056,9 +1030,9 @@ export class TokenActionHud extends Application {
     isValidTokenChange (token, data = null) {
         if (data?.actorData?.flags) return false
         if (this.alwaysShowSetting) {
-            return (this._isRelevantToken(token) || token.actorId === game.user.character?.id)
+            return (this.#isRelevantToken(token) || token.actorId === game.user.character?.id)
         } else {
-            return this._isRelevantToken(token)
+            return this.#isRelevantToken(token)
         }
     }
 
@@ -1068,7 +1042,7 @@ export class TokenActionHud extends Application {
      * @param {object} token The token
      * @returns {boolean} Whether the token is controlled or on the canvas
      */
-    _isRelevantToken (token) {
+    #isRelevantToken (token) {
         const controlledTokens = Utils.getControlledTokens()
         return (
             controlledTokens?.some((controlledToken) => controlledToken.id === token.id) ||
@@ -1118,16 +1092,16 @@ export class TokenActionHud extends Application {
      * @private
      * @returns {boolean} Whether the hud is enabled for the current user
      */
-    _getHudEnabled () {
+    #getHudEnabled () {
         const userRole = game.user.role
         const isGM = game.user.isGM
-        const isEnabled = Utils.getSetting('enable')
+        const isEnabled = this.enableSetting
 
         if (!isEnabled) return false
 
         if (isGM) return true
 
-        return Utils.checkAllow(userRole)
+        return Utils.checkAllow(userRole, this.allowSetting)
     }
 
     /**
@@ -1146,7 +1120,7 @@ export class TokenActionHud extends Application {
      * @private
      * @param {array} [controlled = []] The controlled tokens
      */
-    _getCharacter (controlled = []) {
+    #getCharacter (controlled = []) {
         if (controlled.length > 1) {
             this.actor = null
             this.token = null
@@ -1163,7 +1137,7 @@ export class TokenActionHud extends Application {
             const token = controlled[0]
             const actor = token.actor
 
-            if (!this._isValidCharacter(token)) return null
+            if (!this.#isValidCharacter(token)) return null
 
             character.token = token
             character.actor = actor
@@ -1190,7 +1164,7 @@ export class TokenActionHud extends Application {
      * @param {object} [token = {}] The token
      * @returns {boolean}           Whether the character is a valid selection for the current user
      */
-    _isValidCharacter (token = {}) {
+    #isValidCharacter (token = {}) {
         const actor = token?.actor
         const user = game.user
         return game.user.isGM || actor?.testUserPermission(user, 'OWNER')

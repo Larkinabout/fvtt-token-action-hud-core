@@ -56,9 +56,8 @@ export class Utils {
     * @param {number} userRole The user's role
     * @returns {boolean}
     */
-    static checkAllow (userRole) {
-        const allowShow = this.getSetting('allow')
-        if (userRole >= allowShow) return true
+    static checkAllow (userRole, allowSetting) {
+        if (userRole >= allowSetting) return true
         return false
     }
 
@@ -430,7 +429,7 @@ export class Utils {
 
         // Add asterisk to toggleable actions
         Handlebars.registerHelper('activeText', function (block) {
-            if (Utils.getSetting('activeCssAsText')) {
+            if (game.tokenActionHud.activeCssAsTextSetting) {
                 return block.fn(this)
             }
             return block.inverse(this)
