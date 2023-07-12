@@ -32,6 +32,7 @@ Token Action HUD is a repositionable HUD of actions for a selected token.
 ## Token Action HUD System Modules
 Token Action HUD Core requires a companion Token Action HUD system module to be installed. Current system modules are:
 
+- [Token Action HUD for Blade Runner](https://foundryvtt.com/packages/token-action-hud-bladerunner)
 - [Token Action HUD for Coriolis](https://foundryvtt.com/packages/token-action-hud-coriolis)
 - [Token Action HUD CypherSystem](https://foundryvtt.com/packages/token-action-hud-cyphersystem)
 - [Token Action HUD D&D 5e](https://foundryvtt.com/packages/token-action-hud-dnd5e)
