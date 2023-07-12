@@ -23,7 +23,7 @@ export class MigrationManager {
 
         let isSuccess = true
         isSuccess = (!migrationVersion || migrationVersion < '1.4.10') ? await this.#unsetOldFlags() : true
-        isSuccess = (DataHandler.isPersistantStorage()) ? await this.#migrateFiles() : true
+        isSuccess = (DataHandler.isPersistentStorage()) ? await this.#migrateFiles() : true
 
         if (isSuccess) {
             Utils.setSetting('migrationVersion', moduleVersion)
