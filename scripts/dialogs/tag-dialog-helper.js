@@ -1,6 +1,6 @@
 import { TEMPLATE } from '../constants.js'
 import { TagDialog } from './tag-dialog.js'
-import { Utils } from '../utilities/utils.js'
+import { Utils } from '../utils.js'
 
 /**
  * Generates data for the dialogs.

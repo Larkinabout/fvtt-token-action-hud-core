@@ -3,7 +3,7 @@ import { GenericActionHandler } from './generic-action-handler.js'
 import { CompendiumActionHandler } from './compendium-action-handler.js'
 import { MacroActionHandler } from './macro-action-handler.js'
 import { COMPENDIUM_PACK_TYPES, DELIMITER, GROUP_TYPE, MODULE } from '../constants.js'
-import { Logger, Utils } from '../utilities/utils.js'
+import { Logger, Utils } from '../utils.js'
 
 /**
  * Handler for building the HUD.
@@ -193,6 +193,7 @@ export class ActionHandler {
      * @public
      */
     async buildSystemActions (groupIds) {}
+
     /**
      * Build system-specific actions
      * @private
@@ -291,7 +292,7 @@ export class ActionHandler {
      * @private
      */
     async #getDefaultLayout () {
-        if (this.defaultLayout) return
+        if (Object.keys(this.defaultLayout).length) return
         const defaultLayout = (game.tokenActionHud.defaults?.layout?.length)
             ? game.tokenActionHud.defaults?.layout
             : game.tokenActionHud.defaults?.categories

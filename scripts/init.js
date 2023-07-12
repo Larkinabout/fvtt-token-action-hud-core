@@ -7,7 +7,7 @@ import { RollHandler } from './roll-handlers/roll-handler.js'
 import { SystemManager } from './system-manager.js'
 import { TokenActionHud } from './token-action-hud.js'
 import { MODULE, TEMPLATE } from './constants.js'
-import { Logger, Timer, Utils } from './utilities/utils.js'
+import { Logger, Timer, Utils } from './utils.js'
 
 let systemManager
 let module

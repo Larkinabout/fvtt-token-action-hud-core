@@ -1,6 +1,6 @@
 import { ActionListExtender } from './action-list-extender.js'
 import { DELIMITER, ITEM_MACRO_ICON } from '../constants.js'
-import { Utils } from '../utilities/utils.js'
+import { Utils } from '../utils.js'
 
 /**
  * Handler for building actions related to the Item Macro module.

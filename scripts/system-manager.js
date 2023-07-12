@@ -3,7 +3,7 @@ import { ItemMacroActionListExtender } from './action-handlers/item-macro-extend
 import { CompendiumMacroPreHandler } from './roll-handlers/compendium-macro-pre-handler.js'
 import { ItemMacroPreRollHandler } from './roll-handlers/pre-item-macro.js'
 import { MODULE } from './constants.js'
-import { Logger, Utils } from './utilities/utils.js'
+import { Logger, Utils } from './utils.js'
 
 export class SystemManager {
     constructor () {

@@ -37,7 +37,7 @@
     "tokenActionHud.form.hud.hudTitle": "Dostosuj HUD",
     "tokenActionHud.form.hud.items": "Przedmioty",
     "tokenActionHud.form.hud.otherSettings": "Inne ustawienia",
-    "tokenActionHud.form.hud.resetActions.button": "Resetuj działania",
+    "tokenActionHud.form.hud.resetActions.button": "Resetuj akcje w grupach",
     "tokenActionHud.form.hud.selectedItems": "Wybrane przedmioty",
     "tokenActionHud.form.hud.tagPlaceholder": "Wybory (oddzielone średnikiem)",
     "tokenActionHud.form.hud.unselectAll": "Odznacz wszystko",

@@ -37,7 +37,7 @@
   "tokenActionHud.form.hud.hudTitle": "HUD anpassen",
   "tokenActionHud.form.hud.items": "Gegenstände",
   "tokenActionHud.form.hud.otherSettings": "Andere Einstellungen",
-  "tokenActionHud.form.hud.resetActions.button": "Aktionen zurücksetzen",
+  "tokenActionHud.form.hud.resetActions.button": "Aktionen innerhalb von Gruppen zurücksetzen",
   "tokenActionHud.form.hud.selectedItems": "Ausgewählte Gegenstände",
   "tokenActionHud.form.hud.tagPlaceholder": "Choices (split with semi-colon)",
   "tokenActionHud.form.hud.unselectAll": "Alle abwählen",

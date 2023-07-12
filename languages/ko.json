@@ -36,7 +36,7 @@
     "tokenActionHud.form.hud.hudTitle": "HUD 사용자 정의",
     "tokenActionHud.form.hud.items": "항목",
     "tokenActionHud.form.hud.otherSettings": "기타 설정",
-    "tokenActionHud.form.hud.resetActions.button": "동작 재설정",
+    "tokenActionHud.form.hud.resetActions.button": "그룹 내 작업 재설정",
     "tokenActionHud.form.hud.selectedItems": "선택한 항목",
     "tokenActionHud.form.hud.tagPlaceholder": "선택사항 (세미콜론으로 구분)",
     "tokenActionHud.form.hud.unselectAll": "모두 선택 해제",

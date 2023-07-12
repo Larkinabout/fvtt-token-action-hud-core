@@ -36,7 +36,7 @@
     "tokenActionHud.form.hud.hudTitle": "HUDをカスタマイズ",
     "tokenActionHud.form.hud.items": "アイテム",
     "tokenActionHud.form.hud.otherSettings": "その他の設定",
-    "tokenActionHud.form.hud.resetActions.button": "アクションのリセット",
+    "tokenActionHud.form.hud.resetActions.button": "グループ内のリセットアクション",
     "tokenActionHud.form.hud.selectedItems": "選択したアイテム",
     "tokenActionHud.form.hud.tagPlaceholder": "選択肢（セミコロンで区切る）",
     "tokenActionHud.form.hud.unselectAll": "すべて選択解除",

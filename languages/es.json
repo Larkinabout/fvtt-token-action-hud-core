@@ -37,7 +37,7 @@
     "tokenActionHud.form.hud.hudTitle": "Personalizar HUD",
     "tokenActionHud.form.hud.items": "Ítems",
     "tokenActionHud.form.hud.otherSettings": "Otras Configuraciones",
-    "tokenActionHud.form.hud.resetActions.button": "Restablecer Acciones",
+    "tokenActionHud.form.hud.resetActions.button": "Restablecer Acciones dentro de Grupos",
     "tokenActionHud.form.hud.selectedItems": "Ítems Seleccionados",
     "tokenActionHud.form.hud.tagPlaceholder": "Elecciones (separadas por punto y coma)",
     "tokenActionHud.form.hud.unselectAll": "Deseleccionar Todo",

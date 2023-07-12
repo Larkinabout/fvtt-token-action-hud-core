@@ -1,5 +1,5 @@
 import { MODULE, TEMPLATE } from '../constants.js'
-import { Logger, Utils } from '../utilities/utils.js'
+import { Logger, Utils } from '../utils.js'
 
 /**
  * Form Application for the dialogs.

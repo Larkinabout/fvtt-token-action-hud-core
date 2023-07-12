@@ -1,5 +1,5 @@
 import { ACTION_TYPE, COMPENDIUM_PACK_TYPES, DELIMITER } from '../constants.js'
-import { Utils } from '../utilities/utils.js'
+import { Utils } from '../utils.js'
 
 /**
  * Handler for building the HUD's compendium actions.

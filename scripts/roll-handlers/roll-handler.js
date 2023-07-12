@@ -1,5 +1,5 @@
 import { DELIMITER } from '../constants.js'
-import { Logger, Utils } from '../utilities/utils.js'
+import { Logger, Utils } from '../utils.js'
 
 /**
  * Resolves core actions triggered from the HUD

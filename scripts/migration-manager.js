@@ -1,6 +1,6 @@
 import { MODULE } from './constants.js'
 import { DataHandler } from './data-handler.js'
-import { Logger, Utils } from './utilities/utils.js'
+import { Logger, Utils } from './utils.js'
 
 /**
  * Manages migrations between module versions

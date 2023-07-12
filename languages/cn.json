@@ -37,7 +37,7 @@
   "tokenActionHud.form.hud.hudTitle": "自定义 HUD",
   "tokenActionHud.form.hud.items": "项目",
   "tokenActionHud.form.hud.otherSettings": "其他设置",
-  "tokenActionHud.form.hud.resetActions.button": "重置操作",
+  "tokenActionHud.form.hud.resetActions.button": "重置組內的操作",
   "tokenActionHud.form.hud.selectedItems": "选定项目",
   "tokenActionHud.form.hud.tagPlaceholder": "选择项（使用分号分隔）",
   "tokenActionHud.form.hud.unselectAll": "取消选择所有",

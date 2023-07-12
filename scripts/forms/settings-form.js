@@ -1,5 +1,5 @@
 import { CUSTOM_STYLE, MODULE, LAYOUT_SETTING, TEMPLATE } from '../constants.js'
-import { Utils } from './utils.js'
+import { Utils } from '../utils.js'
 
 export class TahSettingsForm extends FormApplication {
     static get defaultOptions () {
@@ -68,8 +68,10 @@ export class TahSettingsForm extends FormApplication {
         for (const [key, value] of Object.entries(formData)) {
             if (this.settings[key].scope) {
                 Utils.setSetting(key, value)
+                game.tokenActionHud.updateSettings(key, value)
             }
         }
+        game.tokenActionHud.update()
     }
 }
 

@@ -1,7 +1,7 @@
-import { CustomStyleForm } from './utilities/custom-style-form.js'
-import { TahSettingsFormLayout } from './utilities/settings-form.js'
+import { CustomStyleForm } from './forms/custom-style-form.js'
+import { TahSettingsFormLayout } from './forms/settings-form.js'
 import { CUSTOM_STYLE, MODULE } from './constants.js'
-import { Logger, Utils } from './utilities/utils.js'
+import { Logger, Utils } from './utils.js'
 
 function onChangeFunction (setting, value) { if (game.tokenActionHud) game.tokenActionHud.updateSettings(setting, value) }
 

@@ -1,5 +1,5 @@
 import { CUSTOM_STYLE, MODULE, TEMPLATE } from '../constants.js'
-import { Utils } from './utils.js'
+import { Utils } from '../utils.js'
 
 export class CustomStyleForm extends FormApplication {
     static get defaultOptions () {

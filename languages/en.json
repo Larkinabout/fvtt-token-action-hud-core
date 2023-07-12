@@ -37,7 +37,7 @@
     "tokenActionHud.form.hud.hudTitle": "Customise HUD",
     "tokenActionHud.form.hud.items": "Items",
     "tokenActionHud.form.hud.otherSettings": "Other Settings",
-    "tokenActionHud.form.hud.resetActions.button": "Reset Actions",
+    "tokenActionHud.form.hud.resetActions.button": "Reset Actions within Groups",
     "tokenActionHud.form.hud.selectedItems": "Selected Items",
     "tokenActionHud.form.hud.tagPlaceholder": "Choices (split with semi-colon)",
     "tokenActionHud.form.hud.unselectAll": "Unselect All",

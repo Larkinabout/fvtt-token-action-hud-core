@@ -1,5 +1,5 @@
 import { MODULE } from './constants.js'
-import { Logger } from './utilities/utils.js'
+import { Logger } from './utils.js'
 
 /**
      * Get file parts

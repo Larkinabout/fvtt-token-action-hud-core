@@ -1,7 +1,7 @@
 import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
-import { CategoryResizer } from './utilities/category-resizer.js'
+import { CategoryResizer } from './category-resizer.js'
 import { CSS_STYLE, SETTING, TEMPLATE } from './constants.js'
-import { Logger, Timer, Utils } from './utilities/utils.js'
+import { Logger, Timer, Utils } from './utils.js'
 
 /**
  * Token Action HUD application
@@ -102,7 +102,11 @@ export class TokenActionHud extends Application {
             break
         case 'customLayout':
             if (this.customLayoutSetting) {
+                this.actionHandler.customLayoutSetting = this.customLayoutSetting
                 this.actionHandler.customLayout = await game.tokenActionHud.socket.executeAsGM('getData', { file: this.customLayoutSetting })
+            } else {
+                this.actionHandler.customLayoutSetting = null
+                this.actionHandler.customLayout = null
             }
             break
         case 'enableCustomization':
@@ -899,6 +903,8 @@ export class TokenActionHud extends Application {
                     icon: '<i class="fas fa-check"></i>',
                     label: Utils.i18n('tokenActionHud.dialog.button.yes'),
                     callback: async () => {
+                        const customLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=customLayout]')
+                        if (customLayoutElement) await this.updateSettings('customLayout', customLayoutElement?.value ?? '')
                         await this.resetUserData()
                         this.resetPosition()
                         Logger.info('Layout reset', true)
@@ -990,7 +996,7 @@ export class TokenActionHud extends Application {
      * @param {object} trigger The trigger for the update
      */
     async #updateHud (trigger) {
-        if (trigger.name === 'closeSettingsConfig' && !this.updateSettingsPending) {
+        if (trigger?.name === 'closeSettingsConfig' && !this.updateSettingsPending) {
             return
         } else {
             this.updateSettingsPending = false

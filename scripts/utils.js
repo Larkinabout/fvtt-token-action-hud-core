@@ -1,4 +1,4 @@
-import { CSS_STYLE, CUSTOM_STYLE, MODULE } from '../constants.js'
+import { CSS_STYLE, CUSTOM_STYLE, MODULE } from './constants.js'
 
 /**
  * Console logger
