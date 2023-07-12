@@ -1,6 +1,6 @@
 import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
 import { CategoryResizer } from './utilities/category-resizer.js'
-import { MODULE, CSS_STYLE, TEMPLATE } from './constants.js'
+import { CSS_STYLE, SETTING, TEMPLATE } from './constants.js'
 import { Logger, Timer, Utils } from './utilities/utils.js'
 
 /**
@@ -31,7 +31,7 @@ export class TokenActionHud extends Application {
         this.autoDirection = 'down'
         this.directionSetting = 'down'
         this.alwaysShowSetting = false
-        this.clickOpenSetting = false
+        this.clickOpenCategorySetting = false
         this.isCollapsed = false
         this.enableCustomizationSetting = false
         this.dragSetting = 'whenUnlocked'
@@ -50,7 +50,8 @@ export class TokenActionHud extends Application {
         this.activeCssAsTextSetting = Utils.getSetting('activeCssAsTextSetting')
         this.allowSetting = Utils.getSetting('allow')
         this.alwaysShowSetting = Utils.getSetting('alwaysShowHud')
-        this.clickOpenSetting = Utils.getSetting('clickOpenCategory')
+        this.clickOpenCategorySetting = Utils.getSetting('clickOpenCategory')
+        this.customLayoutSetting = Utils.getSetting('customLayout')
         this.directionSetting = Utils.getSetting('direction')
         this.debugSetting = Utils.getSetting('debug')
         this.displayIconsSetting = Utils.getSetting('displayIcons')
@@ -69,7 +70,7 @@ export class TokenActionHud extends Application {
         await this.systemManager.registerDefaultFlags()
 
         this.actionHandler = await this.systemManager.getActionHandler()
-        this.actionHandler.customLayoutSetting = Utils.getSetting('customLayout')
+
         if (this.customLayoutSetting) {
             this.actionHandler.customLayout = await game.tokenActionHud.socket.executeAsGM('getData', { file: this.customLayoutSetting })
         }
@@ -90,63 +91,25 @@ export class TokenActionHud extends Application {
             this.updateSettingsPending = true
             Logger.debug('Updating settings...')
         }
+
+        const variable = SETTING[setting].variable
+        if (variable) this[variable] = value
+
         switch (setting) {
-        case 'activeCssAsText':
-            this.activeCssAsTextSetting = value
-            break
         case 'allow':
-            this.allowSetting = value
+        case 'enable':
             this.isHudEnabled = this.#getHudEnabled()
             break
-        case 'alwaysShowHud':
-            this.alwaysShowSetting = value
-            break
-        case 'clickOpenCategory':
-            this.clickOpenSetting = value
-            break
         case 'customLayout':
-            this.customLayoutSetting = value
             if (this.customLayoutSetting) {
                 this.actionHandler.customLayout = await game.tokenActionHud.socket.executeAsGM('getData', { file: this.customLayoutSetting })
             }
             break
-        case 'debug':
-            this.debugSetting = value
-            break
-        case 'direction':
-            this.directionSetting = value
-            break
-        case 'displayCharacterName':
-            this.actionHandler.displayCharacterNameSetting = value
-            break
-        case 'displayIcons':
-            this.displayIconsSetting = value
-            break
-        case 'drag':
-            this.dragSetting = value
-            break
-        case 'enable':
-            this.enableSetting = value
-            this.isHudEnabled = this.#getHudEnabled()
-            break
         case 'enableCustomization':
-            this.enableCustomizationSetting = value
             this.actionHandler.enableCustomizationSetting = value
-            break
-        case 'grid':
-            this.gridSetting = value
             break
         case 'rollHandler':
             this.updateRollHandler()
-            break
-        case 'scale':
-            this.scaleSetting = value
-            break
-        case 'style':
-            this.styleSetting = value
-            break
-        case 'tooltips':
-            this.actionHandler.tooltipsSetting = value
             break
         }
     }
@@ -285,7 +248,7 @@ export class TokenActionHud extends Application {
          */
         const closeGroup = (event) => {
             if (game.tokenActionHud.rendering) return
-            const group = (this.clickOpenSetting) ? event.currentTarget.parentElement : event.currentTarget
+            const group = (this.clickOpenCategorySetting) ? event.currentTarget.parentElement : event.currentTarget
             group.classList.remove('hover')
             const closestGroupElement = group.closest('.tah-group')
             let sibling = closestGroupElement?.nextElementSibling
@@ -303,7 +266,7 @@ export class TokenActionHud extends Application {
          * @param {object} event The event
          */
         const openGroup = async (event) => {
-            const group = (this.clickOpenSetting) ? event.currentTarget.parentElement : event.currentTarget
+            const group = (this.clickOpenCategorySetting) ? event.currentTarget.parentElement : event.currentTarget
             group.classList.add('hover')
             const closestGroupElement = group.closest('.tah-group')
             let sibling = closestGroupElement?.nextElementSibling
@@ -344,7 +307,7 @@ export class TokenActionHud extends Application {
             event.currentTarget.blur()
         })
 
-        if (this.clickOpenSetting) {
+        if (this.clickOpenCategorySetting) {
             // When a category button is clicked...
             elements.groupButton.on('click', toggleGroup)
         } else {
@@ -854,7 +817,7 @@ export class TokenActionHud extends Application {
 
             if (!groupElement[0]) continue
 
-            if (this.clickOpenSetting) {
+            if (this.clickOpenCategorySetting) {
                 const button = groupElement.find('.tah-group-button')[0]
                 button.click()
             } else {
@@ -873,11 +836,11 @@ export class TokenActionHud extends Application {
             this.#close()
             this.enableSetting = false
             await Utils.setSetting('enable', false)
-            Logger.info(game.i18n.format('tokenActionHud.settings.toggleHud.disabled', { binding }), true)
+            Logger.info(game.i18n.format('tokenActionHud.keybinding.toggleHud.disabled', { binding }), true)
         } else {
             this.enableSetting = true
             await Utils.setSetting('enable', true)
-            Logger.info(game.i18n.format('tokenActionHud.settings.toggleHud.enabled', { binding }), true)
+            Logger.info(game.i18n.format('tokenActionHud.keybinding.toggleHud.enabled', { binding }), true)
             Hooks.callAll('forceUpdateTokenActionHud')
         }
     }
@@ -928,9 +891,26 @@ export class TokenActionHud extends Application {
      * @public
      */
     async reset () {
-        await this.resetUserData()
-        this.resetPosition()
-        Logger.info('HUD reset', true)
+        const d = new Dialog({
+            title: Utils.i18n('tokenActionHud.dialog.resetLayout.title'),
+            content: `<p>${Utils.i18n('tokenActionHud.dialog.resetLayout.content')}</p>`,
+            buttons: {
+                yes: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: Utils.i18n('tokenActionHud.dialog.button.yes'),
+                    callback: async () => {
+                        await this.resetUserData()
+                        this.resetPosition()
+                        Logger.info('Layout reset', true)
+                    }
+                },
+                no: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: Utils.i18n('tokenActionHud.dialog.button.no')
+                }
+            }
+        })
+        d.render(true)
     }
 
     /**

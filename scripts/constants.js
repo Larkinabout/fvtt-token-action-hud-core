@@ -6,14 +6,21 @@ export const MODULE = {
     NAME: 'Token Action HUD'
 }
 
+/**
+ * Template directory
+ */
 const TEMPLATE_DIR = `modules/${MODULE.ID}/templates`
 
+/**
+ * Templates
+ */
 export const TEMPLATE = {
     action: `${TEMPLATE_DIR}/action.hbs`,
     customStyleForm: `${TEMPLATE_DIR}/custom-style-form.hbs`,
     group: `${TEMPLATE_DIR}/group.hbs`,
     hud: `${TEMPLATE_DIR}/hud.hbs`,
     listGroup: `${TEMPLATE_DIR}/list-group.hbs`,
+    settings: `${TEMPLATE_DIR}/settings.hbs`,
     tabGroup: `${TEMPLATE_DIR}/tab-group.hbs`,
     tagDialogGroup: `${TEMPLATE_DIR}/tag-dialog-group.hbs`,
     tagDialogHud: `${TEMPLATE_DIR}/tag-dialog-hud.hbs`,
@@ -26,7 +33,7 @@ export const TEMPLATE = {
 export const DELIMITER = '|'
 
 /**
- * Action type
+ * Action types
  */
 export const ACTION_TYPE = {
     compendiumEntry: 'tokenActionHud.compendiumEntry',
@@ -46,7 +53,7 @@ export const COMPENDIUM_ACTION_TYPES = ['compendiumEntry', 'compendiumMacro', 'c
 export const COMPENDIUM_PACK_TYPES = ['JournalEntry', 'Macro', 'RollTable']
 
 /**
- * CSS Styles
+ * CSS styles
  */
 export const CSS_STYLE = {
     compact: {
@@ -124,7 +131,93 @@ export const GROUP_TYPE = {
     SYSTEM_DERIVED: 'system-derived'
 }
 
+/**
+ * Item Macro icon
+ */
 export const ITEM_MACRO_ICON = {
     ICON: 'fas fa-sd-card',
     TOOLTIP: 'Item Macro'
+}
+
+/**
+ * Layout settings
+ */
+export const LAYOUT_SETTING = {
+    customLayout: {
+        hint: 'tokenActionHud.settings.customLayout.hint',
+        name: 'tokenActionHud.settings.customLayout.name',
+        inputType: 'filePicker',
+        filePickerType: 'json',
+        dtype: 'String',
+        scope: 'world'
+    },
+    exportLayout: {
+        hint: 'tokenActionHud.settings.exportLayout.hint',
+        label: 'tokenActionHud.settings.exportLayout.label',
+        name: 'tokenActionHud.settings.exportLayout.name',
+        inputType: 'button',
+        icon: 'fa-solid fa-file-export',
+        onClick: 'game?.tokenActionHud?.actionHandler?.exportLayout()',
+    },
+    resetLayout: {
+        hint: 'tokenActionHud.settings.resetLayout.hint',
+        label: 'tokenActionHud.settings.resetLayout.label',
+        name: 'tokenActionHud.settings.resetLayout.name',
+        inputType: 'button',
+        icon: 'fa-solid fa-arrow-rotate-left',
+        onClick: 'game?.tokenActionHud?.reset()'
+    }
+}
+
+/**
+ * Settings
+ */
+export const SETTING = {
+    activeCssAsText: { variable: 'activeCssAsTextSetting' },
+    allow: { variable: 'allowSetting' },
+    alwaysShowHud: { variable: 'alwaysShowHudSetting' },
+    backgroundColor: {},
+    buttonBackgroundColor: {},
+    buttonBorderPrimaryColor: {},
+    buttonBorderSecondaryColor: {},
+    buttonHeight: {},
+    buttonHoverBorderPrimaryColor: {},
+    buttonHoverBorderSecondaryColor: {},
+    buttonHoverBackgroundColor: {},
+    buttonHoverTextColor: {},
+    buttonTextColor: {},
+    buttonToggleActiveBackgroundColor: {},
+    buttonToggleActiveBorderPrimaryColor: {},
+    buttonToggleActiveBorderSecondaryColor: {},
+    buttonToggleActiveTextColor: {},
+    buttonToggleHoverBackgroundColor: {},
+    buttonToggleHoverBorderPrimaryColor: {},
+    buttonToggleHoverBorderSecondaryColor: {},
+    buttonToggleHoverTextColor: {},
+    clickOpenCategory: { variable: 'clickOpenCategorySetting' },
+    customLayout: { variable: 'customLayoutSetting' },
+    customStyle: {},
+    debug: { variable: 'debugSetting' },
+    direction: { variable: 'directionSetting' },
+    displayCharacterName: { variable: 'displayCharacterName' },
+    displayIcons: { variable: 'displayIconsSetting' },
+    drag: { variable: 'dragSetting' },
+    enable: { variable: 'enableSetting' },
+    enableCustomization: { variable: 'enableCustomizationSetting' },
+    grid: { variable: 'gridSetting' },
+    itemMacro: {},
+    migrationVersion: {},
+    reset: {},
+    renderItemOnRightClick: {},
+    rollHandler: { default: 'core' },
+    scale: { variable: 'scaleSetting' },
+    startup: {},
+    style: {},
+    tooltips: { variable: 'tooltipsSetting' },
+    textPrimaryColor: {},
+    textSecondaryColor: {},
+    textTertiaryColor: {},
+    textHoverPrimaryColor: {},
+    textHoverSecondaryColor: {},
+    textHoverTertiaryColor: {}
 }

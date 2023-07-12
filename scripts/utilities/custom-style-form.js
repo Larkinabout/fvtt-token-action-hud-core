@@ -1,14 +1,16 @@
-import { CUSTOM_STYLE, MODULE } from '../constants.js'
+import { CUSTOM_STYLE, MODULE, TEMPLATE } from '../constants.js'
 import { Utils } from './utils.js'
 
 export class CustomStyleForm extends FormApplication {
     static get defaultOptions () {
         return mergeObject(super.defaultOptions, {
             title: Utils.i18n('tokenActionHud.settings.customStyle.form.title'),
-            template: `/modules/${MODULE.ID}/templates/custom-style-form.hbs`,
+            template: TEMPLATE.customStyleForm,
             id: 'token-action-hud-core-settings',
             width: 600,
-            height: 'auto',
+            height: 600,
+            popOut: true,
+            resizable: true,
             closeOnSubmit: true
         })
     }
@@ -53,7 +55,7 @@ export class CustomStyleForm extends FormApplication {
         const resetButtonElement = html.find('#tah-custom-style-reset-button')
         resetButtonElement.on('click', this._reset.bind(this))
 
-        if (ColorPicker) { ColorPicker.install() }
+        if (typeof ColorPicker !== 'undefined') { ColorPicker.install() }
     }
 
     _reset () {

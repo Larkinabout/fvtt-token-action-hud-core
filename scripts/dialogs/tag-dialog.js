@@ -44,7 +44,7 @@ export class TagDialog extends FormApplication {
      */
     activateListeners (html) {
         super.activateListeners(html)
-        const cancel = html.find('#tah-dialog-cancel')
+        const cancel = html.find('#tah-form-cancel')
         cancel.on('click', this.close.bind(this))
 
         const resetActions = html.find('#tah-dialog-reset-actions')
@@ -143,7 +143,7 @@ export class TagDialog extends FormApplication {
                 TagDialog.tagify.dropdown.show()
                 const dropdownLabelElement = document.createElement('div')
                 dropdownLabelElement.classList.add('tah-dialog-label')
-                dropdownLabelElement.innerHTML = Utils.i18n('tokenActionHud.tagDialog.availableItems')
+                dropdownLabelElement.innerHTML = Utils.i18n('tokenActionHud.form.hud.availableItems')
                 TagDialog.tagify.DOM.scope.parentNode.appendChild(dropdownLabelElement)
                 TagDialog.tagify.DOM.scope.parentNode.appendChild(TagDialog.tagify.DOM.dropdown)
             }
@@ -163,12 +163,12 @@ export class TagDialog extends FormApplication {
      */
     async #resetActions () {
         const d = new Dialog({
-            title: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.title'),
-            content: `<p>${Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.content')}</p>`,
+            title: Utils.i18n('tokenActionHud.dialog.resetActions.title'),
+            content: `<p>${Utils.i18n('tokenActionHud.dialog.resetActions.content')}</p>`,
             buttons: {
                 yes: {
                     icon: '<i class="fas fa-check"></i>',
-                    label: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.buttons.yes'),
+                    label: Utils.i18n('tokenActionHud.dialog.button.yes'),
                     callback: async () => {
                         await game.tokenActionHud.resetActorData()
                         Logger.info('Actions reset', true)
@@ -176,7 +176,7 @@ export class TagDialog extends FormApplication {
                 },
                 no: {
                     icon: '<i class="fas fa-times"></i>',
-                    label: Utils.i18n('tokenActionHud.tagDialog.resetActions.dialog.buttons.no')
+                    label: Utils.i18n('tokenActionHud.dialog.button.no')
                 }
             }
         })

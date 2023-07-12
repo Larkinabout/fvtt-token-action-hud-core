@@ -20,12 +20,10 @@ export class TagDialogHelper {
 
         // Set dialog data
         const dialogData = {
-            title: Utils.i18n('tokenActionHud.tagDialog.hudTitle'),
+            title: Utils.i18n('tokenActionHud.form.hud.hudTitle'),
             content: {
-                topLabel: Utils.i18n('tokenActionHud.tagDialog.hudDetail'),
-                placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
-                clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
-                indexExplanationLabel: Utils.i18n('tokenActionHud.pushLabelExplanation'),
+                topLabel: Utils.i18n('tokenActionHud.form.hud.hudDetail'),
+                placeholder: Utils.i18n('tokenActionHud.form.hud.tagPlaceholder'),
                 settings: { grid }
             }
         }
@@ -63,11 +61,10 @@ export class TagDialogHelper {
 
         // Set dialog data
         const dialogData = {
-            title: Utils.i18n('tokenActionHud.tagDialog.groupTitle') + ` (${name})`,
+            title: Utils.i18n('tokenActionHud.form.hud.groupTitle') + ` (${name})`,
             content: {
-                topLabel: Utils.i18n('tokenActionHud.tagDialog.groupDetail'),
-                placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
-                clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
+                topLabel: Utils.i18n('tokenActionHud.form.hud.groupDetail'),
+                placeholder: Utils.i18n('tokenActionHud.form.hud.tagPlaceholder'),
                 settings: await actionHandler.getGroupSettings(groupData)
             }
         }
@@ -137,12 +134,10 @@ export class TagDialogHelper {
 
         // Set dialog data
         const dialogData = {
-            title: `${Utils.i18n('tokenActionHud.tagDialog.groupTitle')} (${name})`,
+            title: `${Utils.i18n('tokenActionHud.form.hud.groupTitle')} (${name})`,
             content: {
-                topLabel: Utils.i18n('tokenActionHud.tagDialog.groupDetail'),
-                placeholder: Utils.i18n('tokenActionHud.tagDialog.tagPlaceholder'),
-                clearButtonText: Utils.i18n('tokenActionHud.tagDialog.clearButton'),
-                indexExplanationLabel: Utils.i18n('tokenActionHud.blockListLabel'),
+                topLabel: Utils.i18n('tokenActionHud.form.hud.groupDetail'),
+                placeholder: Utils.i18n('tokenActionHud.form.hud.tagPlaceholder'),
                 settings: await actionHandler.getGroupSettings(groupData)
             }
         }

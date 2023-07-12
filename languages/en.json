@@ -1,303 +1,170 @@
 {
-  "tokenActionHud": {
-    "accept": "Accept",
-    "addToCombat": "Add to Combat",
-    "blockListLabel": "blockList: hide / allowlist: show",
-    "cancel": "Cancel",
-    "collapseHud": "Collapse HUD",
-    "combat": "Combat",
-    "compendiumEntry": "Compendium Entry",
-    "compendiumMacro": "Compendium Macro",
-    "compendiumPlaylist": "Compendium Playlist",
-    "editHud": "Edit HUD",
-    "endTurn": "End Turn",
-    "expandHud": "Expand HUD",
-    "handlerNotFound": "not found, reverting to core roller.",
-    "lockHud": "Lock HUD",
-    "macro": "Macro",
-    "macros": "Macros",
-    "makeInvisible": "Make Invisible",
-    "makeVisible": "Make Visible",
-    "pushLabelExplanation": "Show categories on which side?",
-    "removeFromCombat": "Remove from Combat",
-    "title": "Token Action HUD",
-    "toggleHud": "Toggle HUD",
-    "token": "Token",
-    "unlockHud": "Unlock HUD",
-    "utility": "Utility",
-    "settings": {
-      "activeCssAsText": {
-        "hint":  "Mark active actions with an asterisk",
-        "name": "Mark Active Actions with Asterisk"
-      },
-      "allow": {
-        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
-        "name": "Allow HUD",
-        "choices" : {
-          "4": "Game Master",
-          "3": "Assistant GM",
-          "2": "Trusted Player",
-          "1": "Player"
-        }
-      },
-      "alwaysShowHud": {
-        "hint": "Show the user's assigned character even when no token is selected",
-        "name": "Always Show HUD"
-      },
-      "background": {
-        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
-        "name": "HUD Background Color"
-      },
-      "buttonBackgroundColor": {
-        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
-        "name": "Button Background Color"
-      },
-      "clickOpenCategory": {
-        "hint": "Open groups by clicking instead of hovering",
-        "name": "Click to Open"
-      },
-      "customLayout": {
-        "hint": "Select a layout to use as the default for all users. Leave blank to use the default layout",
-        "name": "Custom Layout"
-      },
-      "customStyle": {
-        "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
-        "label": "Customise Style",
-        "name": "Customise Style",
-        "form": {
-          "title": "Token Action HUD | Customise Style",
-          "active": "When Active",
-          "buttons": "Buttons",
-          "hovered": "When Hovered",
-          "text": "Text & Icons",
-          "toggleable": "Toggleable",
-          "reset": "Reset Defaults",
-          "save": "Save",
-          "backgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonHeight": {
-            "label": "Height",
-            "units": "(Pixels)"
-          },
-          "buttonBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "buttonTextColor": {
-            "label": "Button Text Color"
-          },
-          "buttonHoverBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonHoverBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonHoverBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "buttonHoverTextColor": {
-            "label": "Text Color"
-          },
-          "buttonToggleActiveBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonToggleActiveBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonToggleActiveBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "buttonToggleActiveTextColor": {
-            "label": "Text Color"
-          },
-          "buttonToggleHoverBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonToggleHoverTextColor": {
-            "label": "Text Color"
-          },
-          "buttonToggleHoverBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonToggleHoverBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "textPrimaryColor": {
-            "label": "Primary Color"
-          },
-          "textSecondaryColor": {
-            "label": "Secondary Color"
-          },
-          "textTertiaryColor": {
-            "label": "Tertiary Color"
-          },
-          "textHoverPrimaryColor": {
-            "label": "Primary Color"
-          },
-          "textHoverSecondaryColor": {
-            "label": "Secondary Color"
-          },
-          "textHoverTertiaryColor": {
-            "label": "Tertiary Color"
-          }
-        }
-      },
-      "debug": {
-        "hint": "Enable debug logging in the console",
-        "name": "Debug"
-      },
-      "direction": {
-        "hint": "Set the direction the HUD will expand",
-        "name": "Direction",
-        "choices": {
-          "auto": "Auto",
-          "down": "Down",
-          "up": "Up"
-        }
-      },
-      "displayCharacterName": {
-        "hint": "When the 'Direction' setting is set to 'Down', display the character name above the hud",
-        "name": "Display Character Name"
-      },
-      "displayIcons": {
-        "hint": "Where available, choose whether to display icons on the actions",
-        "name": "Icon Display"
-      },
-      "drag": {
-        "hint": "Choose when the HUD can be moved by clicking and dragging one of the top-level buttons",
-        "name": "Dragging",
-        "choices": {
-          "always": "Always",
-          "whenUnlocked": "When Unlocked",
-          "never": "Never"
-        }
-      },
-      "enable": {
-        "hint": "Enable the HUD",
-        "name": "Enable HUD"
-      },
-      "enableCustomization": {
-        "hint": "GM setting: Enable customization of the HUD",
-        "name": "Enable Customization"
-      },
-      "grid": {
-        "hint": "Use a grid layout for actions",
-        "name": "Grid"
-      },
-      "itemMacro": {
-        "hint": "Choose how item macros are displayed",
-        "name": "Item Macro Display",
-        "choices": {
-            "both": "Original Item and Macro",
-            "itemMacro": "Macro Only",
-            "original": "Original Item Only"
-        }
-      },
-      "renderItemOnRightClick": {
-        "hint": "When right-clicking an item, open the item's sheet",
-        "name": "Open Item Sheet on Right-Click"
-      },
-      "reset": {
-        "hint": "WARNING!!! This will reset the hud to its default configuration",
-        "name": "Reset HUD"
-      },
-      "rollHandler": {
-        "hint": "GM setting: Set the module for the HUD to use for handling rolls",
-        "name": "Roll Handler"
-      },
-      "scale": {
-        "hint": "Adjust the scale of the HUD (1 is the default)",
-        "name": "HUD Scale"
-      },
-      "style": {
-        "hint": "Set the style of the HUD",
-        "name": "Style"
-      },
-      "tooltips": {
-        "hint": "Where available, choose how tooltips are displayed when actions are hovered",
-        "name": "Tooltip Display",
-        "choices": {
-          "full": "Full Tooltip",
-          "nameOnly": "Name Only",
-          "none": "No Tooltips"
-        }
-      },
-      "toggleHud": {
-        "disabled": "HUD disabled. To enable, press {binding}",
-        "enabled": "HUD enabled. To disable, press {binding}"
-      }
-    },
-    "tagDialog": {
-      "groupDetail": "Click available items to select them, click and drag selected items to change their order and click the <strong>X</strong> on selected items to unselect them. Click an empty area of the <strong>Selected Items</strong> box and start typing to filter the available items.",
-      "groupTitle": "Customise Group",
-      "hudDetail": "Click an empty area of the <strong>Selected Items</strong> box, type the name of the item then press <strong>Enter</strong> to add it. Click and drag items to change their order.",
-      "hudTitle": "Customise HUD",
-      "availableItems": "Available Items",
-      "selectedItems": "Selected Items",
-      "unselectAll": "Unselect All",
-      "items": "Items",
-      "otherSettings": "Other Settings",
-      "settings": {
-        "characterCount": {
-          "label": "Characters per Word",
-          "hint": "Limit the characters per word of the actions"
-        },
-        "collapse": {
-          "label": "Collapse Group",
-          "hint": "Collapse this group"
-        },
-        "customWidth": {
-          "label": "Custom Width",
-          "units": "(Pixels)",
-          "hint": "Custom width for the subcategories"
-        },
-        "grid": {
-          "label": "Grid",
-          "hint": "Grid layout for actions"
-        },
-        "image": {
-          "label": "Image",
-          "hint": "Image on this button"
-        },
-        "showCategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this button's title"
-        },
-        "showSubcategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this group's title"
-        },
-        "sort": {
-          "label": "Sort Actions",
-          "hint": "Sort actions into alphabetical order"
-        },
-        "style": {
-          "label": "Style",
-          "choice": {
-            "list": "List",
-            "tab": "Tab"
-          },
-          "hint": "Style of this group"
-        }
-      },
-      "resetActions": {
-        "button": "Reset Actions",
-        "dialog": {
-          "title": "Reset Actions",
-          "content": "This will reset all actions for this actor. Do you wish to continue?",
-          "buttons": {
-            "yes": "Yes",
-            "no": "No"
-          }
-        }
-      },
-      "tagPlaceholder": "Choices (split with semi-colon)"
-    }
-  }
+    "tokenActionHud.accept": "Accept",
+    "tokenActionHud.addToCombat": "Add to Combat",
+    "tokenActionHud.cancel": "Cancel",
+    "tokenActionHud.collapseHud": "Collapse HUD",
+    "tokenActionHud.combat": "Combat",
+    "tokenActionHud.compendiumEntry": "Compendium Entry",
+    "tokenActionHud.compendiumMacro": "Compendium Macro",
+    "tokenActionHud.compendiumPlaylist": "Compendium Playlist",
+    "tokenActionHud.editHud": "Edit HUD",
+    "tokenActionHud.endTurn": "End Turn",
+    "tokenActionHud.expandHud": "Expand HUD",
+    "tokenActionHud.handlerNotFound": "not found, reverting to core roller.",
+    "tokenActionHud.lockHud": "Lock HUD",
+    "tokenActionHud.macro": "Macro",
+    "tokenActionHud.macros": "Macros",
+    "tokenActionHud.makeInvisible": "Make Invisible",
+    "tokenActionHud.makeVisible": "Make Visible",
+    "tokenActionHud.removeFromCombat": "Remove from Combat",
+    "tokenActionHud.title": "Token Action HUD",
+    "tokenActionHud.toggleHud": "Toggle HUD",
+    "tokenActionHud.token": "Token",
+    "tokenActionHud.unlockHud": "Unlock HUD",
+    "tokenActionHud.utility": "Utility",
+
+    "tokenActionHud.dialog.button.yes": "Yes",
+    "tokenActionHud.dialog.button.no": "No",
+    "tokenActionHud.dialog.resetActions.title": "Reset Actions",
+    "tokenActionHud.dialog.resetActions.content": "This will reset all actions for this actor. Do you wish to continue?",
+    "tokenActionHud.dialog.resetLayout.title": "Token Action HUD | Reset Layout",
+    "tokenActionHud.dialog.resetLayout.content": "This will reset to the default layout. Do you wish to continue?",
+
+    "tokenActionHud.form.hud.availableItems": "Available Items",
+    "tokenActionHud.form.hud.groupDetail": "Click available items to select them, click and drag selected items to change their order and click the <strong>X</strong> on selected items to unselect them. Click an empty area of the <strong>Selected Items</strong> box and start typing to filter the available items.",
+    "tokenActionHud.form.hud.groupTitle": "Customise Group",
+    "tokenActionHud.form.hud.hudDetail": "Click an empty area of the <strong>Selected Items</strong> box, type the name of the item then press <strong>Enter</strong> to add it. Click and drag items to change their order.",
+    "tokenActionHud.form.hud.hudTitle": "Customise HUD",
+    "tokenActionHud.form.hud.items": "Items",
+    "tokenActionHud.form.hud.otherSettings": "Other Settings",
+    "tokenActionHud.form.hud.resetActions.button": "Reset Actions",
+    "tokenActionHud.form.hud.selectedItems": "Selected Items",
+    "tokenActionHud.form.hud.tagPlaceholder": "Choices (split with semi-colon)",
+    "tokenActionHud.form.hud.unselectAll": "Unselect All",
+
+    "tokenActionHud.form.hud.formGroup.characterCount.hint": "Limit the characters per word of the actions",
+    "tokenActionHud.form.hud.formGroup.characterCount.label": "Characters per Word",
+    "tokenActionHud.form.hud.formGroup.collapse.hint": "Collapse this group",
+    "tokenActionHud.form.hud.formGroup.collapse.label": "Collapse Group",
+    "tokenActionHud.form.hud.formGroup.customWidth.hint": "Custom width for the groups",
+    "tokenActionHud.form.hud.formGroup.customWidth.label": "Custom Width",
+    "tokenActionHud.form.hud.formGroup.customWidth.units": "(Pixels)",
+    "tokenActionHud.form.hud.formGroup.grid.label": "Grid",
+    "tokenActionHud.form.hud.formGroup.grid.hint": "Grid layout for actions",
+    "tokenActionHud.form.hud.formGroup.image.hint": "Image on this button",
+    "tokenActionHud.form.hud.formGroup.image.label": "Image",
+    "tokenActionHud.form.hud.formGroup.showCategoryTitle.hint": "Show this button's title",
+    "tokenActionHud.form.hud.formGroup.showCategoryTitle.label": "Show Title",
+    "tokenActionHud.form.hud.formGroup.showSubcategoryTitle.hint": "Show this group's title",
+    "tokenActionHud.form.hud.formGroup.showSubcategoryTitle.label": "Show Title",
+    "tokenActionHud.form.hud.formGroup.sort.hint": "Sort actions into alphabetical order",
+    "tokenActionHud.form.hud.formGroup.sort.label": "Sort Actions",
+    "tokenActionHud.form.hud.formGroup.style.choice.list": "List",
+    "tokenActionHud.form.hud.formGroup.style.choice.tab": "Tab",
+    "tokenActionHud.form.hud.formGroup.style.hint": "Style of this group",
+    "tokenActionHud.form.hud.formGroup.style.label": "Style",
+
+    "tokenActionHud.keybinding.toggleHud.disabled": "HUD disabled. To enable, press {binding}",
+    "tokenActionHud.keybinding.toggleHud.enabled": "HUD enabled. To disable, press {binding}",
+
+    "tokenActionHud.settings.activeCssAsText.hint": "Mark active actions with an asterisk",
+    "tokenActionHud.settings.activeCssAsText.name": "Mark Active Actions with Asterisk",
+    "tokenActionHud.settings.allow.choice.1": "Player",
+    "tokenActionHud.settings.allow.choice.2": "Trusted Player",
+    "tokenActionHud.settings.allow.choice.3": "Assistant GM",
+    "tokenActionHud.settings.allow.choice.4": "Game Master",
+    "tokenActionHud.settings.allow.hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
+    "tokenActionHud.settings.allow.name": "Allow HUD",
+    "tokenActionHud.settings.alwaysShowHud.hint": "Show the user's assigned character even when no token is selected",
+    "tokenActionHud.settings.alwaysShowHud.name": "Always Show HUD",
+    "tokenActionHud.settings.clickOpenCategory.hint": "Open groups by clicking instead of hovering",
+    "tokenActionHud.settings.clickOpenCategory.name": "Click to Open",
+    "tokenActionHud.settings.customLayout.hint": "GM setting: Select a layout to use as the default for all users. Leave blank to use the system layout",
+    "tokenActionHud.settings.customLayout.name": "Default Layout",
+    "tokenActionHud.settings.customStyle.hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
+    "tokenActionHud.settings.customStyle.label": "Customise Style",
+    "tokenActionHud.settings.customStyle.name": "Customise Style",
+    "tokenActionHud.settings.customStyle.form.active": "When Active",
+    "tokenActionHud.settings.customStyle.form.backgroundColor.label": "Background Color",
+    "tokenActionHud.settings.customStyle.form.buttonBackgroundColor.label": "Background Color",
+    "tokenActionHud.settings.customStyle.form.buttonBorderPrimaryColor.label": "Border Primary Color",
+    "tokenActionHud.settings.customStyle.form.buttonBorderSecondaryColor.label": "Border Secondary Color",
+    "tokenActionHud.settings.customStyle.form.buttonHeight.label": "Height",
+    "tokenActionHud.settings.customStyle.form.buttonHeight.units": "(Pixels)",
+    "tokenActionHud.settings.customStyle.form.buttonHoverBackgroundColor.label": "Background Color",
+    "tokenActionHud.settings.customStyle.form.buttonHoverBorderPrimaryColor.label": "Border Primary Color",
+    "tokenActionHud.settings.customStyle.form.buttonHoverBorderSecondaryColor.label": "Border Secondary Color",
+    "tokenActionHud.settings.customStyle.form.buttonHoverTextColor.label": "Text Color",
+    "tokenActionHud.settings.customStyle.form.buttonTextColor.label": "Button Text Color",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveBackgroundColor.label": "Background Color",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderPrimaryColor.label": "Border Primary Color",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderSecondaryColor.label": "Border Secondary Color",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveTextColor.label": "Text Color",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverBackgroundColor.label": "Background Color",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderPrimaryColor.label": "Border Primary Color",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderSecondaryColor.label": "Border Secondary Color",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverTextColor.label": "Text Color",
+    "tokenActionHud.settings.customStyle.form.buttons": "Buttons",
+    "tokenActionHud.settings.customStyle.form.hovered": "When Hovered",
+    "tokenActionHud.settings.customStyle.form.reset": "Reset Defaults",
+    "tokenActionHud.settings.customStyle.form.save": "Save",
+    "tokenActionHud.settings.customStyle.form.text": "Text & Icons",
+    "tokenActionHud.settings.customStyle.form.textHoverPrimaryColor.label": "Primary Color",
+    "tokenActionHud.settings.customStyle.form.textHoverSecondaryColor.label": "Secondary Color",
+    "tokenActionHud.settings.customStyle.form.textHoverTertiaryColor.label": "Tertiary Color",
+    "tokenActionHud.settings.customStyle.form.textPrimaryColor.label": "Primary Color",
+    "tokenActionHud.settings.customStyle.form.textSecondaryColor.label": "Secondary Color",
+    "tokenActionHud.settings.customStyle.form.textTertiaryColor.label": "Tertiary Color",
+    "tokenActionHud.settings.customStyle.form.title": "Token Action HUD | Customise Style",
+    "tokenActionHud.settings.customStyle.form.toggleable": "Toggleable",
+    "tokenActionHud.settings.debug.hint": "Enable debug logging in the console",
+    "tokenActionHud.settings.debug.name": "Debug",
+    "tokenActionHud.settings.direction.choice.auto": "Auto",
+    "tokenActionHud.settings.direction.choice.down": "Down",
+    "tokenActionHud.settings.direction.choice.up": "Up",
+    "tokenActionHud.settings.direction.hint": "Set the direction the HUD will expand",
+    "tokenActionHud.settings.direction.name": "Direction",
+    "tokenActionHud.settings.displayCharacterName.hint": "When the 'Direction' setting is set to 'Down', display the character name above the hud",
+    "tokenActionHud.settings.displayCharacterName.name": "Display Character Name",
+    "tokenActionHud.settings.displayIcons.hint": "Where available, choose whether to display icons on the actions",
+    "tokenActionHud.settings.displayIcons.name": "Icon Display",
+    "tokenActionHud.settings.drag.choices.always": "Always",
+    "tokenActionHud.settings.drag.choices.never": "Never",
+    "tokenActionHud.settings.drag.choices.whenUnlocked": "When Unlocked",
+    "tokenActionHud.settings.drag.hint": "Choose when the HUD can be moved by clicking and dragging one of the top-level buttons",
+    "tokenActionHud.settings.drag.name": "Dragging",
+    "tokenActionHud.settings.enable.hint": "Enable the HUD",
+    "tokenActionHud.settings.enable.name": "Enable HUD",
+    "tokenActionHud.settings.enableCustomization.hint": "GM setting: Enable customization of the HUD",
+    "tokenActionHud.settings.enableCustomization.name": "Enable Customization",
+    "tokenActionHud.settings.exportLayout.hint": "Export the layout to file",
+    "tokenActionHud.settings.exportLayout.label": "Export Layout",
+    "tokenActionHud.settings.exportLayout.name": "Export Layout",
+    "tokenActionHud.settings.grid.hint": "Use a grid layout for actions",
+    "tokenActionHud.settings.grid.name": "Grid",
+    "tokenActionHud.settings.itemMacro.choices.both": "Original Item and Macro",
+    "tokenActionHud.settings.itemMacro.choices.itemMacro": "Macro Only",
+    "tokenActionHud.settings.itemMacro.choices.original": "Original Item Only",
+    "tokenActionHud.settings.itemMacro.hint": "Choose how item macros are displayed",
+    "tokenActionHud.settings.itemMacro.name": "Item Macro Display",
+    "tokenActionHud.settings.layout.hint": "Layout-related settings",
+    "tokenActionHud.settings.layout.label": "Layout",
+    "tokenActionHud.settings.layout.name": "Layout",
+    "tokenActionHud.settings.layout.form.title": "Token Action HUD | Layout",
+    "tokenActionHud.settings.renderItemOnRightClick.hint": "When right-clicking an item, open the item's sheet",
+    "tokenActionHud.settings.renderItemOnRightClick.name": "Open Item Sheet on Right-Click",
+    "tokenActionHud.settings.resetLayout.hint": "Reset to the default layout",
+    "tokenActionHud.settings.resetLayout.label": "Reset Layout",
+    "tokenActionHud.settings.resetLayout.name": "Reset Layout",
+    "tokenActionHud.settings.rollHandler.hint": "GM setting: Set the module for the HUD to use for handling rolls",
+    "tokenActionHud.settings.rollHandler.name": "Roll Handler",
+    "tokenActionHud.settings.scale.hint": "Adjust the scale of the HUD (1 is the default)",
+    "tokenActionHud.settings.scale.name": "HUD Scale",
+    "tokenActionHud.settings.style.hint": "Set the style of the HUD",
+    "tokenActionHud.settings.style.name": "Style",
+    "tokenActionHud.settings.tooltips.choices.full": "Full Tooltip",
+    "tokenActionHud.settings.tooltips.choices.nameOnly": "Name Only",
+    "tokenActionHud.settings.tooltips.choices.none": "No Tooltips",
+    "tokenActionHud.settings.tooltips.hint": "Where available, choose how tooltips are displayed when actions are hovered",
+    "tokenActionHud.settings.tooltips.name": "Tooltip Display"
 }

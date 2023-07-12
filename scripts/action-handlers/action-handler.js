@@ -305,14 +305,23 @@ export class ActionHandler {
      */
     async #getCustomLayout () {
         if (this.customLayoutSetting) {
-            
             this.customLayout = await game.tokenActionHud.socket.executeAsGM('getData', { file: this.customLayoutSetting }) ?? null
         }
     }
 
     /**
+     * Export layout to file
+     */
+    async exportLayout () {
+        const data = await game.tokenActionHud.socket.executeAsGM('getData', { type: 'user', id: game.userId }) ?? this.customLayout ?? this.defaultLayout
+        if (data) {
+            saveDataToFile(JSON.stringify(data, null, 2), 'text/json', 'token-action-hud-layout.json')
+        }
+    }
+
+    /**
      * Get the saved groups from the actor flag
-     * @privatet
+     * @private
      */
     async #getSavedActorGroups () {
         if (!this.actor) return

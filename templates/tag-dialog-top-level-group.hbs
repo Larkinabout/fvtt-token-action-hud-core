@@ -2,20 +2,20 @@
     <nav class="sheet-tabs tabs" style="flex: none;">
         <a class="item active" data-tab="items">
             <i class="fa-solid fa-ballot-check"></i>
-            {{localize "tokenActionHud.tagDialog.items"}}
+            {{localize "tokenActionHud.form.hud.items"}}
         </a>
         <a class="item" data-tab="other">
             <i class="fa-solid fa-gear"></i>
-            {{localize "tokenActionHud.tagDialog.otherSettings"}}
+            {{localize "tokenActionHud.form.hud.otherSettings"}}
         </a>
     </nav>
     <div class="flexcol">
         <section class="tab active" data-tab="items">
             <div class="tah-dialog-col-group">
                 <div class="tah-dialog-detail">
-                    <label>{{{localize "tokenActionHud.tagDialog.groupDetail"}}}</label>
+                    <label>{{{localize "tokenActionHud.form.hud.groupDetail"}}}</label>
                 </div>
-                <div>{{localize "tokenActionHud.tagDialog.selectedItems"}}</div>
+                <div>{{localize "tokenActionHud.form.hud.selectedItems"}}</div>
                 <div class="tah-dialog-col-group">
                     <input
                         name="tah-dialog-tagify"
@@ -25,51 +25,51 @@
                 </div>
                 <div class="tah-dialog-col-group">
                     <button type="button" id="tah-dialog-unselect-all" class="tah-dialog-light-button tags--removeAllBtn">
-                        <i class="fa-regular fa-filter-slash"></i>{{localize "tokenActionHud.tagDialog.unselectAll"}}
+                        <i class="fa-regular fa-filter-slash"></i>{{localize "tokenActionHud.form.hud.unselectAll"}}
                     </button>
                 </div>
             </div>
         </section>
         <section class="tab" data-tab="other">
             <div class="tah-dialog-col-group">
-                <div class="form-group slim">
-                    <label>{{localize "tokenActionHud.tagDialog.settings.showCategoryTitle.label"}}</label>
-                    <div class="form-fields">
-                        <input type="checkbox" name="showTitle" {{~#if settings.showTitle~}}checked{{~/if~}}/>
-                    </div>
-                    <p class="hint">{{localize "tokenActionHud.tagDialog.settings.showCategoryTitle.hint"}}</p>
-                </div>
                 <div class="form-group">
-                    <label>{{localize "tokenActionHud.tagDialog.settings.image.label"}}</label>
+                    <label>{{localize "tokenActionHud.form.hud.formGroup.image.label"}}</label>
                     <div class="form-fields">
                         <input type="text" id="image" name="image" data-dtype="text" value="{{settings.image}}">
                         {{filePicker target="image" type="image"}}
                     </div>
-                    <p class="hint">{{localize "tokenActionHud.tagDialog.settings.image.hint"}}</p>
+                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.image.hint"}}</p>
                 </div>
                 <div class="form-group slim">
-                    <label>{{localize "tokenActionHud.tagDialog.settings.grid.label"}}</label>
+                    <label>{{localize "tokenActionHud.form.hud.formGroup.showCategoryTitle.label"}}</label>
+                    <div class="form-fields">
+                        <input type="checkbox" name="showTitle" {{~#if settings.showTitle~}}checked{{~/if~}}/>
+                    </div>
+                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.showCategoryTitle.hint"}}</p>
+                </div>
+                <div class="form-group slim">
+                    <label>{{localize "tokenActionHud.form.hud.formGroup.grid.label"}}</label>
                     <div class="form-fields">
                         <input type="checkbox" name="grid" {{~#if settings.grid}}checked{{~/if~}}/>
                     </div>
-                    <p class="hint">{{localize "tokenActionHud.tagDialog.settings.grid.hint"}}</p>
+                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.grid.hint"}}</p>
                 </div>
                 <div class="form-group">
                     <label>
-                        {{localize "tokenActionHud.tagDialog.settings.customWidth.label"}}
-                        <span class="units">{{localize "tokenActionHud.tagDialog.settings.customWidth.units"}}</span>
+                        {{localize "tokenActionHud.form.hud.formGroup.customWidth.label"}}
+                        <span class="units">{{localize "tokenActionHud.form.hud.formGroup.customWidth.units"}}</span>
                     </label>
                     <div class="form-fields">
                         <input type="number" name="customWidth" value="{{settings.customWidth}}" />
                     </div>
-                    <p class="hint">{{localize "tokenActionHud.tagDialog.settings.customWidth.hint"}}</p>
+                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.customWidth.hint"}}</p>
                 </div>
                 <div class="form-group">
-                    <label>{{localize "tokenActionHud.tagDialog.settings.characterCount.label"}}</label>
+                    <label>{{localize "tokenActionHud.form.hud.formGroup.characterCount.label"}}</label>
                     <div class="form-fields">
                         <input type="number" name="characterCount" placeholder="No limit" value="{{settings.characterCount}}" />
                     </div>
-                    <p class="hint">{{localize "tokenActionHud.tagDialog.settings.characterCount.hint"}}</p> 
+                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.characterCount.hint"}}</p> 
                 </div>
             </div>
         </section>
@@ -78,7 +78,7 @@
         <button type="submit" id="tah-dialog-submit" name="submit" class="">
             <i class="fas fa-check"></i></i>{{localize "tokenActionHud.accept"}}
         </button>
-        <button type="button" id="tah-dialog-cancel" name="cancel" class="">
+        <button type="button" id="tah-form-cancel" name="cancel" class="">
             <i class="fas fa-times"></i></i>{{localize "tokenActionHud.cancel"}}
         </button>
     </footer>

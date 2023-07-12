@@ -1,301 +1,169 @@
 {
-  "tokenActionHud": {
-    "accept": "확인",
-    "addToCombat": "전투에 추가",
-    "blockListLabel": "차단 목록: 숨김 / 허가 목록: 보임",
-    "cancel": "취소",
-    "collapseHud": "Collapse HUD",
-    "combat": "전투",
-    "compendiumEntry": "Compendium Entry",
-    "compendiumMacro": "Compendium Macro",
-    "compendiumPlaylist": "Compendium Playlist",
-    "editHud": "Edit HUD",
-    "endTurn": "End Turn",
-    "expandHud": "Expand HUD",
-    "handlerNotFound": "찾을 수 없습니다. 기본 굴림으로 돌아갑니다.",
-    "lockHud": "Lock HUD",
-    "macro": "Macro",
-    "macros": "Macros",
-    "makeInvisible": "보이지 않게 만들기",
-    "makeVisible": "보이게 하기",
-    "pushLabelExplanation": "카테고리를 어느 쪽에 배치하는가?",
-    "removeFromCombat": "전투에서 제거",
-    "title": "Token Action HUD",
-    "toggleHud": "Toggle HUD",
-    "token": "토큰",
-    "unlockHud": "Unlock HUD",
-    "utility": "유틸리티",
-    "settings": {
-      "activeCssAsText": {
-        "hint": "활성화시 활성화 버튼에도 활성화 상태를 별표로 표시한다. 비활성화된 버튼엔 표시되지 않는다.",
-        "name": "텍스트로 활성화 CSS 표시"
-      },
-      "allow": {
-        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
-        "name": "Allow HUD",
-        "choices" : {
-          "4": "Game Master",
-          "3": "Assistant GM",
-          "2": "Trusted Player",
-          "1": "Player"
-        }
-      },
-      "alwaysShowHud": {
-        "hint": "유저에게 할당된 캐릭터가 있을 경우 토큰이 선택되지 않으면 HUD는 기본적으로 해당 캐릭터로 지정된다.",
-        "name": "항상 HUD 표시"
-      },
-      "background": {
-        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
-        "name": "HUD Background Color"
-      },
-      "buttonBackgroundColor": {
-        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
-        "name": "Button Background Color"
-      },
-      "clickOpenCategory": {
-        "hint": "활성화시 마우스 포인터를 올리는 대신 클릭해야 카테고리가 열린다",
-        "name": "클릭하여 카테고리 열기"
-      },
-      "customLayout": {
-        "hint": "Select a layout to use as the default for all users. Leave blank to use the default layout",
-        "name": "Custom Layout"
-      },
-      "customStyle": {
-        "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
-        "label": "Customise Style",
-        "name": "Customise Style",
-        "form": {
-          "title": "Token Action HUD | Customise Style",
-          "active": "When Active",
-          "buttons": "Buttons",
-          "hovered": "When Hovered",
-          "text": "Text & Icons",
-          "toggleable": "Toggleable",
-          "reset": "Reset Defaults",
-          "save": "Save",
-          "backgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonHeight": {
-            "label": "Height",
-            "units": "(Pixels)"
-          },
-          "buttonBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "buttonTextColor": {
-            "label": "Button Text Color"
-          },
-          "buttonHoverBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonHoverBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonHoverBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "buttonHoverTextColor": {
-            "label": "Text Color"
-          },
-          "buttonToggleActiveBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonToggleActiveBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonToggleActiveBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "buttonToggleActiveTextColor": {
-            "label": "Text Color"
-          },
-          "buttonToggleHoverBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonToggleHoverTextColor": {
-            "label": "Text Color"
-          },
-          "buttonToggleHoverBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonToggleHoverBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "textPrimaryColor": {
-            "label": "Primary Color"
-          },
-          "textSecondaryColor": {
-            "label": "Secondary Color"
-          },
-          "textTertiaryColor": {
-            "label": "Tertiary Color"
-          },
-          "textHoverPrimaryColor": {
-            "label": "Primary Color"
-          },
-          "textHoverSecondaryColor": {
-            "label": "Secondary Color"
-          },
-          "textHoverTertiaryColor": {
-            "label": "Tertiary Color"
-          }
-        }
-      },
-      "debug": {
-        "hint": "디버그 기록을 활성화한다.",
-        "name": "디버깅 활성화"
-      },
-      "direction": {
-        "hint": "HUD가 확장되는 방향 설정",
-        "name": "방향",
-        "choices": {
-          "auto": "자동적 인",
-          "down": "아래에",
-          "up": "위로"
-        }
-      },
-      "displayCharacterName": {
-        "hint": "일반적으로 선택된 토큰의 이름을 HUD 상단에 표시한다.",
-        "name": "HUD 제목 표시"
-      },
-      "displayIcons": {
-        "hint": "활성화될 경우 HUD 버튼에 액션 아이콘이 표시된다.",
-        "name": "액션 아이콘 표시"
-      },
-      "drag": {
-        "hint": "Choose when the HUD can be moved by clicking and dragging one of the top-level buttons",
-        "name": "Dragging",
-        "choices": {
-          "always": "Always",
-          "whenUnlocked": "When Unlocked",
-          "never": "Never"
-        }
-      },
-      "enable": {
-        "hint": "활성화시 HUD는 유저들에게 활성화 된다. 플레이어 권한 설정을 덮어쓰지 않는다.",
-        "name": "현재 유저에게 HUD를 활성화"
-      },
-      "enableCustomization": {
-        "hint": "GM setting: Enable customization of the HUD",
-        "name": "Enable Customization"
-      },
-      "grid": {
-        "hint": "Use a grid layout for actions",
-        "name": "Grid"
-      },
-      "itemMacro": {
-        "hint": "활성화될 경우 아이템 매크로가 있는 아이템은 원래 아이템을 덮어쓰게 되며 그렇지 않을 경우 두 옵션이 모두 표시된다.",
-        "name": "아이템 매크로: 원항목 덮어쓰기",
-        "choices": {
-          "noth": "원본 아이템과 아이템 매크로를 모두 표시",
-          "itemMacro": "아이템 매크로 표시",
-          "original": "원본 아이템 표시"
-        }
-      },
-      "renderItemOnRightClick": {
-        "hint": "활성화된 경우 HUD에서 항목을 마우스 우클릭 시 항목의 시트가 표시된다(우클릭을 사용하는 다른 설정과 충돌 가능성 있음)",
-        "name": "오른쪽 클릭으로 아이템 시트 보기"
-      },
-      "reset": {
-        "hint": "WARNING!!! This will reset the hud to its default configuration",
-        "name": "Reset HUD"
-      },
-      "rollHandler": {
-        "hint": "HUD의 작업을 받을 모듈을 선택한다.",
-        "name": "HUD 굴림 처리기"
-      },
-      "scale": {
-        "hint": "백분율 단위로 HUD 크기를 조정한다(기본값 100)",
-        "name": "HUD 크기"
-      },
-      "style": {
-        "hint": "HUD의 스타일 설정",
-        "name": "스타일"
-      },
-      "tooltips": {
-        "hint": "Where available, choose how tooltips are displayed when actions are hovered",
-        "name": "Tooltip Display",
-        "choices": {
-          "full": "Full Tooltip",
-          "nameOnly": "Name Only",
-          "none": "No Tooltips"
-        }
-      },
-      "toggleHud": {
-        "disabled": "HUD disabled. To enable, press {binding}",
-        "enabled": "HUD enabled. To disable, press {binding}"
-      }
-    },
-    "tagDialog": {
-      "groupDetail": "Click available items to select them, click and drag selected items to change their order and click the <strong>X</strong> on selected items to unselect them. Click an empty area of the <strong>Selected Items</strong> box and start typing to filter the available items.",
-      "groupTitle": "Customise Group",
-      "hudDetail": "Click an empty area of the <strong>Selected Items</strong> box, type the name of the item then press <strong>Enter</strong> to add it. Click and drag items to change their order.",
-      "hudTitle": "Customise HUD",
-      "availableItems": "Available Items",
-      "selectedItems": "Selected Items",
-      "unselectAll": "클리어",
-      "settings": {
-        "characterCount": {
-          "label": "Characters per Word",
-          "hint": "Limit the characters per word of the actions"
-        },
-        "collapse": {
-          "label": "Collapse Group",
-          "hint": "Collapse this group"
-        },
-        "customWidth": {
-          "label": "Custom Width",
-          "units": "(Pixels)",
-          "hint": "Custom width for the subcategories"
-        },
-        "grid": {
-          "label": "Grid",
-          "hint": "Grid layout for actions"
-        },
-        "image": {
-          "label": "Image",
-          "hint": "Image on this button"
-        },
-        "showCategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this button's title"
-        },
-        "showSubcategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this group's title"
-        },
-        "sort": {
-          "label": "Sort Actions",
-          "hint": "Sort actions into alphabetical order"
-        },
-        "style": {
-          "label": "Style",
-          "choice": {
-            "list": "List",
-            "tab": "Tab"
-          },
-          "hint": "Style of this group"
-        }
-      },
-      "resetActions": {
-        "button": "Reset Actions",
-        "dialog": {
-          "title": "Reset Actions",
-          "content": "This will reset all actions for this actor. Do you wish to continue?",
-          "buttons": {
-            "yes": "Yes",
-            "no": "No"
-          }
-        }
-      },
-      "tagPlaceholder": "선택 (세미 콜론으로 구분)"
-    }
-  }
+    "tokenActionHud.accept": "수락",
+    "tokenActionHud.addToCombat": "전투에 추가",
+    "tokenActionHud.cancel": "취소",
+    "tokenActionHud.collapseHud": "HUD 축소",
+    "tokenActionHud.combat": "전투",
+    "tokenActionHud.compendiumEntry": "성보 항목",
+    "tokenActionHud.compendiumMacro": "성보 매크로",
+    "tokenActionHud.compendiumPlaylist": "성보 재생 목록",
+    "tokenActionHud.editHud": "HUD 편집",
+    "tokenActionHud.endTurn": "턴 종료",
+    "tokenActionHud.expandHud": "HUD 확장",
+    "tokenActionHud.handlerNotFound": "찾을 수 없음, 기본 롤러로 복원됩니다.",
+    "tokenActionHud.lockHud": "HUD 잠금",
+    "tokenActionHud.macro": "매크로",
+    "tokenActionHud.macros": "매크로",
+    "tokenActionHud.makeInvisible": "투명하게 만들기",
+    "tokenActionHud.makeVisible": "가시화",
+    "tokenActionHud.removeFromCombat": "전투에서 제거",
+    "tokenActionHud.title": "토큰 액션 HUD",
+    "tokenActionHud.toggleHud": "HUD 전환",
+    "tokenActionHud.token": "토큰",
+    "tokenActionHud.unlockHud": "HUD 잠금 해제",
+    "tokenActionHud.utility": "유틸리티",
+    "tokenActionHud.dialog.button.yes": "예",
+    "tokenActionHud.dialog.button.no": "아니오",
+    "tokenActionHud.dialog.resetActions.title": "동작 재설정",
+    "tokenActionHud.dialog.resetActions.content": "이 캐릭터의 모든 동작을 재설정합니다. 계속하시겠습니까?",
+    "tokenActionHud.dialog.resetLayout.title": "토큰 액션 HUD | 레이아웃 재설정",
+    "tokenActionHud.dialog.resetLayout.content": "기본 레이아웃으로 재설정합니다. 계속하시겠습니까?",
+
+    "tokenActionHud.form.hud.availableItems": "사용 가능한 항목",
+    "tokenActionHud.form.hud.groupDetail": "사용 가능한 항목을 클릭하여 선택하고, 선택한 항목을 드래그하여 순서를 변경하고, 선택한 항목의 <strong>X</strong>를 클릭하여 선택을 취소합니다. '선택한 항목' 상자의 빈 영역을 클릭하고 입력을 시작하여 사용 가능한 항목을 필터링할 수 있습니다.",
+    "tokenActionHud.form.hud.groupTitle": "그룹 사용자 정의",
+    "tokenActionHud.form.hud.hudDetail": "선택한 항목 상자의 빈 영역을 클릭하고 항목의 이름을 입력한 다음 <strong>Enter</strong>를 눌러 추가합니다. 항목의 순서를 변경하려면 항목을 클릭하고 드래그합니다.",
+    "tokenActionHud.form.hud.hudTitle": "HUD 사용자 정의",
+    "tokenActionHud.form.hud.items": "항목",
+    "tokenActionHud.form.hud.otherSettings": "기타 설정",
+    "tokenActionHud.form.hud.resetActions.button": "동작 재설정",
+    "tokenActionHud.form.hud.selectedItems": "선택한 항목",
+    "tokenActionHud.form.hud.tagPlaceholder": "선택사항 (세미콜론으로 구분)",
+    "tokenActionHud.form.hud.unselectAll": "모두 선택 해제",
+
+    "tokenActionHud.form.hud.formGroup.characterCount.hint": "단어당 문자 제한",
+    "tokenActionHud.form.hud.formGroup.characterCount.label": "단어당 문자",
+    "tokenActionHud.form.hud.formGroup.collapse.hint": "이 그룹 축소",
+    "tokenActionHud.form.hud.formGroup.collapse.label": "그룹 축소",
+    "tokenActionHud.form.hud.formGroup.customWidth.hint": "그룹의 사용자 정의 너비",
+    "tokenActionHud.form.hud.formGroup.customWidth.label": "사용자 정의 너비",
+    "tokenActionHud.form.hud.formGroup.customWidth.units": "(픽셀)",
+    "tokenActionHud.form.hud.formGroup.grid.label": "그리드",
+    "tokenActionHud.form.hud.formGroup.grid.hint": "동작의 그리드 레이아웃",
+    "tokenActionHud.form.hud.formGroup.image.hint": "이 버튼의 이미지",
+    "tokenActionHud.form.hud.formGroup.image.label": "이미지",
+    "tokenActionHud.form.hud.formGroup.showCategoryTitle.hint": "이 버튼의 제목 표시",
+    "tokenActionHud.form.hud.formGroup.showCategoryTitle.label": "제목 표시",
+    "tokenActionHud.form.hud.formGroup.showSubcategoryTitle.hint": "이 그룹의 제목 표시",
+    "tokenActionHud.form.hud.formGroup.showSubcategoryTitle.label": "제목 표시",
+    "tokenActionHud.form.hud.formGroup.sort.hint": "동작을 알파벳순으로 정렬",
+    "tokenActionHud.form.hud.formGroup.sort.label": "동작 정렬",
+    "tokenActionHud.form.hud.formGroup.style.choice.list": "목록",
+    "tokenActionHud.form.hud.formGroup.style.choice.tab": "탭",
+    "tokenActionHud.form.hud.formGroup.style.hint": "이 그룹의 스타일",
+    "tokenActionHud.form.hud.formGroup.style.label": "스타일",
+
+    "tokenActionHud.keybinding.toggleHud.disabled": "HUD가 비활성화되었습니다. 활성화하려면 {binding}을(를) 누르세요",
+    "tokenActionHud.keybinding.toggleHud.enabled": "HUD가 활성화되었습니다. 비활성화하려면 {binding}을(를) 누르세요",
+
+    "tokenActionHud.settings.activeCssAsText.hint": "활성 동작에 별표 표시",
+    "tokenActionHud.settings.activeCssAsText.name": "활성 동작에 별표 표시",
+    "tokenActionHud.settings.allow.choice.1": "플레이어",
+    "tokenActionHud.settings.allow.choice.2": "신뢰받는 플레이어",
+    "tokenActionHud.settings.allow.choice.3": "보조 게임 마스터",
+    "tokenActionHud.settings.allow.choice.4": "게임 마스터",
+    "tokenActionHud.settings.allow.hint": "GM 설정: 이 역할 이상의 사용자가 HUD를 사용할 수 있도록 허용합니다 (재로드 필요)",
+    "tokenActionHud.settings.allow.name": "HUD 허용",
+    "tokenActionHud.settings.alwaysShowHud.hint": "선택한 토큰이 없을 때에도 사용자에게 할당된 캐릭터를 표시합니다",
+    "tokenActionHud.settings.alwaysShowHud.name": "항상 HUD 표시",
+    "tokenActionHud.settings.clickOpenCategory.hint": "마우스 오버 대신 클릭하여 그룹 열기",
+    "tokenActionHud.settings.clickOpenCategory.name": "클릭하여 열기",
+    "tokenActionHud.settings.customLayout.hint": "GM 설정: 모든 사용자에게 기본값으로 사용할 레이아웃을 선택합니다. 시스템 레이아웃을 사용하려면 비워 두세요",
+    "tokenActionHud.settings.customLayout.name": "기본 레이아웃",
+    "tokenActionHud.settings.customStyle.hint": "HUD 스타일을 사용자 정의합니다. '스타일' 설정을 '사용자 정의'로 설정하여 활성화합니다",
+    "tokenActionHud.settings.customStyle.label": "스타일 사용자 정의",
+    "tokenActionHud.settings.customStyle.name": "스타일 사용자 정의",
+    "tokenActionHud.settings.customStyle.form.active": "활성 상태일 때",
+    "tokenActionHud.settings.customStyle.form.backgroundColor.label": "배경 색상",
+    "tokenActionHud.settings.customStyle.form.buttonBackgroundColor.label": "배경 색상",
+    "tokenActionHud.settings.customStyle.form.buttonBorderPrimaryColor.label": "주요 테두리 색상",
+    "tokenActionHud.settings.customStyle.form.buttonBorderSecondaryColor.label": "보조 테두리 색상",
+    "tokenActionHud.settings.customStyle.form.buttonHeight.label": "높이",
+    "tokenActionHud.settings.customStyle.form.buttonHeight.units": "(픽셀)",
+    "tokenActionHud.settings.customStyle.form.buttonHoverBackgroundColor.label": "배경 색상",
+    "tokenActionHud.settings.customStyle.form.buttonHoverBorderPrimaryColor.label": "주요 테두리 색상",
+    "tokenActionHud.settings.customStyle.form.buttonHoverBorderSecondaryColor.label": "보조 테두리 색상",
+    "tokenActionHud.settings.customStyle.form.buttonHoverTextColor.label": "텍스트 색상",
+    "tokenActionHud.settings.customStyle.form.buttonTextColor.label": "버튼 텍스트 색상",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveBackgroundColor.label": "배경 색상",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderPrimaryColor.label": "주요 테두리 색상",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderSecondaryColor.label": "보조 테두리 색상",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveTextColor.label": "텍스트 색상",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverBackgroundColor.label": "배경 색상",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderPrimaryColor.label": "주요 테두리 색상",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderSecondaryColor.label": "보조 테두리 색상",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverTextColor.label": "텍스트 색상",
+    "tokenActionHud.settings.customStyle.form.buttons": "버튼",
+    "tokenActionHud.settings.customStyle.form.hovered": "마우스 오버 시",
+    "tokenActionHud.settings.customStyle.form.reset": "기본값으로 재설정",
+    "tokenActionHud.settings.customStyle.form.save": "저장",
+    "tokenActionHud.settings.customStyle.form.text": "텍스트 및 아이콘",
+    "tokenActionHud.settings.customStyle.form.textHoverPrimaryColor.label": "기본 색상",
+    "tokenActionHud.settings.customStyle.form.textHoverSecondaryColor.label": "보조 색상",
+    "tokenActionHud.settings.customStyle.form.textHoverTertiaryColor.label": "세 번째 색상",
+    "tokenActionHud.settings.customStyle.form.textPrimaryColor.label": "기본 색상",
+    "tokenActionHud.settings.customStyle.form.textSecondaryColor.label": "보조 색상",
+    "tokenActionHud.settings.customStyle.form.textTertiaryColor.label": "세 번째 색상",
+    "tokenActionHud.settings.customStyle.form.title": "토큰 액션 HUD | 스타일 사용자 정의",
+    "tokenActionHud.settings.customStyle.form.toggleable": "토글 가능",
+    "tokenActionHud.settings.debug.hint": "콘솔에서 디버그 로그를 활성화합니다",
+    "tokenActionHud.settings.debug.name": "디버그",
+    "tokenActionHud.settings.direction.choice.auto": "자동",
+    "tokenActionHud.settings.direction.choice.down": "아래로",
+    "tokenActionHud.settings.direction.choice.up": "위로",
+    "tokenActionHud.settings.direction.hint": "HUD가 확장될 방향을 설정합니다",
+    "tokenActionHud.settings.direction.name": "방향",
+    "tokenActionHud.settings.displayCharacterName.hint": "'Direction' 설정이 '아래'로 설정된 경우 HUD 위에 캐릭터 이름을 표시합니다",
+    "tokenActionHud.settings.displayCharacterName.name": "캐릭터 이름 표시",
+    "tokenActionHud.settings.displayIcons.hint": "가능한 경우, 동작에 아이콘을 표시할지 선택합니다",
+    "tokenActionHud.settings.displayIcons.name": "아이콘 표시",
+    "tokenActionHud.settings.drag.choices.always": "항상",
+    "tokenActionHud.settings.drag.choices.never": "절대로",
+    "tokenActionHud.settings.drag.choices.whenUnlocked": "잠금 해제된 경우",
+    "tokenActionHud.settings.drag.hint": "HUD를 상위 수준 버튼 중 하나를 클릭하고 드래그하여 이동할 수 있는 시기를 선택합니다",
+    "tokenActionHud.settings.drag.name": "드래그",
+    "tokenActionHud.settings.enable.hint": "HUD를 활성화합니다",
+    "tokenActionHud.settings.enable.name": "HUD 활성화",
+    "tokenActionHud.settings.enableCustomization.hint": "GM 설정: HUD의 사용자 정의를 활성화합니다",
+    "tokenActionHud.settings.enableCustomization.name": "사용자 정의 활성화",
+    "tokenActionHud.settings.exportLayout.hint": "레이아웃을 파일로 내보냅니다",
+    "tokenActionHud.settings.exportLayout.label": "레이아웃 내보내기",
+    "tokenActionHud.settings.exportLayout.name": "레이아웃 내보내기",
+    "tokenActionHud.settings.grid.hint": "동작에 그리드 레이아웃을 사용합니다",
+    "tokenActionHud.settings.grid.name": "그리드",
+    "tokenActionHud.settings.itemMacro.choices.both": "원본 항목 및 매크로",
+    "tokenActionHud.settings.itemMacro.choices.itemMacro": "매크로만",
+    "tokenActionHud.settings.itemMacro.choices.original": "원본 항목만",
+    "tokenActionHud.settings.itemMacro.hint": "항목 매크로가 표시되는 방식을 선택합니다",
+    "tokenActionHud.settings.itemMacro.name": "항목 매크로 표시",
+    "tokenActionHud.settings.layout.hint": "레이아웃 관련 설정",
+    "tokenActionHud.settings.layout.label": "레이아웃",
+    "tokenActionHud.settings.layout.name": "레이아웃",
+    "tokenActionHud.settings.layout.form.title": "토큰 액션 HUD | 레이아웃",
+    "tokenActionHud.settings.renderItemOnRightClick.hint": "항목을 마우스 오른쪽 클릭할 때 항목 시트를 엽니다",
+    "tokenActionHud.settings.renderItemOnRightClick.name": "오른쪽 클릭으로 항목 시트 열기",
+    "tokenActionHud.settings.resetLayout.hint": "기본 레이아웃으로 재설정합니다",
+    "tokenActionHud.settings.resetLayout.label": "레이아웃 재설정",
+    "tokenActionHud.settings.resetLayout.name": "레이아웃 재설정",
+    "tokenActionHud.settings.rollHandler.hint": "GM 설정: HUD에서 롤 처리에 사용할 모듈을 설정합니다",
+    "tokenActionHud.settings.rollHandler.name": "롤 처리기",
+    "tokenActionHud.settings.scale.hint": "HUD의 크기를 조정합니다 (기본값은 1입니다)",
+    "tokenActionHud.settings.scale.name": "HUD 크기",
+    "tokenActionHud.settings.style.hint": "HUD의 스타일을 설정합니다",
+    "tokenActionHud.settings.style.name": "스타일",
+    "tokenActionHud.settings.tooltips.choices.full": "전체 툴팁",
+    "tokenActionHud.settings.tooltips.choices.nameOnly": "이름만",
+    "tokenActionHud.settings.tooltips.choices.none": "툴팁 없음",
+    "tokenActionHud.settings.tooltips.hint": "가능한 경우, 동작을 가리킬 때 툴팁을 어떻게 표시할지 선택합니다",
+    "tokenActionHud.settings.tooltips.name": "툴팁 표시"
 }

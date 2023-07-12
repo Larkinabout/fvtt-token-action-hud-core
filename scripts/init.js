@@ -67,6 +67,7 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
         TEMPLATE.group,
         TEMPLATE.hud,
         TEMPLATE.listGroup,
+        TEMPLATE.settings,
         TEMPLATE.tabGroup,
         TEMPLATE.tagDialogGroup,
         TEMPLATE.tagDialogHud,

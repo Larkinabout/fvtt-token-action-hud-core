@@ -1,300 +1,169 @@
 {
-  "tokenActionHud": {
-    "accept": "適用",
-    "addToCombat": "戦闘に追加",
-    "blockListLabel": "ブロックリスト: 非表示 / 許可リスト: 表示",
-    "cancel": "キャンセル",
-    "collapseHud": "Collapse HUD",
-    "combat": "戦闘",
-    "compendiumEntry": "Compendium Entry",
-    "compendiumMacro": "Compendium Macro",
-    "compendiumPlaylist": "Compendium Playlist",
-    "editHud": "Edit HUD",
-    "endTurn": "End Turn",
-    "expandHud": "Expand HUD",
-    "handlerNotFound": "操作が見つかりません、標準のローラーを使用します。",
-    "lockHud": "Lock HUD",
-    "macro": "Macro",
-    "macros": "Macros",
-    "makeInvisible": "非表示にようにする",
-    "pushLabelExplanation": "どちら側にカテゴリを表示しますか？",
-    "removeFromCombat": "戦闘から外す",
-    "title": "トークン･アクションHUD",
-    "toggleHud": "Toggle HUD",
-    "token": "トークン",
-    "unlockHud": "Unlock HUD",
-    "utility": "他",
-    "settings": {
-      "activeCssAsText": {
-        "hint": "有効にすると、有効化できるボタンには、その能力値を示すアスタリスクも表示されます。非有効化されたボタンには、アスタリスクが付きません。",
-        "name": "有効化されたCSSをテキストでマーク"
-      },
-      "allow": {
-        "hint": "GM setting: Allow users with this role (and above) to use the HUD (Requires reload)",
-        "name": "Allow HUD",
-        "choices" : {
-          "4": "Game Master",
-          "3": "Assistant GM",
-          "2": "Trusted Player",
-          "1": "Player"
-        }
-      },
-      "alwaysShowHud": {
-        "hint": "ユーザーに割り当てられたキャラクターがあり、かつコマが選択されていない場合、HUDはこのキャラクターを標準として表示します。",
-        "name": "常にHUDを表示する"
-      },
-      "background": {
-        "hint": "Set the background color of the HUD. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
-        "name": "HUD Background Color"
-      },
-      "buttonBackgroundColor": {
-        "hint": "Set the background color of the HUD buttons. This setting is ignored with the Dorako UI style and requires one module of 'Color Picker', 'Color Settings', or 'libThemer'",
-        "name": "Button Background Color"
-      },
-      "clickOpenCategory": {
-        "hint": "有効にすると、ホバーではなくクリックでカテゴリを開きます。",
-        "name": "クリックでカテゴリーを開く"
-      },
-      "customLayout": {
-        "hint": "Select a layout to use as the default for all users. Leave blank to use the default layout",
-        "name": "Custom Layout"
-      },
-      "customStyle": {
-        "hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
-        "label": "Customise Style",
-        "name": "Customise Style",
-        "form": {
-          "title": "Token Action HUD | Customise Style",
-          "active": "When Active",
-          "buttons": "Buttons",
-          "hovered": "When Hovered",
-          "text": "Text & Icons",
-          "toggleable": "Toggleable",
-          "reset": "Reset Defaults",
-          "save": "Save",
-          "backgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonHeight": {
-            "label": "Height",
-            "units": "(Pixels)"
-          },
-          "buttonBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "buttonTextColor": {
-            "label": "Button Text Color"
-          },
-          "buttonHoverBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonHoverBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonHoverBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "buttonHoverTextColor": {
-            "label": "Text Color"
-          },
-          "buttonToggleActiveBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonToggleActiveBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonToggleActiveBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "buttonToggleActiveTextColor": {
-            "label": "Text Color"
-          },
-          "buttonToggleHoverBackgroundColor": {
-            "label": "Background Color"
-          },
-          "buttonToggleHoverTextColor": {
-            "label": "Text Color"
-          },
-          "buttonToggleHoverBorderPrimaryColor": {
-            "label": "Border Primary Color"
-          },
-          "buttonToggleHoverBorderSecondaryColor": {
-            "label": "Border Secondary Color"
-          },
-          "textPrimaryColor": {
-            "label": "Primary Color"
-          },
-          "textSecondaryColor": {
-            "label": "Secondary Color"
-          },
-          "textTertiaryColor": {
-            "label": "Tertiary Color"
-          },
-          "textHoverPrimaryColor": {
-            "label": "Primary Color"
-          },
-          "textHoverSecondaryColor": {
-            "label": "Secondary Color"
-          },
-          "textHoverTertiaryColor": {
-            "label": "Tertiary Color"
-          }
-        }
-      },
-      "debug": {
-        "hint": "デバッグ用のログを表示します(これは廃れてしまったので、あまり有用と期待しないでください)。",
-        "name": "デバッグ状態を有効化"
-      },
-      "direction": {
-        "hint": "HUD が展開する方向を設定する",
-        "name": "方向",
-        "choices": {
-          "auto": "自動",
-          "down": "下",
-          "up": "上"
-        }
-      },
-      "displayCharacterName": {
-        "hint": "選択されたトークンのエイリアスをHUDの上部に表示します。",
-        "name": "HUDにタイトルを表示する"
-      },
-      "displayIcons": {
-        "hint": "有効にすると、アクションの画像がHUDのボタンに表示されます。",
-        "name": "アクションアイコンを表示"
-      },
-      "drag": {
-        "hint": "Choose when the HUD can be moved by clicking and dragging one of the top-level buttons",
-        "name": "Dragging",
-        "choices": {
-          "always": "Always",
-          "whenUnlocked": "When Unlocked",
-          "never": "Never"
-        }
-      },
-      "enable": {
-        "hint": "現在のユーザに自動的にホットバーを使用できる状態で初期化します。プレイヤーは設定を変更することで自分の好みに変更することができます。",
-        "name": "現在のユーザはホットバーを使用できる"
-      },
-      "enableCustomization": {
-        "hint": "GM setting: Enable customization of the HUD",
-        "name": "Enable Customization"
-      },
-      "grid": {
-        "hint": "Use a grid layout for actions",
-        "name": "Grid"
-      },
-      "itemMacro": {
-        "hint": "アイテムマクロを含むマクロはオリジナルを上書きします。それ以外では両方が表示されます。",
-        "name": "アイテムマクロ：オリジナルを上書き",
-        "choices": {
-          "both": "オリジナル･アイテム、アイテムマクロ･アイテム両方表示",
-          "itemMacro": "アイテムマクロ･アイテムを表示",
-          "original": "オリジナルアイテムを表示"
-        }
-      },
-      "renderItemOnRightClick": {
-        "hint": "有効にした場合、HUD内の項目を右クリックすると、その項目のシートが表示されます（右クリックを使用する他の設定と競合する可能性があります）。",
-        "name": "右クリックでアイテムシートを表示する"
-      },
-      "reset": {
-        "hint": "WARNING!!! This will reset the hud to its default configuration",
-        "name": "Reset HUD"
-      },
-      "rollHandler": {
-        "hint": "このモジュールの恩恵を受けるシステムを選択します。",
-        "name": "使用システム"
-      },
-      "scale": {
-        "hint": "HUDのサイズをパーセントで調整します(デフォルトは100)",
-        "name": "HUDサイズ"
-      },
-      "style": {
-        "hint": "HUD のスタイルを設定する",
-        "name": "スタイル"
-      },
-      "tooltips": {
-        "hint": "Where available, choose how tooltips are displayed when actions are hovered",
-        "name": "Tooltip Display",
-        "choices": {
-          "full": "Full Tooltip",
-          "nameOnly": "Name Only",
-          "none": "No Tooltips"
-        }
-      },
-      "toggleHud": {
-        "disabled": "HUD disabled. To enable, press {binding}",
-        "enabled": "HUD enabled. To disable, press {binding}"
-      }
-    },
-    "tagDialog": {
-      "groupDetail": "Click available items to select them, click and drag selected items to change their order and click the <strong>X</strong> on selected items to unselect them. Click an empty area of the <strong>Selected Items</strong> box and start typing to filter the available items.",
-      "groupTitle": "Customise Group",
-      "hudDetail": "Click an empty area of the <strong>Selected Items</strong> box, type the name of the item then press <strong>Enter</strong> to add it. Click and drag items to change their order.",
-      "hudTitle": "Customise HUD",
-      "availableItems": "Available Items",
-      "selectedItems": "Selected Items",
-      "unselectAll": "消去",
-      "settings": {
-        "characterCount": {
-          "label": "Characters per Word",
-          "hint": "Limit the characters per word of the actions"
-        },
-        "collapse": {
-          "label": "Collapse Group",
-          "hint": "Collapse this group"
-        },
-        "customWidth": {
-          "label": "Custom Width",
-          "units": "(Pixels)",
-          "hint": "Custom width for the subcategories"
-        },
-        "grid": {
-          "label": "Grid",
-          "hint": "Grid layout for actions"
-        },
-        "image": {
-          "label": "Image",
-          "hint": "Image on this button"
-        },
-        "showCategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this button's title"
-        },
-        "showSubcategoryTitle": {
-          "label": "Show Title",
-          "hint": "Show this group's title"
-        },
-        "sort": {
-          "label": "Sort Actions",
-          "hint": "Sort actions into alphabetical order"
-        },
-        "style": {
-          "label": "Style",
-          "choice": {
-            "list": "List",
-            "tab": "Tab"
-          },
-          "hint": "Style of this group"
-        }
-      },
-      "resetActions": {
-        "button": "Reset Actions",
-        "dialog": {
-          "title": "Reset Actions",
-          "content": "This will reset all actions for this actor. Do you wish to continue?",
-          "buttons": {
-            "yes": "Yes",
-            "no": "No"
-          }
-        }
-      },
-      "tagPlaceholder": "選択（セミコロンで区切る)"
-    }
-  }
+    "tokenActionHud.accept": "受け入れる",
+    "tokenActionHud.addToCombat": "戦闘に追加",
+    "tokenActionHud.cancel": "キャンセル",
+    "tokenActionHud.collapseHud": "HUDを折りたたむ",
+    "tokenActionHud.combat": "戦闘",
+    "tokenActionHud.compendiumEntry": "コンペンディウムエントリー",
+    "tokenActionHud.compendiumMacro": "コンペンディウムマクロ",
+    "tokenActionHud.compendiumPlaylist": "コンペンディウムプレイリスト",
+    "tokenActionHud.editHud": "HUDを編集",
+    "tokenActionHud.endTurn": "ターン終了",
+    "tokenActionHud.expandHud": "HUDを展開",
+    "tokenActionHud.handlerNotFound": "見つかりません、コアのローラーに戻ります。",
+    "tokenActionHud.lockHud": "HUDをロック",
+    "tokenActionHud.macro": "マクロ",
+    "tokenActionHud.macros": "マクロ",
+    "tokenActionHud.makeInvisible": "見えなくする",
+    "tokenActionHud.makeVisible": "見えるようにする",
+    "tokenActionHud.removeFromCombat": "戦闘から削除",
+    "tokenActionHud.title": "Token Action HUD",
+    "tokenActionHud.toggleHud": "HUDを切り替える",
+    "tokenActionHud.token": "トークン",
+    "tokenActionHud.unlockHud": "HUDをアンロック",
+    "tokenActionHud.utility": "ユーティリティ",
+    "tokenActionHud.dialog.button.yes": "はい",
+    "tokenActionHud.dialog.button.no": "いいえ",
+    "tokenActionHud.dialog.resetActions.title": "アクションのリセット",
+    "tokenActionHud.dialog.resetActions.content": "このアクターのすべてのアクションがリセットされます。続行しますか？",
+    "tokenActionHud.dialog.resetLayout.title": "トークンアクションHUD | レイアウトのリセット",
+    "tokenActionHud.dialog.resetLayout.content": "デフォルトのレイアウトにリセットされます。続行しますか？",
+
+    "tokenActionHud.form.hud.availableItems": "利用可能なアイテム",
+    "tokenActionHud.form.hud.groupDetail": "利用可能なアイテムをクリックして選択し、選択したアイテムをドラッグして順序を変更し、選択したアイテムの<strong>X</strong>をクリックして選択を解除します。 <strong>選択したアイテム</strong> ボックスの空いている領域をクリックしてから入力を開始して、利用可能なアイテムをフィルタリングします。",
+    "tokenActionHud.form.hud.groupTitle": "グループをカスタマイズ",
+    "tokenActionHud.form.hud.hudDetail": "<strong>選択したアイテム</strong> ボックスの空いている領域をクリックし、アイテムの名前を入力してから<strong>Enter</strong> キーを押して追加します。アイテムをドラッグして順序を変更します。",
+    "tokenActionHud.form.hud.hudTitle": "HUDをカスタマイズ",
+    "tokenActionHud.form.hud.items": "アイテム",
+    "tokenActionHud.form.hud.otherSettings": "その他の設定",
+    "tokenActionHud.form.hud.resetActions.button": "アクションのリセット",
+    "tokenActionHud.form.hud.selectedItems": "選択したアイテム",
+    "tokenActionHud.form.hud.tagPlaceholder": "選択肢（セミコロンで区切る）",
+    "tokenActionHud.form.hud.unselectAll": "すべて選択解除",
+
+    "tokenActionHud.form.hud.formGroup.characterCount.hint": "アクションごとの単語の文字数を制限",
+    "tokenActionHud.form.hud.formGroup.characterCount.label": "単語ごとの文字数",
+    "tokenActionHud.form.hud.formGroup.collapse.hint": "このグループを折りたたむ",
+    "tokenActionHud.form.hud.formGroup.collapse.label": "グループを折りたたむ",
+    "tokenActionHud.form.hud.formGroup.customWidth.hint": "グループのカスタム幅",
+    "tokenActionHud.form.hud.formGroup.customWidth.label": "カスタム幅",
+    "tokenActionHud.form.hud.formGroup.customWidth.units": "（ピクセル）",
+    "tokenActionHud.form.hud.formGroup.grid.label": "グリッド",
+    "tokenActionHud.form.hud.formGroup.grid.hint": "アクションのグリッドレイアウト",
+    "tokenActionHud.form.hud.formGroup.image.hint": "このボタンの画像",
+    "tokenActionHud.form.hud.formGroup.image.label": "画像",
+    "tokenActionHud.form.hud.formGroup.showCategoryTitle.hint": "このボタンのタイトルを表示する",
+    "tokenActionHud.form.hud.formGroup.showCategoryTitle.label": "タイトルを表示",
+    "tokenActionHud.form.hud.formGroup.showSubcategoryTitle.hint": "このグループのタイトルを表示する",
+    "tokenActionHud.form.hud.formGroup.showSubcategoryTitle.label": "タイトルを表示",
+    "tokenActionHud.form.hud.formGroup.sort.hint": "アクションをアルファベット順に並べ替える",
+    "tokenActionHud.form.hud.formGroup.sort.label": "アクションを並べ替える",
+    "tokenActionHud.form.hud.formGroup.style.choice.list": "リスト",
+    "tokenActionHud.form.hud.formGroup.style.choice.tab": "タブ",
+    "tokenActionHud.form.hud.formGroup.style.hint": "このグループのスタイル",
+    "tokenActionHud.form.hud.formGroup.style.label": "スタイル",
+
+    "tokenActionHud.keybinding.toggleHud.disabled": "HUDが無効です。有効にするには、{binding} を押してください",
+    "tokenActionHud.keybinding.toggleHud.enabled": "HUDが有効です。無効にするには、{binding} を押してください",
+
+    "tokenActionHud.settings.activeCssAsText.hint": "アクティブなアクションにはアスタリスクを付ける",
+    "tokenActionHud.settings.activeCssAsText.name": "アクティブなアクションにアスタリスクを付ける",
+    "tokenActionHud.settings.allow.choice.1": "プレイヤー",
+    "tokenActionHud.settings.allow.choice.2": "信頼されたプレイヤー",
+    "tokenActionHud.settings.allow.choice.3": "アシスタントGM",
+    "tokenActionHud.settings.allow.choice.4": "ゲームマスター",
+    "tokenActionHud.settings.allow.hint": "GM設定: この役職（およびそれ以上）のユーザーにHUDの使用を許可します（リロードが必要です）",
+    "tokenActionHud.settings.allow.name": "HUDを許可",
+    "tokenActionHud.settings.alwaysShowHud.hint": "トークンが選択されていない場合でも、ユーザーの割り当てられたキャラクターを表示します",
+    "tokenActionHud.settings.alwaysShowHud.name": "常にHUDを表示",
+    "tokenActionHud.settings.clickOpenCategory.hint": "ホバーする代わりにクリックでグループを開く",
+    "tokenActionHud.settings.clickOpenCategory.name": "クリックで開く",
+    "tokenActionHud.settings.customLayout.hint": "GM設定: すべてのユーザーにデフォルトとして使用するレイアウトを選択します。システムのレイアウトを使用するには空白のままにします",
+    "tokenActionHud.settings.customLayout.name": "デフォルトのレイアウト",
+    "tokenActionHud.settings.customStyle.hint": "HUDのスタイルをカスタマイズします。有効にするには、「スタイル」設定を「カスタム」に設定します",
+    "tokenActionHud.settings.customStyle.label": "スタイルのカスタマイズ",
+    "tokenActionHud.settings.customStyle.name": "スタイルのカスタマイズ",
+    "tokenActionHud.settings.customStyle.form.active": "アクティブ時",
+    "tokenActionHud.settings.customStyle.form.backgroundColor.label": "背景色",
+    "tokenActionHud.settings.customStyle.form.buttonBackgroundColor.label": "背景色",
+    "tokenActionHud.settings.customStyle.form.buttonBorderPrimaryColor.label": "ボーダーのプライマリカラー",
+    "tokenActionHud.settings.customStyle.form.buttonBorderSecondaryColor.label": "ボーダーのセカンダリカラー",
+    "tokenActionHud.settings.customStyle.form.buttonHeight.label": "高さ",
+    "tokenActionHud.settings.customStyle.form.buttonHeight.units": "（ピクセル）",
+    "tokenActionHud.settings.customStyle.form.buttonHoverBackgroundColor.label": "背景色",
+    "tokenActionHud.settings.customStyle.form.buttonHoverBorderPrimaryColor.label": "ボーダーのプライマリカラー",
+    "tokenActionHud.settings.customStyle.form.buttonHoverBorderSecondaryColor.label": "ボーダーのセカンダリカラー",
+    "tokenActionHud.settings.customStyle.form.buttonHoverTextColor.label": "テキストの色",
+    "tokenActionHud.settings.customStyle.form.buttonTextColor.label": "ボタンのテキスト色",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveBackgroundColor.label": "背景色",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderPrimaryColor.label": "ボーダーのプライマリカラー",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderSecondaryColor.label": "ボーダーのセカンダリカラー",
+    "tokenActionHud.settings.customStyle.form.buttonToggleActiveTextColor.label": "テキストの色",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverBackgroundColor.label": "背景色",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderPrimaryColor.label": "ボーダーのプライマリカラー",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderSecondaryColor.label": "ボーダーのセカンダリカラー",
+    "tokenActionHud.settings.customStyle.form.buttonToggleHoverTextColor.label": "テキストの色",
+    "tokenActionHud.settings.customStyle.form.buttons": "ボタン",
+    "tokenActionHud.settings.customStyle.form.hovered": "ホバー時",
+    "tokenActionHud.settings.customStyle.form.reset": "デフォルトにリセット",
+    "tokenActionHud.settings.customStyle.form.save": "保存",
+    "tokenActionHud.settings.customStyle.form.text": "テキストとアイコン",
+    "tokenActionHud.settings.customStyle.form.textHoverPrimaryColor.label": "プライマリカラー",
+    "tokenActionHud.settings.customStyle.form.textHoverSecondaryColor.label": "セカンダリカラー",
+    "tokenActionHud.settings.customStyle.form.textHoverTertiaryColor.label": "テリアリカラー",
+    "tokenActionHud.settings.customStyle.form.textPrimaryColor.label": "プライマリカラー",
+    "tokenActionHud.settings.customStyle.form.textSecondaryColor.label": "セカンダリカラー",
+    "tokenActionHud.settings.customStyle.form.textTertiaryColor.label": "テリアリカラー",
+    "tokenActionHud.settings.customStyle.form.title": "Token Action HUD | スタイルのカスタマイズ",
+    "tokenActionHud.settings.customStyle.form.toggleable": "トグル可能",
+    "tokenActionHud.settings.debug.hint": "コンソールでデバッグログを有効にする",
+    "tokenActionHud.settings.debug.name": "デバッグ",
+    "tokenActionHud.settings.direction.choice.auto": "自動",
+    "tokenActionHud.settings.direction.choice.down": "下",
+    "tokenActionHud.settings.direction.choice.up": "上",
+    "tokenActionHud.settings.direction.hint": "HUDが展開される方向を設定します",
+    "tokenActionHud.settings.direction.name": "方向",
+    "tokenActionHud.settings.displayCharacterName.hint": "'Direction'設定が'Down'に設定されている場合、HUDの上にキャラクター名を表示します",
+    "tokenActionHud.settings.displayCharacterName.name": "キャラクター名を表示",
+    "tokenActionHud.settings.displayIcons.hint": "利用可能な場合、アクションにアイコンを表示するかどうかを選択します",
+    "tokenActionHud.settings.displayIcons.name": "アイコン表示",
+    "tokenActionHud.settings.drag.choices.always": "常に",
+    "tokenActionHud.settings.drag.choices.never": "しない",
+    "tokenActionHud.settings.drag.choices.whenUnlocked": "ロック解除時",
+    "tokenActionHud.settings.drag.hint": "トップレベルのボタンの1つをクリックしてドラッグしてHUDを移動できるタイミングを選択します",
+    "tokenActionHud.settings.drag.name": "ドラッグ",
+    "tokenActionHud.settings.enable.hint": "HUDを有効にする",
+    "tokenActionHud.settings.enable.name": "HUDを有効にする",
+    "tokenActionHud.settings.enableCustomization.hint": "GM設定: HUDのカスタマイズを有効にする",
+    "tokenActionHud.settings.enableCustomization.name": "カスタマイズを有効にする",
+    "tokenActionHud.settings.exportLayout.hint": "レイアウトをファイルにエクスポートします",
+    "tokenActionHud.settings.exportLayout.label": "レイアウトのエクスポート",
+    "tokenActionHud.settings.exportLayout.name": "レイアウトのエクスポート",
+    "tokenActionHud.settings.grid.hint": "アクションのグリッドレイアウトを使用する",
+    "tokenActionHud.settings.grid.name": "グリッド",
+    "tokenActionHud.settings.itemMacro.choices.both": "元のアイテムとマクロ",
+    "tokenActionHud.settings.itemMacro.choices.itemMacro": "マクロのみ",
+    "tokenActionHud.settings.itemMacro.choices.original": "元のアイテムのみ",
+    "tokenActionHud.settings.itemMacro.hint": "アイテムマクロの表示方法を選択します",
+    "tokenActionHud.settings.itemMacro.name": "アイテムマクロの表示",
+    "tokenActionHud.settings.layout.hint": "レイアウトに関する設定",
+    "tokenActionHud.settings.layout.label": "レイアウト",
+    "tokenActionHud.settings.layout.name": "レイアウト",
+    "tokenActionHud.settings.layout.form.title": "Token Action HUD | レイアウト",
+    "tokenActionHud.settings.renderItemOnRightClick.hint": "アイテムを右クリックしたときにアイテムのシートを開く",
+    "tokenActionHud.settings.renderItemOnRightClick.name": "右クリックでアイテムシートを開く",
+    "tokenActionHud.settings.resetLayout.hint": "デフォルトのレイアウトにリセットする",
+    "tokenActionHud.settings.resetLayout.label": "レイアウトのリセット",
+    "tokenActionHud.settings.resetLayout.name": "レイアウトのリセット",
+    "tokenActionHud.settings.rollHandler.hint": "GM設定: HUDがロールを処理するために使用するモジュールを設定します",
+    "tokenActionHud.settings.rollHandler.name": "ロールハンドラー",
+    "tokenActionHud.settings.scale.hint": "HUDのスケールを調整します（1がデフォルトです）",
+    "tokenActionHud.settings.scale.name": "HUDのスケール",
+    "tokenActionHud.settings.style.hint": "HUDのスタイルを設定します",
+    "tokenActionHud.settings.style.name": "スタイル",
+    "tokenActionHud.settings.tooltips.choices.full": "完全なツールチップ",
+    "tokenActionHud.settings.tooltips.choices.nameOnly": "名前のみ",
+    "tokenActionHud.settings.tooltips.choices.none": "ツールチップなし",
+    "tokenActionHud.settings.tooltips.hint": "利用可能な場合、アクションをホバーしたときに表示されるツールチップの表示方法を選択します",
+    "tokenActionHud.settings.tooltips.name": "ツールチップの表示"
 }

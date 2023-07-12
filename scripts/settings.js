@@ -1,4 +1,5 @@
 import { CustomStyleForm } from './utilities/custom-style-form.js'
+import { TahSettingsFormLayout } from './utilities/settings-form.js'
 import { CUSTOM_STYLE, MODULE } from './constants.js'
 import { Logger, Utils } from './utilities/utils.js'
 
@@ -19,6 +20,26 @@ Hooks.on('init', async () => {
  * @param {array} rollHandlers   The available roll handlers
  */
 export const registerSettings = function (systemManager, rollHandlers) {
+    game.settings.registerMenu(MODULE.ID, 'customStyle', {
+        hint: Utils.i18n('tokenActionHud.settings.customStyle.hint'),
+        label: Utils.i18n('tokenActionHud.settings.customStyle.label'),
+        name: Utils.i18n('tokenActionHud.settings.customStyle.name'),
+        icon: 'fas fa-palette',
+        type: CustomStyleForm,
+        restricted: false,
+        scope: 'client'
+    })
+
+    game.settings.registerMenu(MODULE.ID, 'layout', {
+        hint: Utils.i18n('tokenActionHud.settings.layout.hint'),
+        label: Utils.i18n('tokenActionHud.settings.layout.label'),
+        name: Utils.i18n('tokenActionHud.settings.layout.name'),
+        icon: 'fas fa-table-layout',
+        type: TahSettingsFormLayout,
+        restricted: false,
+        scope: 'client'
+    })
+
     game.settings.register(MODULE.ID, 'startup', {
         name: 'One-Time Startup Prompt',
         scope: 'world',
@@ -59,19 +80,8 @@ export const registerSettings = function (systemManager, rollHandlers) {
         name: Utils.i18n('tokenActionHud.settings.customLayout.name'),
         hint: Utils.i18n('tokenActionHud.settings.customLayout.hint'),
         scope: 'world',
-        config: true,
-        type: String,
-        filePicker: true
-    })
-
-    game.settings.registerMenu(MODULE.ID, 'customStyle', {
-        name: Utils.i18n('tokenActionHud.settings.customStyle.name'),
-        label: Utils.i18n('tokenActionHud.settings.customStyle.label'),
-        hint: Utils.i18n('tokenActionHud.settings.customStyle.hint'),
-        icon: 'fas fa-palette',
-        type: CustomStyleForm,
-        restricted: true,
-        scope: 'client'
+        config: false,
+        type: String
     })
 
     game.settings.register(MODULE.ID, 'direction', {
@@ -82,9 +92,9 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: String,
         default: 'auto',
         choices: {
-            auto: Utils.i18n('tokenActionHud.settings.direction.choices.auto'),
-            up: Utils.i18n('tokenActionHud.settings.direction.choices.up'),
-            down: Utils.i18n('tokenActionHud.settings.direction.choices.down')
+            auto: Utils.i18n('tokenActionHud.settings.direction.choice.auto'),
+            up: Utils.i18n('tokenActionHud.settings.direction.choice.up'),
+            down: Utils.i18n('tokenActionHud.settings.direction.choice.down')
         },
         onChange: (value) => {
             onChangeFunction('direction', value)
@@ -169,10 +179,10 @@ export const registerSettings = function (systemManager, rollHandlers) {
         config: true,
         type: String,
         choices: {
-            4: Utils.i18n('tokenActionHud.settings.allow.choices.4'),
-            3: Utils.i18n('tokenActionHud.settings.allow.choices.3'),
-            2: Utils.i18n('tokenActionHud.settings.allow.choices.2'),
-            1: Utils.i18n('tokenActionHud.settings.allow.choices.1')
+            4: Utils.i18n('tokenActionHud.settings.allow.choice.4'),
+            3: Utils.i18n('tokenActionHud.settings.allow.choice.3'),
+            2: Utils.i18n('tokenActionHud.settings.allow.choice.2'),
+            1: Utils.i18n('tokenActionHud.settings.allow.choice.1')
         },
         default: 1,
         requiresReload: true
@@ -307,21 +317,6 @@ export const registerSettings = function (systemManager, rollHandlers) {
         default: false,
         onChange: (value) => {
             onChangeFunction('debug', value)
-        }
-    })
-
-    game.settings.register(MODULE.ID, 'reset', {
-        name: Utils.i18n('tokenActionHud.settings.reset.name'),
-        hint: Utils.i18n('tokenActionHud.settings.reset.hint'),
-        scope: 'client',
-        config: true,
-        type: Boolean,
-        default: false,
-        onChange: (value) => {
-            if (value) {
-                Utils.setSetting('reset', false)
-                game.tokenActionHud.reset()
-            }
         }
     })
 
