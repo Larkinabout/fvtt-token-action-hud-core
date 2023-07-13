@@ -115,6 +115,8 @@ export class TokenActionHud extends Application {
         case 'rollHandler':
             this.updateRollHandler()
             break
+        case 'tooltips':
+            this.actionHandler.tooltipsSetting = value
         }
     }
 

@@ -970,6 +970,11 @@ export class ActionHandler {
 
                         Object.assign(existingGroup, this.#createGroup({ ...existingGroup, ...groupData }, true))
                     }
+                } else {
+                    for (const existingGroup of existingGroups) {
+                        const tooltip = this.#getTooltip(groupData.tooltip, existingGroup.name)
+                        Object.assign(existingGroup, { tooltip })
+                    }
                 }
             } else {
                 const group = this.#createGroup({ ...groupData, nestId })

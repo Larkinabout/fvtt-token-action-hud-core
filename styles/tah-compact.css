@@ -255,8 +255,6 @@
 
 .tah-groups-container {
     display: none;
-    left: -10px;
-    padding: 10px;
     position: absolute;
 }
 
@@ -268,27 +266,30 @@
 .tah-tab-group > .tah-groups-container.expand-down > .tah-groups {
     flex-direction: column;
     left: -10px;
-    padding: 10px;
+    padding: 3px 10px 10px 10px;
     position: relative;
-    top: -10px;
 }
 
 .tah-tab-group > .tah-groups-container.expand-up > .tah-groups {
     flex-direction: column;
     left: -10px;
-    padding: 10px;
+    padding: 10px 10px 3px 10px;
     position: relative;
-    bottom: -10px;
+}
+
+#tah-groups > .tah-tab-group > .tah-groups-container.expand-up > .tah-groups {
+    flex-direction: column-reverse;
 }
 
 .tah-tab-group > .tah-groups-container.expand-down {
-    top: calc(100% - 10px);
-    padding-top: 14px;
+        top: calc(100% - 7px);
+        padding-top: 10px;
 }
 
 .tah-tab-group > .tah-groups-container.expand-up {
-    bottom: calc(100% + 5px + -10px);
+    bottom: calc(100% + 3px + -10px);
     flex-direction: column-reverse;
+    padding-bottom: 10px;
 }
 
 .tah-tab-group
