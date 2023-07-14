@@ -64,7 +64,7 @@ export class TokenActionHud extends Application {
 
         this.isCollapsed = Utils.getUserFlag('isCollapsed')
         this.isHudEnabled = this.#getHudEnabled()
-        this.position = Utils.getUserFlag('position')
+        this.hudPosition = Utils.getUserFlag('position')
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
 
         await this.systemManager.registerDefaultFlags()
@@ -690,8 +690,8 @@ export class TokenActionHud extends Application {
             this.#applySettings()
 
             // Save the new position to the user's flags
-            this.position = { top: newElementTop, left: newElementLeft }
-            Utils.setUserFlag('position', this.position)
+            this.hudPosition = { top: newElementTop, left: newElementLeft }
+            Utils.setUserFlag('position', this.hudPosition)
 
             Logger.debug(`Set position to x: ${newElementTop}px, y: ${newElementLeft}px`)
         }
@@ -752,7 +752,7 @@ export class TokenActionHud extends Application {
      * @private
      */
     #setPositionFromFlag () {
-        if (!this.position) return
+        if (!this.hudPosition) return
 
         const defaultLeftPos = this.defaultLeftPos
         const defaultTopPos = this.defaultTopPos
@@ -762,13 +762,13 @@ export class TokenActionHud extends Application {
                 const element = document.getElementById('token-action-hud')
                 if (element) {
                     element.style.bottom = null
-                    this.topPos = this.position.top < 5 || this.position.top > window.innerHeight + 5
+                    this.topPos = this.hudPosition.top < 5 || this.hudPosition.top > window.innerHeight + 5
                         ? defaultTopPos
-                        : this.position.top
+                        : this.hudPosition.top
                     element.style.top = `${this.topPos}px`
-                    this.leftPos = this.position.left < 5 || this.position.left > window.innerWidth + 5
+                    this.leftPos = this.hudPosition.left < 5 || this.hudPosition.left > window.innerWidth + 5
                         ? defaultLeftPos
-                        : this.position.left
+                        : this.hudPosition.left
                     element.style.left = `${this.leftPos}px`
                     element.style.position = 'fixed'
                     resolve()
@@ -787,8 +787,8 @@ export class TokenActionHud extends Application {
      */
     async resetPosition () {
         Logger.debug('Resetting position...')
-        this.position = { top: this.defaultTopPos, left: this.defaultLeftPos }
-        await Utils.setUserFlag('position', this.position)
+        this.hudPosition = { top: this.defaultTopPos, left: this.defaultLeftPos }
+        await Utils.setUserFlag('position', this.hudPosition)
         Logger.debug(`Position reset to x: ${this.defaultTopPos}px, y: ${this.defaultLeftPos}px`)
     }
 
@@ -1118,8 +1118,14 @@ export class TokenActionHud extends Application {
         }
     }
 
+    /**
+     * Whether the given actor is the selected actor
+     * @param {object} actor The actor
+     * @returns {boolean}    Whether the given actor is the selected actor
+     */
     isSelectedActor (actor) {
-        if (actor.id === this.actor?.id) return true
+        if (!actor?.id) return true
+        if (actor?.id === this.actor?.id) return true
         return false
     }
 
