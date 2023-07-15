@@ -10,6 +10,7 @@
     "tokenActionHud.editHud": "Edytuj HUD",
     "tokenActionHud.endTurn": "Zakończ turę",
     "tokenActionHud.expandHud": "Rozwiń HUD",
+    "tokenActionHud.group": "Grupa",
     "tokenActionHud.handlerNotFound": "nie znaleziono, powrót do podstawowego mechanizmu.",
     "tokenActionHud.lockHud": "Zablokuj HUD",
     "tokenActionHud.macro": "Makro",

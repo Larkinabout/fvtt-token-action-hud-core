@@ -10,6 +10,7 @@
   "tokenActionHud.editHud": "HUD anpassen",
   "tokenActionHud.endTurn": "Zug beenden",
   "tokenActionHud.expandHud": "HUD ausklappen",
+  "tokenActionHud.group": "Gruppe",
   "tokenActionHud.handlerNotFound": "not found, reverting to core roller.",
   "tokenActionHud.lockHud": "HUD sperren",
   "tokenActionHud.macro": "Makro",

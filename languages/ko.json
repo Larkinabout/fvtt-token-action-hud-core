@@ -10,6 +10,7 @@
     "tokenActionHud.editHud": "HUD 편집",
     "tokenActionHud.endTurn": "턴 종료",
     "tokenActionHud.expandHud": "HUD 확장",
+    "tokenActionHud.group": "그룹",
     "tokenActionHud.handlerNotFound": "찾을 수 없음, 기본 롤러로 복원됩니다.",
     "tokenActionHud.lockHud": "HUD 잠금",
     "tokenActionHud.macro": "매크로",

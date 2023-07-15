@@ -10,6 +10,7 @@
     "tokenActionHud.editHud": "Modifier le HUD",
     "tokenActionHud.endTurn": "Terminer le tour",
     "tokenActionHud.expandHud": "Étendre le HUD",
+    "tokenActionHud.group": "Groupe",
     "tokenActionHud.handlerNotFound": "introuvable, retour à la fonction de jet de base.",
     "tokenActionHud.lockHud": "Verrouiller le HUD",
     "tokenActionHud.macro": "Macro",

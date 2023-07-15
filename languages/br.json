@@ -10,6 +10,7 @@
     "tokenActionHud.editHud": "Editar HUD",
     "tokenActionHud.endTurn": "Finalizar Turno",
     "tokenActionHud.expandHud": "Expandir HUD",
+    "tokenActionHud.group": "Grupo",
     "tokenActionHud.handlerNotFound": "não encontrado, retornando ao rolo principal.",
     "tokenActionHud.lockHud": "Travar HUD",
     "tokenActionHud.macro": "Macro",

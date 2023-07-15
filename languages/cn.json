@@ -10,6 +10,7 @@
   "tokenActionHud.editHud": "编辑 HUD",
   "tokenActionHud.endTurn": "结束回合",
   "tokenActionHud.expandHud": "展开 HUD",
+  "tokenActionHud.group": "群组",
   "tokenActionHud.handlerNotFound": "未找到，返回到核心掷骰器。",
   "tokenActionHud.lockHud": "锁定 HUD",
   "tokenActionHud.macro": "宏",

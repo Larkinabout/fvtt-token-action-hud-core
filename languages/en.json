@@ -10,6 +10,7 @@
     "tokenActionHud.editHud": "Edit HUD",
     "tokenActionHud.endTurn": "End Turn",
     "tokenActionHud.expandHud": "Expand HUD",
+    "tokenActionHud.group": "Group",
     "tokenActionHud.handlerNotFound": "not found, reverting to core roller.",
     "tokenActionHud.lockHud": "Lock HUD",
     "tokenActionHud.macro": "Macro",

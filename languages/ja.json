@@ -10,6 +10,7 @@
     "tokenActionHud.editHud": "HUDを編集",
     "tokenActionHud.endTurn": "ターン終了",
     "tokenActionHud.expandHud": "HUDを展開",
+    "tokenActionHud.group": "グループ",
     "tokenActionHud.handlerNotFound": "見つかりません、コアのローラーに戻ります。",
     "tokenActionHud.lockHud": "HUDをロック",
     "tokenActionHud.macro": "マクロ",
