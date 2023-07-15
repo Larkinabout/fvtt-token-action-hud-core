@@ -1099,10 +1099,6 @@ export class TokenActionHud extends Application {
      */
     isValidActorOrItemUpdate (actor, data) {
         if (!this.isSelectedActor(actor)) return false
-        if (data?.flags) {
-            Logger.debug('Flags set, do not update hud', { actor, data })
-            return false
-        }
 
         if (actor) {
             if (!actor) {
