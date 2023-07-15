@@ -238,3 +238,29 @@ Hooks.on('tokenActionHudCoreReady', async () => {
     const trigger = { type: 'hook', name: 'canvasReady' }
     game.tokenActionHud.update(trigger)
 })
+
+/**
+  * Move the HUD below the scene context menus
+  */
+Hooks.on('renderSceneNavigation', (data, html) => {
+    html.find('li.scene.nav-item').contextmenu((ev) => {
+        sendHudToBottom()
+    })
+})
+
+/**
+  * Move the HUD below the hotbar context menus
+  */
+Hooks.on('renderHotbar', (data, html) => {
+    html.find('li.macro').contextmenu((ev) => {
+        sendHudToBottom()
+    })
+})
+
+/**
+ * Send HUD to bottom
+ */
+function sendHudToBottom () {
+    if (!game.tokenActionHud) return
+    game.tokenActionHud.element[0].style.zIndex = 0
+}
