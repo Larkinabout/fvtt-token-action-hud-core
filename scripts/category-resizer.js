@@ -120,8 +120,8 @@ export class CategoryResizer {
                 const actionRect = actionElement.getBoundingClientRect()
                 const actionWidth = Math.round(parseFloat(actionRect.width) + 1 || 0)
                 const actionButtonText = actionElement.querySelector('.tah-action-button-text')
-                const actionButtonTextRect = actionButtonText.getBoundingClientRect()
-                const actionButtonTextWidth = Math.round(parseFloat(actionButtonTextRect.width) || 0)
+                const actionButtonTextRect = actionButtonText?.getBoundingClientRect()
+                const actionButtonTextWidth = Math.round(parseFloat(actionButtonTextRect?.width) || 0)
                 actionWidthsForMedian.push(actionWidth)
                 actionWidths.push({ actionWidth, actionButtonTextWidth })
             }
