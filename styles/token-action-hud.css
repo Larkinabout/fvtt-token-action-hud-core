@@ -161,39 +161,46 @@
     padding: 1rem;
 }
 
-#tooltip.tah-tooltip,
-#tooltip.active:has(.tah-tooltip-wrapper) {
+.locked-tooltip.tah-tooltip,
+.tah-tooltip,
+#tooltip:has(.tah-tooltip-wrapper) {
     font-size: var(--font-size-14);
 }
 
-#tooltip.active.tah-tooltip,
+.locked-tooltip.tah-tooltip.active,
+.tah-tooltip.active,
 #tooltip.active:has(.tah-tooltip-wrapper) {
     transition: visibility 0s 500ms, opacity 500ms 500ms;
 }
 
-#tooltip:not(.active).tah-tooltip,
+.locked-tooltip.tah-tooltip:not(.active),
+.tah-tooltip:not(.active),
 #tooltip:not(.active):has(.tah-tooltip-wrapper) {
     transition: visibility 0s, opacity 0s;
 }
 
-#tooltip.tah-tooltip h3,
+.locked-tooltip.tah-tooltip h3,
+.tah-tooltip h3,
 #tooltip.active:has(.tah-tooltip-wrapper) h3 {
     padding-bottom: 8px;
     text-align: left;
 }
 
-#tooltip.tah-tooltip h4,
+.locked-tooltip.tah-tooltip h4, 
+.tah-tooltip h4,
 #tooltip.active:has(.tah-tooltip-wrapper) h4 {
     font-weight: 600;
     text-align: left;
 }
 
-#tooltip.tah-tooltip :is(ul, h3, h4, p),
+.locked-tooltip.tah-tooltip :is(ul, h3, h4, p), 
+.tah-tooltip :is(ul, h3, h4, p),
 #tooltip.active:has(.tah-tooltip-wrapper) :is(ul, h3, h4, p) {
     text-align: left;
 }
 
-#tooltip.tah-tooltip :is(a.content-link, a.inline-roll),
+.locked-tooltip.tah-tooltip :is(a.content-link, a.inline-roll),
+.tah-tooltip :is(a.content-link, a.inline-roll),
 #tooltip.active:has(.tah-tooltip-wrapper) :is(a.content-link, a.inline-roll) {
     background: none;
     border: none;
@@ -204,25 +211,29 @@
     padding: 0;
 }
 
-#tooltip.tah-tooltip :is(a.content-link i, a.inline-roll i),
+.locked-tooltip.tah-tooltip :is(a.content-link i, a.inline-roll i),
+.tah-tooltip :is(a.content-link i, a.inline-roll i),
 #tooltip.active:has(.tah-tooltip-wrapper)
     :is(a.content-link i, a.inline-roll i) {
     color: var(--color-text-light-7);
 }
 
+.locked-tooltip.tah-tooltip strong,
+.tah-tooltip strong,
 #tooltip.tah-tooltip strong,
 #tooltip.active:has(.tah-tooltip-wrapper) strong {
     font-weight: 600;
 }
 
-#tooltip .tah-properties {
+
+.tah-tooltip .tah-properties {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
     text-align: left;
 }
 
-#tooltip .tah-property {
+.tah-tooltip .tah-property {
     line-break: strict;
     border-right: 1px solid var(--color-text-light-7);
     color: var(--color-text-light-7);
@@ -230,11 +241,11 @@
     padding-right: 5px;
 }
 
-#tooltip .tah-property:first-child {
+.tah-tooltip .tah-property:first-child {
     padding-left: 0;
 }
 
-#tooltip .tah-property:last-child {
+.tah-tooltip .tah-property:last-child {
     border-right: none;
     padding-right: 0;
 }
