@@ -86,11 +86,13 @@ export class TokenActionHud extends Application {
      * Update Token Action HUD following change to module settings
      * @public
      */
-    async updateSettings (setting, value) {
+    async updateSettings (setting, value = null) {
         if (!this.updateSettingsPending) {
             this.updateSettingsPending = true
             Logger.debug('Updating settings...')
         }
+
+        if (!value) return
 
         const variable = SETTING[setting].variable
         if (variable) this[variable] = value
