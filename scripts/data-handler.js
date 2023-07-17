@@ -1,5 +1,5 @@
 import { MODULE } from './constants.js'
-import { Logger } from './utils.js'
+import { Logger, Utils } from './utils.js'
 
 /**
      * Get file parts
@@ -56,6 +56,14 @@ export class DataHandler {
             })
     }
 
+    static async saveDataAsGm (type, id, data) {
+        if (!Utils.isGmActive()) {
+            Logger.info('Cannot save data without a GM present', true)
+            return
+        }
+        await game.tokenActionHud.socket.executeAsGM('saveData', type, id, data)
+    }
+
     /**
      * Save data
      * @param {string} type The type: actor or user
@@ -78,10 +86,22 @@ export class DataHandler {
     }
 
     /**
+     * Get data as GM
+     * @param {object} options The options: file, type, id
+     * @returns {object}       The data
+     */
+    static async getDataAsGm (options) {
+        if (!Utils.isGmActive()) {
+            Logger.info('Cannot get data without a GM present', true)
+            return
+        }
+        return await game.tokenActionHud.socket.executeAsGM('getData', options)
+    }
+
+    /**
      * Get data
-     * @param {string} type The type: actor or user
-     * @param {string} id   The actor or user id
-     * @returns {object}    The data
+     * @param {string} options The options: file, type, id
+     * @returns {object}       The data
      */
     static async getData (options) {
         const { file, type, id } = options

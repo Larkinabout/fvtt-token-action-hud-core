@@ -1,5 +1,6 @@
 import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
 import { CategoryResizer } from './category-resizer.js'
+import { DataHandler } from './data-handler.js'
 import { CSS_STYLE, SETTING, TEMPLATE } from './constants.js'
 import { Logger, Timer, Utils } from './utils.js'
 
@@ -71,8 +72,8 @@ export class TokenActionHud extends Application {
 
         this.actionHandler = await this.systemManager.getActionHandler()
 
-        if (this.customLayoutSetting) {
-            this.actionHandler.customLayout = await game.tokenActionHud.socket.executeAsGM('getData', { file: this.customLayoutSetting })
+        if (this.customLayoutSetting && Utils.isGmActive()) {
+            this.actionHandler.customLayout = await DataHandler.getDataAsGm({ file: this.customLayoutSetting })
         }
         this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
         this.actionHandler.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
@@ -101,9 +102,9 @@ export class TokenActionHud extends Application {
             this.isHudEnabled = this.#getHudEnabled()
             break
         case 'customLayout':
-            if (this.customLayoutSetting) {
+            if (this.customLayoutSetting && Utils.isGmActive()) {
                 this.actionHandler.customLayoutSetting = this.customLayoutSetting
-                this.actionHandler.customLayout = await game.tokenActionHud.socket.executeAsGM('getData', { file: this.customLayoutSetting })
+                this.actionHandler.customLayout = await DataHandler.getDataAsGm({ file: this.customLayoutSetting })
             } else {
                 this.actionHandler.customLayoutSetting = null
                 this.actionHandler.customLayout = null
@@ -858,6 +859,8 @@ export class TokenActionHud extends Application {
      * @param {string|array} toUserIds The user ids to copy to
      */
     async copy (fromUserId, toUserIds) {
+        if (!game.user.isGM) return
+
         const isCopied = await this.#copyUserData(fromUserId, toUserIds)
         if (isCopied) {
             Logger.info('HUD copied', true)
@@ -878,13 +881,13 @@ export class TokenActionHud extends Application {
 
         Logger.debug('Copying user data...')
 
-        const fromGroup = await game.tokenActionHud.socket.executeAsGM('getData', { type: 'user', id: fromUserId })
+        const fromGroup = await DataHandler.getDataAsGm({ type: 'user', id: fromUserId })
 
         if (typeof toUserIds === 'string') {
-            await game.tokenActionHud.socket.executeAsGM('saveData', 'user', toUserIds, fromGroup)
+            await DataHandler.saveDataAsGm('user', toUserIds, fromGroup)
         } else if (Array.isArray(toUserIds)) {
             for (const userId of toUserIds) {
-                await game.tokenActionHud.socket.executeAsGM('saveData', 'user', userId, fromGroup)
+                await DataHandler.saveDataAsGm('user', userId, fromGroup)
             }
         }
 
@@ -927,7 +930,7 @@ export class TokenActionHud extends Application {
     async resetActorData () {
         Logger.debug('Resetting actor data...')
 
-        await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', this.actor.id, {})
+        await DataHandler.saveDataAsGm('actor', this.actor.id, {})
         this.actionHandler.hardResetActionHandler()
 
         Logger.debug('Actor data reset')
@@ -945,7 +948,7 @@ export class TokenActionHud extends Application {
 
         for (const actor of game.actors) {
             Logger.debug(`Resetting flags for actor [${actor.id}]`, { actor })
-            await game.tokenActionHud.socket.executeAsGM('saveData', 'actor', actor.id, {})
+            await DataHandler.saveDataAsGm('actor', actor.id, {})
         }
         this.actionHandler.hardResetActionHandler()
 
@@ -961,7 +964,7 @@ export class TokenActionHud extends Application {
      */
     async resetUserData () {
         Logger.debug('Resetting user data...')
-        await game.tokenActionHud.socket.executeAsGM('saveData', 'user', game.userId, {})
+        await DataHandler.saveDataAsGm('user', game.userId, {})
         Logger.debug('User data reset')
         this.actionHandler.hardResetActionHandler()
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetUserData' } }
@@ -975,7 +978,7 @@ export class TokenActionHud extends Application {
     async resetAllUserData () {
         Logger.debug('Resetting all user data...')
         for (const user of game.users) {
-            await game.tokenActionHud.socket.executeAsGM('saveData', 'user', user.id, {})
+            await DataHandler.saveDataAsGm('user', user.id, {})
         }
         Logger.debug('All user data reset')
         this.actionHandler.hardResetActionHandler()
