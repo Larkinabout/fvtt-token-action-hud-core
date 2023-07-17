@@ -72,8 +72,15 @@ export const CSS_STYLE = {
         file: 'tah-dorako'
     },
     foundryVTT: {
-        class: 'tah-style-foundry-vtt',
-        file: 'tah-foundry-vtt',
+        class: 'tah-style-foundry-vtt-dark',
+        file: 'tah-foundry-vtt-dark',
+        primaryColor: '#dddddd',
+        secondaryColor: '#dddddd80',
+        tertiaryColor: '#ff6400'
+    },
+    foundryVttLight: {
+        class: 'tah-style-foundry-vtt-light',
+        file: 'tah-foundry-vtt-light',
         primaryColor: '#dddddd',
         secondaryColor: '#dddddd80',
         tertiaryColor: '#ff6400'

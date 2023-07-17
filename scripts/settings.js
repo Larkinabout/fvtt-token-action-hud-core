@@ -64,9 +64,10 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: String,
         default: 'foundryVTT',
         choices: {
-            compact: 'Compact',
+            foundryVTT: 'Foundry VTT Dark',
+            foundryVttLight: 'Foundry VTT Light',
+            compact: 'Foundry VTT Compact Dark',
             dorakoUI: 'Dorako UI',
-            foundryVTT: 'Foundry VTT',
             highContrast: 'High Contrast',
             pathfinder: 'Pathfinder',
             custom: 'Custom'

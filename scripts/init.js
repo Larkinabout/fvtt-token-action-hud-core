@@ -261,6 +261,6 @@ Hooks.on('renderHotbar', (data, html) => {
  * Send HUD to bottom
  */
 function sendHudToBottom () {
-    if (!game.tokenActionHud) return
+    if (!game.tokenActionHud?.element[0]) return
     game.tokenActionHud.element[0].style.zIndex = 0
 }

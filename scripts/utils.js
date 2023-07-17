@@ -330,6 +330,30 @@ export class Utils {
     }
 
     /**
+     * Get upper quartile average
+     * @param {array} numbers The numbers
+     * @returns {number}      The upper quartile average
+     */
+    static getUpperQuartileAverage (numbers) {
+        const sortedNumbers = numbers.slice().sort((a, b) => a - b)
+        const length = sortedNumbers.length
+        const startIndex = Math.ceil(length * 0.75)
+        const endIndex = length - 1
+
+        let sum = 0
+        let count = 0
+
+        for (let i = startIndex; i <= endIndex; i++) {
+            sum += sortedNumbers[i]
+            count++
+        }
+
+        const upperQuartileAverage = sum / count
+
+        return upperQuartileAverage
+    }
+
+    /**
      * Get modifier
      * @param {number} value The value
      * @returns {string}     The modifier

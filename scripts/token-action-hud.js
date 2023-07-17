@@ -92,8 +92,6 @@ export class TokenActionHud extends Application {
             Logger.debug('Updating settings...')
         }
 
-        if (!value) return
-
         const variable = SETTING[setting].variable
         if (variable) this[variable] = value
 

@@ -286,11 +286,11 @@
 
 .tah-action-button-text {
     overflow: hidden;
+    padding-right: 1px;
     text-align: left;
     text-overflow: ellipsis;
     width: 100%;
 }
-
 #tah-collapse-expand:hover button > i,
 #tah-buttons button:hover > i {
     color: var(--tah-text-hover-primary-color);

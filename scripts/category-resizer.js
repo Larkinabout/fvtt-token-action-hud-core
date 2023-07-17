@@ -127,17 +127,17 @@ export class CategoryResizer {
             }
         }
 
-        let medianWidth = Math.ceil(Utils.median(actionWidthsForMedian) * 1.1)
+        let upperQuartileAverage = Math.ceil(Utils.getUpperQuartileAverage(actionWidthsForMedian))
         const minActionButtonTextWidth = 30
 
         for (const actionWidth of actionWidths) {
-            const availableactionButtonTextWidth = medianWidth - (actionWidth.actionWidth - actionWidth.actionButtonTextWidth)
+            const availableactionButtonTextWidth = upperQuartileAverage - (actionWidth.actionWidth - actionWidth.actionButtonTextWidth)
             if (availableactionButtonTextWidth < minActionButtonTextWidth) {
-                medianWidth = (medianWidth - availableactionButtonTextWidth) + minActionButtonTextWidth
+                upperQuartileAverage = (upperQuartileAverage - availableactionButtonTextWidth) + minActionButtonTextWidth
             }
         }
 
-        this.gridWidth = medianWidth
+        this.gridWidth = upperQuartileAverage
     }
 
     /**
@@ -171,44 +171,45 @@ export class CategoryResizer {
         if (this.isCustomWidth) {
             width = this.availableWidth
         } else {
-            // Initialize variables
-            let maxActions = 0
-            let maxGroupWidth = 0
-            // Iterate through action groups, calculating dimensions and counts
             const actions = actionsElement.querySelectorAll('.tah-action')
+            if (!actions.length) return
+            const sqrtActions = Math.ceil(Math.sqrt(actions.length)) // 4
+
+
+            // Initialize variables
+            let currentRow = 1
+            let maxRowWidth = 0
+            let rowWidth = 0
+            // Iterate through action groups, calculating dimensions and counts
             if (actions.length > 0) {
-                let groupWidth = 0
                 actions.forEach((action, index) => {
+                    if ((index + 1) / sqrtActions > currentRow) {
+                        rowWidth = rowWidth - 5
+                        maxRowWidth = (rowWidth > maxRowWidth) ? rowWidth : maxRowWidth
+                        rowWidth = 0
+                        currentRow++
+                    }
                     const actionRect = action.getBoundingClientRect()
-                    const actionLeft = (index === 0) ? actionRect.left - this.groupsElementRect.left : 0
+                    // const actionLeft = (index === 0) ? actionRect.left - this.groupsElementRect.left : 0
                     const actionWidth = Math.ceil(parseFloat(actionRect.width) + 1 || 0)
-                    groupWidth += actionWidth + actionLeft
+                    rowWidth += actionWidth
+                    // + actionLeft + 5
+                    if (index + 1 === actions.length) {
+                        rowWidth = rowWidth - 5
+                        maxRowWidth = (rowWidth > maxRowWidth) ? rowWidth : maxRowWidth
+                    }
                 })
-                if (groupWidth > maxGroupWidth) {
-                    maxGroupWidth = groupWidth
-                    maxActions = actions.length
-                }
             }
 
             // Add padding to maxAvgGroupWidth and maxGroupWidth
-            maxGroupWidth += (maxActions * 5) - 5
-            maxGroupWidth += this.groupsElementPadding
-            const medianWidthPerAction = maxGroupWidth / maxActions
-
-            // Determine number of columns
-            const defaultCols = 5
-            let cols = (maxActions < defaultCols) ? maxActions : defaultCols
-            const availableCols = Math.floor(this.availableWidth / medianWidthPerAction)
-            const sqrtActionsPerGroup = Math.ceil(Math.sqrt(maxActions))
-            if (sqrtActionsPerGroup > cols && sqrtActionsPerGroup <= availableCols) cols = sqrtActionsPerGroup
+            maxRowWidth += this.groupsElementPadding
 
             // Determine width of content
-            width = medianWidthPerAction * cols
-            if (width > this.availableWidth) width = this.availableWidth
+            width = (maxRowWidth < this.availableWidth && actions.length > 3) ? maxRowWidth : this.availableWidth
             if (width < 200) width = 200
         }
 
-        const style = { width: `${width}px` }
+        const style = { maxWidth: `${width}px` }
         await this._assignCSS(actionsElement, style)
     }
 
