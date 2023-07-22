@@ -1,6 +1,6 @@
 name: Release Creation
 
-on: 
+on:
   release:
     types: [published]
 
@@ -28,7 +28,7 @@ jobs:
         download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.zip
 
     # Create a zip file with all files required by the module to add to the release
-    - run: zip -r ./module.zip module.json readme.md LICENSE languages/ lib/ scripts/token-action-hud-core.min.js storage/ styles/ templates/ 
+    - run: zip -r ./module.zip module.json readme.md LICENSE dist/ languages/ storage/ styles/ templates/
 
     # Create a release for this specific version
     - name: Update Release with Files
@@ -45,5 +45,5 @@ jobs:
         body: ${{ github.event.release.body }}
 
 
-      
+
 
