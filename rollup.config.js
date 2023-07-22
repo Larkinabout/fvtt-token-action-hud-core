@@ -15,7 +15,8 @@ export default [
         output: {
             format: 'esm',
             file: 'dist/token-action-hud-core.min.js',
-            generatedCode: { constBindings: true }
+            generatedCode: { constBindings: true },
+            sourcemap: true
         }
     }
 ]
