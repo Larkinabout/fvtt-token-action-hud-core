@@ -1,22 +1,22 @@
-import { terser } from 'rollup-plugin-terser'
-import multi from '@rollup/plugin-multi-entry'
+import commonjs from '@rollup/plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
+import terser from '@rollup/plugin-terser'
 
 export default [
     {
-        input: {
-            include: [
-                'scripts/*.js',
-                'scripts/*/*.js'
-            ],
-            exclude: ['scripts/token-action-hud-core.min.js']
-        },
+        input: 'scripts/init.js',
+        plugins: [
+            commonjs(),
+            resolve({ browser: true })
+        ],
         output: {
             format: 'esm',
-            file: 'scripts/token-action-hud-core.min.js'
-        },
-        plugins: [
-            terser({ keep_classnames: true, keep_fnames: true }),
-            multi()
-        ]
+            file: 'dist/token-action-hud-core.min.js',
+            generatedCode: { constBindings: true },
+            plugins: [
+                terser({ keep_classnames: true, keep_fnames: true })
+            ],
+            sourcemap: true
+        }
     }
 ]
