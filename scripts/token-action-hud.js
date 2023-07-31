@@ -52,7 +52,6 @@ export class TokenActionHud extends Application {
         this.allowSetting = Utils.getSetting('allow')
         this.alwaysShowSetting = Utils.getSetting('alwaysShowHud')
         this.clickOpenCategorySetting = Utils.getSetting('clickOpenCategory')
-        this.customLayoutSetting = Utils.getSetting('customLayout')
         this.directionSetting = Utils.getSetting('direction')
         this.debugSetting = Utils.getSetting('debug')
         this.displayIconsSetting = Utils.getSetting('displayIcons')
@@ -72,9 +71,11 @@ export class TokenActionHud extends Application {
 
         this.actionHandler = await this.systemManager.getActionHandler()
 
-        if (this.customLayoutSetting && Utils.isGmActive()) {
+        /*  if (this.customLayoutSetting && Utils.isGmActive()) {
             this.actionHandler.customLayout = await DataHandler.getDataAsGm({ file: this.customLayoutSetting })
-        }
+        } */
+        this.actionHandler.customLayoutSetting = Utils.getSetting('customLayout')
+        this.actionHandler.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
         this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
         this.actionHandler.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
         this.actionHandler.tooltipsSetting = Utils.getSetting('tooltips')
@@ -87,37 +88,31 @@ export class TokenActionHud extends Application {
      * Update Token Action HUD following change to module settings
      * @public
      */
-    async updateSettings (setting, value = null) {
+    async updateSettings (key, value = null) {
         if (!this.updateSettingsPending) {
             this.updateSettingsPending = true
             Logger.debug('Updating settings...')
         }
 
-        const variable = SETTING[setting].variable
-        if (variable) this[variable] = value
+        const setting = SETTING[key]
+        const variable = setting?.variable
+        if (variable) {
+            if (setting.classes.includes('TokenActionHud')) this[variable] = value
+            if (setting.classes.includes('ActionHandler')) this.actionHandler[variable] = value
+        }
 
-        switch (setting) {
+        switch (key) {
         case 'allow':
         case 'enable':
             this.isHudEnabled = this.#getHudEnabled()
             break
         case 'customLayout':
-            if (this.customLayoutSetting && Utils.isGmActive()) {
-                this.actionHandler.customLayoutSetting = this.customLayoutSetting
-                this.actionHandler.customLayout = await DataHandler.getDataAsGm({ file: this.customLayoutSetting })
-            } else {
-                this.actionHandler.customLayoutSetting = null
-                this.actionHandler.customLayout = null
-            }
-            break
-        case 'enableCustomization':
-            this.actionHandler.enableCustomizationSetting = value
+        case 'userCustomLayout':
+            this.actionHandler.customLayout = null
             break
         case 'rollHandler':
             this.updateRollHandler()
             break
-        case 'tooltips':
-            this.actionHandler.tooltipsSetting = value
         }
     }
 
@@ -127,15 +122,6 @@ export class TokenActionHud extends Application {
      */
     updateRollHandler () {
         this.rollHandler = this.systemManager.getRollHandler()
-    }
-
-    /**
-     * Set the tokens variable
-     * @public
-     * @param {object} tokens Tokens on the canvas
-     */
-    setTokens (tokens) {
-        this.tokens = tokens
     }
 
     /**
@@ -910,6 +896,8 @@ export class TokenActionHud extends Application {
                     callback: async () => {
                         const customLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=customLayout]')
                         if (customLayoutElement) await this.updateSettings('customLayout', customLayoutElement?.value ?? '')
+                        const userCustomLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=userCustomLayout]')
+                        if (userCustomLayoutElement) await this.updateSettings('userCustomLayout', userCustomLayoutElement?.value ?? '')
                         await this.resetUserData()
                         this.resetPosition()
                         Logger.info('Layout reset', true)
@@ -1001,13 +989,12 @@ export class TokenActionHud extends Application {
      * @param {object} trigger The trigger for the update
      */
     async #updateHud (trigger) {
-        if (trigger?.name === 'closeSettingsConfig' && !this.updateSettingsPending) {
-            return
-        } else {
+        if (trigger?.name === 'closeSettingsConfig') {
+            if (!this.updateSettingsPending) return
             this.updateSettingsPending = false
             Logger.debug('Settings updated')
         }
-        if (this.isUpdatePending) await this.updateTimer.abort()
+        if (this.isUpdatePending) this.updateTimer.abort()
         this.isUpdatePending = true
         await this.updateTimer.start()
         this.isUpdatePending = false
@@ -1093,6 +1080,17 @@ export class TokenActionHud extends Application {
     }
 
     /**
+     * Whether the given actor is the selected actor
+     * @param {object} actor The actor
+     * @returns {boolean}    Whether the given actor is the selected actor
+     */
+    isSelectedActor (actor) {
+        if (!actor?.id) return true
+        if (actor?.id === this.actor?.id) return true
+        return false
+    }
+
+    /**
      * Whether the actor or item update is valid for a HUD update
      * @param {object} actor The actor
      * @param {object} data  The data
@@ -1118,14 +1116,14 @@ export class TokenActionHud extends Application {
     }
 
     /**
-     * Whether the given actor is the selected actor
-     * @param {object} actor The actor
-     * @returns {boolean}    Whether the given actor is the selected actor
+     * Whether the character is a valid selection for the current user
+     * @private
+     * @param {object} [token = {}] The token
+     * @returns {boolean}           Whether the character is a valid selection for the current user
      */
-    isSelectedActor (actor) {
-        if (!actor?.id) return true
-        if (actor?.id === this.actor?.id) return true
-        return false
+    #isValidCharacter (token = {}) {
+        const actor = token?.actor
+        return game.user.isGM || actor?.testUserPermission(game.user, 'OWNER')
     }
 
     /**
@@ -1143,17 +1141,6 @@ export class TokenActionHud extends Application {
         if (isGM) return true
 
         return Utils.checkAllow(userRole, this.allowSetting)
-    }
-
-    /**
-     * Whether the compendium is linked
-     * @public
-     * @param {string} id The compendium id
-     * @returns {boolean} Whether the compendium is linked
-     */
-    isLinkedCompendium (id) {
-        Logger.debug('Compendium hook triggered, checking if compendium is linked...')
-        return this.actionHandler.isLinkedCompendium(id)
     }
 
     /**
@@ -1197,17 +1184,5 @@ export class TokenActionHud extends Application {
         this.rollHandler.actor = character.actor
         this.rollHandler.token = character.token
         return character
-    }
-
-    /**
-     * Whether the character is a valid selection for the current user
-     * @private
-     * @param {object} [token = {}] The token
-     * @returns {boolean}           Whether the character is a valid selection for the current user
-     */
-    #isValidCharacter (token = {}) {
-        const actor = token?.actor
-        const user = game.user
-        return game.user.isGM || actor?.testUserPermission(user, 'OWNER')
     }
 }

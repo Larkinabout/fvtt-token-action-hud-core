@@ -28,6 +28,7 @@ export class ActionHandler {
         this.actions = []
         this.availableActions = []
         this.customLayoutSetting = Utils.getSetting('customLayout')
+        this.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
         this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
         this.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
         this.tooltipsSetting = Utils.getSetting('tooltips')
@@ -39,8 +40,6 @@ export class ActionHandler {
      */
     softResetActionHandler () {
         this.genericActionHandler = new GenericActionHandler(this)
-        this.compendiumActionHandler = new CompendiumActionHandler(this)
-        this.macroActionHandler = new MacroActionHandler(this)
         this.hud = []
         this.defaultGroups = {}
         this.defaultLayout = {}
@@ -55,6 +54,7 @@ export class ActionHandler {
      */
     hardResetActionHandler () {
         this.softResetActionHandler()
+        this.customLayout = null
         this.actorGroups = {}
         this.userGroups = {}
     }
@@ -79,16 +79,19 @@ export class ActionHandler {
             this.isSameActor = false
         }
         this.softResetActionHandler()
-        await this.#getDefaultGroups()
-        await this.#getDefaultLayout()
-        await this.#getCustomLayout()
-        this.isGmActive = Utils.isGmActive()
-        if (!this.isGmActive && !this.isGmInactiveUserNotified) {
+        await Promise.all([
+            this.#getDefaultGroups(),
+            this.#getDefaultLayout(),
+            this.#getCustomLayout()
+        ])
+        if (!DataHandler.canGetData() && !this.isGmInactiveUserNotified) {
             Logger.info('Cannot retrieve HUD layout without GM present', true)
             this.isGmInactiveUserNotified = true
         }
-        await this.#getSavedUserGroups()
-        if (this.actor) await this.#getSavedActorGroups()
+        await Promise.all([
+            this.#getSavedUserGroups(),
+            this.#getSavedActorGroups()
+        ])
         this.hud = await this.#prepareHud()
         await Promise.all([
             this.#buildSystemActions(),
@@ -305,9 +308,9 @@ export class ActionHandler {
      * @private
      */
     async #getCustomLayout () {
-        if (this.customLayoutSetting) {
-            this.customLayout = await DataHandler.getDataAsGm({ file: this.customLayoutSetting }) ?? null
-        }
+        if (this.customLayout) return
+        const file = this.userCustomLayoutSetting ?? this.customLayoutSetting ?? null
+        this.customLayout = (file) ? await DataHandler.getDataAsGm({ file }) : null
     }
 
     /**
@@ -334,7 +337,7 @@ export class ActionHandler {
 
         if (this.isSameActor && Object.entries(this.actorGroups).length) return
 
-        if (!this.isGmActive) {
+        if (!DataHandler.canGetData()) {
             this.actorGroups = {}
             return
         }
@@ -373,7 +376,7 @@ export class ActionHandler {
 
         if (Object.entries(this.userGroups).length) return
 
-        if (!this.isGmActive) {
+        if (!DataHandler.canGetData()) {
             this.userGroups = getUserGroups(layout)
             return
         }
@@ -387,11 +390,11 @@ export class ActionHandler {
 
     /**
      * Get first matching action group based on criteria
-     * @private
+     * @public
      * @param {object} [data = {}] The search data
      * @returns {array}            The groups
      */
-    #getGroup (data = {}) {
+    getGroup (data = {}) {
         if (data?.nestId) {
             return this.groups[data.nestId]
         } else {
@@ -474,7 +477,7 @@ export class ActionHandler {
      * @returns {object}         The group settings
      */
     async getGroupSettings (groupData) {
-        const group = this.#getGroup(groupData)
+        const group = this.getGroup(groupData)
         return group?.settings ?? null
     }
 
@@ -483,7 +486,7 @@ export class ActionHandler {
      * @param {object} groupData The group data
      */
     async saveGroupSettings (groupData) {
-        const group = this.#getGroup(groupData)
+        const group = this.getGroup(groupData)
         group.settings = { ...group.settings, ...groupData.settings }
         this.saveGroups({ saveActor: true, saveUser: true })
     }
@@ -581,7 +584,7 @@ export class ActionHandler {
             groupData.selected = groupData.selected ?? true
             groupData.order = order
 
-            const existingGroup = this.#getGroup(groupData)
+            const existingGroup = this.getGroup(groupData)
 
             if (existingGroup) {
                 Object.assign(existingGroup, groupData)
@@ -594,7 +597,7 @@ export class ActionHandler {
 
         // Update parent group settings
         if (parentGroupData?.settings) {
-            const existingParentGroup = this.#getGroup(parentGroupData)
+            const existingParentGroup = this.getGroup(parentGroupData)
             if (existingParentGroup) {
                 existingParentGroup.settings = parentGroupData.settings
             }
@@ -626,7 +629,7 @@ export class ActionHandler {
             this.actorGroups[group.nestId] = group
             actorGroups[group.nestId] = this.#getReducedGroupData(group, true)
         }
-        if (Utils.isGmActive()) {
+        if (DataHandler.canSaveData()) {
             await DataHandler.saveDataAsGm('actor', this.actor.id, actorGroups)
             Logger.debug('Actor groups saved', { actorGroups })
         } else {
@@ -649,7 +652,7 @@ export class ActionHandler {
                 userGroups[group.nestId] = this.#getReducedGroupData(group, false)
             }
         }
-        if (Utils.isGmActive()) {
+        if (DataHandler.canSaveData()) {
             await DataHandler.saveDataAsGm('user', game.userId, userGroups)
             Logger.debug('User groups saved', { userGroups })
         } else {
@@ -769,7 +772,7 @@ export class ActionHandler {
      * @param {object} groupData  The group data
      */
     async updateActions (actionsData, groupData) {
-        const group = this.#getGroup(groupData)
+        const group = this.getGroup(groupData)
         const actions = group.actions
 
         const reorderedActions = []
@@ -847,7 +850,7 @@ export class ActionHandler {
      * @returns {array}          The selected actions
      */
     async getSelectedActions (groupData) {
-        const group = this.#getGroup(groupData)
+        const group = this.getGroup(groupData)
         if (!group) return
         return group.actions
             .filter(action => action.selected === true)
@@ -1171,17 +1174,6 @@ export class ActionHandler {
     addFurtherActionHandler (handler) {
         Logger.debug('Adding further action handler...', { handler })
         this.furtherActionHandlers.push(handler)
-    }
-
-    /**
-     * Whether the compendium is linked
-     * @public
-     * @param {string} id
-     * @returns {boolean}
-     */
-    isLinkedCompendium (id) {
-        const group = this.#getGroup({ id })
-        return !!group
     }
 
     /**

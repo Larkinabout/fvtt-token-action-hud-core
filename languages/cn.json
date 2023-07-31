@@ -81,7 +81,7 @@
   "tokenActionHud.settings.clickOpenCategory.hint": "单击而非悬停打开分组",
   "tokenActionHud.settings.clickOpenCategory.name": "单击打开",
   "tokenActionHud.settings.customLayout.hint": "GM 设置：选择用作所有用户默认布局的布局。留空以使用系统布局",
-  "tokenActionHud.settings.customLayout.name": "默认布局",
+  "tokenActionHud.settings.customLayout.name": "全局默认布局",
   "tokenActionHud.settings.customStyle.hint": "自定义 HUD 样式。要启用，请将“样式”设置为“自定义”",
   "tokenActionHud.settings.customStyle.label": "自定义样式",
   "tokenActionHud.settings.customStyle.name": "自定义样式",
@@ -167,5 +167,7 @@
   "tokenActionHud.settings.tooltips.choices.nameOnly": "仅名称",
   "tokenActionHud.settings.tooltips.choices.none": "无工具提示",
   "tokenActionHud.settings.tooltips.hint": "在操作悬停时选择如何显示工具提示",
-  "tokenActionHud.settings.tooltips.name": "工具提示显示"
+  "tokenActionHud.settings.tooltips.name": "工具提示显示",
+  "tokenActionHud.settings.userCustomLayout.hint": "选择一个布局作为您的默认布局。留空使用系统布局",
+  "tokenActionHud.settings.userCustomLayout.name": "用户默认布局"
 }

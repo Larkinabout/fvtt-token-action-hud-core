@@ -85,7 +85,7 @@
   "tokenActionHud.settings.clickOpenCategory.hint": "Öffnet Gruppen durch einen Klick anstelle des darüber fahren",
   "tokenActionHud.settings.clickOpenCategory.name": "Klicken um zu öffnen",
   "tokenActionHud.settings.customLayout.hint": "SL-Einstellung: Wählen Sie ein Layout aus, das als Standard für alle Benutzer verwendet werden soll. Lassen Sie das Feld leer, um das Systemlayout zu verwenden",
-  "tokenActionHud.settings.customLayout.name": "Standardlayout",
+  "tokenActionHud.settings.customLayout.name": "Globales Standardlayout",
   "tokenActionHud.settings.customStyle.hint": "Passt das Design des HUD an. Zum aktivieren, lege das Design auf 'Custom' fest",
   "tokenActionHud.settings.customStyle.label": "Design anpassen",
   "tokenActionHud.settings.customStyle.name": "Design anpassen",
@@ -171,5 +171,7 @@
   "tokenActionHud.settings.tooltips.choices.nameOnly": "Nur NameNur Name",
   "tokenActionHud.settings.tooltips.choices.none": "Kein Tooltip",
   "tokenActionHud.settings.tooltips.hint": "Wähle aus, soweit verfügbar, wie Tooltips beim darüberfahren angezeigt werden",
-  "tokenActionHud.settings.tooltips.name": "Tooltip anzeige"
+  "tokenActionHud.settings.tooltips.name": "Tooltip anzeige",
+  "tokenActionHud.settings.userCustomLayout.hint": "Wählen Sie ein Layout als Standard aus. Leer lassen, um das System-Layout zu verwenden.",
+  "tokenActionHud.settings.userCustomLayout.name": "Benutzerdefiniertes Standard-Layout"
 }

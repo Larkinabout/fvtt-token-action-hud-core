@@ -56,7 +56,24 @@ export class DataHandler {
             })
     }
 
+    /**
+     * Whether the user can save data
+     * @returns {boolean} Whether the user can save data
+     */
+    static canSaveData () {
+        return (game.user.hasPermission('FILES_UPLOAD') || Utils.isGmActive())
+    }
+
+    /**
+     * Save data the GM
+     * @param {string} type The type: actor or user
+     * @param {string} id   The actor or user id
+     * @param {object} data The data
+     */
     static async saveDataAsGm (type, id, data) {
+        if (game.user.hasPermission('FILES_UPLOAD')) {
+            return await this.saveData(type, id, data)
+        }
         if (!Utils.isGmActive()) {
             Logger.info('Cannot save data without a GM present', true)
             return
@@ -86,11 +103,22 @@ export class DataHandler {
     }
 
     /**
+     * Whether the user can get data
+     * @returns {boolean} Whether the user can get data
+     */
+    static canGetData () {
+        return (game.user.hasPermission('FILES_BROWSE') || Utils.isGmActive())
+    }
+
+    /**
      * Get data as GM
      * @param {object} options The options: file, type, id
      * @returns {object}       The data
      */
     static async getDataAsGm (options) {
+        if (game.user.hasPermission('FILES_BROWSE')) {
+            return await this.getData(options)
+        }
         if (!Utils.isGmActive()) {
             Logger.info('Cannot get data without a GM present', true)
             return

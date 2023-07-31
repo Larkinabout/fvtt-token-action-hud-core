@@ -42,7 +42,8 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
     const isCompatible = await Utils.checkModuleCompatibility(systemModule.api.requiredCoreModuleVersion)
     if (!isCompatible) return
 
-    if (!game.modules.get('socketlib') || !game.modules.get('socketlib')?.active) {
+    const socketlibModule = game.modules.get('socketlib')
+    if (!socketlibModule || !socketlibModule.active) {
         Logger.error(
             'This module requires the \'socketlib\' module to be installed and enabled.',
             true
@@ -79,24 +80,22 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
 
 Hooks.on('tokenActionHudCoreReady', async () => {
     // If no supported color picker modules are active, for the first time only, display a notification
-    if (game.user.isGM) {
-        if (
-            !(game.modules.get('color-picker')?.active ?? false)
-        ) {
-            const firstStartup = Utils.getSetting('startup') === false
-            if (firstStartup) {
-                Logger.info(
-                    'To enable color pickers in this module\'s settings, install the \'Color Picker\' module.',
-                    true
-                )
-                Utils.setSetting('startup', true)
-            }
+    if (game.user.isGM && !(game.modules.get('color-picker')?.active ?? false)) {
+        const firstStartup = Utils.getSetting('startup') === false
+        if (firstStartup) {
+            Logger.info(
+                'To enable color pickers in this module\'s settings, install the \'Color Picker\' module.',
+                true
+            )
+            Utils.setSetting('startup', true)
         }
     }
 
     // Create directories for json data
     const enableCustomizationSetting = Utils.getSetting('enableCustomization')
-    if (enableCustomizationSetting && game.user.isGM) { await DataHandler.createDirectories() }
+    if (game.user.isGM && enableCustomizationSetting) {
+        await DataHandler.createDirectories()
+    }
 
     // Initialise MigrationManager
     const migrationManager = new MigrationManager(socket)
@@ -109,131 +108,66 @@ Hooks.on('tokenActionHudCoreReady', async () => {
         await game.tokenActionHud.init()
     }
 
-    // Set tokens variable
-    game.tokenActionHud.setTokens(canvas.tokens)
+    // Register the hooks using the callback function
+    Hooks.on('renderTokenActionHud', () => game.tokenActionHud.postRender())
+    Hooks.on('deleteActor', (actor, data) => handleHookEvent({ actor, data }, 'deleteActor'))
+    Hooks.on('updateActor', (actor, data) => handleHookEvent({ actor, data }, 'updateActor'))
+    Hooks.on('createActiveEffect', (activeEffect, options, userId) => handleHookEvent({ activeEffect, options, userId }, 'createActiveEffect'))
+    Hooks.on('deleteActiveEffect', (activeEffect, options, userId) => handleHookEvent({ activeEffect, options, userId }, 'deleteActiveEffect'))
+    Hooks.on('createCombat', (combat) => handleHookEvent({ combat }, 'createCombat'))
+    Hooks.on('deleteCombat', (combat) => handleHookEvent({ combat }, 'deleteCombat'))
+    Hooks.on('updateCombat', (combat) => handleHookEvent({ combat }, 'updateCombat'))
+    Hooks.on('updateCombatant', (combatant, data, options, userId) => handleHookEvent({ combatant, data, options, userId }, 'updateCombatant'))
+    Hooks.on('deleteCompendium', (source, html) => handleHookEvent({ source, html }, 'deleteCompendium'))
+    Hooks.on('renderCompendium', (source, html) => handleHookEvent({ source, html }, 'renderCompendium'))
+    Hooks.on('updateCompendium', (source, html) => handleHookEvent({ source, html }, 'updateCompendium'))
+    Hooks.on('createItem', (item) => handleHookEvent({ item }, 'createItem'))
+    Hooks.on('deleteItem', (item) => handleHookEvent({ item }, 'deleteItem'))
+    Hooks.on('updateItem', (item) => handleHookEvent({ item }, 'updateItem'))
+    Hooks.on('deleteMacro', () => handleHookEvent({}, 'deleteMacro'))
+    Hooks.on('updateMacro', () => handleHookEvent({}, 'updateMacro'))
+    Hooks.on('controlToken', (token, controlled) => handleHookEvent({ token, controlled }, 'controlToken'))
+    Hooks.on('deleteToken', (scene, token, change, userId) => handleHookEvent({ scene, token, change, userId }, 'deleteToken'))
+    Hooks.on('updateToken', (token, data, diff) => handleHookEvent({ token, data, diff }, 'updateToken'))
+    Hooks.on('closeSettingsConfig', () => handleHookEvent({}, 'closeSettingsConfig'))
+    Hooks.on('forceUpdateTokenActionHud', () => handleHookEvent({}, 'forceUpdateTokenActionHud'))
 
-    // Registers hooks to trigger a Token Action Hud update
-    Hooks.on('controlToken', async (token, controlled) => {
-        const trigger = { type: 'hook', name: 'controlToken', data: [token, controlled] }
-        game.tokenActionHud.update(trigger)
-    })
-
-    Hooks.on('updateToken', (token, data, diff) => {
-        // If it's an X or Y change, assume the token is just moving
-        if (Object.hasOwn(data, 'y') || Object.hasOwn(data, 'x')) return
-        if (game.tokenActionHud.isValidTokenChange(token, data)) {
-            const trigger = { type: 'hook', name: 'updateToken', data: [token, data, diff] }
-            game.tokenActionHud.update(trigger)
+    function handleHookEvent (hookData, hookName) {
+        const trigger = { type: 'hook', name: hookName, data: hookData }
+        switch (hookName) {
+        case 'deleteActor':
+        case 'updateActor':
+            if (!game.tokenActionHud.isValidActorOrItemUpdate(hookData.actor, hookData.data)) return
+            break
+        case 'createActiveEffect':
+        case 'deleteActiveEffect':
+            if (!game.tokenActionHud.isSelectedActor(hookData.activeEffect.parent)) return
+            break
+        case 'updateCombatant':
+            if (!game.tokenActionHud.isSelectedActor(hookData.combatant.actor)) return
+            break
+        case 'deleteCompendium':
+        case 'updateCompendium':
+            if (!game.tokenActionHud.actionHandler.compendiumActionHandler.isLinkedCompendium(hookData.source?.metadata?.id)) return
+            game.tokenActionHud.actionHandler.compendiumActionHandler.compendiumActions = new Map()
+            break
+        case 'createItem':
+        case 'deleteItem':
+        case 'updateItem':
+            if (!game.tokenActionHud.isValidActorOrItemUpdate(hookData.item?.actor)) return
+            break
+        case 'deleteMacro':
+        case 'updateMacro':
+            game.tokenActionHud.actionHandler.macroActionHandler.macroActions = null
+            break
+        case 'updateToken':
+            // If it's an X or Y change, assume the token is just moving
+            if (Object.hasOwn(hookData.data, 'y') || Object.hasOwn(hookData.data, 'x')) return
+            if (!game.tokenActionHud.isValidTokenChange(hookData.token, hookData.data)) return
+            break
         }
-    })
-
-    Hooks.on('deleteToken', (scene, token, change, userId) => {
-        if (game.tokenActionHud.isValidTokenChange(token)) {
-            const trigger = { type: 'hook', name: 'deleteToken', data: [scene, token, change, userId] }
-            game.tokenActionHud.update(trigger)
-        }
-    })
-
-    Hooks.on('updateActor', (actor, data) => {
-        if (game.tokenActionHud.isValidActorOrItemUpdate(actor, data)) {
-            const trigger = { type: 'hook', name: 'updateActor', data: [actor, data] }
-            game.tokenActionHud.update(trigger)
-        }
-    })
-
-    Hooks.on('deleteActor', (actor, data) => {
-        if (game.tokenActionHud.isValidActorOrItemUpdate(actor, data)) {
-            const trigger = { type: 'hook', name: 'deleteActor', data: [actor, data] }
-            game.tokenActionHud.update(trigger)
-        }
-    })
-
-    Hooks.on('deleteItem', (item) => {
-        const actor = item.actor
-        if (game.tokenActionHud.isValidActorOrItemUpdate(actor)) {
-            const trigger = { type: 'hook', name: 'deleteItem', data: [item] }
-            game.tokenActionHud.update(trigger)
-        }
-    })
-
-    Hooks.on('createItem', (item) => {
-        const actor = item.actor
-        if (game.tokenActionHud.isValidActorOrItemUpdate(actor)) {
-            const trigger = { type: 'hook', name: 'createItem', data: [item] }
-            game.tokenActionHud.update(trigger)
-        }
-    })
-
-    Hooks.on('updateItem', (item) => {
-        const actor = item.actor
-        if (game.tokenActionHud.isValidActorOrItemUpdate(actor)) {
-            const trigger = { type: 'hook', name: 'updateItem', data: [item] }
-            game.tokenActionHud.update(trigger)
-        }
-    })
-
-    Hooks.on('renderTokenActionHud', () => {
-        game.tokenActionHud.postRender()
-    })
-
-    Hooks.on('renderCompendium', (source, html) => {
-        const metadata = source?.metadata
-        if (game.tokenActionHud.isLinkedCompendium(`${metadata?.package}.${metadata?.name}`)) {
-            const trigger = { type: 'hook', name: 'renderCompendium', data: [source, html] }
-            game.tokenActionHud.update(trigger)
-        }
-    })
-
-    Hooks.on('deleteCompendium', (source, html) => {
-        const metadata = source?.metadata
-        if (game.tokenActionHud.isLinkedCompendium(`${metadata?.package}.${metadata?.name}`)) {
-            const trigger = { type: 'hook', name: 'deleteCompendium', data: [source, html] }
-            game.tokenActionHud.update(trigger)
-        }
-    })
-
-    Hooks.on('createCombat', (combat) => {
-        const trigger = { type: 'hook', name: 'createCombat', data: [combat] }
         game.tokenActionHud.update(trigger)
-    })
-
-    Hooks.on('deleteCombat', (combat) => {
-        const trigger = { type: 'hook', name: 'deleteCombat', data: [combat] }
-        game.tokenActionHud.update(trigger)
-    })
-
-    Hooks.on('updateCombat', (combat) => {
-        const trigger = { type: 'hook', name: 'updateCombat', data: [combat] }
-        game.tokenActionHud.update(trigger)
-    })
-
-    Hooks.on('updateCombatant', (combatant, data, options, userId) => {
-        if (!game.tokenActionHud.isSelectedActor(combatant.actor)) return
-        const trigger = { type: 'hook', name: 'updateCombatant', data: [combat, combatant] }
-        game.tokenActionHud.update(trigger)
-    })
-
-    Hooks.on('forceUpdateTokenActionHud', () => {
-        const trigger = { type: 'hook', name: 'forceUpdateTokenActionHud' }
-        game.tokenActionHud.update(trigger)
-    })
-
-    Hooks.on('createActiveEffect', (activeEffect, options, userId) => {
-        if (!game.tokenActionHud.isSelectedActor(activeEffect.parent)) return
-        const trigger = { type: 'hook', name: 'createActiveEffect' }
-        game.tokenActionHud.update(trigger)
-    })
-
-    Hooks.on('deleteActiveEffect', (activeEffect, options, userId) => {
-        if (!game.tokenActionHud.isSelectedActor(activeEffect.parent)) return
-        const trigger = { type: 'hook', name: 'deleteActiveEffect' }
-        game.tokenActionHud.update(trigger)
-    })
-
-    Hooks.on('closeSettingsConfig', () => {
-        const trigger = { type: 'hook', name: 'closeSettingsConfig' }
-        game.tokenActionHud.update(trigger)
-    })
+    }
 
     const trigger = { type: 'hook', name: 'canvasReady' }
     game.tokenActionHud.update(trigger)
@@ -243,18 +177,14 @@ Hooks.on('tokenActionHudCoreReady', async () => {
   * Move the HUD below the scene context menus
   */
 Hooks.on('renderSceneNavigation', (data, html) => {
-    html.find('li.scene.nav-item').contextmenu((ev) => {
-        sendHudToBottom()
-    })
+    html.find('li.scene.nav-item').contextmenu((ev) => sendHudToBottom())
 })
 
 /**
   * Move the HUD below the hotbar context menus
   */
 Hooks.on('renderHotbar', (data, html) => {
-    html.find('li.macro').contextmenu((ev) => {
-        sendHudToBottom()
-    })
+    html.find('li.macro').contextmenu((ev) => sendHudToBottom())
 })
 
 /**

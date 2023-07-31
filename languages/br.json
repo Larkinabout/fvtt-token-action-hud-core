@@ -81,7 +81,7 @@
     "tokenActionHud.settings.clickOpenCategory.hint": "Abrir grupos ao clicar em vez de passar o mouse",
     "tokenActionHud.settings.clickOpenCategory.name": "Clique para Abrir",
     "tokenActionHud.settings.customLayout.hint": "Configuração do GM: Selecione um layout para usar como padrão para todos os usuários. Deixe em branco para usar o layout do sistema",
-    "tokenActionHud.settings.customLayout.name": "Layout Padrão",
+    "tokenActionHud.settings.customLayout.name": "Layout Padrão Global",
     "tokenActionHud.settings.customStyle.hint": "Personalize o estilo do HUD. Para ativar, defina a configuração 'Estilo' como 'Personalizado'",
     "tokenActionHud.settings.customStyle.label": "Personalizar Estilo",
     "tokenActionHud.settings.customStyle.name": "Personalizar Estilo",
@@ -167,5 +167,7 @@
     "tokenActionHud.settings.tooltips.choices.nameOnly": "Apenas Nome",
     "tokenActionHud.settings.tooltips.choices.none": "Sem Tooltips",
     "tokenActionHud.settings.tooltips.hint": "Onde disponível, escolha como os tooltips são exibidos ao passar o mouse sobre as ações",
-    "tokenActionHud.settings.tooltips.name": "Exibição de Tooltip"
+    "tokenActionHud.settings.tooltips.name": "Exibição de Tooltip",
+    "tokenActionHud.settings.userCustomLayout.hint": "Selecione um layout para usar como padrão. Deixe em branco para usar o layout do sistema",
+    "tokenActionHud.settings.userCustomLayout.name": "Layout Padrão do Usuário"
 }

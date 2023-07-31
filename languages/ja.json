@@ -80,7 +80,7 @@
     "tokenActionHud.settings.clickOpenCategory.hint": "ホバーする代わりにクリックでグループを開く",
     "tokenActionHud.settings.clickOpenCategory.name": "クリックで開く",
     "tokenActionHud.settings.customLayout.hint": "GM設定: すべてのユーザーにデフォルトとして使用するレイアウトを選択します。システムのレイアウトを使用するには空白のままにします",
-    "tokenActionHud.settings.customLayout.name": "デフォルトのレイアウト",
+    "tokenActionHud.settings.customLayout.name": "グローバルデフォルトレイアウト",
     "tokenActionHud.settings.customStyle.hint": "HUDのスタイルをカスタマイズします。有効にするには、「スタイル」設定を「カスタム」に設定します",
     "tokenActionHud.settings.customStyle.label": "スタイルのカスタマイズ",
     "tokenActionHud.settings.customStyle.name": "スタイルのカスタマイズ",
@@ -166,5 +166,7 @@
     "tokenActionHud.settings.tooltips.choices.nameOnly": "名前のみ",
     "tokenActionHud.settings.tooltips.choices.none": "ツールチップなし",
     "tokenActionHud.settings.tooltips.hint": "利用可能な場合、アクションをホバーしたときに表示されるツールチップの表示方法を選択します",
-    "tokenActionHud.settings.tooltips.name": "ツールチップの表示"
+    "tokenActionHud.settings.tooltips.name": "ツールチップの表示",
+    "tokenActionHud.settings.userCustomLayout.hint": "デフォルトとして使用するレイアウトを選択します。システムレイアウトを使用する場合は空白のままにしてください",
+    "tokenActionHud.settings.userCustomLayout.name": "ユーザーデフォルトレイアウト"
 }

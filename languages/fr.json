@@ -81,7 +81,7 @@
     "tokenActionHud.settings.clickOpenCategory.hint": "Ouvrir les groupes en cliquant au lieu de survoler",
     "tokenActionHud.settings.clickOpenCategory.name": "Clic pour ouvrir",
     "tokenActionHud.settings.customLayout.hint": "Paramètre MJ : Sélectionnez un layout à utiliser par défaut pour tous les utilisateurs. Laissez vide pour utiliser le layout du système",
-    "tokenActionHud.settings.customLayout.name": "Layout par défaut",
+    "tokenActionHud.settings.customLayout.name": "Layout par défaut globale",
     "tokenActionHud.settings.customStyle.hint": "Personnalisez le style du HUD. Pour activer, définissez le paramètre 'Style' sur 'Personnalisé'",
     "tokenActionHud.settings.customStyle.label": "Personnaliser le style",
     "tokenActionHud.settings.customStyle.name": "Personnaliser le style",
@@ -167,5 +167,7 @@
     "tokenActionHud.settings.tooltips.choices.nameOnly": "Uniquement le nom",
     "tokenActionHud.settings.tooltips.choices.none": "Pas de tooltip",
     "tokenActionHud.settings.tooltips.hint": "Lorsque disponible, choisissez comment les tooltips sont affichés lorsque les actions sont survolées",
-    "tokenActionHud.settings.tooltips.name": "Affichage des tooltips"
+    "tokenActionHud.settings.tooltips.name": "Affichage des tooltips",
+    "tokenActionHud.settings.userCustomLayout.hint": "Sélectionnez une disposition à utiliser par défaut. Laissez vide pour utiliser la disposition du système",
+    "tokenActionHud.settings.userCustomLayout.name": "Layout par défaut de l'utilisateur"
 }

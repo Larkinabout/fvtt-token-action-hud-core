@@ -115,9 +115,7 @@ export class TagDialog extends FormApplication {
                 }
 
                 if (tags.available) tagifyOptions.whitelist = tags.available
-console.log(`!! tag-dialog - 0`)
                 TagDialog.tagify = new Tagify($tagFilter[0], tagifyOptions)
-console.log(`!! tag-dialog - 1`)
 
                 if (tags.selected) TagDialog.tagify.addTags(tags.selected)
 

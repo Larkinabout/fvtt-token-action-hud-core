@@ -81,7 +81,7 @@
     "tokenActionHud.settings.clickOpenCategory.hint": "Open groups by clicking instead of hovering",
     "tokenActionHud.settings.clickOpenCategory.name": "Click to Open",
     "tokenActionHud.settings.customLayout.hint": "GM setting: Select a layout to use as the default for all users. Leave blank to use the system layout",
-    "tokenActionHud.settings.customLayout.name": "Default Layout",
+    "tokenActionHud.settings.customLayout.name": "Global Default Layout",
     "tokenActionHud.settings.customStyle.hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",
     "tokenActionHud.settings.customStyle.label": "Customise Style",
     "tokenActionHud.settings.customStyle.name": "Customise Style",
@@ -167,5 +167,7 @@
     "tokenActionHud.settings.tooltips.choices.nameOnly": "Name Only",
     "tokenActionHud.settings.tooltips.choices.none": "No Tooltips",
     "tokenActionHud.settings.tooltips.hint": "Where available, choose how tooltips are displayed when actions are hovered",
-    "tokenActionHud.settings.tooltips.name": "Tooltip Display"
+    "tokenActionHud.settings.tooltips.name": "Tooltip Display",
+    "tokenActionHud.settings.userCustomLayout.hint": "Select a layout to use as your default. Leave blank to use the system layout",
+    "tokenActionHud.settings.userCustomLayout.name": "User Default Layout"
 }

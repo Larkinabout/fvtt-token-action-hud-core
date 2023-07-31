@@ -85,6 +85,14 @@ export const registerSettings = function (systemManager, rollHandlers) {
         type: String
     })
 
+    game.settings.register(MODULE.ID, 'userCustomLayout', {
+        name: Utils.i18n('tokenActionHud.settings.userCustomLayout.name'),
+        hint: Utils.i18n('tokenActionHud.settings.userCustomLayout.hint'),
+        scope: 'client',
+        config: false,
+        type: String
+    })
+
     game.settings.register(MODULE.ID, 'direction', {
         name: Utils.i18n('tokenActionHud.settings.direction.name'),
         hint: Utils.i18n('tokenActionHud.settings.direction.hint'),

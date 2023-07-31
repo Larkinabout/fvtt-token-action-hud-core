@@ -6,9 +6,11 @@ import { Utils } from '../utils.js'
  */
 export class MacroActionHandler {
     actionHandler
+    macroActions
 
     constructor (actionHandler) {
         this.actionHandler = actionHandler
+        this.macroActions = null
     }
 
     /**
@@ -16,9 +18,13 @@ export class MacroActionHandler {
      * @override
      */
     async buildMacroActions () {
-        const groupData = { id: 'macros', type: 'core' }
-        const actionsData = await this._getActions()
-        this.actionHandler.addActions(actionsData, groupData)
+        if (!this.macroActions) {
+            const groupData = { id: 'macros', type: 'core' }
+            const actionsData = await this.#getActions()
+            this.macroActions = { actionsData, groupData }
+        }
+
+        this.actionHandler.addActions(this.macroActions.actionsData, this.macroActions.groupData)
     }
 
     /**
@@ -26,7 +32,7 @@ export class MacroActionHandler {
      * @private
      * @returns {object} The actions
      */
-    async _getActions () {
+    async #getActions () {
         const actionType = 'macro'
         const macros = game.macros.filter((macro) => {
             const permissions = macro.ownership

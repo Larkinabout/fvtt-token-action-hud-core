@@ -21,7 +21,9 @@
     --tah-button-toggle-hover-background-color: #ffffff00;
     --tah-button-toggle-hover-box-shadow: inset 0 0 25px #9b8dff,
         inset 0 0 5px #9b8dff;
-    --tah-text-disabled-color: var(--tah-text-secondary-color);
+    --tah-subtitle-icon-color: #000000;
+    --tah-subtitle-hover-icon-color: #000000;
+    --tah-text-disabled-color: var(--color-text-light-7);
     --tah-text-primary-color: #000000;
     --tah-text-secondary-color: #000000;
     --tah-text-tertiary-color: #000000;
@@ -413,6 +415,14 @@
 .tah-subtitle:hover {
     color: var(--tah-text-hover-primary-color);
     cursor: pointer;
+}
+
+.tah-subtitle > i {
+    color: var(--tah-subtitle-icon-color);
+}
+
+.tah-subtitle:hover > i {
+    color: var(--tah-subtitle-hover-icon-color);
 }
 
 .tah-subtitle-text {

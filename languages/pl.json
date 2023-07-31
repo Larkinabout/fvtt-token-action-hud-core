@@ -81,7 +81,7 @@
     "tokenActionHud.settings.clickOpenCategory.hint": "Otwórz grupy poprzez kliknięcie, a nie najechanie",
     "tokenActionHud.settings.clickOpenCategory.name": "Kliknij, aby otworzyć",
     "tokenActionHud.settings.customLayout.hint": "Ustawienia MG: Wybierz układ do użycia jako domyślny dla wszystkich użytkowników. Pozostaw puste, aby użyć domyślnego układu systemowego",
-    "tokenActionHud.settings.customLayout.name": "Domyślny układ",
+    "tokenActionHud.settings.customLayout.name": "Globalny układ domyślny",
     "tokenActionHud.settings.customStyle.hint": "Dostosuj styl HUD-a. Aby włączyć, ustaw opcję 'Styl' na 'Niestandardowy'",
     "tokenActionHud.settings.customStyle.label": "Dostosuj styl",
     "tokenActionHud.settings.customStyle.name": "Dostosuj styl",
@@ -167,5 +167,7 @@
     "tokenActionHud.settings.tooltips.choices.nameOnly": "Tylko nazwa",
     "tokenActionHud.settings.tooltips.choices.none": "Bez opisów",
     "tokenActionHud.settings.tooltips.hint": "Wybierz, jak mają być wyświetlane opisy narzędzi po najechaniu na działania",
-    "tokenActionHud.settings.tooltips.name": "Wyświetlanie opisów narzędzi"
+    "tokenActionHud.settings.tooltips.name": "Wyświetlanie opisów narzędzi",
+    "tokenActionHud.settings.userCustomLayout.hint": "Wybierz układ do użycia jako domyślny. Pozostaw puste, aby użyć układu systemowego",
+    "tokenActionHud.settings.userCustomLayout.name": "Układ domyślny użytkownika"
 }
