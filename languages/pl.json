@@ -161,6 +161,8 @@
     "tokenActionHud.settings.rollHandler.name": "Obsługa rzutów",
     "tokenActionHud.settings.scale.hint": "Dostosuj skalę HUD-a (1 to domyślna wartość)",
     "tokenActionHud.settings.scale.name": "Skala HUD-a",
+    "tokenActionHud.settings.sortActions.hint": "Wybierz, czy domyślnie sortować akcje alfabetycznie",
+    "tokenActionHud.settings.sortActions.name": "Sortuj Akcje Alfabetycznie",
     "tokenActionHud.settings.style.hint": "Ustaw styl HUD-a",
     "tokenActionHud.settings.style.name": "Styl",
     "tokenActionHud.settings.tooltips.choices.full": "Pełny opis",

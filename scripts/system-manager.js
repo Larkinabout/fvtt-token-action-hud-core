@@ -23,9 +23,9 @@ export class SystemManager {
      * Register default flags
      * @public
      */
-    async registerDefaultFlags () {
-        await Utils.unsetUserFlag('default')
+    async registerDefaults () {
         const defaults = await this.doRegisterDefaultFlags() ?? []
+        Hooks.callAll('tokenActionHudCoreRegisterDefaults', defaults)
         if (defaults) {
             if (defaults?.categories) {
                 globalThis.logger.warn('Token Action HUD | SystemManager.doRegisterDefaultFlags expects \'layout\' to be returned instead of \'categories\'')
@@ -54,7 +54,9 @@ export class SystemManager {
      * @param {ActionHandler} actionHandler The ActionHandler class
      */
     addActionExtenders (actionHandler) {
-        if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) { actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler)) }
+        if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) {
+            actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler))
+        }
     }
 
     /**
@@ -106,5 +108,12 @@ export class SystemManager {
             const title = Utils.getModuleTitle(id)
             mergeObject(choices, { [id]: title })
         }
+    }
+
+    /** DEPRECATED */
+
+    addActionsToActionList (actionsData, groupData) {
+        globalThis.logger.warn('Token Action HUD | ActionHandler.addActionsToActionList is deprecated. Use ActionHandler.addActions')
+        this.addActions(actionsData, groupData)
     }
 }

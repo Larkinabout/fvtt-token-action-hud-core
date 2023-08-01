@@ -161,6 +161,8 @@
     "tokenActionHud.settings.rollHandler.name": "Roll Handler",
     "tokenActionHud.settings.scale.hint": "Adjust the scale of the HUD (1 is the default)",
     "tokenActionHud.settings.scale.name": "HUD Scale",
+    "tokenActionHud.settings.sortActions.hint": "Choose whether to sort actions in alphabetical order by default",
+    "tokenActionHud.settings.sortActions.name": "Sort Actions Alphabetically",
     "tokenActionHud.settings.style.hint": "Set the style of the HUD",
     "tokenActionHud.settings.style.name": "Style",
     "tokenActionHud.settings.tooltips.choices.full": "Full Tooltip",

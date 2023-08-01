@@ -161,6 +161,8 @@
     "tokenActionHud.settings.rollHandler.name": "Manipulador de Rolagem",
     "tokenActionHud.settings.scale.hint": "Ajustar a escala do HUD (1 é o padrão)",
     "tokenActionHud.settings.scale.name": "Escala do HUD",
+    "tokenActionHud.settings.sortActions.hint": "Escolha se deseja classificar as ações em ordem alfabética por padrão",
+    "tokenActionHud.settings.sortActions.name": "Classificar Ações Alfabeticamente",
     "tokenActionHud.settings.style.hint": "Definir o estilo do HUD",
     "tokenActionHud.settings.style.name": "Estilo",
     "tokenActionHud.settings.tooltips.choices.full": "Tooltip Completo",

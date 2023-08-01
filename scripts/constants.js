@@ -226,6 +226,7 @@ export const SETTING = {
     renderItemOnRightClick: {},
     rollHandler: { default: 'core' },
     scale: { classes: ['TokenActionHud'], variable: 'scaleSetting' },
+    sortActions: { classes: ['ActionHandler'], variable: 'sortActionsSetting' },
     startup: {},
     style: {},
     tooltips: { classes: ['ActionHandler'], variable: 'tooltipsSetting' },

@@ -160,6 +160,8 @@
     "tokenActionHud.settings.rollHandler.name": "롤 처리기",
     "tokenActionHud.settings.scale.hint": "HUD의 크기를 조정합니다 (기본값은 1입니다)",
     "tokenActionHud.settings.scale.name": "HUD 크기",
+    "tokenActionHud.settings.sortActions.hint": "기본적으로 알파벳 순서로 작업을 정렬할지 여부를 선택하십시오",
+    "tokenActionHud.settings.sortActions.name": "알파벳 순서로 작업 정렬",
     "tokenActionHud.settings.style.hint": "HUD의 스타일을 설정합니다",
     "tokenActionHud.settings.style.name": "스타일",
     "tokenActionHud.settings.tooltips.choices.full": "전체 툴팁",

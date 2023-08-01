@@ -161,6 +161,8 @@
     "tokenActionHud.settings.rollHandler.name": "Gestionnaire de jets",
     "tokenActionHud.settings.scale.hint": "Ajuster l'échelle du HUD (1 est la valeur par défaut)",
     "tokenActionHud.settings.scale.name": "Échelle du HUD",
+    "tokenActionHud.settings.sortActions.hint": "Choisissez si vous souhaitez trier les actions par ordre alphabétique par défaut",
+    "tokenActionHud.settings.sortActions.name": "Trier les Actions par Ordre Alphabétique",
     "tokenActionHud.settings.style.hint": "Définir le style du HUD",
     "tokenActionHud.settings.style.name": "Style",
     "tokenActionHud.settings.tooltips.choices.full": "Tooltip complet",

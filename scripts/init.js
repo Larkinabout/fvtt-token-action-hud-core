@@ -108,7 +108,7 @@ Hooks.on('tokenActionHudCoreReady', async () => {
         await game.tokenActionHud.init()
     }
 
-    // Register the hooks using the callback function
+    // Register hooks
     Hooks.on('renderTokenActionHud', () => game.tokenActionHud.postRender())
     Hooks.on('deleteActor', (actor, data) => handleHookEvent({ actor, data }, 'deleteActor'))
     Hooks.on('updateActor', (actor, data) => handleHookEvent({ actor, data }, 'updateActor'))

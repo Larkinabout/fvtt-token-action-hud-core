@@ -26,16 +26,16 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
 
         switch (actionType) {
         case 'compendiumEntry':
-            this._handleCompendium(key, actionId)
+            this.#handleCompendium(key, actionId)
             break
         case 'compendiumMacro':
-            this._handleMacroCompendium(key, actionId)
+            this.#handleMacroCompendium(key, actionId)
             break
         case 'compendiumPlaylist':
-            this._handlePlaylistCompendium(key, actionId)
+            this.#handlePlaylistCompendium(key, actionId)
             break
         case 'macro':
-            this._handleMacro(actionId)
+            this.#handleMacro(actionId)
             break
         default:
             return false
@@ -50,7 +50,7 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
      * @param {string} compendiumKey The compendium key
      * @param {string} actionId      The action id
      */
-    _handleCompendium (compendiumKey, actionId) {
+    #handleCompendium (compendiumKey, actionId) {
         const pack = game.packs.get(compendiumKey)
         pack.getDocument(actionId).then((entity) => entity.sheet.render(true))
     }
@@ -61,7 +61,7 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
      * @param {string} compendiumKey The compendium key
      * @param {string} actionId      The action id
      */
-    _handleMacroCompendium (compendiumKey, actionId) {
+    #handleMacroCompendium (compendiumKey, actionId) {
         const pack = game.packs.get(compendiumKey)
         pack.getDocument(actionId).then((entity) => entity.execute())
     }
@@ -72,7 +72,7 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
      * @param {string} compendiumKey The compendium key
      * @param {string} actionId      The action id
      */
-    async _handlePlaylistCompendium (compendiumKey, actionId) {
+    async #handlePlaylistCompendium (compendiumKey, actionId) {
         const pack = game.packs.get(compendiumKey)
         const actionPayload = actionId.split('>')
         const playlistId = actionPayload[0]
@@ -85,9 +85,9 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
     /**
      * Handle macro
      * @private
-     * @param {*} actionId The action id
+     * @param {string} actionId The action id
      */
-    _handleMacro (actionId) {
-        game.macros.find((macro) => macro.id === actionId).execute()
+    #handleMacro (actionId) {
+        game.macros.get(actionId).execute()
     }
 }

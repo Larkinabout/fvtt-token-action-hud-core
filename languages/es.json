@@ -161,6 +161,8 @@
     "tokenActionHud.settings.rollHandler.name": "Manejador de Lanzamientos",
     "tokenActionHud.settings.scale.hint": "Ajustar la escala del HUD (1 es el predeterminado)",
     "tokenActionHud.settings.scale.name": "Escala del HUD",
+    "tokenActionHud.settings.sortActions.hint": "Elige si quieres ordenar las acciones en orden alfabético por defecto",
+    "tokenActionHud.settings.sortActions.name": "Ordenar Acciones Alfabéticamente",
     "tokenActionHud.settings.style.hint": "Establece el estilo del HUD",
     "tokenActionHud.settings.style.name": "Estilo",
     "tokenActionHud.settings.tooltips.choices.full": "Tooltip Completo",

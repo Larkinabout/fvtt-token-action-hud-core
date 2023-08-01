@@ -1,5 +1,5 @@
 import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
-import { CategoryResizer } from './category-resizer.js'
+import { GroupResizer } from './group-resizer.js'
 import { DataHandler } from './data-handler.js'
 import { CSS_STYLE, SETTING, TEMPLATE } from './constants.js'
 import { Logger, Timer, Utils } from './utils.js'
@@ -67,7 +67,7 @@ export class TokenActionHud extends Application {
         this.hudPosition = Utils.getUserFlag('position')
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
 
-        await this.systemManager.registerDefaultFlags()
+        await this.systemManager.registerDefaults()
 
         this.actionHandler = await this.systemManager.getActionHandler()
 
@@ -80,7 +80,7 @@ export class TokenActionHud extends Application {
         this.actionHandler.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
         this.actionHandler.tooltipsSetting = Utils.getSetting('tooltips')
 
-        this.categoryResizer = new CategoryResizer()
+        this.GroupResizer = new GroupResizer()
         this.rollHandler = this.systemManager.getRollHandler()
     }
 
@@ -225,7 +225,7 @@ export class TokenActionHud extends Application {
         if (this.hoveredGroups.length) {
             for (const groupId of this.hoveredGroups) {
                 const group = document.querySelector(`#${groupId}`)
-                this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.gridSetting)
+                this.GroupResizer.resizeGroup(this.actionHandler, group, this.autoDirection, this.gridSetting)
             }
         }
     }
@@ -269,7 +269,7 @@ export class TokenActionHud extends Application {
                 }
                 sibling = sibling.nextElementSibling
             }
-            this.categoryResizer.resizeCategory(this.actionHandler, group, this.autoDirection, this.gridSetting)
+            this.GroupResizer.resizeGroup(this.actionHandler, group, this.autoDirection, this.gridSetting)
             this.#setHoveredGroup(group.id)
         }
 
@@ -420,7 +420,7 @@ export class TokenActionHud extends Application {
             if (groupsElement?.classList.contains('tah-hidden')) {
                 toggleGroupVisibility()
                 saveGroupSettings(false)
-                this.categoryResizer.resizeCategory(this.actionHandler, tabGroup, this.autoDirection, this.gridSetting)
+                this.GroupResizer.resizeGroup(this.actionHandler, tabGroup, this.autoDirection, this.gridSetting)
             } else {
                 toggleGroupVisibility()
                 saveGroupSettings(true)

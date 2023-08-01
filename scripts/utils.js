@@ -485,7 +485,7 @@ export class Utils {
      * @param {object} systemModuleCoreModuleVersion The system module's required core module version
      * @returns {boolean}
      */
-    static async checkModuleCompatibility (requiredCoreModuleVersion) {
+    static checkModuleCompatibility (requiredCoreModuleVersion) {
         // Get core module version in parts
         const requiredCoreModuleVersionParts = this.getModuleVersionParts(requiredCoreModuleVersion)
         const coreModuleVersionParts = this.getModuleVersionParts(game.modules.get(MODULE.ID).version)

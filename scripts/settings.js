@@ -233,6 +233,18 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
+    game.settings.register(MODULE.ID, 'sortActions', {
+        name: Utils.i18n('tokenActionHud.settings.sortActions.name'),
+        hint: Utils.i18n('tokenActionHud.settings.sortActions.hint'),
+        scope: 'client',
+        config: true,
+        type: Boolean,
+        default: false,
+        onChange: (value) => {
+            onChangeFunction('sortActions', value)
+        }
+    })
+
     game.settings.register(MODULE.ID, 'displayIcons', {
         name: Utils.i18n('tokenActionHud.settings.displayIcons.name'),
         hint: Utils.i18n('tokenActionHud.settings.displayIcons.hint'),

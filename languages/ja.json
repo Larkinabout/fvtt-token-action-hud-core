@@ -160,6 +160,8 @@
     "tokenActionHud.settings.rollHandler.name": "ロールハンドラー",
     "tokenActionHud.settings.scale.hint": "HUDのスケールを調整します（1がデフォルトです）",
     "tokenActionHud.settings.scale.name": "HUDのスケール",
+    "tokenActionHud.settings.sortActions.hint": "デフォルトでアクションをアルファベット順に並べるかどうかを選択します",
+    "tokenActionHud.settings.sortActions.name": "アルファベット順にアクションを並べ替える",
     "tokenActionHud.settings.style.hint": "HUDのスタイルを設定します",
     "tokenActionHud.settings.style.name": "スタイル",
     "tokenActionHud.settings.tooltips.choices.full": "完全なツールチップ",

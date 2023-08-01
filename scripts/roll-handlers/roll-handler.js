@@ -30,8 +30,8 @@ export class RollHandler {
     async handleActionEvent (event, encodedValue, actionHandler) {
         Logger.debug(`Handling event for action [${encodedValue}]`, { event })
         // Update variables with current action context
-        this.actor = actionHandler.actor;
-        this.token = actionHandler.token;
+        this.actor = actionHandler.actor
+        this.token = actionHandler.token
 
         this.registerKeyPresses(event)
 
@@ -44,8 +44,8 @@ export class RollHandler {
 
         if (handled) return
 
-        if (this._isGenericAction(encodedValue)) {
-            await this._handleGenericAction(encodedValue)
+        if (this.#isGenericAction(encodedValue)) {
+            await this.#handleGenericAction(encodedValue)
         } else {
             this.doHandleActionEvent(event, encodedValue)
         }
@@ -64,9 +64,7 @@ export class RollHandler {
      * @param {object} handler The roll handler
      */
     addPreRollHandler (handler) {
-        Logger.debug(
-            `Adding pre-roll handler ${handler.constructor.name}`
-        )
+        Logger.debug(`Adding pre-roll handler ${handler.constructor.name}`)
         this.preRollHandlers.push(handler)
     }
 
@@ -174,7 +172,7 @@ export class RollHandler {
      * @param {string} encodedValue The encoded value
      * @returns {boolean}           Whether the action is a generic action
      */
-    _isGenericAction (encodedValue) {
+    #isGenericAction (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
 
         const actionType = payload[0]
@@ -188,7 +186,7 @@ export class RollHandler {
      * @private
      * @param {string} encodedValue The encoded value
      */
-    async _handleGenericAction (encodedValue) {
+    async #handleGenericAction (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
         const actionId = payload[1]
 

@@ -165,6 +165,8 @@
     "tokenActionHud.settings.rollHandler.name": "Gestore Tiri",
     "tokenActionHud.settings.scale.hint": "Regola la scala dell'Hud (1 è il valore predefinito)",
     "tokenActionHud.settings.scale.name": "Scala HUD",
+    "tokenActionHud.settings.sortActions.hint": "Scegli se ordinare le azioni in ordine alfabetico per impostazione predefinita",
+    "tokenActionHud.settings.sortActions.name": "Ordina Azioni Alfabeticamente",
     "tokenActionHud.settings.style.hint": "Imposta lo stile dell'Hud",
     "tokenActionHud.settings.style.name": "Stile",
     "tokenActionHud.settings.tooltips.choices.full": "Tooltip Completo",

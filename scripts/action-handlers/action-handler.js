@@ -2,7 +2,7 @@ import { DataHandler } from '../data-handler.js'
 import { GenericActionHandler } from './generic-action-handler.js'
 import { CompendiumActionHandler } from './compendium-action-handler.js'
 import { MacroActionHandler } from './macro-action-handler.js'
-import { COMPENDIUM_PACK_TYPES, DELIMITER, GROUP_TYPE, MODULE } from '../constants.js'
+import { COMPENDIUM_PACK_TYPES, DELIMITER, GROUP_TYPE } from '../constants.js'
 import { Logger, Utils } from '../utils.js'
 
 /**
@@ -26,11 +26,12 @@ export class ActionHandler {
         this.actorGroups = {}
         this.userGroups = {}
         this.actions = []
-        this.availableActions = []
+        this.availableActionsMap = new Map()
         this.customLayoutSetting = Utils.getSetting('customLayout')
         this.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
         this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
         this.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
+        this.sortActionsSettings = Utils.getSetting('sortActions')
         this.tooltipsSetting = Utils.getSetting('tooltips')
     }
 
@@ -45,7 +46,7 @@ export class ActionHandler {
         this.defaultLayout = {}
         this.groups = {}
         this.actions = []
-        this.availableActions = []
+        this.availableActionsMap = new Map()
     }
 
     /**
@@ -99,11 +100,10 @@ export class ActionHandler {
             this.#buildCompendiumActions(),
             this.#buildMacroActions()
         ])
-        await this.buildFurtherActions()
-        await this.#updateNonPresetActions()
-        await this.#setHasActions()
-        await this.#sortAvailableActions()
-        await this.#setCharacterLimit()
+        this.buildFurtherActions()
+        this.#updateNonPresetActions()
+        this.#setHasActions()
+        this.#setCharacterLimit()
         await this.saveGroups(options)
         Logger.debug('HUD built', { hud: this.hud, actor: this.actor, token: this.token })
         return this.hud
@@ -242,7 +242,7 @@ export class ActionHandler {
      * Build further actions
      * @private
      */
-    async buildFurtherActions () {
+    buildFurtherActions () {
         this.furtherActionHandlers.forEach(handler => handler.extendActionList())
     }
 
@@ -250,14 +250,16 @@ export class ActionHandler {
      * Update non-preset actions
      * @private
      */
-    async #updateNonPresetActions () {
+    #updateNonPresetActions () {
         const nonPresetActions = this.actions.filter(action => !action?.isPreset)
-        for (const action of nonPresetActions) {
-            const availableAction = this.availableActions.find(availableAction => availableAction.id === action.id)
+
+        for (const nonPresetAction of nonPresetActions) {
+            const availableAction = this.availableActionsMap.get(nonPresetAction.id)
+
             if (availableAction) {
-                const systemSelected = availableAction.systemSelected ?? action.systemSelected
-                const userSelected = action.userSelected ?? availableAction.userSelected
-                Object.assign(action, this.#createAction({ ...availableAction, systemSelected, userSelected }))
+                const systemSelected = availableAction.systemSelected ?? nonPresetAction.systemSelected
+                const userSelected = nonPresetAction.userSelected ?? availableAction.userSelected
+                Object.assign(nonPresetAction, this.#createAction({ ...availableAction, systemSelected, userSelected }))
             }
         }
     }
@@ -266,7 +268,7 @@ export class ActionHandler {
      * Set property to indicate whether a group has actions within it
      * @private
      */
-    async #setHasActions () {
+    #setHasActions () {
         for (const group of Object.values(this.groups)) {
             if (group.actions.some(action => action.selected)) {
                 group.hasActions = true
@@ -280,7 +282,7 @@ export class ActionHandler {
      * Get the default groups
      * @private
      */
-    async #getDefaultGroups () {
+    #getDefaultGroups () {
         const defaultGroups = (game.tokenActionHud.defaults?.groups?.length)
             ? game.tokenActionHud.defaults?.groups
             : game.tokenActionHud.defaults?.subcategories
@@ -476,7 +478,7 @@ export class ActionHandler {
      * @param {object} groupData The group data
      * @returns {object}         The group settings
      */
-    async getGroupSettings (groupData) {
+    getGroupSettings (groupData) {
         const group = this.getGroup(groupData)
         return group?.settings ?? null
     }
@@ -485,7 +487,7 @@ export class ActionHandler {
      * Save group settings
      * @param {object} groupData The group data
      */
-    async saveGroupSettings (groupData) {
+    saveGroupSettings (groupData) {
         const group = this.getGroup(groupData)
         group.settings = { ...group.settings, ...groupData.settings }
         this.saveGroups({ saveActor: true, saveUser: true })
@@ -555,7 +557,7 @@ export class ActionHandler {
      * @param {array|object} groupsData         The groups data
      * @param {object} [parentGroupData = null] The parent group data
      */
-    async updateGroups (groupsData, parentGroupData) {
+    updateGroups (groupsData, parentGroupData) {
         if (!Array.isArray(groupsData)) groupsData = [groupsData]
 
         const level = (parentGroupData?.level ?? 0) + 1
@@ -771,7 +773,7 @@ export class ActionHandler {
      * @param {array} actionsData The actions data
      * @param {object} groupData  The group data
      */
-    async updateActions (actionsData, groupData) {
+    updateActions (actionsData, groupData) {
         const group = this.getGroup(groupData)
         const actions = group.actions
 
@@ -786,7 +788,7 @@ export class ActionHandler {
                 const actionClone = { ...existingAction, userSelected: true }
                 reorderedActions.push(actionClone)
             } else {
-                const availableAction = this.availableActions.find(action => action.id === actionData.id)
+                const availableAction = this.availableActionsMap.get(actionData.id)
                 if (availableAction) {
                     const actionClone = { ...availableAction, userSelected: true }
                     reorderedActions.push(actionClone)
@@ -805,7 +807,7 @@ export class ActionHandler {
         }
 
         // Sort actions alphabetically
-        if (groupData.settings.sort) {
+        if (groupData?.settings?.sort || (typeof groupData?.settings?.sort === 'undefined' && this.sortActionsSettings)) {
             reorderedActions.sort((a, b) => a.name.localeCompare(b.name))
         }
 
@@ -816,21 +818,12 @@ export class ActionHandler {
     /**
      * Add to available actions
      * @private
-     * @param {array} actions The actions
+     * @param {array} actionsMap The actions
      */
-    #addToAvailableActions (actions) {
-        for (const action of actions) {
-            const existingAction = this.availableActions.find(availableAction => availableAction.id === action.id)
-            if (!existingAction) this.availableActions.push(action)
-        }
-    }
-
-    /**
-     * Sort available actions
-     * @private
-     */
-    async #sortAvailableActions () {
-        this.availableActions.sort((a, b) => a.listName.localeCompare(b.listName))
+    #addToAvailableActions (actionsMap) {
+        actionsMap.forEach((action, actionId) => {
+            if (!this.availableActionsMap.has(actionId)) this.availableActionsMap.set(actionId, action)
+        })
     }
 
     /**
@@ -839,8 +832,8 @@ export class ActionHandler {
      * @param {object} groupData The group data
      * @returns {array}          The available actions
      */
-    async getAvailableActions () {
-        return this.availableActions.map(action => this.#toActionTagifyEntry(action))
+    getAvailableActions () {
+        return [...this.availableActionsMap.values()].map(action => this.#toActionTagifyEntry(action)).sort((a, b) => a.value.localeCompare(b.value))
     }
 
     /**
@@ -849,7 +842,7 @@ export class ActionHandler {
      * @param {object} groupData The group data
      * @returns {array}          The selected actions
      */
-    async getSelectedActions (groupData) {
+    getSelectedActions (groupData) {
         const group = this.getGroup(groupData)
         if (!group) return
         return group.actions
@@ -863,7 +856,7 @@ export class ActionHandler {
      * @param {object} groupData The group data
      * @returns {object}         The selected groups
      */
-    async getSelectedGroups (groupData = {}) {
+    getSelectedGroups (groupData = {}) {
         groupData.selected = true
         groupData.level = (groupData.level || 0) + 1
         const groups = this.#getGroups(groupData)
@@ -889,7 +882,7 @@ export class ActionHandler {
      * @private
      * @returns {object} The compendium groups
      */
-    async #getCompendiumGroups () {
+    #getCompendiumGroups () {
         const packs = game.packs.filter(pack =>
             COMPENDIUM_PACK_TYPES.includes(pack.documentName) &&
             (game.version.startsWith('11') ? pack.visible : (!pack.private || game.user.isGM))
@@ -911,7 +904,7 @@ export class ActionHandler {
      * @param {object} groupData The group data
      * @returns {object}         The derived groups
      */
-    async #getDerivedGroups (groupData) {
+    #getDerivedGroups (groupData) {
         const derivedGroups = this.#getGroups({
             nestId: groupData?.nestId,
             type: GROUP_TYPE.SYSTEM_DERIVED
@@ -924,7 +917,7 @@ export class ActionHandler {
      * @private
      * @returns {object} The macro groups
      */
-    async #getMacroGroups () {
+    #getMacroGroups () {
         return [this.#toGroupTagifyEntry({
             id: 'macros',
             listName: `Group: ${Utils.i18n('tokenActionHud.macros')}`,
@@ -938,7 +931,7 @@ export class ActionHandler {
      * @private
      * @returns {object} The system groups
      */
-    async #getSystemGroups () {
+    #getSystemGroups () {
         return Object.values(this.defaultGroups).map(group => this.#toGroupTagifyEntry(group))
     }
 
@@ -949,7 +942,7 @@ export class ActionHandler {
      * @param {object} parentGroupData   The parent group data
      * @param {boolean} [update = false] Whether to update an existing group
      */
-    async addGroup (groupData, parentGroupData, update = false) {
+    addGroup (groupData, parentGroupData, update = false) {
         groupData.type = groupData?.type ?? 'system-derived'
         groupData.style = groupData?.style ?? 'list'
 
@@ -997,7 +990,7 @@ export class ActionHandler {
      * @param {object} groupData                The group data
      * @param {object} [parentGroupData = null] The parent group data
      */
-    async updateGroup (groupData, parentGroupData = null) {
+    updateGroup (groupData, parentGroupData = null) {
         groupData.type = groupData?.type ?? 'system-derived'
 
         const updateExistingGroups = (existingGroups) => {
@@ -1053,7 +1046,7 @@ export class ActionHandler {
      * @public
      * @param {string} groupData The group data
      */
-    async addGroupInfo (groupData) {
+    addGroupInfo (groupData) {
         const groupId = groupData?.id
         const groupInfo = groupData?.info
 
@@ -1074,11 +1067,11 @@ export class ActionHandler {
      * @param {object} actionsData The actions data
      * @param {object} groupData   The group data
      */
-    async addActions (actionsData, groupData) {
+    addActions (actionsData, groupData) {
         if (!actionsData.length) return
 
         // Create actions
-        const actions = actionsData.map(actionData => this.#createAction(actionData))
+        const actions = new Map(actionsData.map(actionData => [actionData.id, this.#createAction(actionData)]))
         this.#addToAvailableActions(actions)
 
         if (!groupData?.id) return
@@ -1089,13 +1082,13 @@ export class ActionHandler {
 
         for (const group of groups) {
             // Get existing actions
-            const existingActions = group.actions ?? []
+            const existingActions = new Map(group.actions.map(action => [action.id, action]))
 
             const reorderedActions = []
 
             // Loop the previously saved actions in the group
-            for (const existingAction of existingActions) {
-                const action = actions.find(action => action.id === existingAction.id)
+            existingActions.forEach((existingAction, existingActionId) => {
+                const action = actions.get(existingActionId)
                 if (action) {
                     const systemSelected = action.systemSelected ?? existingAction.systemSelected
                     const userSelected = existingAction.userSelected ?? action.userSelected
@@ -1107,16 +1100,16 @@ export class ActionHandler {
                     const systemSelected = false
                     Object.assign(existingAction, this.#createAction({ ...existingAction, systemSelected }))
                 }
-            }
+            })
 
             // Loop the generated actions and add any not previously saved
-            for (const action of actions) {
-                const existingAction = existingActions.find(existingAction => existingAction.id === action.id)
+            actions.forEach((action, actionId) => {
+                const existingAction = existingActions.get(actionId)
                 if (!existingAction) reorderedActions.push(this.#createAction({ ...action, isPreset: true }))
-            }
+            })
 
             // Sort actions alphabetically
-            if (group.settings.sort) {
+            if (groupData?.settings?.sort || (typeof groupData?.settings?.sort === 'undefined' && this.sortActionsSettings)) {
                 reorderedActions.sort((a, b) => a.name.localeCompare(b.name))
             }
 
@@ -1129,7 +1122,7 @@ export class ActionHandler {
      * Set character limit for action names based on the 'Character per Word' setting
      * @private
      */
-    async #setCharacterLimit () {
+    #setCharacterLimit () {
         const topLevelGroups = this.#getGroups({ level: 1 })
 
         for (const topLevelGroup of topLevelGroups) {
@@ -1208,17 +1201,17 @@ export class ActionHandler {
 
     /** DEPRECATED */
 
-    async addActionsToActionList (actionsData, groupData) {
+    addActionsToActionList (actionsData, groupData) {
         globalThis.logger.warn('Token Action HUD | ActionHandler.addActionsToActionList is deprecated. Use ActionHandler.addActions')
-        await this.addActions(actionsData, groupData)
+        this.addActions(actionsData, groupData)
     }
 
-    async addSubcategoryInfo (groupData) {
+    addSubcategoryInfo (groupData) {
         globalThis.logger.warn('Token Action HUD | ActionHandler.addSubcategoryInfo is deprecated. Use ActionHandler.addGroupInfo')
         this.addGroupInfo(groupData)
     }
 
-    async addSubcategoryToActionList (parentGroupData, groupData, update = false) {
+    addSubcategoryToActionList (parentGroupData, groupData, update = false) {
         globalThis.logger.warn('Token Action HUD | ActionHandler.addSubcategoryToActionList is deprecated. Use ActionHandler.addGroup')
         this.addGroup(groupData, parentGroupData, update)
     }
