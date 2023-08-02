@@ -36,6 +36,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD for Coriolis](https://foundryvtt.com/packages/token-action-hud-coriolis)
 - [Token Action HUD CypherSystem](https://foundryvtt.com/packages/token-action-hud-cyphersystem)
 - [Token Action HUD D&D 5e](https://foundryvtt.com/packages/token-action-hud-dnd5e)
+- [Token Action HUD Earthdawn](https://foundryvtt.com/packages/token-action-hud-ed4e)
 - [Token Action HUD Exalted Third Edition](https://foundryvtt.com/packages/token-action-hud-exaltedthird)
 - [Token Action HUD Ghostbusters](https://foundryvtt.com/packages/token-action-hud-gb)
 - [Token Action HUD Mutants and Masterminds 3E](https://foundryvtt.com/packages/token-action-hud-mm3)
