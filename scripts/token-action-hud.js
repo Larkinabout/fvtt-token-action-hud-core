@@ -23,6 +23,7 @@ export class TokenActionHud extends Application {
     tokens = null
     isUpdatePending = false
     isUpdating = false
+    updatePendingTimer = new Timer(10)
     updateTimer = new Timer(10)
 
     constructor (module, systemManager) {
@@ -979,38 +980,73 @@ export class TokenActionHud extends Application {
      * @public
      * @param {object} trigger The trigger for the update
      */
-    update (trigger = null) {
-        this.#updateHud(trigger)
-    }
-
-    /**
-     * Update the HUD
-     * @private
-     * @param {object} trigger The trigger for the update
-     */
-    async #updateHud (trigger) {
+    async update (trigger = null) {
+        // Stops settings updates from triggering the HUD update multiple times
+        // Instead an update is triggered when settings are updated and the settings config window is closed
         if (trigger?.name === 'closeSettingsConfig') {
             if (!this.updateSettingsPending) return
             this.updateSettingsPending = false
             Logger.debug('Settings updated')
         }
-        if (this.isUpdatePending) this.updateTimer.abort()
+
+        await this.#handleUpdate()
+
+        await this.#performUpdate(trigger)
+    }
+
+    /**
+     * Handles HUD updates to avoid overlapping updates
+     */
+    async #handleUpdate () {
+        // Start a timer and reset it each time an update call is received before the timer has elapsed
+        if (this.isUpdatePending) this.updatePendingTimer.abort()
+
         this.isUpdatePending = true
-        await this.updateTimer.start()
+        await this.updatePendingTimer.start()
         this.isUpdatePending = false
+
+        // Wait for the current update to complete before progressing a pending update
+        // Stop waiting if the current update takes longer than 5 seconds
+        const waitForUpdateCompletion = async () => {
+            const maxWaitTime = 5000
+            const interval = 10
+            const iterations = maxWaitTime / interval
+
+            let i = 0
+            while (i < iterations && this.isUpdating) {
+                await this.updateTimer.start()
+                i++
+            }
+
+            return !this.isUpdating
+        }
+
+        if (this.isUpdating) {
+            const hasCompleted = await waitForUpdateCompletion()
+            if (!hasCompleted) {
+                Logger.debug('Update took too long. Aborting...')
+            }
+        }
+    }
+
+    /**
+     * Perform the HUD update following handling
+     * @param {object} trigger The trigger for the update
+     */
+    async #performUpdate (trigger) {
         this.isUpdating = true
-        Logger.debug('Updating hud...', trigger)
+
+        Logger.debug('Updating HUD...', trigger)
 
         const previousActorId = this.actor?.id
         const controlledTokens = Utils.getControlledTokens()
         const character = this.#getCharacter(controlledTokens)
-
         const multipleTokens = controlledTokens.length > 1 && !character
 
         if ((!character && !multipleTokens) || !this.isHudEnabled) {
             this.#close()
             this.hoveredGroups = []
-            Logger.debug('Hud update aborted as no character(s) found or hud is disabled')
+            Logger.debug('HUD update aborted as no character(s) found or HUD is disabled')
             this.isUpdating = false
             return
         }
@@ -1022,7 +1058,7 @@ export class TokenActionHud extends Application {
         if (this.hud.length === 0) {
             this.#close()
             this.hoveredGroups = []
-            Logger.debug('Hud update aborted as action list empty')
+            Logger.debug('HUD update aborted as action list empty')
             this.isUpdating = false
             return
         }
@@ -1032,10 +1068,11 @@ export class TokenActionHud extends Application {
         if (!ui.windows[this.appId]) {
             ui.windows[this.appId] = this
         }
+
         this.isUpdating = false
 
         Hooks.callAll('tokenActionHudCoreHudUpdated', this.module)
-        Logger.debug('Hud updated')
+        Logger.debug('HUD updated')
     }
 
     /**
