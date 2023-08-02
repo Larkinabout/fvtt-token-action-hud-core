@@ -19,7 +19,7 @@
   "version": "1.4.16",
   "compatibility": {
     "minimum": "10",
-    "verified": "11.305"
+    "verified": "11.306"
   },
   "esmodules": [
     "./dist/token-action-hud-core.min.js"
