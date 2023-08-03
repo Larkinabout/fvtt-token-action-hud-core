@@ -254,7 +254,12 @@
 }
 
 .tah-button-content {
-    padding: 0;
+    align-items: center;
+    display: flex;
+    gap: var(--tah-gap);
+    overflow: hidden;
+    padding: 0 10px;
+    width: 100%;
 }
 
 .tah-group-button:hover:not(.disable-edit)
@@ -264,7 +269,7 @@
 }
 
 .tah-button-text {
-    padding: 0 10px;
+    padding: 0;
 }
 
 .tah-button-content > :is(.fa, .fas) {
@@ -291,6 +296,7 @@
     text-overflow: ellipsis;
     width: 100%;
 }
+
 #tah-collapse-expand:hover button > i,
 #tah-buttons button:hover > i {
     color: var(--tah-text-hover-primary-color);

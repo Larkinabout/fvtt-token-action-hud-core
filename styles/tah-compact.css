@@ -193,7 +193,12 @@
 }
 
 .tah-button-content {
-    padding: 0;
+    align-items: center;
+    display: flex;
+    gap: var(--tah-gap);
+    overflow: hidden;
+    padding: 0 5px;
+    width: 100%;
 }
 
 .tah-group-button:hover:not(.disable-edit)
@@ -203,7 +208,7 @@
 }
 
 .tah-button-text {
-    padding: 0 5px;
+    padding: 0;
 }
 
 .tah-button-content > :is(.fa, .fas) {
