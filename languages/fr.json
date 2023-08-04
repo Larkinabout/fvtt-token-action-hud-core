@@ -170,6 +170,8 @@
     "tokenActionHud.settings.tooltips.choices.none": "Pas de tooltip",
     "tokenActionHud.settings.tooltips.hint": "Lorsque disponible, choisissez comment les tooltips sont affichés lorsque les actions sont survolées",
     "tokenActionHud.settings.tooltips.name": "Affichage des tooltips",
+    "tokenActionHud.settings.tooltipDelay.hint": "Ajustez le temps (en millisecondes) nécessaire pour que l'info-bulle initiale apparaisse",
+    "tokenActionHud.settings.tooltipDelay.name": "Délai de l'Info-Bulle",
     "tokenActionHud.settings.userCustomLayout.hint": "Sélectionnez une disposition à utiliser par défaut. Laissez vide pour utiliser la disposition du système",
     "tokenActionHud.settings.userCustomLayout.name": "Layout par défaut de l'utilisateur"
 }

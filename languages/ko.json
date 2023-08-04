@@ -169,6 +169,8 @@
     "tokenActionHud.settings.tooltips.choices.none": "툴팁 없음",
     "tokenActionHud.settings.tooltips.hint": "가능한 경우, 동작을 가리킬 때 툴팁을 어떻게 표시할지 선택합니다",
     "tokenActionHud.settings.tooltips.name": "툴팁 표시",
+    "tokenActionHud.settings.tooltipDelay.hint": "초기 툴팁이 나타나는 데 걸리는 시간을 조정합니다 (밀리 초 단위)",
+    "tokenActionHud.settings.tooltipDelay.name": "툴팁 지연",
     "tokenActionHud.settings.userCustomLayout.hint": "기본으로 사용할 레이아웃을 선택하십시오. 시스템 레이아웃을 사용하려면 비워 두십시오",
     "tokenActionHud.settings.userCustomLayout.name": "사용자 기본 레이아웃"
 }

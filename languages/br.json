@@ -170,6 +170,8 @@
     "tokenActionHud.settings.tooltips.choices.none": "Sem Tooltips",
     "tokenActionHud.settings.tooltips.hint": "Onde disponível, escolha como os tooltips são exibidos ao passar o mouse sobre as ações",
     "tokenActionHud.settings.tooltips.name": "Exibição de Tooltip",
+    "tokenActionHud.settings.tooltipDelay.hint": "Ajuste o tempo (em milissegundos) para o aparecimento da dica de ferramenta inicial",
+    "tokenActionHud.settings.tooltipDelay.name": "Atraso da Dica de Ferramenta",
     "tokenActionHud.settings.userCustomLayout.hint": "Selecione um layout para usar como padrão. Deixe em branco para usar o layout do sistema",
     "tokenActionHud.settings.userCustomLayout.name": "Layout Padrão do Usuário"
 }

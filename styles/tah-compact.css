@@ -192,6 +192,23 @@
     min-width: min-content;
 }
 
+.tah-group-button > :is(.fa, .fas) {
+    font-size: 6px;
+    position: absolute;
+    right: 0px;
+    top: 1px;
+    visibility: hidden;
+}
+
+.tah-group-button:hover:not(.disable-edit)
+    > :is(.fa, .fas) {
+    visibility: visible;
+}
+
+.tah-button-content:empty {
+    display: none;
+}
+
 .tah-button-content {
     align-items: center;
     display: flex;
@@ -201,22 +218,8 @@
     width: 100%;
 }
 
-.tah-group-button:hover:not(.disable-edit)
-    .tah-button-content
-    > :is(.fa, .fas) {
-    visibility: visible;
-}
-
 .tah-button-text {
     padding: 0;
-}
-
-.tah-button-content > :is(.fa, .fas) {
-    font-size: 6px;
-    position: absolute;
-    right: 3px;
-    top: 2px;
-    visibility: hidden;
 }
 
 .tah-action-button-content {

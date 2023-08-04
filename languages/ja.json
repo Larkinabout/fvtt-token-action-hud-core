@@ -169,6 +169,8 @@
     "tokenActionHud.settings.tooltips.choices.none": "ツールチップなし",
     "tokenActionHud.settings.tooltips.hint": "利用可能な場合、アクションをホバーしたときに表示されるツールチップの表示方法を選択します",
     "tokenActionHud.settings.tooltips.name": "ツールチップの表示",
+    "tokenActionHud.settings.tooltipDelay.hint": "初めのツールチップが表示されるまでの時間（ミリ秒単位）を調整します",
+    "tokenActionHud.settings.tooltipDelay.name": "ツールチップ遅延",
     "tokenActionHud.settings.userCustomLayout.hint": "デフォルトとして使用するレイアウトを選択します。システムレイアウトを使用する場合は空白のままにしてください",
     "tokenActionHud.settings.userCustomLayout.name": "ユーザーデフォルトレイアウト"
 }

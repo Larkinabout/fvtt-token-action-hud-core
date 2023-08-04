@@ -274,6 +274,26 @@ export const registerSettings = function (systemManager, rollHandlers) {
         }
     })
 
+    game.settings.register(MODULE.ID, 'tooltipDelay', {
+        name: Utils.i18n('tokenActionHud.settings.tooltipDelay.name'),
+        hint: Utils.i18n('tokenActionHud.settings.tooltipDelay.hint'),
+        scope: 'client',
+        config: true,
+        type: Number,
+        default: 1500,
+        onChange: (value) => {
+            setTooltipDelay(value)
+        }
+    })
+
+    const tooltipDelay = Utils.getSetting('tooltipDelay') || 1500
+    setTooltipDelay(tooltipDelay)
+
+    function setTooltipDelay (ms) {
+        const root = document.querySelector(':root')
+        root.style.setProperty('--tah-tooltip-delay', `${ms}ms`)
+    }
+
     game.settings.register(MODULE.ID, 'clickOpenCategory', {
         name: Utils.i18n('tokenActionHud.settings.clickOpenCategory.name'),
         hint: Utils.i18n('tokenActionHud.settings.clickOpenCategory.hint'),

@@ -170,6 +170,8 @@
     "tokenActionHud.settings.tooltips.choices.none": "Bez opisów",
     "tokenActionHud.settings.tooltips.hint": "Wybierz, jak mają być wyświetlane opisy narzędzi po najechaniu na działania",
     "tokenActionHud.settings.tooltips.name": "Wyświetlanie opisów narzędzi",
+    "tokenActionHud.settings.tooltipDelay.hint": "Dostosuj czas (w milisekundach), który jest potrzebny do pojawienia się początkowej dymki",
+    "tokenActionHud.settings.tooltipDelay.name": "Opóźnienie Dymku",
     "tokenActionHud.settings.userCustomLayout.hint": "Wybierz układ do użycia jako domyślny. Pozostaw puste, aby użyć układu systemowego",
     "tokenActionHud.settings.userCustomLayout.name": "Układ domyślny użytkownika"
 }

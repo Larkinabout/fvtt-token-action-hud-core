@@ -373,7 +373,7 @@ export class TokenActionHud extends Application {
          * @param {object} event The event
          */
         const openActionDialog = (event) => {
-            const target = (event.target.classList.contains('tah-button-text'))
+            const target = (event.target.classList.contains('tah-button-text')) || (event.target.classList.contains('tah-button-image')) || (event.target.classList.contains('tah-group-button'))
                 ? event.target.closest('.tah-tab-group')
                 : event.target.closest('.tah-group')
             if (!target?.dataset?.nestId) return

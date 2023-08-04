@@ -311,7 +311,7 @@ export class ActionHandler {
      */
     async #getCustomLayout () {
         if (this.customLayout) return
-        const file = this.userCustomLayoutSetting ?? this.customLayoutSetting ?? null
+        const file = this.userCustomLayoutSetting || this.customLayoutSetting || null
         this.customLayout = (file) ? await DataHandler.getDataAsGm({ file }) : null
     }
 
@@ -501,52 +501,49 @@ export class ActionHandler {
      */
     #createGroup (groupData, keepData = false) {
         const groupDataClone = Utils.deepClone(groupData)
-        // New option for 1.1.0 - Define default showTitle for existing data
-        if (!groupDataClone?.settings) groupDataClone.settings = {}
-        if (typeof groupDataClone?.settings?.showTitle === 'undefined') groupDataClone.settings.showTitle = true
-        groupDataClone.subtitleClass = (!groupDataClone?.settings?.showTitle) ? 'tah-hidden' : ''
         const nestIdParts = groupData.nestId.split('_')
         const level = nestIdParts.length ?? 1
 
-        const actions = (keepData) ? groupData?.actions ?? [] : []
-        const groups = (keepData) ? groupData?.groups ?? { lists: [], tabs: [] } : { lists: [], tabs: [] }
         const tooltip = this.#getTooltip(groupData?.tooltip, groupDataClone?.name)
 
-        if (level === 1) {
-            if (typeof groupDataClone?.settings?.style === 'undefined') groupDataClone.settings.style = 'tab'
-            return {
+        const actions = (keepData) ? (groupData?.actions ?? []) : []
+        const groups = (keepData) ? (groupData?.groups ?? { lists: [], tabs: [] }) : { lists: [], tabs: [] }
+
+        const defaultSettings = { showTitle: true, style: (level === 1) ? 'tab' : 'list' }
+        const groupSettings = groupDataClone?.settings ?? {}
+        groupSettings.showTitle ??= defaultSettings.showTitle
+        groupSettings.style ??= defaultSettings.style
+
+        groupDataClone.subtitleClass = (groupSettings.showTitle) ? '' : 'tah-hidden'
+
+        const commonProps =
+            {
                 actions,
-                cssClass: '',
+                class: groupDataClone?.class ?? groupDataClone?.cssClass ?? '',
                 groups,
                 id: groupDataClone?.id,
-                selected: groupDataClone?.selected ?? groupDataClone?.isSelected ?? groupDataClone?.defaultSelected ?? true,
-                level: groupDataClone?.level ?? nestIdParts.length ?? 1,
-                name: groupDataClone?.name,
-                nestId: groupDataClone?.nestId ?? groupDataClone?.id,
-                order: groupDataClone.order,
-                settings: groupDataClone?.settings ?? { style: 'tab' },
-                tooltip,
-                type: 'custom'
-            }
-        } else {
-            if (typeof groupDataClone?.settings?.style === 'undefined') groupDataClone.settings.style = 'list'
-            return {
-                id: groupDataClone?.id,
-                nestId: groupDataClone?.nestId,
-                name: groupDataClone?.name,
-                listName: groupDataClone?.listName,
-                selected: groupDataClone?.selected ?? groupDataClone?.isSelected ?? groupDataClone?.defaultSelected ?? true,
-                level: groupDataClone.level ?? level,
-                order: groupDataClone.order,
-                settings: groupDataClone?.settings ?? { showTitle: true, style: 'list' },
-                tooltip,
-                type: groupDataClone?.type ?? GROUP_TYPE.CUSTOM,
-                subtitleClass: groupDataClone?.subtitleClass ?? '',
                 info1: groupDataClone?.info1 ?? '',
                 info2: groupDataClone?.info2 ?? '',
                 info3: groupDataClone?.info3 ?? '',
-                actions,
-                groups
+                level: groupDataClone.level ?? level ?? 1,
+                listName: groupDataClone?.listName ?? groupDataClone?.name,
+                name: groupDataClone?.name,
+                nestId: groupDataClone?.nestId ?? groupDataClone?.id,
+                order: groupDataClone.order,
+                selected: groupDataClone?.selected ?? groupDataClone?.isSelected ?? groupDataClone?.defaultSelected ?? true,
+                settings: groupSettings,
+                tooltip,
+                type: groupDataClone?.type ?? GROUP_TYPE.CUSTOM
+            }
+
+        if (level === 1) {
+            return {
+                ...commonProps
+            }
+        } else {
+            return {
+                ...commonProps,
+                subtitleClass: groupDataClone?.subtitleClass ?? ''
             }
         }
     }

@@ -1,5 +1,6 @@
 :root {
     --tah-font-size-10: 0.65rem;
+    --tah-tooltip-delay: 1500ms;
 }
 
 /*
@@ -169,8 +170,9 @@
 
 .locked-tooltip.tah-tooltip.active,
 .tah-tooltip.active,
+#tooltip.tah-tooltip.active,
 #tooltip.active:has(.tah-tooltip-wrapper) {
-    transition: visibility 0s 500ms, opacity 500ms 500ms;
+    transition: visibility 0s var(--tah-tooltip-delay), opacity var(--tah-tooltip-delay) 500ms;
 }
 
 .locked-tooltip.tah-tooltip:not(.active),

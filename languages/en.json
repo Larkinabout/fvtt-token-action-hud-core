@@ -170,6 +170,8 @@
     "tokenActionHud.settings.tooltips.choices.none": "No Tooltips",
     "tokenActionHud.settings.tooltips.hint": "Where available, choose how tooltips are displayed when actions are hovered",
     "tokenActionHud.settings.tooltips.name": "Tooltip Display",
+    "tokenActionHud.settings.tooltipDelay.hint": "Adjust the time (in milliseconds) it takes for the initial tooltip to appear",
+    "tokenActionHud.settings.tooltipDelay.name": "Tooltip Delay",
     "tokenActionHud.settings.userCustomLayout.hint": "Select a layout to use as your default. Leave blank to use the system layout",
     "tokenActionHud.settings.userCustomLayout.name": "User Default Layout"
 }

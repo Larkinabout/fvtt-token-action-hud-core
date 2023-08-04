@@ -170,6 +170,8 @@
     "tokenActionHud.settings.tooltips.choices.none": "无工具提示",
     "tokenActionHud.settings.tooltips.hint": "在操作悬停时选择如何显示工具提示",
     "tokenActionHud.settings.tooltips.name": "工具提示显示",
+    "tokenActionHud.settings.tooltipDelay.hint": "调整初始工具提示出现所需的时间（以毫秒为单位）",
+    "tokenActionHud.settings.tooltipDelay.name": "工具提示延迟",
     "tokenActionHud.settings.userCustomLayout.hint": "选择一个布局作为您的默认布局。留空使用系统布局",
     "tokenActionHud.settings.userCustomLayout.name": "用户默认布局"
 }

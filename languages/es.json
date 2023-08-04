@@ -170,6 +170,8 @@
     "tokenActionHud.settings.tooltips.choices.none": "Sin Tooltips",
     "tokenActionHud.settings.tooltips.hint": "Donde esté disponible, elige cómo se muestran los tooltips al pasar el mouse sobre las acciones",
     "tokenActionHud.settings.tooltips.name": "Mostrar Tooltips",
+    "tokenActionHud.settings.tooltipDelay.hint": "Ajusta el tiempo (en milisegundos) que tarda en aparecer la descripción emergente inicial",
+    "tokenActionHud.settings.tooltipDelay.name": "Retraso de Descripción Emergente",
     "tokenActionHud.settings.userCustomLayout.hint": "Selecciona un diseño para usar como predeterminado. Deja en blanco para usar el diseño del sistema",
     "tokenActionHud.settings.userCustomLayout.name": "Diseño Predeterminado del Usuario"
 }
