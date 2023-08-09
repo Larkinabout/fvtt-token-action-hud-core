@@ -18,6 +18,7 @@ Hooks.once('socketlib.ready', () => {
     socket.register('createDirectories', DataHandler.createDirectories)
     socket.register('saveData', DataHandler.saveData)
     socket.register('getData', DataHandler.getData)
+    socket.register('reset', TokenActionHud.reset)
 })
 
 Hooks.on('ready', async () => {

@@ -886,7 +886,7 @@ export class TokenActionHud extends Application {
      * Reset the HUD
      * @public
      */
-    async reset () {
+    async resetDialog () {
         const d = new Dialog({
             title: Utils.i18n('tokenActionHud.dialog.resetLayout.title'),
             content: `<p>${Utils.i18n('tokenActionHud.dialog.resetLayout.content')}</p>`,
@@ -896,11 +896,16 @@ export class TokenActionHud extends Application {
                     label: Utils.i18n('tokenActionHud.dialog.button.yes'),
                     callback: async () => {
                         const customLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=customLayout]')
-                        if (customLayoutElement) await this.updateSettings('customLayout', customLayoutElement?.value ?? '')
+                        if (customLayoutElement) {
+                            await this.updateSettings('customLayout', customLayoutElement?.value ?? '')
+                            await Utils.setSetting('customLayout', customLayoutElement?.value ?? '')
+                        }
                         const userCustomLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=userCustomLayout]')
-                        if (userCustomLayoutElement) await this.updateSettings('userCustomLayout', userCustomLayoutElement?.value ?? '')
-                        await this.resetUserData()
-                        this.resetPosition()
+                        if (userCustomLayoutElement) {
+                            await this.updateSettings('userCustomLayout', userCustomLayoutElement?.value ?? '')
+                            await Utils.setSetting('userCustomLayout', customLayoutElement?.value ?? '')
+                        }
+                        await game.tokenActonHud.reset()
                         Logger.info('Layout reset', true)
                     }
                 },
@@ -911,6 +916,47 @@ export class TokenActionHud extends Application {
             }
         })
         d.render(true)
+    }
+
+    /**
+     * Reset the HUD
+     * @public
+     */
+    async resetAllDialog () {
+        const d = new Dialog({
+            title: Utils.i18n('tokenActionHud.dialog.resetAllLayouts.title'),
+            content: `<p>${Utils.i18n('tokenActionHud.dialog.resetAllLayouts.content')}</p>`,
+            buttons: {
+                yes: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: Utils.i18n('tokenActionHud.dialog.button.yes'),
+                    callback: async () => {
+                        const customLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=customLayout]')
+                        if (customLayoutElement) {
+                            await Utils.setSetting('customLayout', customLayoutElement?.value ?? '')
+                        }
+                        const userCustomLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=userCustomLayout]')
+                        if (userCustomLayoutElement) {
+                            await Utils.setSetting('userCustomLayout', customLayoutElement?.value ?? '')
+                        }
+                        await game.tokenActionHud.socket.executeForEveryone('reset')
+                        Logger.info('All layouts reset', true)
+                    }
+                },
+                no: {
+                    icon: '<i class="fas fa-times"></i>',
+                    label: Utils.i18n('tokenActionHud.dialog.button.no')
+                }
+            }
+        })
+        d.render(true)
+    }
+
+    static async reset () {
+        Logger.debug('Resetting layout...')
+        await game?.tokenActionHud?.resetUserAndActorData()
+        game?.tokenActionHud?.resetPosition()
+        Logger.debug('Layout reset')
     }
 
     /**
@@ -972,6 +1018,24 @@ export class TokenActionHud extends Application {
         Logger.debug('All user data reset')
         this.actionHandler.hardResetActionHandler()
         const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetAllUserData' } }
+        this.update(trigger)
+    }
+
+    /**
+     * Reset user and actor data
+     */
+    async resetUserAndActorData () {
+        Logger.debug('Resetting user data...')
+        await DataHandler.saveDataAsGm('user', game.userId, {})
+        Logger.debug('User data reset')
+
+        Logger.debug('Resetting actor data...')
+        await DataHandler.saveDataAsGm('actor', this.actor.id, {})
+        Logger.debug('Actor data reset')
+
+        this.actionHandler.hardResetActionHandler()
+
+        const trigger = { trigger: { type: 'method', name: 'TokenActionHud#resetUserAndActorData' } }
         this.update(trigger)
     }
 

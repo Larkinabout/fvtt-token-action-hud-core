@@ -172,7 +172,7 @@ export const LAYOUT_SETTING = {
         name: 'tokenActionHud.settings.exportLayout.name',
         inputType: 'button',
         icon: 'fa-solid fa-file-export',
-        onClick: 'game?.tokenActionHud?.actionHandler?.exportLayout()',
+        onClick: 'game?.tokenActionHud?.actionHandler?.exportLayout()'
     },
     resetLayout: {
         hint: 'tokenActionHud.settings.resetLayout.hint',
@@ -180,7 +180,17 @@ export const LAYOUT_SETTING = {
         name: 'tokenActionHud.settings.resetLayout.name',
         inputType: 'button',
         icon: 'fa-solid fa-arrow-rotate-left',
-        onClick: 'game?.tokenActionHud?.reset()'
+        onClick: 'game?.tokenActionHud?.resetDialog()',
+        scope: 'client'
+    },
+    resetAllLayouts: {
+        hint: 'tokenActionHud.settings.resetAllLayouts.hint',
+        label: 'tokenActionHud.settings.resetAllLayouts.label',
+        name: 'tokenActionHud.settings.resetAllLayouts.name',
+        inputType: 'button',
+        icon: 'fa-solid fa-bomb',
+        onClick: 'game?.tokenActionHud?.resetAllDialog()',
+        scope: 'world'
     }
 }
 

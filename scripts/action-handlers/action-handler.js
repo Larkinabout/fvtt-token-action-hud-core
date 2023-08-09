@@ -55,6 +55,8 @@ export class ActionHandler {
      */
     hardResetActionHandler () {
         this.softResetActionHandler()
+        this.customLayoutSetting = Utils.getSetting('customLayout')
+        this.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
         this.customLayout = null
         this.actorGroups = {}
         this.userGroups = {}
@@ -738,16 +740,19 @@ export class ActionHandler {
             img: actionData.img ?? '',
             info1: {
                 class: actionData?.info1?.class ?? '',
+                icon: actionData?.info1?.icon ?? '',
                 text: actionData?.info1?.text ?? '',
                 title: actionData?.info1?.title ?? ''
             },
             info2: {
                 class: actionData?.info2?.class ?? '',
+                icon: actionData?.info2?.icon ?? '',
                 text: actionData?.info2?.text ?? '',
                 title: actionData?.info2?.title ?? ''
             },
             info3: {
                 class: actionData?.info3?.class ?? '',
+                icon: actionData?.info3?.icon ?? '',
                 text: actionData?.info3?.text ?? '',
                 title: actionData?.info3?.title ?? ''
             },

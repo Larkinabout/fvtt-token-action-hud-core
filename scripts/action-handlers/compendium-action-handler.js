@@ -89,6 +89,6 @@ export class CompendiumActionHandler {
      * @returns {boolean}     Whether the compendium is linked
      */
     isLinkedCompendium (packId) {
-        return this.packIds.includes(packId)
+        return this.packIds?.includes(packId) ?? false
     }
 }

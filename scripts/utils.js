@@ -359,7 +359,7 @@ export class Utils {
      * @returns {string}     The modifier
      */
     static getModifier (value) {
-        if (!value) return ''
+        if (!value && value !== 0) return ''
         const sign = (value >= 0) ? '+' : ''
         return `${sign}${value}`
     }
