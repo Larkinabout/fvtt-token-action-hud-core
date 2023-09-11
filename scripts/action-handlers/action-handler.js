@@ -31,7 +31,7 @@ export class ActionHandler {
         this.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
         this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
         this.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
-        this.sortActionsSettings = Utils.getSetting('sortActions')
+        this.sortActionsSetting = Utils.getSetting('sortActions')
         this.tooltipsSetting = Utils.getSetting('tooltips')
     }
 
@@ -809,7 +809,7 @@ export class ActionHandler {
         }
 
         // Sort actions alphabetically
-        if (groupData?.settings?.sort || (typeof groupData?.settings?.sort === 'undefined' && this.sortActionsSettings)) {
+        if (groupData?.settings?.sort || (typeof groupData?.settings?.sort === 'undefined' && this.sortActionsSetting)) {
             reorderedActions.sort((a, b) => a.name.localeCompare(b.name))
         }
 
@@ -1111,7 +1111,7 @@ export class ActionHandler {
             })
 
             // Sort actions alphabetically
-            if (groupData?.settings?.sort || (typeof groupData?.settings?.sort === 'undefined' && this.sortActionsSettings)) {
+            if (groupData?.settings?.sort || (typeof groupData?.settings?.sort === 'undefined' && this.sortActionsSetting)) {
                 reorderedActions.sort((a, b) => a.name.localeCompare(b.name))
             }
 

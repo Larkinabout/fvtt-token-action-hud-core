@@ -79,6 +79,7 @@ export class TokenActionHud extends Application {
         this.actionHandler.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
         this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
         this.actionHandler.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
+        this.actionHandler.sortActionsSetting = Utils.getSetting('sortActions')
         this.actionHandler.tooltipsSetting = Utils.getSetting('tooltips')
 
         this.GroupResizer = new GroupResizer()
