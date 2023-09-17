@@ -32,6 +32,7 @@ Token Action HUD is a repositionable HUD of actions for a selected token.
 ## Token Action HUD System Modules
 Token Action HUD Core requires a companion Token Action HUD system module to be installed. Current system modules are:
 
+- [Token Action HUD for Alien RPG](https://foundryvtt.com/packages/token-action-hud-alien)
 - [Token Action HUD for Blade Runner](https://foundryvtt.com/packages/token-action-hud-bladerunner)
 - [Token Action HUD for Coriolis](https://foundryvtt.com/packages/token-action-hud-coriolis)
 - [Token Action HUD CypherSystem](https://foundryvtt.com/packages/token-action-hud-cyphersystem)
@@ -45,6 +46,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD Pathfinder 2](https://foundryvtt.com/packages/token-action-hud-pf2e)
 - [Token Action HUD for Savage Worlds](https://foundryvtt.com/packages/token-action-hud-swade)
 - [Token Action HUD The Witcher TRPG](https://foundryvtt.com/packages/token-action-hud-thewitchertrpg)
+- [Token Action HUD for Twodsix](https://foundryvtt.com/packages/fvtt-token-action-hud-twodsix)
 - [Token Action HUD WFRP4e](https://foundryvtt.com/packages/token-action-hud-wfrp4e)
 
 For other systems, continue to use the [Token Action HUD Classic](https://foundryvtt.com/packages/token-action-hud).
