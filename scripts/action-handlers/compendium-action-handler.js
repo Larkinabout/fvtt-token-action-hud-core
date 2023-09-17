@@ -12,7 +12,7 @@ export class CompendiumActionHandler {
     constructor (actionHandler) {
         this.actionHandler = actionHandler
         this.compendiumActions = new Map()
-        this.packIds = null
+        this.packIds = []
     }
 
     /**
@@ -89,6 +89,8 @@ export class CompendiumActionHandler {
      * @returns {boolean}     Whether the compendium is linked
      */
     isLinkedCompendium (packId) {
-        return this.packIds?.includes(packId) ?? false
+        return (this.packIds.length)
+            ? this.packIds?.includes(packId)
+            : false
     }
 }
