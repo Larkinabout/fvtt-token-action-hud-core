@@ -2,21 +2,26 @@ import { MODULE } from './constants.js'
 import { Logger, Utils } from './utils.js'
 
 /**
-     * Get file parts
-     * @param {string} file The file
-     * @returns {object}    The file parts
-     */
+ * Get file parts
+ * @param {string} file The file
+ * @returns {object}    The file parts
+ */
 function getFileParts (file) {
-    const arr = file.split('/')
-    const fileName = arr[arr.length - 1]
-    const folder = file.split('/').slice(0, -1).join('/') ?? ''
+    const parts = file.split('/')
+    const filename = parts.pop()
+    const folder = parts.join('/')
+    const id = filename.split('.')[0]
+    return { folder, filename, id }
+}
 
-    return { folder, fileName }
+function isPersistentStorage () {
+    return (game.version >= '11.305' && typeof ForgeVTT === 'undefined')
 }
 
 export class DataHandler {
-    static isPersistentStorage () {
-        return (game.version >= '11.305' && typeof ForgeVTT === 'undefined')
+    async init () {
+        this.path = DataHandler.getPath()
+        this.fileMap = await DataHandler.getFilePathsAsGm()
     }
 
     /**
@@ -24,36 +29,67 @@ export class DataHandler {
      */
     static async createDirectories () {
         const DATA_FOLDER = 'data'
-        const moduleDirectory = (DataHandler.isPersistentStorage())
+        const moduleDirectory = (isPersistentStorage())
             ? `modules/${MODULE.ID}/storage`
             : MODULE.ID
-        await FilePicker.browse(DATA_FOLDER, moduleDirectory)
-            .catch(async _ => {
-                if (!await FilePicker.createDirectory(DATA_FOLDER, moduleDirectory, {})) {
-                    Logger.debug('Failed to create directory: ' + moduleDirectory)
+
+        const directoriesToCreate = [
+            moduleDirectory,
+            `${moduleDirectory}/${game.world.id}`,
+            `${moduleDirectory}/${game.world.id}/actor`,
+            `${moduleDirectory}/${game.world.id}/user`
+        ]
+
+        for (const directory of directoriesToCreate) {
+            await FilePicker.browse(DATA_FOLDER, directory).catch(async (_) => {
+                if (!(await FilePicker.createDirectory(DATA_FOLDER, directory, {}))) {
+                    Logger.debug('Failed to create directory: ' + directory)
                 }
             })
-        const worldDirectory = `${moduleDirectory}/${game.world.id}`
-        await FilePicker.browse(DATA_FOLDER, worldDirectory)
-            .catch(async _ => {
-                if (!await FilePicker.createDirectory(DATA_FOLDER, worldDirectory, {})) {
-                    Logger.debug('Failed to create directory: ' + worldDirectory)
-                }
-            })
-        const actorDirectory = `${worldDirectory}/actor`
-        await FilePicker.browse(DATA_FOLDER, actorDirectory)
-            .catch(async _ => {
-                if (!await FilePicker.createDirectory(DATA_FOLDER, actorDirectory, {})) {
-                    Logger.debug('Failed to create directory: ' + actorDirectory)
-                }
-            })
-        const userDirectory = `${worldDirectory}/user`
-        await FilePicker.browse(DATA_FOLDER, userDirectory)
-            .catch(async _ => {
-                if (!await FilePicker.createDirectory(DATA_FOLDER, userDirectory, {})) {
-                    Logger.debug('Failed to create directory: ' + userDirectory)
-                }
-            })
+        }
+    }
+
+    /**
+     * Get base path to the layout files
+     * @returns {string} The path
+     */
+    static getPath () {
+        return (isPersistentStorage())
+            ? `modules/${MODULE.ID}/storage/${game.world.id}/`
+            : `${MODULE.ID}/${game.world.id}/`
+    }
+
+    /**
+     * Get file paths as GM
+     * @returns {object} The file paths
+     */
+    static async getFilePathsAsGm () {
+        if (!game.user.hasPermission('FILES_BROWSE') && !Utils.isGmActive()) {
+            Logger.info('Cannot get file paths without a GM present', true)
+            return new Map() // Return an empty map if no permissions and no GM
+        }
+
+        const files = game.user.hasPermission('FILES_BROWSE')
+            ? await DataHandler.getFilePaths()
+            : await game.tokenActionHud.socket.executeAsGM('getFilePaths')
+
+        return new Map(files.map(file => {
+            const { id } = getFileParts(file)
+            return [id, file]
+        }))
+    }
+
+    /**
+     * Get file paths
+     */
+    static async getFilePaths () {
+        const dataHandler = game?.tokenActionHud?.dataHandler
+        const [actorFiles, userFiles] = await Promise.all([
+            FilePicker.browse('data', `${dataHandler.path}actor/`),
+            FilePicker.browse('data', `${dataHandler.path}user/`)
+        ])
+
+        return [...(actorFiles?.files ?? []), ...(userFiles?.files ?? [])]
     }
 
     /**
@@ -66,18 +102,21 @@ export class DataHandler {
 
     /**
      * Save data the GM
+     * @public
      * @param {string} type The type: actor or user
      * @param {string} id   The actor or user id
      * @param {object} data The data
      */
     static async saveDataAsGm (type, id, data) {
         if (game.user.hasPermission('FILES_UPLOAD')) {
-            return await this.saveData(type, id, data)
+            return await DataHandler.saveData(type, id, data)
         }
+
         if (!Utils.isGmActive()) {
             Logger.info('Cannot save data without a GM present', true)
             return
         }
+
         await game.tokenActionHud.socket.executeAsGM('saveData', type, id, data)
     }
 
@@ -88,17 +127,30 @@ export class DataHandler {
      * @param {object} data The data
      */
     static async saveData (type, id, data) {
-        // Get the folder path
-        const folderPath = (DataHandler.isPersistentStorage())
-            ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
-            : `${MODULE.ID}/${game.world.id}/${type}`
-        // Generate the system safe filename
-        const fileName = encodeURI(`${id}.json`)
-        // Create the File and contents
-        const file = new File([JSON.stringify(data, null, '')], fileName, { type: 'application/json' })
-        const response = await FilePicker.upload('data', folderPath, file, {}, { notify: false })
-        if (!response.path) {
-            Logger.debug(`Failed to save data to: ${fileName}\nReason: ${response}`)
+        const dataHandler = game?.tokenActionHud?.dataHandler
+
+        try {
+            // Get the folder path
+            const folder = `${dataHandler.path}${type}`
+
+            // Generate the system-safe filename
+            const fileName = encodeURI(`${id}.json`)
+
+            // Create the file and contents
+            const file = new File([JSON.stringify(data, null, '')], fileName, { type: 'application/json' })
+
+            // Upload the file
+            const response = await FilePicker.upload('data', folder, file, {}, { notify: false })
+
+            if (response.path) {
+                if (!dataHandler.fileMap.has(id)) {
+                    dataHandler.fileMap.set(id, response.path)
+                }
+            } else {
+                Logger.debug(`Failed to save data to: ${fileName}\nReason: ${response.error || 'Unknown error'}`)
+            }
+        } catch (error) {
+            Logger.error(`An error occurred while saving data for ${id}.json: ${error.message}`)
         }
     }
 
@@ -112,18 +164,24 @@ export class DataHandler {
 
     /**
      * Get data as GM
+     * @public
      * @param {object} options The options: file, type, id
      * @returns {object}       The data
      */
     static async getDataAsGm (options) {
-        if (game.user.hasPermission('FILES_BROWSE')) {
-            return await this.getData(options)
+        try {
+            if (!game.user.hasPermission('FILES_BROWSE') && !Utils.isGmActive()) {
+                Logger.info('Cannot get data without a GM present', true)
+                return
+            }
+
+            return (game.user.hasPermission('FILES_BROWSE'))
+                ? await DataHandler.getData(options)
+                : await game.tokenActionHud.socket.executeAsGM('getData', options)
+        } catch (error) {
+            Logger.error(`An error occurred while getting data: ${error.message}`)
+            return null
         }
-        if (!Utils.isGmActive()) {
-            Logger.info('Cannot get data without a GM present', true)
-            return
-        }
-        return await game.tokenActionHud.socket.executeAsGM('getData', options)
     }
 
     /**
@@ -132,55 +190,32 @@ export class DataHandler {
      * @returns {object}       The data
      */
     static async getData (options) {
-        const { file, type, id } = options
+        const dataHandler = game.tokenActionHud.dataHandler
 
-        let folder
-        let fileName
+        const { id } = options
 
-        if (file) {
-            ({ folder, fileName } = getFileParts(file))
-        } else {
-            folder = (DataHandler.isPersistentStorage())
-                ? `modules/${MODULE.ID}/storage/${game.world.id}/${type}`
-                : `${MODULE.ID}/${game.world.id}/${type}`
-            fileName = encodeURI(`${id}.json`)
+        // Check if the file is available in the fileMap
+        const foundFile = dataHandler.fileMap.get(id) ?? null
+
+        // If not found, return null
+        if (!foundFile) {
+            return null
         }
 
         try {
-            const foundFolderPath = await FilePicker.browse('data', folder)
-            const foundFilePath = foundFolderPath.files.find(file => file.endsWith(fileName))
-            if (foundFilePath) {
-                const ms = Date.now()
-                return await fetch(`${foundFilePath}?ms=${ms}`)
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json()
-                        } else {
-                            return null
-                        }
-                    })
-                    .catch(error => {
-                        console.error(error)
-                    })
+            const ms = Date.now()
+            const response = await fetch(`${foundFile}?ms=${ms}`)
+
+            // Check if the fetch was successful
+            if (response.ok) {
+                return await response.json()
             } else {
                 return null
             }
-        } catch {
+        } catch (error) {
+            console.error(error)
             return null
         }
-    }
-
-    /**
-     * Get file parts
-     * @param {string} file The file
-     * @returns {object}    The file parts
-     */
-    getFileParts (file) {
-        const arr = file.split('/')
-        const filename = arr[arr.length - 1]
-        const folder = file.split('/').slice(0, -1).join('/')
-
-        return { folder, filename }
     }
 
     /**

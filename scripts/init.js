@@ -15,9 +15,9 @@ let socket
 
 Hooks.once('socketlib.ready', () => {
     socket = socketlib.registerModule(MODULE.ID)
-    socket.register('createDirectories', DataHandler.createDirectories)
-    socket.register('saveData', DataHandler.saveData)
+    socket.register('getFilePaths', DataHandler.getFilePaths)
     socket.register('getData', DataHandler.getData)
+    socket.register('saveData', DataHandler.saveData)
     socket.register('reset', TokenActionHud.reset)
 })
 

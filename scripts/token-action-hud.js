@@ -1,7 +1,7 @@
 import { TagDialogHelper } from './dialogs/tag-dialog-helper.js'
 import { GroupResizer } from './group-resizer.js'
 import { DataHandler } from './data-handler.js'
-import { CSS_STYLE, SETTING, TEMPLATE } from './constants.js'
+import { CSS_STYLE, MODULE, SETTING, TEMPLATE } from './constants.js'
 import { Logger, Timer, Utils } from './utils.js'
 
 /**
@@ -28,7 +28,7 @@ export class TokenActionHud extends Application {
 
     constructor (module, systemManager) {
         super()
-        this.module = module
+        this.module = MODULE
         this.systemManager = systemManager
         this.autoDirection = 'down'
         this.directionSetting = 'down'
@@ -70,11 +70,10 @@ export class TokenActionHud extends Application {
 
         await this.systemManager.registerDefaults()
 
-        this.actionHandler = await this.systemManager.getActionHandler()
+        this.dataHandler = new DataHandler()
+        await this.dataHandler.init()
 
-        /*  if (this.customLayoutSetting && Utils.isGmActive()) {
-            this.actionHandler.customLayout = await DataHandler.getDataAsGm({ file: this.customLayoutSetting })
-        } */
+        this.actionHandler = await this.systemManager.getActionHandler()
         this.actionHandler.customLayoutSetting = Utils.getSetting('customLayout')
         this.actionHandler.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
         this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
