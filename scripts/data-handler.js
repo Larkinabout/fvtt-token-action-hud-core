@@ -14,7 +14,7 @@ function getFileParts (file) {
     return { folder, filename, id }
 }
 
-function isPersistentStorage () {
+export function isPersistentStorage () {
     return (game.version >= '11.305' && typeof ForgeVTT === 'undefined')
 }
 
