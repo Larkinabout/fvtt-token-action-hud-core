@@ -1,5 +1,5 @@
 import { MODULE } from './constants.js'
-import { DataHandler } from './data-handler.js'
+import { isPersistentStorage, DataHandler } from './data-handler.js'
 import { Logger, Utils } from './utils.js'
 
 /**
@@ -23,7 +23,7 @@ export class MigrationManager {
 
         let isSuccess = true
         isSuccess = (!migrationVersion || migrationVersion < '1.4.10') ? await this.#unsetOldFlags() : true
-        isSuccess = (DataHandler.isPersistentStorage() && (!migrationVersion || migrationVersion < '1.4.11')) ? await this.#migrateFiles() : true
+        isSuccess = (isPersistentStorage() && (!migrationVersion || migrationVersion < '1.4.11')) ? await this.#migrateFiles() : true
 
         if (isSuccess) {
             Utils.setSetting('migrationVersion', moduleVersion)
