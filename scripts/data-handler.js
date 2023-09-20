@@ -21,6 +21,7 @@ export function isPersistentStorage () {
 export class DataHandler {
     async init () {
         this.path = DataHandler.getPath()
+        this.private = await DataHandler.isPrivate()
         this.fileMap = await DataHandler.getFilePathsAsGm()
     }
 
@@ -60,16 +61,37 @@ export class DataHandler {
     }
 
     /**
+     * Whether the module directory is set to private
+     * @returns {boolean} Whether the module directory is set to private
+     */
+    static async isPrivate () {
+        if (game.user.isGM) return false
+
+        const dataHandler = game?.tokenActionHud?.dataHandler
+
+        if (game.user.hasPermission('FILES_BROWSE')) {
+            try {
+                await FilePicker.browse('data', dataHandler.path)
+                return false
+            } catch {
+                return true
+            }
+        }
+    }
+
+    /**
      * Get file paths as GM
      * @returns {object} The file paths
      */
     static async getFilePathsAsGm () {
-        if (!game.user.hasPermission('FILES_BROWSE') && !Utils.isGmActive()) {
+        const dataHandler = game.tokenActionHud.dataHandler
+
+        if ((!game.user.hasPermission('FILES_BROWSE') || dataHandler.private) && !Utils.isGmActive()) {
             Logger.info('Cannot get file paths without a GM present', true)
             return new Map() // Return an empty map if no permissions and no GM
         }
 
-        const files = game.user.hasPermission('FILES_BROWSE')
+        const files = game.user.hasPermission('FILES_BROWSE') && !dataHandler.private
             ? await DataHandler.getFilePaths()
             : await game.tokenActionHud.socket.executeAsGM('getFilePaths')
 
@@ -97,7 +119,9 @@ export class DataHandler {
      * @returns {boolean} Whether the user can save data
      */
     static canSaveData () {
-        return (game.user.hasPermission('FILES_UPLOAD') || Utils.isGmActive())
+        const dataHandler = game.tokenActionHud.dataHandler
+
+        return ((game.user.hasPermission('FILES_UPLOAD') && !dataHandler.private) || Utils.isGmActive())
     }
 
     /**
@@ -108,7 +132,9 @@ export class DataHandler {
      * @param {object} data The data
      */
     static async saveDataAsGm (type, id, data) {
-        if (game.user.hasPermission('FILES_UPLOAD')) {
+        const dataHandler = game.tokenActionHud.dataHandler
+
+        if (game.user.hasPermission('FILES_UPLOAD') && !dataHandler.private) {
             return await DataHandler.saveData(type, id, data)
         }
 
@@ -159,7 +185,9 @@ export class DataHandler {
      * @returns {boolean} Whether the user can get data
      */
     static canGetData () {
-        return (game.user.hasPermission('FILES_BROWSE') || Utils.isGmActive())
+        const dataHandler = game.tokenActionHud.dataHandler
+
+        return ((game.user.hasPermission('FILES_BROWSE') && !dataHandler.private) || Utils.isGmActive())
     }
 
     /**
@@ -169,8 +197,10 @@ export class DataHandler {
      * @returns {object}       The data
      */
     static async getDataAsGm (options) {
+        const dataHandler = game.tokenActionHud.dataHandler
+
         try {
-            if (!game.user.hasPermission('FILES_BROWSE') && !Utils.isGmActive()) {
+            if ((!game.user.hasPermission('FILES_BROWSE') || dataHandler.private) && !Utils.isGmActive()) {
                 Logger.info('Cannot get data without a GM present', true)
                 return
             }
