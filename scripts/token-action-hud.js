@@ -1272,7 +1272,7 @@ export class TokenActionHud extends Application {
             character.actor = actor
         } else if (controlled.length === 0 && game.user.character && this.alwaysShowSetting) {
             character.actor = game.user.character
-            character.token = canvas.tokens.placeables.find(t => t.actor?.id === character.actor.id)
+            character.token = canvas.tokens?.placeables.find(t => t.actor?.id === character.actor.id) ?? null
         }
 
         if (!character.actor) return null

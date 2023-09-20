@@ -142,7 +142,7 @@ export class Utils {
      * @returns {array} The controlled tokens
      */
     static getControlledTokens () {
-        return game.canvas.tokens.controlled
+        return game.canvas.tokens?.controlled ?? []
     }
 
     /**

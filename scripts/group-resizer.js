@@ -224,7 +224,7 @@ export class GroupResizer {
             return customWidth
         }
 
-        const windowWidth = canvas.screenDimensions[0]
+        const windowWidth = canvas.screenDimensions[0] || window.innerWidth
         const contentLeft = this.groupsElementRect.left
         const uiRight = document.querySelector('#ui-right')
         const uiRightClientWidth = uiRight.clientWidth
@@ -240,7 +240,7 @@ export class GroupResizer {
      * @private
      */
     #getAvailableHeight () {
-        const windowHeight = canvas.screenDimensions[1]
+        const windowHeight = canvas.screenDimensions[1] || window.innerHeight
         const contentBottom = this.groupsElementRect.bottom
         const contentTop = this.groupsElementRect.top
         const uiTopBottom = (this.direction === 'down')
