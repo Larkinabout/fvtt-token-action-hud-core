@@ -903,9 +903,9 @@ export class TokenActionHud extends Application {
                         const userCustomLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=userCustomLayout]')
                         if (userCustomLayoutElement) {
                             await this.updateSettings('userCustomLayout', userCustomLayoutElement?.value ?? '')
-                            await Utils.setSetting('userCustomLayout', customLayoutElement?.value ?? '')
+                            await Utils.setSetting('userCustomLayout', userCustomLayoutElement?.value ?? '')
                         }
-                        await game.tokenActonHud.reset()
+                        await TokenActionHud.reset()
                         Logger.info('Layout reset', true)
                     }
                 },
@@ -937,7 +937,7 @@ export class TokenActionHud extends Application {
                         }
                         const userCustomLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=userCustomLayout]')
                         if (userCustomLayoutElement) {
-                            await Utils.setSetting('userCustomLayout', customLayoutElement?.value ?? '')
+                            await Utils.setSetting('userCustomLayout', userCustomLayoutElement?.value ?? '')
                         }
                         await game.tokenActionHud.socket.executeForEveryone('reset')
                         Logger.info('All layouts reset', true)

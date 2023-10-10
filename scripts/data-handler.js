@@ -222,14 +222,17 @@ export class DataHandler {
     static async getData (options) {
         const dataHandler = game.tokenActionHud.dataHandler
 
-        const { id } = options
+        const { id, file } = options
 
         // Check if the file is available in the fileMap
-        const foundFile = dataHandler.fileMap.get(id) ?? null
+        let foundFile = dataHandler.fileMap.get(id) ?? null
 
-        // If not found, return null
+        // If not found, try to browse, otherwise return null
         if (!foundFile) {
-            return null
+            const { folder, filename } = getFileParts(file)
+            const foundFolder = await FilePicker.browse('data', folder)
+            foundFile = foundFolder.files.find(file => file.endsWith(filename))
+            if (!foundFile) return null
         }
 
         try {
