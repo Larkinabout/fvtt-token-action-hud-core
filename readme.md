@@ -45,6 +45,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD Pathfinder 1e](https://foundryvtt.com/packages/token-action-hud-pf1)
 - [Token Action HUD Pathfinder 2](https://foundryvtt.com/packages/token-action-hud-pf2e)
 - [Token Action HUD for Savage Worlds](https://foundryvtt.com/packages/token-action-hud-swade)
+- [Token Action HUD for Symbaroum RPG](https://foundryvtt.com/packages/token-action-hud-symbaroum)
 - [Token Action HUD The Witcher TRPG](https://foundryvtt.com/packages/token-action-hud-thewitchertrpg)
 - [Token Action HUD for Twodsix](https://foundryvtt.com/packages/fvtt-token-action-hud-twodsix)
 - [Token Action HUD WFRP4e](https://foundryvtt.com/packages/token-action-hud-wfrp4e)
