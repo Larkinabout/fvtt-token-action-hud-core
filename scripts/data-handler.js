@@ -229,6 +229,7 @@ export class DataHandler {
 
         // If not found, try to browse, otherwise return null
         if (!foundFile) {
+            if (!file) return null
             const { folder, filename } = getFileParts(file)
             const foundFolder = await FilePicker.browse('data', folder)
             foundFile = foundFolder.files.find(file => file.endsWith(filename))
