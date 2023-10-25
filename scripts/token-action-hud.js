@@ -359,7 +359,7 @@ export class TokenActionHud extends Application {
             const target = ((event.target.tagName === 'BUTTON')) ? event.target : event.currentTarget.children[0]
             const value = target.value
             try {
-                this.rollHandler.handleActionClick(event, value, this.actionHandler)
+                this.rollHandler.handleActionClickCore(event, value, this.actionHandler)
                 target.blur()
             } catch (error) {
                 Logger.error(event)
@@ -374,7 +374,7 @@ export class TokenActionHud extends Application {
             const target = ((event.target.tagName === 'BUTTON')) ? event.target : event.currentTarget.children[0]
             const value = target.value
             try {
-                this.rollHandler.handleActionHover(event, value, this.actionHandler)
+                this.rollHandler.handleActionHoverCore(event, value, this.actionHandler)
             } catch (error) {
                 Logger.error(event)
             }

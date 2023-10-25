@@ -27,7 +27,7 @@ export class RollHandler {
      * @param {object} event        The event
      * @param {string} encodedValue The encoded value
      */
-    async handleActionClick (event, encodedValue, actionHandler) {
+    async handleActionClickCore (event, encodedValue, actionHandler) {
         Logger.debug(`Handling click event for action [${encodedValue}]`, { event })
 
         // Update variables with current action context
@@ -46,9 +46,9 @@ export class RollHandler {
         if (handled) return
 
         if (this.#isGenericAction(encodedValue)) {
-            await this.#handleGenericAction(encodedValue)
+            await this.#handleGenericActionClick(encodedValue)
         } else {
-            this.doHandleActionEvent(event, encodedValue)
+            this.handleActionClick(event, encodedValue)
         }
     }
 
@@ -57,7 +57,7 @@ export class RollHandler {
      * @param {object} event        The event
      * @param {string} encodedValue The encoded value
      */
-    doHandleActionEvent (event, encodedValue) {}
+    handleActionClick (event, encodedValue) {}
 
     /**
      * Handle action hover events
@@ -65,7 +65,7 @@ export class RollHandler {
      * @param {*} encodedValue
      * @param {*} actionHandler
      */
-    async handleActionHover(event, encodedValue, actionHandler) {
+    async handleActionHoverCore (event, encodedValue, actionHandler) {
         Logger.debug(`Handling hover event for action [${encodedValue}]`, { event })
 
         // Update variables with current action context
@@ -74,7 +74,7 @@ export class RollHandler {
 
         this.registerKeyPresses(event)
 
-        this.doHandleActionHover(event, encodedValue)
+        this.handleActionHover(event, encodedValue)
     }
 
     /**
@@ -82,7 +82,7 @@ export class RollHandler {
      * @param {object} event        The event
      * @param {string} encodedValue The encoded value
      */
-    doHandleActionHover (event, encodedValue) {}
+    handleActionHover (event, encodedValue) {}
 
     /**
      * Add a pre-roll handler
@@ -212,7 +212,7 @@ export class RollHandler {
      * @private
      * @param {string} encodedValue The encoded value
      */
-    async #handleGenericAction (encodedValue) {
+    async #handleGenericActionClick (encodedValue) {
         const payload = encodedValue.split(DELIMITER)
         const actionId = payload[1]
 
