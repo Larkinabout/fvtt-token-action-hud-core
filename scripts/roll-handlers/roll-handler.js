@@ -27,8 +27,9 @@ export class RollHandler {
      * @param {object} event        The event
      * @param {string} encodedValue The encoded value
      */
-    async handleActionEvent (event, encodedValue, actionHandler) {
-        Logger.debug(`Handling event for action [${encodedValue}]`, { event })
+    async handleActionClick (event, encodedValue, actionHandler) {
+        Logger.debug(`Handling click event for action [${encodedValue}]`, { event })
+
         // Update variables with current action context
         this.actor = actionHandler.actor
         this.token = actionHandler.token
@@ -57,6 +58,31 @@ export class RollHandler {
      * @param {string} encodedValue The encoded value
      */
     doHandleActionEvent (event, encodedValue) {}
+
+    /**
+     * Handle action hover events
+     * @param {*} event The event
+     * @param {*} encodedValue
+     * @param {*} actionHandler
+     */
+    async handleActionHover(event, encodedValue, actionHandler) {
+        Logger.debug(`Handling hover event for action [${encodedValue}]`, { event })
+
+        // Update variables with current action context
+        this.actor = actionHandler.actor
+        this.token = actionHandler.token
+
+        this.registerKeyPresses(event)
+
+        this.doHandleActionHover(event, encodedValue)
+    }
+
+    /**
+     * Overide for the TAH system module
+     * @param {object} event        The event
+     * @param {string} encodedValue The encoded value
+     */
+    doHandleActionHover (event, encodedValue) {}
 
     /**
      * Add a pre-roll handler

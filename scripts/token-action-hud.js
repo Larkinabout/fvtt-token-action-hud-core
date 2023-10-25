@@ -352,17 +352,29 @@ export class TokenActionHud extends Application {
      */
     #bindActionEvents (elements) {
         /**
-         * Handle action event
+         * Action click
          * @param {object} event The event
          */
-        const handleAction = (event) => {
-            let target = event.target
-
-            if (target.tagName !== 'BUTTON') target = event.currentTarget.children[0]
+        const actionClick = (event) => {
+            const target = ((event.target.tagName === 'BUTTON')) ? event.target : event.currentTarget.children[0]
             const value = target.value
             try {
-                this.rollHandler.handleActionEvent(event, value, this.actionHandler)
+                this.rollHandler.handleActionClick(event, value, this.actionHandler)
                 target.blur()
+            } catch (error) {
+                Logger.error(event)
+            }
+        }
+
+        /**
+         * Action hover
+         * @param {object} event The event
+         */
+        const actionHover = (event) => {
+            const target = ((event.target.tagName === 'BUTTON')) ? event.target : event.currentTarget.children[0]
+            const value = target.value
+            try {
+                this.rollHandler.handleActionHover(event, value, this.actionHandler)
             } catch (error) {
                 Logger.error(event)
             }
@@ -442,7 +454,12 @@ export class TokenActionHud extends Application {
         // When an action is clicked or right-clicked...
         elements.action.on('click contextmenu', (event) => {
             event.preventDefault()
-            handleAction(event)
+            actionClick(event)
+        })
+
+        // When an action is hovered...
+        elements.action.hover((event) => {
+            actionHover(event)
         })
 
         elements.groupButton.on('contextmenu', (event) => {
