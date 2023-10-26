@@ -1,4 +1,4 @@
-import { registerSettings } from './settings.js'
+import { registerSettingsCore } from './settings.js'
 import { ItemMacroActionListExtender } from './action-handlers/item-macro-extender.js'
 import { CompendiumMacroPreHandler } from './roll-handlers/compendium-macro-pre-handler.js'
 import { ItemMacroPreRollHandler } from './roll-handlers/pre-item-macro.js'
@@ -13,26 +13,27 @@ export class SystemManager {
     /** ACTION HANDLERS */
     /** OVERRIDDEN BY SYSTEM */
 
-    doGetActionHandler () {}
-    doGetRollHandler (handlerId) {}
+    getActionHandler () {}
+    getRollHandler (rollHandlerId) {}
     getAvailableRollHandlers () {}
-    doRegisterSettings (updateFunc) {}
-    async doRegisterDefaultFlags () {}
+    registerSettings (onChangeFunction) {}
+    async registerDefaults () {}
 
     /**
      * Register default flags
      * @public
      */
-    async registerDefaults () {
-        const defaults = await this.doRegisterDefaultFlags() ?? []
+    async registerDefaultsCore () {
+        let func = null
+        if (this.registerDefaults.toString().slice(-2) !== '{}') {
+            func = this.registerDefaults
+        } else {
+            globalThis.logger.warn('Token Action HUD | SystemHandler.doRegisterDefaultFlags is deprecated. Use SystemHandler.registerDefaults')
+            func = this.doRegisterDefaultFlags
+        }
+        const defaults = await func() ?? []
         Hooks.callAll('tokenActionHudCoreRegisterDefaults', defaults)
         if (defaults) {
-            if (defaults?.categories) {
-                globalThis.logger.warn('Token Action HUD | SystemManager.doRegisterDefaultFlags expects \'layout\' to be returned instead of \'categories\'')
-            }
-            if (defaults?.subcategories) {
-                globalThis.logger.warn('Token Action HUD | SystemManager.doRegisterDefaultFlags expects \'groups\' to be returned instead of \'subcategories\'')
-            }
             game.tokenActionHud.defaults = defaults
         }
     }
@@ -40,31 +41,40 @@ export class SystemManager {
     /**
      * Initialise the action handler
      * @public
-     * @returns {ActionHandler}
+     * @returns {class} The ActionHandler class
      */
-    async getActionHandler () {
-        const actionHandler = this.doGetActionHandler()
-        this.addActionExtenders(actionHandler)
+    async getActionHandlerCore () {
+        let func = null
+        if (this.getActionHandler.toString().slice(-2) !== '{}') {
+            func = this.getActionHandler
+        } else {
+            globalThis.logger.warn('Token Action HUD | SystemHandler.doGetActionHandler is deprecated. Use SystemHandler.getActionHandler')
+            func = this.doGetActionHandler
+        }
+        const actionHandler = func()
+        this.addActionHandlerExtensions(actionHandler)
         return actionHandler
     }
 
     /**
-     * Initialise action list extenders
+     * Add action handler extensions
      * @public
-     * @param {ActionHandler} actionHandler The ActionHandler class
+     * @param {class} actionHandler The ActionHandler class
      */
-    addActionExtenders (actionHandler) {
+    addActionHandlerExtensions (actionHandler) {
         if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) {
             actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler))
         }
+
+        Hooks.callAll('tokenActionHudCoreAddActionHandlerExtensions', actionHandler)
     }
 
     /**
      * Get the roll handler
      * @public
-     * @returns {object} The roll handler
+     * @returns {class} The RollHandler class
      */
-    getRollHandler () {
+    getRollHandlerCore () {
         let rollHandlerId = Utils.getSetting('rollHandler')
 
         if (!(rollHandlerId === 'core' || Utils.isModuleActive(rollHandlerId))) {
@@ -73,7 +83,14 @@ export class SystemManager {
             Utils.setSetting('rollHandler', rollHandlerId)
         }
 
-        const rollHandler = this.doGetRollHandler(rollHandlerId)
+        let func = null
+        if (this.getRollHandler.toString().slice(-2) !== '{}') {
+            func = this.getRollHandler
+        } else {
+            globalThis.logger.warn('Token Action HUD | SystemHandler.doGetRollHandler is deprecated. Use SystemHandler.getRollHandler')
+            func = this.doGetRollHandler
+        }
+        const rollHandler = func(rollHandlerId)
         this.addPreHandlers(rollHandler)
         return rollHandler
     }
@@ -86,16 +103,18 @@ export class SystemManager {
     addPreHandlers (rollHandler) {
         rollHandler.addPreRollHandler(new CompendiumMacroPreHandler())
 
-        if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) { rollHandler.addPreRollHandler(new ItemMacroPreRollHandler()) }
+        if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) {
+            rollHandler.addPreRollHandler(new ItemMacroPreRollHandler())
+        }
     }
 
     /**
      * Register module settings
      * @public
      */
-    registerSettings () {
+    registerSettingsCore () {
         const rollHandlers = this.getAvailableRollHandlers()
-        registerSettings(this, rollHandlers)
+        registerSettingsCore(this, rollHandlers)
     }
 
     /**
@@ -110,10 +129,9 @@ export class SystemManager {
         }
     }
 
-    /** DEPRECATED */
-
-    addActionsToActionList (actionsData, groupData) {
-        globalThis.logger.warn('Token Action HUD | ActionHandler.addActionsToActionList is deprecated. Use ActionHandler.addActions')
-        this.addActions(actionsData, groupData)
-    }
+    // DEPRECATED
+    doGetActionHandler () {}
+    doGetRollHandler (rollHandlerId) {}
+    doRegisterSettings (onChangeFunction) {}
+    async doRegisterDefaultFlags () {}
 }

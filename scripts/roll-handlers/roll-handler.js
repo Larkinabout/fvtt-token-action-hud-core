@@ -24,8 +24,9 @@ export class RollHandler {
     /**
      * Handle action events
      * @public
-     * @param {object} event        The event
-     * @param {string} encodedValue The encoded value
+     * @param {object} event         The event
+     * @param {string} encodedValue  The encoded value
+     * @param {class}  actionHandler The ActionHandler class
      */
     async handleActionClickCore (event, encodedValue, actionHandler) {
         Logger.debug(`Handling click event for action [${encodedValue}]`, { event })
@@ -48,12 +49,18 @@ export class RollHandler {
         if (this.#isGenericAction(encodedValue)) {
             await this.#handleGenericActionClick(encodedValue)
         } else {
-            this.handleActionClick(event, encodedValue)
+            if (this.handleActionClick.toString().slice(-2) !== '{}') {
+                this.handleActionClick(event, encodedValue)
+            } else {
+                globalThis.logger.warn('Token Action HUD | RollHandler.doHandleActionEvent is deprecated. Use RollHandler.handleActionClick')
+                this.doHandleActionEvent(event, encodedValue)
+            }
         }
     }
 
     /**
      * Overide for the TAH system module
+     * @override
      * @param {object} event        The event
      * @param {string} encodedValue The encoded value
      */
@@ -61,9 +68,9 @@ export class RollHandler {
 
     /**
      * Handle action hover events
-     * @param {*} event The event
-     * @param {*} encodedValue
-     * @param {*} actionHandler
+     * @param {object} event        The event
+     * @param {string} encodedValue The encoded value
+     * @param {class} actionHandler The ActionHandler class
      */
     async handleActionHoverCore (event, encodedValue, actionHandler) {
         Logger.debug(`Handling hover event for action [${encodedValue}]`, { event })
@@ -79,6 +86,7 @@ export class RollHandler {
 
     /**
      * Overide for the TAH system module
+     * @override
      * @param {object} event        The event
      * @param {string} encodedValue The encoded value
      */
@@ -111,11 +119,28 @@ export class RollHandler {
      * @public
      * @param {object} actor  The actor
      * @param {string} itemId The item id
+     * @returns {boolean}     Whether the item was rendered
      */
-    doRenderItem (actor, itemId) {
-        if (!actor) actor = this.actor
+    renderItem (actor, itemId) {
+        // Check if rendering item is enabled, and no modifier keys are pressed
+        if (!Utils.getSetting('renderItemOnRightClick') || this.rightClick || this.alt || this.ctrl || this.shift) {
+            return false
+        }
+
+        // If actor is not specified, use the RollHandler's actor
+        if (!actor) {
+            actor = this.actor
+        }
+
+        // Get the item
         const item = Utils.getItem(actor, itemId)
+
+        // If the item is not found, return false
+        if (!item) return false
+
+        // Render the item and return true
         item.sheet.render(true)
+        return true
     }
 
     /**
@@ -199,11 +224,7 @@ export class RollHandler {
      * @returns {boolean}           Whether the action is a generic action
      */
     #isGenericAction (encodedValue) {
-        const payload = encodedValue.split(DELIMITER)
-
-        const actionType = payload[0]
-        const actionId = payload[1]
-
+        const [actionType, actionId] = encodedValue.split(DELIMITER)
         return actionType === 'utility' && actionId.includes('toggle')
     }
 
@@ -222,5 +243,26 @@ export class RollHandler {
         if (actionId === 'toggleCombat') await firstControlledToken.toggleCombat()
 
         Hooks.callAll('forceUpdateTokenActionHud')
+    }
+
+    // DEPRECATED
+
+    /**
+     * Overide for the TAH system module
+     * @override
+     * @param {object} event        The event
+     * @param {string} encodedValue The encoded value
+     */
+    doHandleActionEvent (event, encodedValue) {}
+
+    /**
+     * Renders the item sheet
+     * @public
+     * @param {object} actor  The actor
+     * @param {string} itemId The item id
+     */
+    doRenderItem (actor, itemId) {
+        globalThis.logger.warn('Token Action HUD | RollHandler.doRenderItem is deprecated. Use RollHandler.renderItem')
+        this.renderItem(actor, itemId)
     }
 }

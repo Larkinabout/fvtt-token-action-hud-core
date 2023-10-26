@@ -68,12 +68,12 @@ export class TokenActionHud extends Application {
         this.hudPosition = Utils.getUserFlag('position')
         this.isUnlocked = Utils.getUserFlag('isUnlocked')
 
-        await this.systemManager.registerDefaults()
+        await this.systemManager.registerDefaultsCore()
 
         this.dataHandler = new DataHandler()
         await this.dataHandler.init()
 
-        this.actionHandler = await this.systemManager.getActionHandler()
+        this.actionHandler = await this.systemManager.getActionHandlerCore()
         this.actionHandler.customLayoutSetting = Utils.getSetting('customLayout')
         this.actionHandler.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
         this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
@@ -82,7 +82,7 @@ export class TokenActionHud extends Application {
         this.actionHandler.tooltipsSetting = Utils.getSetting('tooltips')
 
         this.GroupResizer = new GroupResizer()
-        this.rollHandler = this.systemManager.getRollHandler()
+        this.rollHandler = this.systemManager.getRollHandlerCore()
     }
 
     /**
@@ -122,7 +122,7 @@ export class TokenActionHud extends Application {
      * @public
      */
     updateRollHandler () {
-        this.rollHandler = this.systemManager.getRollHandler()
+        this.rollHandler = this.systemManager.getRollHandlerCore()
     }
 
     /**

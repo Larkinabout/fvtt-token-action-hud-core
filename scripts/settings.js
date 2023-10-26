@@ -19,7 +19,7 @@ Hooks.on('init', async () => {
  * @param {object} systemManager The SystemManager class
  * @param {array} rollHandlers   The available roll handlers
  */
-export const registerSettings = function (systemManager, rollHandlers) {
+export const registerSettingsCore = function (systemManager, rollHandlers) {
     game.settings.registerMenu(MODULE.ID, 'customStyle', {
         hint: Utils.i18n('tokenActionHud.settings.customStyle.hint'),
         label: Utils.i18n('tokenActionHud.settings.customStyle.label'),
@@ -363,7 +363,12 @@ export const registerSettings = function (systemManager, rollHandlers) {
 
     registerCustomStyleSettings()
 
-    systemManager.doRegisterSettings(onChangeFunction)
+    if (systemManager.registerSettings.toString().slice(-2) !== '{}') {
+        systemManager.registerSettings(onChangeFunction)
+    } else {
+        globalThis.logger.warn('Token Action HUD | SystemHandler.doRegisterSettings is deprecated. Use SystemHandler.registerSettings')
+        systemManager.doRegisterSettings(onChangeFunction)
+    }
 
     Logger.debug('Available roll handlers', { rollHandlers })
 }

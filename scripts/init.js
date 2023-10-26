@@ -54,7 +54,7 @@ Hooks.on('tokenActionHudSystemReady', async (systemModule) => {
 
     // Create new SystemManager and register core and system module settings
     systemManager = new systemModule.api.SystemManager(MODULE.ID)
-    systemManager.registerSettings()
+    systemManager.registerSettingsCore()
 
     // Set stylesheet to 'style' core module setting
     Utils.switchCSS(Utils.getSetting('style'))
