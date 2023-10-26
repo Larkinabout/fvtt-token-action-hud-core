@@ -122,11 +122,6 @@ export class RollHandler {
      * @returns {boolean}     Whether the item was rendered
      */
     renderItem (actor, itemId) {
-        // Check if rendering item is enabled, and no modifier keys are pressed
-        if (!Utils.getSetting('renderItemOnRightClick') || this.rightClick || this.alt || this.ctrl || this.shift) {
-            return false
-        }
-
         // If actor is not specified, use the RollHandler's actor
         if (!actor) {
             actor = this.actor
@@ -150,7 +145,6 @@ export class RollHandler {
      */
     isRenderItem () {
         return (
-            Utils.getSetting('renderItemOnRightClick') &&
             this.rightClick &&
             !(this.alt || this.ctrl || this.shift)
         )

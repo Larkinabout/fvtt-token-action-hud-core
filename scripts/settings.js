@@ -306,18 +306,6 @@ export const registerSettingsCore = function (systemManager, rollHandlers) {
         }
     })
 
-    game.settings.register(MODULE.ID, 'renderItemOnRightClick', {
-        name: Utils.i18n('tokenActionHud.settings.renderItemOnRightClick.name'),
-        hint: Utils.i18n('tokenActionHud.settings.renderItemOnRightClick.hint'),
-        scope: 'client',
-        config: true,
-        type: Boolean,
-        default: true,
-        onChange: (value) => {
-            onChangeFunction('renderItemOnRightClick', value)
-        }
-    })
-
     if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) {
         game.settings.register(MODULE.ID, 'itemMacro', {
             name: Utils.i18n('tokenActionHud.settings.itemMacro.name'),
