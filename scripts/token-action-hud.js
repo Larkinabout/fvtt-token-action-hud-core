@@ -179,7 +179,7 @@ export class TokenActionHud extends Application {
         const data = super.getData()
         data.hud = this.hud
         data.id = 'token-action-hud'
-        data.style = CSS_STYLE[this.styleSetting].class
+        data.style = game.tokenActionHud.systemManager.styles[this.styleSetting].class ?? ''
         data.scale = this.#getScale()
         data.background = '#00000000'
         Logger.debug('Application data', { data })

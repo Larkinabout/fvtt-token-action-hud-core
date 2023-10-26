@@ -391,7 +391,7 @@ export class Utils {
      */
     static switchCSS (style) {
         for (const [key, value] of Object.entries(CSS_STYLE)) {
-            const href = [`modules/${MODULE.ID}/`, `styles/${value.file}`]
+            const href = [`modules/${value.moduleId}/`, `${value.file}`]
             if (key === style) {
                 Object.values(document.styleSheets).find(
                     (ss) => ss.href?.includes(href[0]) && ss.href?.includes(href[1])

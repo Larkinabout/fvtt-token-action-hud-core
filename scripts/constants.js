@@ -56,24 +56,11 @@ export const COMPENDIUM_PACK_TYPES = ['JournalEntry', 'Macro', 'RollTable']
  * CSS styles
  */
 export const CSS_STYLE = {
-    compact: {
-        class: 'tah-style-foundry-vtt',
-        file: 'tah-compact',
-        primaryColor: '#dddddd',
-        secondaryColor: '#dddddd80',
-        tertiaryColor: '#ff6400'
-    },
-    custom: {
-        class: 'tah-style-custom',
-        file: 'tah-custom'
-    },
-    dorakoUI: {
-        class: 'tah-style-dorako-ui',
-        file: 'tah-dorako'
-    },
     foundryVTT: {
         class: 'tah-style-foundry-vtt-dark',
         file: 'tah-foundry-vtt-dark',
+        moduleId: MODULE.ID,
+        name: 'Foundry VTT Dark',
         primaryColor: '#dddddd',
         secondaryColor: '#dddddd80',
         tertiaryColor: '#ff6400'
@@ -81,21 +68,48 @@ export const CSS_STYLE = {
     foundryVttLight: {
         class: 'tah-style-foundry-vtt-light',
         file: 'tah-foundry-vtt-light',
+        moduleId: MODULE.ID,
+        name: 'Foundry VTT Light',
         primaryColor: '#dddddd',
         secondaryColor: '#dddddd80',
         tertiaryColor: '#ff6400'
     },
+    compact: {
+        class: 'tah-style-foundry-vtt',
+        file: 'tah-compact',
+        moduleId: MODULE.ID,
+        name: 'Foundry VTT Compact',
+        primaryColor: '#dddddd',
+        secondaryColor: '#dddddd80',
+        tertiaryColor: '#ff6400'
+    },
+    dorakoUI: {
+        class: 'tah-style-dorako-ui',
+        file: 'tah-dorako',
+        moduleId: MODULE.ID,
+        name: 'Dorako UI'
+    },
+    pathfinder: {
+        class: 'tah-style-pathfinder',
+        file: 'tah-pathfinder',
+        moduleId: MODULE.ID,
+        name: 'Pathfinder'
+    },
     highContrast: {
         class: 'tah-style-high-contrast',
         file: 'tah-high-contrast',
+        moduleId: MODULE.ID,
+        name: 'High Contrast',
         primaryColor: '#ffff00',
         secondaryColor: '#ffff00',
         tertiaryColor: '#0C7BDC'
     },
-    pathfinder: {
-        class: 'tah-style-pathfinder',
-        file: 'tah-pathfinder'
-    }
+    custom: {
+        class: 'tah-style-custom',
+        file: 'tah-custom',
+        moduleId: MODULE.ID,
+        name: 'Custom'
+    },
 }
 
 /**

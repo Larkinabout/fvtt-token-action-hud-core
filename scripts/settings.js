@@ -19,7 +19,7 @@ Hooks.on('init', async () => {
  * @param {object} systemManager The SystemManager class
  * @param {array} rollHandlers   The available roll handlers
  */
-export const registerSettingsCore = function (systemManager, rollHandlers) {
+export const registerSettingsCore = function (systemManager, rollHandlers, styles) {
     game.settings.registerMenu(MODULE.ID, 'customStyle', {
         hint: Utils.i18n('tokenActionHud.settings.customStyle.hint'),
         label: Utils.i18n('tokenActionHud.settings.customStyle.label'),
@@ -56,6 +56,8 @@ export const registerSettingsCore = function (systemManager, rollHandlers) {
         default: '0.0'
     })
 
+    const styleChoices = Object.fromEntries(Object.entries(styles).map(([key, value]) => [key, value.name]))
+
     game.settings.register(MODULE.ID, 'style', {
         name: Utils.i18n('tokenActionHud.settings.style.name'),
         hint: Utils.i18n('tokenActionHud.settings.style.hint'),
@@ -63,15 +65,7 @@ export const registerSettingsCore = function (systemManager, rollHandlers) {
         config: true,
         type: String,
         default: 'foundryVTT',
-        choices: {
-            foundryVTT: 'Foundry VTT Dark',
-            foundryVttLight: 'Foundry VTT Light',
-            compact: 'Foundry VTT Compact Dark',
-            dorakoUI: 'Dorako UI',
-            highContrast: 'High Contrast',
-            pathfinder: 'Pathfinder',
-            custom: 'Custom'
-        },
+        choices: styleChoices,
         onChange: (value) => {
             Utils.switchCSS(value)
         }

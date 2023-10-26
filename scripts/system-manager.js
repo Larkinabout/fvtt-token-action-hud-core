@@ -2,12 +2,13 @@ import { registerSettingsCore } from './settings.js'
 import { ItemMacroActionListExtender } from './action-handlers/item-macro-extender.js'
 import { CompendiumMacroPreHandler } from './roll-handlers/compendium-macro-pre-handler.js'
 import { ItemMacroPreRollHandler } from './roll-handlers/pre-item-macro.js'
-import { MODULE } from './constants.js'
+import { MODULE, CSS_STYLE } from './constants.js'
 import { Logger, Utils } from './utils.js'
 
 export class SystemManager {
     constructor () {
         this.coreModuleId = MODULE.ID
+        this.styles = null
     }
 
     /** ACTION HANDLERS */
@@ -20,7 +21,7 @@ export class SystemManager {
     async registerDefaults () {}
 
     /**
-     * Register default flags
+     * Register defaults
      * @public
      */
     async registerDefaultsCore () {
@@ -39,6 +40,21 @@ export class SystemManager {
             game.tokenActionHud.defaults = defaults
         }
     }
+
+    /**
+     * Register styles
+     */
+    async registerStylesCore () {
+        const systemStyles = this.registerStyles() ?? {}
+        this.styles = mergeObject(CSS_STYLE, systemStyles)
+
+        Hooks.callAll('tokenActionHudCoreRegisterStyles', this.styles)
+    }
+
+    /**
+     * @override
+     */
+    async registerStyles () {}
 
     /**
      * Initialise the action handler
@@ -118,7 +134,7 @@ export class SystemManager {
      */
     registerSettingsCore () {
         const rollHandlers = this.getAvailableRollHandlers()
-        registerSettingsCore(this, rollHandlers)
+        registerSettingsCore(this, rollHandlers, this.styles)
     }
 
     /**
