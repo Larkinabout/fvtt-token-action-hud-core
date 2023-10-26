@@ -32,7 +32,9 @@ export class SystemManager {
             func = this.doRegisterDefaultFlags
         }
         const defaults = await func() ?? []
+
         Hooks.callAll('tokenActionHudCoreRegisterDefaults', defaults)
+
         if (defaults) {
             game.tokenActionHud.defaults = defaults
         }
@@ -52,7 +54,9 @@ export class SystemManager {
             func = this.doGetActionHandler
         }
         const actionHandler = func()
-        this.addActionHandlerExtensions(actionHandler)
+
+        this.#addActionHandlerExtenders(actionHandler)
+
         return actionHandler
     }
 
@@ -61,12 +65,12 @@ export class SystemManager {
      * @public
      * @param {class} actionHandler The ActionHandler class
      */
-    addActionHandlerExtensions (actionHandler) {
+    #addActionHandlerExtenders (actionHandler) {
         if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) {
-            actionHandler.addFurtherActionHandler(new ItemMacroActionListExtender(actionHandler))
+            actionHandler.addActionHandlerExtender(new ItemMacroActionListExtender(actionHandler))
         }
 
-        Hooks.callAll('tokenActionHudCoreAddActionHandlerExtensions', actionHandler)
+        Hooks.callAll('tokenActionHudCoreAddActionHandlerExtenders', actionHandler)
     }
 
     /**
@@ -132,6 +136,6 @@ export class SystemManager {
     // DEPRECATED
     doGetActionHandler () {}
     doGetRollHandler (rollHandlerId) {}
-    doRegisterSettings (onChangeFunction) {}
     async doRegisterDefaultFlags () {}
+    doRegisterSettings (onChangeFunction) {}
 }

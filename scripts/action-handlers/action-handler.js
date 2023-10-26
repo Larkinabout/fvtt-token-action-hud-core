@@ -12,7 +12,7 @@ export class ActionHandler {
     characterName = null
     actor = null
     token = null
-    furtherActionHandlers = []
+    actionHandlerExtenders = []
     delimiter = DELIMITER
 
     constructor () {
@@ -102,7 +102,7 @@ export class ActionHandler {
             this.#buildCompendiumActions(),
             this.#buildMacroActions()
         ])
-        this.buildFurtherActions()
+        this.#buildExtendedActions()
         this.#updateNonPresetActions()
         this.#setHasActions()
         this.#setCharacterLimit()
@@ -241,11 +241,11 @@ export class ActionHandler {
     }
 
     /**
-     * Build further actions
+     * Build extended actions
      * @private
      */
-    buildFurtherActions () {
-        this.furtherActionHandlers.forEach(handler => handler.extendActionList())
+    #buildExtendedActions () {
+        this.actionHandlerExtenders.forEach(extender => extender.extendActionList())
     }
 
     /**
@@ -285,9 +285,7 @@ export class ActionHandler {
      * @private
      */
     #getDefaultGroups () {
-        const defaultGroups = (game.tokenActionHud.defaults?.groups?.length)
-            ? game.tokenActionHud.defaults?.groups
-            : game.tokenActionHud.defaults?.subcategories
+        const defaultGroups = game.tokenActionHud.defaults?.groups
         if (!defaultGroups) return {}
         for (const defaultGroup of defaultGroups) {
             this.defaultGroups[defaultGroup.id] = defaultGroup
@@ -300,9 +298,7 @@ export class ActionHandler {
      */
     async #getDefaultLayout () {
         if (Object.keys(this.defaultLayout).length) return
-        const defaultLayout = (game.tokenActionHud.defaults?.layout?.length)
-            ? game.tokenActionHud.defaults?.layout
-            : game.tokenActionHud.defaults?.categories
+        const defaultLayout = game.tokenActionHud.defaults?.layout
         if (!defaultLayout) return {}
         this.defaultLayout = await Utils.getNestedGroups(defaultLayout)
     }
@@ -1162,13 +1158,13 @@ export class ActionHandler {
     }
 
     /**
-     * Add further action handler
+     * Add action handler extender
      * @public
-     * @param {object} handler The handler
+     * @param {object} actioHandlerExtender The action handler extender
      */
-    addFurtherActionHandler (handler) {
-        Logger.debug('Adding further action handler...', { handler })
-        this.furtherActionHandlers.push(handler)
+    addActionHandlerExtender (actionHandlerExtender) {
+        Logger.debug('Adding action handler extender...', { actionHandlerExtender })
+        this.actionHandlerExtenders.push(actionHandlerExtender)
     }
 
     /**
@@ -1203,28 +1199,13 @@ export class ActionHandler {
 
     /** DEPRECATED */
 
-    addActionsToActionList (actionsData, groupData) {
-        globalThis.logger.warn('Token Action HUD | ActionHandler.addActionsToActionList is deprecated. Use ActionHandler.addActions')
-        this.addActions(actionsData, groupData)
-    }
-
-    addSubcategoryInfo (groupData) {
-        globalThis.logger.warn('Token Action HUD | ActionHandler.addSubcategoryInfo is deprecated. Use ActionHandler.addGroupInfo')
-        this.addGroupInfo(groupData)
-    }
-
-    addSubcategoryToActionList (parentGroupData, groupData, update = false) {
-        globalThis.logger.warn('Token Action HUD | ActionHandler.addSubcategoryToActionList is deprecated. Use ActionHandler.addGroup')
-        this.addGroup(groupData, parentGroupData, update)
-    }
-
-    sortItems (items) {
-        globalThis.logger.warn('ActionHandler.sortItems is deprecated. Use Utils.sortItems')
-        return Utils.sortItems(items)
-    }
-
-    sortItemsByName (items) {
-        globalThis.logger.warn('ActionHandler.sortItemsByName is deprecated. Use Utils.sortItemsByName')
-        return Utils.sortItemsByName(items)
+    /**
+     * Add further action handler
+     * @public
+     * @param {object} handler The handler
+     */
+    addFurtherActionHandler (handler) {
+        globalThis.logger.warn('Token Action HUD | ActionHandler.addFurtherActionHandler is deprecated. Use ActionHandler.addActionHandlerExtender')
+        this.addActionHandlerExtender(handler)
     }
 }
