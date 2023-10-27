@@ -317,32 +317,6 @@ export class TokenActionHud extends Application {
         elements.groupButton.get().forEach(element => {
             element.addEventListener('touchstart', (event) => this.#dragEvent(event), { passive: true })
         })
-
-        /**
-         * Open the group dialog
-         * @param {object} event
-         */
-        const openGroupDialog = (event) => {
-            const target = event.currentTarget
-            if (!target?.parentElement?.dataset?.nestId) return
-
-            const nestId = target?.parentElement?.dataset?.nestId
-            const name = target?.parentElement?.dataset?.name ?? target.innerText ?? target.outerText
-            const level = parseInt(target?.parentElement?.dataset?.level) || null
-            const type = target?.parentElement?.dataset?.type
-
-            TagDialogHelper.showGroupDialog(
-                this.actionHandler,
-                { nestId, name, level, type }
-            )
-        }
-
-        // When a category button is right-clicked...
-        elements.groupButton.on('contextmenu', (event) => {
-            if (this.isUnlocked && event.currentTarget.parentElement.dataset.level === '1') {
-                openGroupDialog(event)
-            }
-        })
     }
 
     /**
@@ -378,6 +352,42 @@ export class TokenActionHud extends Application {
             } catch (error) {
                 Logger.error(event)
             }
+        }
+
+        /**
+         * Group click
+         * @param {object} event The event
+         */
+        const groupClick = (event) => {
+            const target = (event.target.classList.contains('tah-button-text')) || (event.target.classList.contains('tah-button-image')) || (event.target.classList.contains('tah-group-button'))
+                ? event.target.closest('.tah-tab-group')
+                : event.target.closest('.tah-group')
+            if (!target?.dataset?.nestId) return
+            const nestId = target?.dataset?.nestId
+            try {
+                this.rollHandler.handleGroupClickCore(event, nestId, this.actionHandler)
+            } catch (error) {
+                Logger.error(event)
+            }
+        }
+
+        /**
+         * Open the group dialog
+         * @param {object} event
+         */
+        const openGroupDialog = (event) => {
+            const target = event.currentTarget
+            if (!target?.parentElement?.dataset?.nestId) return
+
+            const nestId = target?.parentElement?.dataset?.nestId
+            const name = target?.parentElement?.dataset?.name ?? target.innerText ?? target.outerText
+            const level = parseInt(target?.parentElement?.dataset?.level) || null
+            const type = target?.parentElement?.dataset?.type
+
+            TagDialogHelper.showGroupDialog(
+                this.actionHandler,
+                { nestId, name, level, type }
+            )
         }
 
         /**
@@ -442,7 +452,11 @@ export class TokenActionHud extends Application {
 
         // When a subcategory title is right-clicked...
         elements.subtitle.on('contextmenu', (event) => {
-            if (this.isUnlocked) openActionDialog(event)
+            if (this.isUnlocked) {
+                openActionDialog(event)
+            } else {
+                groupClick(event)
+            }
         })
 
         // When a subcategory title is clicked...
@@ -463,8 +477,14 @@ export class TokenActionHud extends Application {
         })
 
         elements.groupButton.on('contextmenu', (event) => {
-            if (this.isUnlocked && event.currentTarget.parentElement.dataset.level !== '1') {
-                openActionDialog(event)
+            if (this.isUnlocked) {
+                if (event.currentTarget.parentElement.dataset.level === '1') {
+                    openGroupDialog(event)
+                } else {
+                    openActionDialog(event)
+                }
+            } else {
+                groupClick(event)
             }
         })
     }

@@ -93,6 +93,32 @@ export class RollHandler {
     handleActionHover (event, encodedValue) {}
 
     /**
+     * Handle group click events
+     * @param {object} event        The event
+     * @param {string} nestId       The nest ID
+     * @param {class} actionHandler The ActionHandler class
+     */
+    async handleGroupClickCore (event, nestId, actionHandler) {
+        Logger.debug(`Handling click event for group [${nestId}]`, { event })
+
+        // Update variables with current action context
+        this.actor = actionHandler.actor
+        this.token = actionHandler.token
+
+        this.registerKeyPresses(event)
+
+        this.handleGroupClick(event, nestId)
+    }
+
+    /**
+     * Overide for the TAH system module
+     * @override
+     * @param {object} event  The event
+     * @param {string} nestId The nestId
+     */
+    handleGroupClick (event, nestId) {}
+
+    /**
      * Add a pre-roll handler
      * @public
      * @param {object} handler The roll handler
