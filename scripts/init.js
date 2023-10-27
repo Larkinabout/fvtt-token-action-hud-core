@@ -1,5 +1,5 @@
 import { ActionHandler } from './action-handlers/action-handler.js'
-import { ActionListExtender } from './action-handlers/action-list-extender.js'
+import { ActionHandlerExtender } from './action-handlers/action-handler-extender.js'
 import { DataHandler } from './data-handler.js'
 import { MigrationManager } from './migration-manager.js'
 import { PreRollHandler } from './roll-handlers/pre-roll-handler.js'
@@ -23,8 +23,10 @@ Hooks.once('socketlib.ready', () => {
 
 Hooks.on('ready', async () => {
     module = game.modules.get(MODULE.ID)
+    const ActionListExtender = ActionHandlerExtender
     module.api = {
         ActionListExtender,
+        ActionHandlerExtender,
         ActionHandler,
         DataHandler,
         Logger,

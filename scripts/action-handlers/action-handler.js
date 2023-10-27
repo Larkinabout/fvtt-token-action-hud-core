@@ -245,7 +245,7 @@ export class ActionHandler {
      * @private
      */
     #buildExtendedActions () {
-        this.actionHandlerExtenders.forEach(extender => extender.extendActionList())
+        this.actionHandlerExtenders.forEach(extender => extender.extendActionHandler())
     }
 
     /**

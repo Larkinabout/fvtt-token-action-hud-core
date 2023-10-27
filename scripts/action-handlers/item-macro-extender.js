@@ -1,11 +1,11 @@
-import { ActionListExtender } from './action-list-extender.js'
+import { ActionHandlerExtender } from './action-handler-extender.js'
 import { DELIMITER, ITEM_MACRO_ICON } from '../constants.js'
 import { Utils } from '../utils.js'
 
 /**
  * Handler for building actions related to the Item Macro module.
  */
-export class ItemMacroActionListExtender extends ActionListExtender {
+export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
     constructor (actionHandler) {
         super(actionHandler)
         this.actionHandler = actionHandler
@@ -17,7 +17,7 @@ export class ItemMacroActionListExtender extends ActionListExtender {
      * Extend the action list
      * @override
      */
-    extendActionList () {
+    extendActionHandler () {
         // Update actor and token with current action handler context
         this.actor = this.actionHandler.actor
         this.token = this.actionHandler.token

@@ -1,5 +1,5 @@
 import { registerSettingsCore } from './settings.js'
-import { ItemMacroActionListExtender } from './action-handlers/item-macro-extender.js'
+import { ItemMacroActionHandlerExtender } from './action-handlers/item-macro-extender.js'
 import { CompendiumMacroPreHandler } from './roll-handlers/compendium-macro-pre-handler.js'
 import { ItemMacroPreRollHandler } from './roll-handlers/pre-item-macro.js'
 import { MODULE, CSS_STYLE } from './constants.js'
@@ -83,7 +83,7 @@ export class SystemManager {
      */
     #addActionHandlerExtenders (actionHandler) {
         if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) {
-            actionHandler.addActionHandlerExtender(new ItemMacroActionListExtender(actionHandler))
+            actionHandler.addActionHandlerExtender(new ItemMacroActionHandlerExtender(actionHandler))
         }
 
         Hooks.callAll('tokenActionHudCoreAddActionHandlerExtenders', actionHandler)
