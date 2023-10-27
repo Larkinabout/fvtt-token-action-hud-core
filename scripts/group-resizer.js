@@ -56,15 +56,16 @@ export class GroupResizer {
             if (!actionsElement) continue
             const nestId = groupElement.dataset.nestId
             const groupSettings = await actionHandler.getGroupSettings({ nestId })
+            const groupCustomWidth = groupSettings.customWidth
             const grid = gridModuleSetting || this.settings?.grid || groupSettings?.grid
             if (grid) {
                 if (!hasGrid) {
                     await this.#getGridWidth()
                     hasGrid = true
                 }
-                await this.#resizeGrid(actionsElement)
+                await this.#resizeGrid(actionsElement, groupCustomWidth)
             } else {
-                await this.#resize(actionsElement)
+                await this.#resize(actionsElement, groupCustomWidth)
             }
         }
 
@@ -144,16 +145,18 @@ export class GroupResizer {
      * Resize the actions element into the grid format
      * @private
      * @param {object} actionsElement The actions element
+     * @param {number} customWidth    The custom width
      */
-    async #resizeGrid (actionsElement) {
+    async #resizeGrid (actionsElement, groupCustomWidth) {
         if (!actionsElement) return
         const emptyStyle = { display: '', gridTemplateColumns: '', width: '' }
         await this.#assignCSS(actionsElement, emptyStyle)
 
         const actions = actionsElement.querySelectorAll('.tah-action')
         const squaredCols = Math.ceil(Math.sqrt(actions.length))
-        const availableCols = Math.floor(this.availableWidth / this.gridWidth)
-        const cols = (squaredCols > availableCols) ? availableCols : (actions.length <= this.minCols) ? actions.length : squaredCols
+        const availableGroupWidth = groupCustomWidth ?? this.availableWidth
+        const availableCols = Math.floor(availableGroupWidth / this.gridWidth)
+        const cols = (squaredCols > availableCols || groupCustomWidth) ? availableCols : (actions.length <= this.minCols) ? actions.length : squaredCols
         // Apply maxHeight and width styles to content
         const style = { display: 'grid', gridTemplateColumns: `repeat(${cols}, ${this.gridWidth}px)` }
         await this.#assignCSS(actionsElement, style)
@@ -163,13 +166,17 @@ export class GroupResizer {
      * Resize the actions element
      * @private
      * @param {object} actionsElement The actions element
+     * @param {number} customWidth    The custom width
      */
-    async #resize (actionsElement) {
+    async #resize (actionsElement, groupCustomWidth) {
         if (!actionsElement) return
 
         let width = 500
+
         if (this.isCustomWidth) {
             width = this.availableWidth
+        } else if (groupCustomWidth) {
+            width = groupCustomWidth
         } else {
             const actions = actionsElement.querySelectorAll('.tah-action')
             if (!actions.length) return

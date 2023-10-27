@@ -33,43 +33,43 @@
         <section class="tab" data-tab="other">
             <div class="tah-dialog-col-group">
                 <div class="form-group">
-                    <label>{{localize "tokenActionHud.form.hud.formGroup.image.label"}}</label>
+                    <label>{{localize "tokenActionHud.form.group.image.label"}}</label>
                     <div class="form-fields">
                         <input type="text" id="image" name="image" data-dtype="text" value="{{settings.image}}">
                         {{filePicker target="image" type="image"}}
                     </div>
-                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.image.hint"}}</p>
+                    <p class="hint">{{localize "tokenActionHud.form.group.image.hint"}}</p>
                 </div>
                 <div class="form-group slim">
-                    <label>{{localize "tokenActionHud.form.hud.formGroup.showCategoryTitle.label"}}</label>
+                    <label>{{localize "tokenActionHud.form.group.topLevel.showTitle.label"}}</label>
                     <div class="form-fields">
                         <input type="checkbox" name="showTitle" {{~#if settings.showTitle~}}checked{{~/if~}}/>
                     </div>
-                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.showCategoryTitle.hint"}}</p>
-                </div>
-                <div class="form-group slim">
-                    <label>{{localize "tokenActionHud.form.hud.formGroup.grid.label"}}</label>
-                    <div class="form-fields">
-                        <input type="checkbox" name="grid" {{~#if settings.grid}}checked{{~/if~}}/>
-                    </div>
-                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.grid.hint"}}</p>
+                    <p class="hint">{{localize "tokenActionHud.form.group.topLevel.showTitle.hint"}}</p>
                 </div>
                 <div class="form-group">
                     <label>
-                        {{localize "tokenActionHud.form.hud.formGroup.customWidth.label"}}
-                        <span class="units">{{localize "tokenActionHud.form.hud.formGroup.customWidth.units"}}</span>
+                        {{localize "tokenActionHud.form.group.customWidth.label"}}
+                        <span class="units">{{localize "tokenActionHud.form.group.customWidth.units"}}</span>
                     </label>
                     <div class="form-fields">
                         <input type="number" name="customWidth" value="{{settings.customWidth}}" />
                     </div>
-                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.customWidth.hint"}}</p>
+                    <p class="hint">{{localize "tokenActionHud.form.group.topLevel.customWidth.hint"}}</p>
+                </div>
+                <div class="form-group slim">
+                    <label>{{localize "tokenActionHud.form.group.grid.label"}}</label>
+                    <div class="form-fields">
+                        <input type="checkbox" name="grid" {{~#if settings.grid}}checked{{~/if~}}/>
+                    </div>
+                    <p class="hint">{{localize "tokenActionHud.form.group.grid.hint"}}</p>
                 </div>
                 <div class="form-group">
-                    <label>{{localize "tokenActionHud.form.hud.formGroup.characterCount.label"}}</label>
+                    <label>{{localize "tokenActionHud.form.group.characterCount.label"}}</label>
                     <div class="form-fields">
                         <input type="number" name="characterCount" placeholder="No limit" value="{{settings.characterCount}}" />
                     </div>
-                    <p class="hint">{{localize "tokenActionHud.form.hud.formGroup.characterCount.hint"}}</p> 
+                    <p class="hint">{{localize "tokenActionHud.form.group.characterCount.hint"}}</p> 
                 </div>
             </div>
         </section>
