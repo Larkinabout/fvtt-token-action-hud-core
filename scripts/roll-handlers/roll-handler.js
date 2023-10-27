@@ -105,18 +105,20 @@ export class RollHandler {
         this.actor = actionHandler.actor
         this.token = actionHandler.token
 
+        const group = actionHandler.getGroup(nestId)
+
         this.registerKeyPresses(event)
 
-        this.handleGroupClick(event, nestId)
+        this.handleGroupClick(event, group)
     }
 
     /**
      * Overide for the TAH system module
      * @override
-     * @param {object} event  The event
-     * @param {string} nestId The nestId
+     * @param {object} event The event
+     * @param {object} group The group
      */
-    handleGroupClick (event, nestId) {}
+    handleGroupClick (event, group) {}
 
     /**
      * Add a pre-roll handler
