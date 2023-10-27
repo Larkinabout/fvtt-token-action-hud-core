@@ -178,7 +178,7 @@ export const LAYOUT_SETTING = {
         inputType: 'filePicker',
         filePickerType: 'json',
         dtype: 'String',
-        scope: 'client'
+        scope: 'user'
     },
     exportLayout: {
         hint: 'tokenActionHud.settings.exportLayout.hint',
@@ -260,5 +260,5 @@ export const SETTING = {
     textHoverPrimaryColor: {},
     textHoverSecondaryColor: {},
     textHoverTertiaryColor: {},
-    userCustomLayout: { classes: ['ActionHandler'], variable: 'userCustomLayoutSetting' }
+    userCustomLayout: { classes: ['ActionHandler'], variable: 'userCustomLayoutFlag' }
 }

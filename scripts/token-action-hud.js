@@ -75,7 +75,7 @@ export class TokenActionHud extends Application {
 
         this.actionHandler = await this.systemManager.getActionHandlerCore()
         this.actionHandler.customLayoutSetting = Utils.getSetting('customLayout')
-        this.actionHandler.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
+        this.actionHandler.userCustomLayoutFlag = Utils.getUserFlag('userCustomLayout')
         this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting
         this.actionHandler.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
         this.actionHandler.sortActionsSetting = Utils.getSetting('sortActions')
@@ -920,7 +920,7 @@ export class TokenActionHud extends Application {
                         const userCustomLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=userCustomLayout]')
                         if (userCustomLayoutElement) {
                             await this.updateSettings('userCustomLayout', userCustomLayoutElement?.value ?? '')
-                            await Utils.setSetting('userCustomLayout', userCustomLayoutElement?.value ?? '')
+                            await Utils.setUserFlag('userCustomLayout', userCustomLayoutElement?.value ?? '')
                         }
                         await TokenActionHud.reset()
                         Logger.info('Layout reset', true)
@@ -954,7 +954,7 @@ export class TokenActionHud extends Application {
                         }
                         const userCustomLayoutElement = document.querySelector('#token-action-hud-core-settings input[name=userCustomLayout]')
                         if (userCustomLayoutElement) {
-                            await Utils.setSetting('userCustomLayout', userCustomLayoutElement?.value ?? '')
+                            await Utils.setUserFlag('userCustomLayout', userCustomLayoutElement?.value ?? '')
                         }
                         await game.tokenActionHud.socket.executeForEveryone('reset')
                         Logger.info('All layouts reset', true)

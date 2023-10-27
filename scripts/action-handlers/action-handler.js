@@ -28,7 +28,7 @@ export class ActionHandler {
         this.actions = []
         this.availableActionsMap = new Map()
         this.customLayoutSetting = Utils.getSetting('customLayout')
-        this.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
+        this.userCustomLayoutFlag = Utils.getUserFlag('userCustomLayout')
         this.enableCustomizationSetting = Utils.getSetting('enableCustomization')
         this.displayCharacterNameSetting = Utils.getSetting('displayCharacterName')
         this.sortActionsSetting = Utils.getSetting('sortActions')
@@ -56,7 +56,7 @@ export class ActionHandler {
     hardResetActionHandler () {
         this.softResetActionHandler()
         this.customLayoutSetting = Utils.getSetting('customLayout')
-        this.userCustomLayoutSetting = Utils.getSetting('userCustomLayout')
+        this.userCustomLayoutFlag = Utils.getUserFlag('userCustomLayout')
         this.customLayout = null
         this.actorGroups = {}
         this.userGroups = {}
@@ -309,7 +309,7 @@ export class ActionHandler {
      */
     async #getCustomLayout () {
         if (this.customLayout) return
-        const file = this.userCustomLayoutSetting || this.customLayoutSetting || null
+        const file = this.userCustomLayoutFlag || this.customLayoutSetting || null
         this.customLayout = (file) ? await DataHandler.getDataAsGm({ file }) : null
     }
 

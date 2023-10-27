@@ -25,7 +25,11 @@ export class TahSettingsForm extends FormApplication {
             const icon = setting.icon
             const label = Utils.i18n(setting.label)
             const name = Utils.i18n(setting.name)
-            const value = (setting?.scope) ? await Utils.getSetting(key) : ''
+            const value = (setting?.scope)
+                ? (setting?.scope === 'user')
+                    ? await Utils.getUserFlag(key)
+                    : await Utils.getSetting(key)
+                : ''
             const type = setting.type instanceof Function ? setting.type.name : 'String'
             const isButton = setting.inputType === 'button'
             const onClick = setting.onClick
@@ -64,13 +68,20 @@ export class TahSettingsForm extends FormApplication {
         cancel.on('click', this.close.bind(this))
     }
 
-    _updateObject (event, formData) {
+    async _updateObject (event, formData) {
         for (const [key, value] of Object.entries(formData)) {
-            if (this.settings[key].scope) {
-                Utils.setSetting(key, value)
-                game.tokenActionHud.updateSettings(key, value)
+            switch (this.settings[key].scope) {
+            case 'client':
+            case 'world':
+                await Utils.setSetting(key, value)
+                break
+            case 'user':
+                await Utils.setUserFlag(key, value)
             }
+
+            await game.tokenActionHud.updateSettings(key, value)
         }
+
         game.tokenActionHud.update()
     }
 }
