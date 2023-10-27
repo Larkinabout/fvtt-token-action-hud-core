@@ -614,10 +614,11 @@ export class ActionHandler {
     }
 
     /**
-     * Save groups to the actor flag
+     * Save actor groups to file
      * @private
      */
     async #saveActorGroups () {
+        if (!this.actor) return
         if (!Object.keys(this.groups).length) return
         Logger.debug('Saving actor groups...')
         const actorGroups = {}
@@ -628,6 +629,7 @@ export class ActionHandler {
         }
         if (DataHandler.canSaveData()) {
             await DataHandler.saveDataAsGm('actor', this.actor.id, actorGroups)
+
             Logger.debug('Actor groups saved', { actorGroups })
         } else {
             Logger.debug('Actor groups not saved as no GM present')
@@ -635,7 +637,7 @@ export class ActionHandler {
     }
 
     /**
-     * Save groups to the user flag
+     * Save user groups to file
      * @private
      */
     async #saveUserGroups () {
