@@ -438,13 +438,7 @@ export class ActionHandler {
                 (!data.type || group.type === data.type) &&
                 (!data.level || group.level === data.level)
             )
-            .sort((a, b) => {
-                if (a.level === b.level) {
-                    return a.order - b.order
-                } else {
-                    return a.level - b.level
-                }
-            })
+            .sort((a, b) => (a.level - b.level || a.order - b.order))
     }
 
     /**
@@ -565,6 +559,7 @@ export class ActionHandler {
         for (const existingGroup of existingGroups) {
             if (existingGroup.type === 'system-derived') {
                 existingGroup.selected = false
+                existingGroup.order = 999
             } else {
                 if (!groupsData.find(groupData => groupData.id === existingGroup.id)) {
                     delete this.groups[existingGroup.nestId]
