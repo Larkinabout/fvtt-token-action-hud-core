@@ -498,46 +498,49 @@ export class ActionHandler {
 
         const tooltip = this.#getTooltip(groupData?.tooltip, groupDataClone?.name)
 
-        const actions = (keepData) ? (groupData?.actions ?? []) : []
-        const groups = (keepData) ? (groupData?.groups ?? { lists: [], tabs: [] }) : { lists: [], tabs: [] }
+        if (!keepData) {
+            groupDataClone.actions = []
+            groupDataClone.groups = { lists: [], tabs: [] }
+        }
 
-        const defaultSettings = { showTitle: true, style: (level === 1) ? 'tab' : 'list' }
-        const groupSettings = groupDataClone?.settings ?? {}
+        const defaultSettings = {
+            showTitle: true,
+            style: (level === 1) ? 'tab' : 'list'
+        }
+
+        const groupSettings = groupDataClone.settings || {}
         groupSettings.showTitle ??= defaultSettings.showTitle
         groupSettings.style ??= defaultSettings.style
 
         groupDataClone.subtitleClass = (groupSettings.showTitle) ? '' : 'tah-hidden'
 
-        const commonProps =
-            {
-                actions,
-                class: groupDataClone?.class ?? groupDataClone?.cssClass ?? '',
-                groups,
-                id: groupDataClone?.id,
-                info1: groupDataClone?.info1 ?? '',
-                info2: groupDataClone?.info2 ?? '',
-                info3: groupDataClone?.info3 ?? '',
-                level: groupDataClone.level ?? level ?? 1,
-                listName: groupDataClone?.listName ?? groupDataClone?.name,
-                name: groupDataClone?.name,
-                nestId: groupDataClone?.nestId ?? groupDataClone?.id,
-                order: groupDataClone.order,
-                selected: groupDataClone?.selected ?? groupDataClone?.isSelected ?? groupDataClone?.defaultSelected ?? true,
-                settings: groupSettings,
-                tooltip,
-                type: groupDataClone?.type ?? GROUP_TYPE.CUSTOM
-            }
+        const groupSystem = groupDataClone.system || {}
 
-        if (level === 1) {
-            return {
-                ...commonProps
-            }
-        } else {
-            return {
-                ...commonProps,
-                subtitleClass: groupDataClone?.subtitleClass ?? ''
-            }
+        const commonProps = {
+            actions: groupDataClone.actions,
+            class: groupDataClone.class || groupDataClone.cssClass || '',
+            groups: groupDataClone.groups,
+            id: groupDataClone.id,
+            info1: groupDataClone.info1 || '',
+            info2: groupDataClone.info2 || '',
+            info3: groupDataClone.info3 || '',
+            level: groupDataClone.level || level || 1,
+            listName: groupDataClone.listName || groupDataClone.name,
+            name: groupDataClone.name,
+            nestId: groupDataClone.nestId || groupDataClone.id,
+            order: groupDataClone.order,
+            selected: groupDataClone.selected ?? groupDataClone.isSelected ?? groupDataClone.defaultSelected ?? true,
+            settings: groupSettings,
+            system: groupSystem,
+            tooltip,
+            type: groupDataClone.type || GROUP_TYPE.CUSTOM
         }
+
+        if (level > 1) {
+            commonProps.subtitleClass = groupDataClone.subtitleClass || ''
+        }
+
+        return commonProps
     }
 
     /**
@@ -716,49 +719,45 @@ export class ActionHandler {
      * @param {object} actionData The action data
      * @returns {object}          The action
      */
-    #createAction (actionData) {
+    #createAction(actionData) {
         const fullName = actionData.fullName ?? actionData.name
         const tooltip = this.#getTooltip(actionData?.tooltip, fullName)
+
+        const infoProps = (info) => {
+            return {
+                class: info?.class || '',
+                icon: info?.icon || '',
+                text: info?.text || '',
+                title: info?.title || ''
+            }
+        }
+
         return {
             encodedValue: actionData.encodedValue,
             id: actionData.id,
             name: actionData.name,
             fullName,
-            listName: actionData.listName ?? actionData.name,
-            cssClass: actionData.cssClass ?? '',
-            icons: actionData.icon ?? {},
-            icon1: actionData.icon1 ?? '',
-            icon2: actionData.icon2 ?? '',
-            icon3: actionData.icon3 ?? '',
-            img: actionData.img ?? '',
-            info1: {
-                class: actionData?.info1?.class ?? '',
-                icon: actionData?.info1?.icon ?? '',
-                text: actionData?.info1?.text ?? '',
-                title: actionData?.info1?.title ?? ''
-            },
-            info2: {
-                class: actionData?.info2?.class ?? '',
-                icon: actionData?.info2?.icon ?? '',
-                text: actionData?.info2?.text ?? '',
-                title: actionData?.info2?.title ?? ''
-            },
-            info3: {
-                class: actionData?.info3?.class ?? '',
-                icon: actionData?.info3?.icon ?? '',
-                text: actionData?.info3?.text ?? '',
-                title: actionData?.info3?.title ?? ''
-            },
+            listName: actionData.listName || actionData.name,
+            cssClass: actionData.cssClass || '',
+            icons: actionData.icon || {},
+            icon1: actionData.icon1 || '',
+            icon2: actionData.icon2 || '',
+            icon3: actionData.icon3 || '',
+            img: actionData.img || '',
+            info1: infoProps(actionData.info1),
+            info2: infoProps(actionData.info2),
+            info3: infoProps(actionData.info3),
             isAction: true,
-            isItem: actionData.isitem ?? null,
-            isPreset: actionData.isPreset ?? false,
+            isItem: actionData.isitem || null,
+            isPreset: actionData.isPreset || false,
             userSelected: actionData.userSelected ?? true,
             systemSelected: actionData.systemSelected ?? true,
-            selected: (!actionData.systemSelected)
-                ? false
-                : actionData.userSelected ?? actionData.systemSelected ?? true,
+            system: actionData.system || {},
+            selected: actionData.systemSelected
+                ? actionData.userSelected ?? actionData.systemSelected ?? true
+                : false,
             tooltip,
-            useRawHtmlName: actionData.useRawHtmlName ?? false
+            useRawHtmlName: actionData.useRawHtmlName || false
         }
     }
 

@@ -105,7 +105,7 @@ export class RollHandler {
         this.actor = actionHandler.actor
         this.token = actionHandler.token
 
-        const group = actionHandler.getGroup(nestId)
+        const group = actionHandler.getGroup({ nestId })
 
         this.registerKeyPresses(event)
 
