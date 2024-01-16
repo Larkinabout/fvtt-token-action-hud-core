@@ -49,7 +49,7 @@ export class TokenActionHud extends Application {
      * @public
      */
     async init () {
-        this.activeCssAsTextSetting = Utils.getSetting('activeCssAsTextSetting')
+        this.activeCssAsTextSetting = Utils.getSetting('activeCssAsText')
         this.allowSetting = Utils.getSetting('allow')
         this.alwaysShowSetting = Utils.getSetting('alwaysShowHud')
         this.clickOpenCategorySetting = Utils.getSetting('clickOpenCategory')
