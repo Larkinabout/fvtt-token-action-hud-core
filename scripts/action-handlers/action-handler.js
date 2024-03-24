@@ -100,9 +100,9 @@ export class ActionHandler {
             this.#buildSystemActions(),
             this.#buildGenericActions(),
             this.#buildCompendiumActions(),
-            this.#buildMacroActions()
+            this.#buildMacroActions(),
+            this.#buildExtendedActions()
         ])
-        this.#buildExtendedActions()
         this.#updateNonPresetActions()
         this.#setHasActions()
         this.#setCharacterLimit()
@@ -244,8 +244,8 @@ export class ActionHandler {
      * Build extended actions
      * @private
      */
-    #buildExtendedActions () {
-        this.actionHandlerExtenders.forEach(extender => extender.extendActionHandler())
+    async #buildExtendedActions () {
+        this.actionHandlerExtenders.forEach(async extender => await extender.extendActionHandler())
     }
 
     /**
