@@ -425,11 +425,10 @@ export class Utils {
      */
     static registerHandlebars () {
         // Capitalise first character
-        Handlebars.registerHelper('cap', function (string) {
+        Handlebars.registerHelper('tokenActionHudCoreCap', function (string) {
             if (!string || string.length < 1) return ''
             return string[0].toUpperCase() + string.slice(1)
         })
-
         const reduceOp = function (args, reducer) {
             args = Array.from(args)
             args.pop() // => options
@@ -439,20 +438,11 @@ export class Utils {
 
         // Support operators
         Handlebars.registerHelper({
-            eq: function () { return reduceOp(arguments, (a, b) => a === b) },
-            ne: function () { return reduceOp(arguments, (a, b) => a !== b) },
-            lt: function () { return reduceOp(arguments, (a, b) => a < b) },
-            gt: function () { return reduceOp(arguments, (a, b) => a > b) },
-            lte: function () { return reduceOp(arguments, (a, b) => a <= b) },
-            gte: function () { return reduceOp(arguments, (a, b) => a >= b) },
-            and: function () { return reduceOp(arguments, (a, b) => a && b) },
-            or: function () { return reduceOp(arguments, (a, b) => a || b) },
-            true: function () { return reduceOp(arguments, (a) => a) },
-            false: function () { return reduceOp(arguments, (a) => !a) }
+            tokenActionHudCoreTrue: function () { return reduceOp(arguments, (a) => a) }
         })
 
         // Add asterisk to toggleable actions
-        Handlebars.registerHelper('activeText', function (block) {
+        Handlebars.registerHelper('tokenActionHudCoreActiveText', function (block) {
             if (game.tokenActionHud.activeCssAsTextSetting) {
                 return block.fn(this)
             }
