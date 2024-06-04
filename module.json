@@ -18,8 +18,8 @@
   "flags": {},
   "version": "1.5.0",
   "compatibility": {
-    "minimum": "10",
-    "verified": "11.315"
+    "minimum": "11",
+    "verified": "12.325"
   },
   "esmodules": [
     "./dist/token-action-hud-core.min.js"

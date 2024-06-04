@@ -3,7 +3,7 @@ import { Utils } from '../utils.js'
 
 export class CustomStyleForm extends FormApplication {
     static get defaultOptions () {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             title: Utils.i18n('tokenActionHud.settings.customStyle.form.title'),
             template: TEMPLATE.customStyleForm,
             id: 'token-action-hud-core-settings',

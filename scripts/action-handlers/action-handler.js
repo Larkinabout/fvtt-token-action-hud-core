@@ -879,7 +879,7 @@ export class ActionHandler {
     #getCompendiumGroups () {
         const packs = game.packs.filter(pack =>
             COMPENDIUM_PACK_TYPES.includes(pack.documentName) &&
-            (game.version.startsWith('11') ? pack.visible : (!pack.private || game.user.isGM))
+            (foundry.utils.isNewerVersion(game.version, '10') ? pack.visible : (!pack.private || game.user.isGM))
         )
         const groups = packs.map(pack => {
             return {

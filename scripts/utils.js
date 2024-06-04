@@ -69,7 +69,7 @@ export class Utils {
      */
     static deepClone (original, options) {
         // eslint-disable-next-line no-undef
-        return deepClone(original, options)
+        return foundry.utils.deepClone(original, options)
     }
 
     /**
@@ -93,7 +93,7 @@ export class Utils {
      * @returns {object}        The status effect
      */
     static getStatusEffect (actor, statusId) {
-        if (game.version.startsWith('11')) {
+        if (foundry.utils.isNewerVersion(game.version, '10')) {
             return actor.effects.find((effect) => effect.statuses.every((status) => status === statusId))
         } else {
             // V10

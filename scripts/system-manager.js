@@ -46,7 +46,7 @@ export class SystemManager {
      */
     async registerStylesCore () {
         const systemStyles = this.registerStyles() ?? {}
-        this.styles = mergeObject(CSS_STYLE, systemStyles)
+        this.styles = foundry.utils.mergeObject(CSS_STYLE, systemStyles)
 
         Hooks.callAll('tokenActionHudCoreRegisterStyles', this.styles)
     }
@@ -145,7 +145,7 @@ export class SystemManager {
     static addHandler (choices, id) {
         if (Utils.isModuleActive(id)) {
             const title = Utils.getModuleTitle(id)
-            mergeObject(choices, { [id]: title })
+            foundry.utils.mergeObject(choices, { [id]: title })
         }
     }
 

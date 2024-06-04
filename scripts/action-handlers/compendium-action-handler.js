@@ -24,7 +24,7 @@ export class CompendiumActionHandler {
                 .filter(
                     (pack) =>
                         COMPENDIUM_PACK_TYPES.includes(pack.documentName) &&
-              (game.version.startsWith('11') ? pack.visible : !pack.private || game.user.isGM)
+              (foundry.utils.isNewerVersion(game.version, '10') ? pack.visible : !pack.private || game.user.isGM)
                 )
                 .map((pack) => pack.metadata.id)
 

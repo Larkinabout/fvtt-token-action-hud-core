@@ -3,7 +3,7 @@ import { Utils } from '../utils.js'
 
 export class TahSettingsForm extends FormApplication {
     static get defaultOptions () {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             template: TEMPLATE.settings,
             id: 'token-action-hud-core-settings',
             width: 600,
@@ -93,7 +93,7 @@ export class TahSettingsFormLayout extends TahSettingsForm {
     }
 
     static get defaultOptions () {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             title: Utils.i18n('tokenActionHud.settings.layout.form.title')
         })
     }

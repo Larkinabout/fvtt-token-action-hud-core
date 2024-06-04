@@ -130,7 +130,7 @@ export class TokenActionHud extends Application {
      * @override
      */
     static get defaultOptions () {
-        return mergeObject(super.defaultOptions, {
+        return foundry.utils.mergeObject(super.defaultOptions, {
             template: TEMPLATE.hud,
             id: 'token-action-hud',
             classes: [],
