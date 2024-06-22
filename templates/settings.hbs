@@ -8,7 +8,7 @@
 
             {{else if this.isSelect}}
             <select name="{{this.id}}" data-dtype="{{this.type}}">
-                {{#selectOptions choices=this.choices selected=this.value localize=true}}
+                {{selectOptions choices=this.choices selected=this.value localize=true}}
             </select>
 
             {{else if this.isRange}}
