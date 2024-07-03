@@ -165,7 +165,7 @@ Hooks.on('tokenActionHudCoreReady', async () => {
             break
         case 'updateToken':
             // If it's an X or Y change, assume the token is just moving
-            if (Object.hasOwn(hookData.data, 'y') || Object.hasOwn(hookData.data, 'x')) return
+            if (Object.hasOwn(hookData.data, 'y') || Object.hasOwn(hookData.data, 'x' || Object.hasOwn(hookData.data, 'rotation'))) return
             // If it's a flag change
             if (Object.hasOwn(hookData.data, 'flags') && Object.keys(hookData.data).length <= 2) return
             if (!game.tokenActionHud.isValidTokenChange(hookData.token, hookData.data)) return
