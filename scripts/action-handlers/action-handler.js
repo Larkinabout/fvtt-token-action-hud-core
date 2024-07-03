@@ -100,9 +100,9 @@ export class ActionHandler {
             this.#buildSystemActions(),
             this.#buildGenericActions(),
             this.#buildCompendiumActions(),
-            this.#buildMacroActions(),
-            this.#buildExtendedActions()
+            this.#buildMacroActions()
         ])
+        await this.#buildExtendedActions()
         this.#updateNonPresetActions()
         this.#setHasActions()
         this.#setCharacterLimit()
