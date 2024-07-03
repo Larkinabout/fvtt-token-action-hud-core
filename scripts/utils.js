@@ -189,7 +189,9 @@ export class Utils {
             await game.settings.set(MODULE.ID, key, value)
             Logger.debug(`Setting '${key}' set to '${value}'`)
         } else {
-            Logger.debug(`Setting '${key}' not found`)
+            if (key !== 'debug') {
+                Logger.debug(`Setting '${key}' not found`)
+            }
         }
     }
 
