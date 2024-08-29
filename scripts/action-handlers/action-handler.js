@@ -245,7 +245,9 @@ export class ActionHandler {
      * @private
      */
     async #buildExtendedActions () {
-        this.actionHandlerExtenders.forEach(async extender => await extender.extendActionHandler())
+        await Promise.all(this.actionHandlerExtenders.map(
+            async extender => await extender.extendActionHandler()
+        ))
     }
 
     /**
