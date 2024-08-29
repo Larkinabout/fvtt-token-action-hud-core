@@ -3,10 +3,9 @@
     --tah-border-radius: 3px;
     --tah-gap: 4px;
 
-    --tah-button-background-color: #000000b3;
+    --tah-button-background-color: rgba(11, 10, 19, 0.9);
     --tah-button-border-color: none;
-    --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606,
-        0 0 5px #000000ff;
+    --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606, 0 0 5px #000000ff;
     --tah-button-disabled-text-color: var(--tah-text-secondary-color);
     --tah-button-text-color: var(--tah-text-primary-color);
     --tah-button-height: 22px;
@@ -14,19 +13,19 @@
     --tah-button-hover-box-shadow: 0 2px 0 -1px var(--tah-text-tertiary-color),
         0 0 0 1px red, 0 0 10px var(--tah-text-tertiary-color);
     --tah-button-hover-text-color: #fff;
-    --tah-button-active-background-color: #3c0078bf;
+    --tah-button-active-background-color: rgba(60, 0, 120, 0.9);
     --tah-button-active-box-shadow: 0 0 0 1px #9b8dff, inset 0 0 10px #9b8dff;
     --tah-button-toggle-background-color: #000000b3;
-    --tah-button-toggle-hover-background-color: #3c0078bf;
+    --tah-button-toggle-hover-background-color: rgba(60, 0, 120, 0.9);
     --tah-button-toggle-hover-box-shadow: 0 0 0 1px #9b8dff, 0 0 10px #9b8dff;
     --tah-text-disabled-color: var(--tah-text-secondary-color);
-    --tah-text-primary-color: #dddddd;
-    --tah-text-secondary-color: #dddddd80;
+    --tah-text-primary-color: #efe6d8;
+    --tah-text-secondary-color: #d0b8a3;
     --tah-text-tertiary-color: #ff6400;
     --tah-text-hover-primary-color: var(--tah-text-primary-color);
     --tah-text-hover-secondary-color: var(--tah-text-secondary-color);
     --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
-    --tah-text-shadow: 1px 1px 1px rgb(0 0 0), 0px 1px 3px rgb(0 0 0);
+    --tah-text-shadow: 1px 1px 1px rgb(11, 10, 19), 1px 1px 1px rgb(11, 10, 19), 1px 1px 3px rgb(11, 10, 19), 1px 1px 5px rgb(11, 10, 19);
 }
 
 #token-action-hud {
