@@ -32,6 +32,7 @@ Token Action HUD is a repositionable HUD of actions for a selected token.
 ## Token Action HUD System Modules
 Token Action HUD Core requires a companion Token Action HUD system module to be installed. Current system modules are:
 
+- [Token Action HUD 13th Age](https://foundryvtt.com/packages/token-action-hud-13th-age)
 - [Token Action HUD for Alien RPG](https://foundryvtt.com/packages/token-action-hud-alien)
 - [Token Action HUD for Anime Campaign](https://foundryvtt.com/packages/token-action-hud-ac)
 - [Token Action HUD for Blade Runner](https://foundryvtt.com/packages/token-action-hud-bladerunner)
@@ -45,6 +46,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD Forbidden Lands](https://foundryvtt.com/packages/token-action-hud-forbidden-lands)
 - [Token Action HUD Ghostbusters](https://foundryvtt.com/packages/token-action-hud-gb)
 - [Token Action HUD L5R 5e](https://foundryvtt.com/packages/token-action-hud-l5r5e)
+- [Token Action HUD Lancer](https://foundryvtt.com/packages/token-action-hud-lancer)
 - [Token Action HUD Mutants and Masterminds 3E](https://foundryvtt.com/packages/token-action-hud-mm3)
 - [Token Action HUD for Old-School Essentials](https://foundryvtt.com/packages/token-action-hud-ose)
 - [Token Action HUD OpenD6 Space](https://foundryvtt.com/packages/token-action-hud-od6s)
@@ -57,6 +59,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD The Witcher TRPG](https://foundryvtt.com/packages/token-action-hud-thewitchertrpg)
 - [Token Action HUD for Twodsix](https://foundryvtt.com/packages/fvtt-token-action-hud-twodsix)
 - [Token Action HUD WFRP4e](https://foundryvtt.com/packages/token-action-hud-wfrp4e)
+- [Token Action HUD Worlds Without Number](https://foundryvtt.com/packages/token-action-hud-wwn)
 
 For other systems, continue to use the [Token Action HUD Classic](https://foundryvtt.com/packages/token-action-hud).
 
