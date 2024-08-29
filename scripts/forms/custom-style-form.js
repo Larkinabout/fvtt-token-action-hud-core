@@ -67,11 +67,14 @@ export class CustomStyleForm extends FormApplication {
     }
 
     _updateObject (event, formData) {
+        const isCustom = Utils.getSetting('style') === 'custom'
         for (const [key, value] of Object.entries(formData)) {
             const customStyle = CUSTOM_STYLE[key]
             if (value !== this.data[key]) {
                 Utils.setSetting(key, value)
-                document.querySelector(':root').style.setProperty(customStyle.cssProperty, value)
+                if (isCustom) {
+                    document.querySelector(':root').style.setProperty(customStyle.cssProperty, value)
+                }
             }
         }
     }
