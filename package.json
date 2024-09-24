@@ -5,14 +5,17 @@
     "dev": "rollup -wcm"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/eslint-parser": "^7.25.1",
     "@rollup/plugin-commonjs": "^25.0.3",
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-terser": "^0.4.3",
-    "@yaireo/dragsort": "^1.3.1",
-    "@yaireo/tagify": "^4.17.8",
-    "eslint": "^8.25.0",
+    "@yaireo/dragsort": "^1.3.2",
+    "@yaireo/tagify": "^4.31.3",
+    "eslint": "^8.57.1",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsdoc": "^50.2.4",
     "eslint-plugin-n": "^15.3.0",
     "eslint-plugin-promise": "^6.1.0",
     "rollup": "^3.26.3"

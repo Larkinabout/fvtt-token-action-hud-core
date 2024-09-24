@@ -4,12 +4,57 @@
 }
 
 /*
+ * APPLICATION
+ */ 
+
+.flex0 {
+    flex: 0;
+}
+
+.token-action-hud-core-app {
+    height: 100%;
+}
+
+.token-action-hud-core-app .standard-form {
+    height: 100%;
+}
+
+.token-action-hud-core-app.application .flexrow {
+    display: flex;
+    flex: 1;
+    gap: 0.5rem;
+}
+
+.token-action-hud-core-app nav.sheet-tabs {
+    margin: 0;
+}
+
+.token-action-hud-core-app.application h2,
+.token-action-hud-core-app.application h3 {
+    margin: 0;
+    padding-bottom: 0.25rem;
+}
+
+.token-action-hud-core-app.application h2 {
+    font-family: var(--font-h3);
+    font-size: 1.5rem;
+}
+
+.token-action-hud-core-app.application h3 {
+    font-size: 1.2rem;
+}
+
+.token-action-hud-core-app .form-group > label {
+    line-height: 1.2rem;
+}
+
+/*
  * DIALOGS
  */
 
  .tagify.tah-dialog-tagify {
     align-content: start;
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.5);
     border: 1px solid var(--color-border-light-tertiary);
     border-radius: 3px;
     display: inline-flex;
@@ -17,7 +62,7 @@
     font-size: var(--font-size-12);
     gap: 5px;
     height: 200px;
-    overflow-y: auto;
+    overflow-y: auto;a
     overflow-x: hidden;
     padding: 5px;
     text-overflow: ellipsis;
@@ -31,6 +76,8 @@
 .tah-dialog-tagify .tagify__tag {
     font-size: var(--font-size-12);
     margin: 0;
+    background: rgba(255,255,255, 0.5);
+    border-radius: 5px;
 }
 
 .tah-dialog-tagify .tagify__tag>div::before {

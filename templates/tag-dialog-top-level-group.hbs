@@ -1,16 +1,16 @@
-<form class="flexcol">
+<div id="token-action-hud-form" class="standard-form">
     <nav class="sheet-tabs tabs" style="flex: none;">
-        <a class="item active" data-tab="items">
-            <i class="fa-solid fa-ballot-check"></i>
+        <a class="item active" data-action="tab" data-group="primary" data-tab="items">
+            <i class="fa-solid fa-user"></i>
             {{localize "tokenActionHud.form.hud.items"}}
         </a>
-        <a class="item" data-tab="other">
+        <a class="item" data-action="tab" data-group="primary" data-tab="other">
             <i class="fa-solid fa-gear"></i>
             {{localize "tokenActionHud.form.hud.otherSettings"}}
         </a>
     </nav>
-    <div class="flexcol">
-        <section class="tab active" data-tab="items">
+    <div class="standard-form scrollable">
+        <section class="tab active" data-group="primary" data-tab="items">
             <div class="tah-dialog-col-group">
                 <div class="tah-dialog-detail">
                     <label>{{{localize "tokenActionHud.form.hud.groupDetail"}}}</label>
@@ -24,13 +24,13 @@
                     />
                 </div>
                 <div class="tah-dialog-col-group">
-                    <button type="button" id="tah-dialog-unselect-all" class="tah-dialog-light-button tags--removeAllBtn">
+                    <button type="button" id="tah-dialog-unselect-all" class="bright tags--removeAllBtn" data-action="unselectAllTags">
                         <i class="fa-regular fa-filter-slash"></i>{{localize "tokenActionHud.form.hud.unselectAll"}}
                     </button>
                 </div>
             </div>
         </section>
-        <section class="tab" data-tab="other">
+        <section class="tab" data-group="primary" data-tab="other">
             <div class="tah-dialog-col-group">
                 <div class="form-group">
                     <label>{{localize "tokenActionHud.form.group.image.label"}}</label>
@@ -74,12 +74,9 @@
             </div>
         </section>
     </div>
-    <footer class="sheet-footer flexrow" style="padding-top: 5px;">
-        <button type="submit" id="tah-dialog-submit" name="submit" class="">
-            <i class="fas fa-check"></i></i>{{localize "tokenActionHud.accept"}}
-        </button>
-        <button type="button" id="tah-form-cancel" name="cancel" class="">
-            <i class="fas fa-times"></i></i>{{localize "tokenActionHud.cancel"}}
+    <footer class="form-footer" data-application-part="footer">
+        <button type="submit" class="save-button">
+            <i class="fas fa-solid fa-floppy-disk"></i>{{localize "tokenActionHud.saveAndClose"}}
         </button>
     </footer>
-</form>
+</div>

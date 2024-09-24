@@ -1,4 +1,4 @@
-import { RollHandler } from './roll-handler.js'
+import { RollHandler } from "./roll-handler.js";
 
 /*
  * Used for adding support for actions not part of the core functions.
@@ -6,7 +6,7 @@ import { RollHandler } from './roll-handler.js'
  * further actions being performed.
  */
 export class PreRollHandler extends RollHandler {
-    prehandleActionEvent (event, encodedValue) {
-        return false
-    }
+  prehandleActionEvent(event, encodedValue) {
+    return false;
+  }
 }

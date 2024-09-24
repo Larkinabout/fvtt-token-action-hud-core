@@ -18,6 +18,8 @@
     "tokenActionHud.makeInvisible": "Make Invisible",
     "tokenActionHud.makeVisible": "Make Visible",
     "tokenActionHud.removeFromCombat": "Remove from Combat",
+    "tokenActionHud.resetToDefault": "Reset to Default",
+    "tokenActionHud.saveAndClose": "Save and Close",
     "tokenActionHud.title": "Token Action HUD",
     "tokenActionHud.toggleHud": "Toggle HUD",
     "tokenActionHud.token": "Token",
