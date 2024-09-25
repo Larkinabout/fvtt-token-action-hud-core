@@ -1,4 +1,3 @@
-import { TEMPLATE } from "../constants.js";
 import { TagDialog } from "./tag-dialog.js";
 import { Utils } from "../utils.js";
 
@@ -61,7 +60,7 @@ export class TagDialogHelper {
 
     // Set dialog data
     const dialogData = {
-      title: `${game.i18n.localize("tokenActionHud.form.hud.groupTitle")} (${name})`,
+      title: `${game.i18n.localize("tokenActionHud.form.hud.groupTitle")}: ${name}`,
       content: {
         topLabel: game.i18n.localize("tokenActionHud.form.hud.groupDetail"),
         placeholder: game.i18n.localize("tokenActionHud.form.hud.tagPlaceholder"),
@@ -134,7 +133,7 @@ export class TagDialogHelper {
 
     // Set dialog data
     const dialogData = {
-      title: `${game.i18n.localize("tokenActionHud.form.hud.groupTitle")} (${name})`,
+      title: `${game.i18n.localize("tokenActionHud.form.hud.groupTitle")}: ${name} `,
       content: {
         topLabel: game.i18n.localize("tokenActionHud.form.hud.groupDetail"),
         placeholder: game.i18n.localize("tokenActionHud.form.hud.tagPlaceholder"),
@@ -162,7 +161,7 @@ export class TagDialogHelper {
       const image = formData?.image;
       const showTitle = formData?.showTitle;
       const sort = formData?.sort;
-      const style = formData?.style;
+      const style = formData?._style;
       groupData.settings = { characterCount, collapse, customWidth, grid, image, showTitle, sort, style };
 
       // Save subcategories to user action list

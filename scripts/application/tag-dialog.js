@@ -14,11 +14,12 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   dragSort = null;
 
   constructor(data) {
-    super(data, { title: data.title });
+    super(data);
     this.content = data.content;
     this.submit = data.submit;
     this.categoryId = null;
     this.subcategoryId = null;
+    this.options.window.title = data.title;
   }
 
   static DEFAULT_OPTIONS = {
@@ -39,14 +40,7 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     tag: "form",
     window: {
       minimizable: true,
-      resizable: true,
-      title: "tokenActionHud.settings.customStyle.form.title"
-    }
-  };
-
-  static PARTS = {
-    form: {
-      template: TEMPLATE.customStyleForm
+      resizable: true
     }
   };
 
@@ -65,7 +59,7 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   static showDialog(dialogType, nestId, tags, dialogData, dialogSubmit) {
     this.nestId = nestId;
-    TagDialog._prepareHook(tags);
+    TagDialog.#prepareHook(tags);
 
     const data = {
       title: dialogData.title,
@@ -94,7 +88,7 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @private
    * @param {object} tags The tags
    */
-  static _prepareHook(tags) {
+  static #prepareHook(tags) {
     Hooks.once("renderTagDialog", (app, html, options) => {
       const tagInput = html.querySelector('input[class="tah-dialog-tagify"]');
 
@@ -181,7 +175,7 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static unselectAllTags() {
-    TagDialog.tagify.removeAllTags.bind(TagDialog.tagify);
+    TagDialog.tagify.removeAllTags();
   }
 
   /** @override */

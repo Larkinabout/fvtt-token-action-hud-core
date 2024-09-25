@@ -19,7 +19,7 @@
                 <div class="tah-dialog-col-group">
                     <input
                         name="tah-dialog-tagify"
-                        class="tah-dialog-tagify"s
+                        class="tah-dialog-tagify"
                         placeholder="{{placeholder}}"
                     />
                 </div>
@@ -35,8 +35,7 @@
                 <div class="form-group">
                     <label>{{localize "tokenActionHud.form.group.image.label"}}</label>
                     <div class="form-fields">
-                        <input type="text" id="image" name="image" data-dtype="text" value="{{settings.image}}">
-                        {{filePicker target="image" type="image"}}
+                        <file-picker id="mage" name="image" type="text" value="{{settings.image}}"></file-picker>
                     </div>
                     <p class="hint">{{localize "tokenActionHud.form.group.image.hint"}}</p>
                 </div>

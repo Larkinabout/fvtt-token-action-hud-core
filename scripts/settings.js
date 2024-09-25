@@ -1,5 +1,5 @@
-import { CustomStyleForm } from "./forms/custom-style-form.js";
-import { TahSettingsFormLayout } from "./forms/settings-form.js";
+import { CustomStyleForm } from "./application/custom-style-form.js";
+import { TahSettingsFormLayout } from "./application/settings-form.js";
 import { CUSTOM_STYLE, MODULE } from "./constants.js";
 import { Logger, Utils } from "./utils.js";
 
@@ -8,7 +8,9 @@ import { Logger, Utils } from "./utils.js";
  * @param setting
  * @param value
  */
-function onChangeFunction(setting, value) { if (game.tokenActionHud) game.tokenActionHud.updateSettings(setting, value); }
+function onChangeFunction(setting, value) { 
+  if (game.tokenActionHud) game.tokenActionHud.updateSettings(setting, value);
+}
 
 // Register key bindings
 Hooks.on("init", async () => {

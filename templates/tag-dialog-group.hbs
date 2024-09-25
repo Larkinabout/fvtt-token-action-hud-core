@@ -15,7 +15,7 @@
                 <div class="tah-dialog-detail">
                     <label>{{{localize "tokenActionHud.form.hud.groupDetail"}}}</label>
                 </div>
-                <h3>{{localize "tokenActionHud.form.hud.selectedItems"}}</h3>
+                <div>{{localize "tokenActionHud.form.hud.selectedItems"}}</div>
                 <div class="tah-dialog-col-group">
                     <input
                         name="tah-dialog-tagify"
@@ -57,9 +57,9 @@
                     <label>{{localize "tokenActionHud.form.group.style.label"}}</label>
                     <div class="form-fields">
                         <div class="tah-radio-group">
-                            <input type="radio" name="style" value="list" {{~#if (eq settings.style "list")~}}checked{{~/if~}}/>
+                            <input type="radio" name="_style" value="list" {{~#if (eq settings.style "list")~}}checked{{~/if~}}/>
                             <label for="list">{{localize "tokenActionHud.form.group.style.choice.list"}}</label>
-                            <input type="radio" name="style" style="margin-left: 20px;" value="tab" {{~#if (eq settings.style "tab")~}}checked{{~/if~}}/>
+                            <input type="radio" name="_style" style="margin-left: 20px;" value="tab" {{~#if (eq settings.style "tab")~}}checked{{~/if~}}/>
                             <label for="tab">{{localize "tokenActionHud.form.group.style.choice.tab"}}</label>
                         </div>
                     </div>

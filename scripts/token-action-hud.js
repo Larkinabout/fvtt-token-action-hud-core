@@ -1,4 +1,4 @@
-import { TagDialogHelper } from "./dialogs/tag-dialog-helper.js";
+import { TagDialogHelper } from "./application/tag-dialog-helper.js";
 import { GroupResizer } from "./group-resizer.js";
 import { DataHandler } from "./data-handler.js";
 import { CSS_STYLE, MODULE, SETTING, TEMPLATE } from "./constants.js";
@@ -418,7 +418,7 @@ export class TokenActionHud extends Application {
         : event.target.closest(".tah-group");
       if (!target?.dataset?.nestId) return;
       const nestId = target?.dataset?.nestId;
-      const name = event.target.innerText ?? event.target.outerText;
+      const name = this.actionHandler.groups[nestId].name;
       const level = parseInt(target?.dataset?.level) || null;
       const type = target?.dataset?.type;
 

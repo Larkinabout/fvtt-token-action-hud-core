@@ -54,15 +54,15 @@
 
  .tagify.tah-dialog-tagify {
     align-content: start;
-    background: rgba(0, 0, 0, 0.5);
     border: 1px solid var(--color-border-light-tertiary);
     border-radius: 3px;
     display: inline-flex;
     font-family: inherit;
     font-size: var(--font-size-12);
     gap: 5px;
-    height: 200px;
-    overflow-y: auto;a
+    height: 155px;
+    overflow-y: auto;
+    a
     overflow-x: hidden;
     padding: 5px;
     text-overflow: ellipsis;
@@ -76,7 +76,7 @@
 .tah-dialog-tagify .tagify__tag {
     font-size: var(--font-size-12);
     margin: 0;
-    background: rgba(255,255,255, 0.5);
+    background: rgba(255,255,255, 0.7);
     border-radius: 5px;
 }
 
@@ -146,7 +146,7 @@
     border-radius: 3px;
     display: flex;
     flex-wrap: wrap;
-    height: 200px;
+    height: 155px;
     font-size: var(--font-size-12);
     gap: 5px;
     padding: 5px;
@@ -154,12 +154,11 @@
 }
 
 .tah-dialog-tags-dropdown .tagify__dropdown__item {
-    border: 1px solid var(--color-border-light-tertiary);
     display: inline-block;
     vertical-align: middle;
     border-radius: 3px;
     padding: 0.3em 0.5em;
-    background: rgba(0,0,0, 0.05);
+    background: rgba(255, 255, 255, 0.7);
     margin: 0;
     font-size: var(--font-size-12);
     color: black;
@@ -297,4 +296,8 @@
 .tah-tooltip .tah-property:last-child {
     border-right: none;
     padding-right: 0;
+}
+
+.tah-icon > i {
+    font-size: 10px;
 }
