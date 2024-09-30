@@ -35,6 +35,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD 13th Age](https://foundryvtt.com/packages/token-action-hud-13th-age)
 - [Token Action HUD for Alien RPG](https://foundryvtt.com/packages/token-action-hud-alien)
 - [Token Action HUD for Anime Campaign](https://foundryvtt.com/packages/token-action-hud-ac)
+- [Token Action HUD BCDice](https://foundryvtt.com/packages/token-action-hud-bcdice)
 - [Token Action HUD for Blade Runner](https://foundryvtt.com/packages/token-action-hud-bladerunner)
 - [Token Action HUD COF1e](https://foundryvtt.com/packages/fvtt-token-action-hud-cof1e)
 - [Token Action HUD for Coriolis](https://foundryvtt.com/packages/token-action-hud-coriolis)
