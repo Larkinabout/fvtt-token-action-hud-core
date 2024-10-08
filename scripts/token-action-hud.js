@@ -1,15 +1,17 @@
 import { TagDialogHelper } from "./application/tag-dialog-helper.js";
 import { GroupResizer } from "./group-resizer.js";
 import { DataHandler } from "./data-handler.js";
-import { CSS_STYLE, MODULE, SETTING, TEMPLATE } from "./constants.js";
+import { MODULE, SETTING, TEMPLATE } from "./constants.js";
 import { Logger, Timer, Utils } from "./utils.js";
+
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
  * Token Action HUD application
  */
-export class TokenActionHud extends Application {
+export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   // Set defaults
-  hoveredGroups = [];
+  openGroups = [];
 
   defaults = {};
 
@@ -58,6 +60,52 @@ export class TokenActionHud extends Application {
     this.isUnlocked = false;
     this.styleSetting = null;
   }
+
+  /**
+   * Merge Token Action Hud's default options with Application
+   * @override
+   */
+  static DEFAULT_OPTIONS = {
+    actions: {
+      clickGroup: {
+        buttons: [0, 2],
+        handler: TokenActionHud.clickGroup
+      },
+      clickSubgroup: {
+        buttons: [0, 2],
+        handler: TokenActionHud.clickSubgroup
+      },
+      clickAction: {
+        buttons: [0, 2],
+        handler: TokenActionHud.clickAction
+      },
+      collapseHud: TokenActionHud.collapseHud,
+      expandHud: TokenActionHud.expandHud,
+      lockHud: TokenActionHud.lockHud,
+      unlockHud: TokenActionHud.unlockHud,
+      editHud: TokenActionHud.editHud
+    },
+    background: "none",
+    id: "token-action-hud",
+    position: {
+      width: this.defaultWidth,
+      height: this.defaultHeight,
+      left: this.defaultLeftPos,
+      top: this.defaultTopPos,
+      scale: this.defaultScale
+    },
+    window: {
+      frame: false,
+      title: "token-action-hud"
+    },
+    zIndex: 100
+  };
+
+  static PARTS = {
+    form: {
+      template: TEMPLATE.hud
+    }
+  };
 
   /**
    * Initialise the HUD
@@ -143,36 +191,10 @@ export class TokenActionHud extends Application {
   }
 
   /**
-   * Merge Token Action Hud's default options with Application
-   * @override
-   */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      template: TEMPLATE.hud,
-      id: "token-action-hud",
-      classes: [],
-      width: this.defaultWidth,
-      height: this.defaultHeight,
-      left: this.defaultLeftPos,
-      top: this.defaultTopPos,
-      scale: this.defaultScale,
-      background: "none",
-      popOut: false,
-      minimizable: false,
-      resizable: false,
-      title: "token-action-hud",
-      dragDrop: [],
-      tabs: [],
-      scrollY: [],
-      zIndex: 100
-    });
-  }
-
-  /**
    * Whether the HUD can be dragged
    * @returns {boolean} Whether the HUD can be dragged
    */
-  #isDraggable() {
+  get isDraggable() {
     return ((this.dragSetting === "always") || (this.dragSetting === "whenUnlocked" && this.isUnlocked));
   }
 
@@ -192,479 +214,444 @@ export class TokenActionHud extends Application {
    * Get data
    * @override
    */
-  getData(options = {}) {
-    const data = super.getData();
-    data.hud = this.hud;
-    data.id = "token-action-hud";
-    data.style = game.tokenActionHud.systemManager.styles[this.styleSetting].class ?? "";
-    data.scale = this.#getScale();
-    data.background = "#00000000";
-    Logger.debug("Application data", { data });
+  async _prepareContext() {
+    const context = {
+      hud: this.hud,
+      id: "token-action-hud",
+      style: game.tokenActionHud.systemManager.styles[this.styleSetting].class ?? "",
+      scale: this.#getScale(),
+      background: "#00000000"
+    };
 
-    return data;
+    Logger.debug("Application context", { context });
+
+    return context;
+  }
+
+  static editHud() {
+    TagDialogHelper.showHudDialog(this.actionHandler);
+  }
+
+  /**
+   * Unlock the HUD
+   * @param {object} event
+   */
+  static async unlockHud(event = null) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    this.elements.unlockButton.classList.add("tah-hidden");
+    this.elements.lockButton.classList.remove("tah-hidden");
+    this.elements.editHudButton.classList.remove("tah-hidden");
+    this.elements.groupArr.forEach(element => element.classList.remove("tah-hidden"));
+    this.elements.groupButtonArr.forEach(element => element.classList.remove("disable-edit"));
+    this.elements.groups.classList.remove("tah-unlocked");
+    this.elements.listGroupsArr.forEach(element => element.classList.remove("tah-hidden"));
+    this.elements.tabGroupArr.forEach(element => element.classList.remove("tah-hidden"));
+    this.elements.subtitleArr.forEach(element => element.classList.remove("disable-edit", "tah-hidden"));
+
+    if (!this.isUnlocked) {
+      await Utils.setUserFlag("isUnlocked", true);
+      this.isUnlocked = true;
+    }
+  }
+
+  /**
+   * Lock the HUD
+   * @param {object} event
+   */
+  static async lockHud(event = null) {
+    if (event) {
+      event.preventDefault();
+    }
+    this.elements.lockButton.classList.add("tah-hidden");
+    this.elements.unlockButton.classList.remove("tah-hidden");
+    this.elements.editHudButton.classList.add("tah-hidden");
+    this.elements.groups.classList.remove("tah-unlocked");
+    for (const topGroupElement of this.elements.tabGroupArr) {
+      const hasActions = (topGroupElement.getElementsByClassName("tah-action").length > 0);
+      if (!hasActions) topGroupElement.classList.add("tah-hidden");
+    }
+    for (const groupElement of this.elements.groupArr) {
+      const hasActions = (groupElement.getElementsByClassName("tah-action").length > 0);
+      if (!hasActions) groupElement.classList.add("tah-hidden");
+    }
+    for (const listGroupsElement of this.elements.listGroupsArr) {
+      const hasActions = (listGroupsElement.getElementsByClassName("tah-action").length > 0);
+      if (!hasActions) listGroupsElement.classList.add("tah-hidden");
+    }
+    for (const subtitleElement of this.elements.subtitleArr) {
+      const groupElement = subtitleElement.closest(".tah-group");
+      if (groupElement?.dataset?.showTitle === "false") {
+        subtitleElement.classList.add("tah-hidden");
+      }
+    }
+    this.elements.groupButtonArr.forEach(element => element.classList.add("disable-edit"));
+    this.elements.subtitleArr.forEach(element => element.classList.add("disable-edit"));
+    if (this.isUnlocked) {
+      await Utils.setUserFlag("isUnlocked", false);
+      this.isUnlocked = false;
+    }
+  }
+
+  /**
+   * Collapse the HUD
+   * @param {object} event The event
+   */
+  static collapseHud(event = null) {
+    if (event) {
+      event.preventDefault();
+      event = event || window.event;
+    }
+    this.elements.collapseHudButton.classList.add("tah-hidden");
+    this.elements.expandHudButton.classList.remove("tah-hidden");
+    this.elements.groups.classList.add("tah-hidden");
+    this.elements.buttons.classList.add("tah-hidden");
+    if (!this.isCollapsed) {
+      Utils.setUserFlag("isCollapsed", true);
+      this.isCollapsed = true;
+    }
+  }
+
+  /**
+   * Expand the HUD
+   * @param {object} event The event
+   */
+  static expandHud(event = null) {
+    if (event) {
+      event.preventDefault();
+      event = event || window.event;
+    }
+    this.elements.expandHudButton.classList.add("tah-hidden");
+    this.elements.collapseHudButton.classList.remove("tah-hidden");
+    this.elements.groups.classList.remove("tah-hidden");
+    this.elements.buttons.classList.remove("tah-hidden");
+    if (this.isCollapsed) {
+      Utils.setUserFlag("isCollapsed", false);
+      this.isCollapsed = false;
+    }
+  }
+
+  /**
+   * Click a group
+   * @param {object} event The event
+   */
+  static clickGroup(event) {
+    this.bringToFront();
+    // Remove focus to allow core ESC interactions
+    event.currentTarget.blur();
+
+    if (event.type === "contextmenu") {
+      if (this.isUnlocked) {
+        if (event.currentTarget.parentElement.dataset.level === "1") {
+          this.openGroupDialog(event);
+        } else {
+          this.openActionDialog(event);
+        }
+      } else {
+        this.groupClick(event);
+      }
+    } else if (this.clickOpenCategorySetting) {
+      this.toggleGroup(event);
+    }
+  }
+
+  /**
+   * Click a subtitle
+   * @param {object} event The event
+   */
+  static clickSubgroup(event) {
+    // When a subcategory title is right-clicked...
+    if (event.type === "contextmenu") {
+      if (this.isUnlocked) {
+        this.openActionDialog(event);
+      } else {
+        this.groupClick(event);
+      }
+    } else {
+      if (event.target.classList.contains("tah-button-text")) return;
+      this.collapseExpandGroup(event, this.enableCustomizationSetting);
+    }
+  }
+
+  /**
+   * Click an action
+   * @param {object} event The event
+   */
+  static clickAction(event) {
+    // When an action is clicked or right-clicked...
+    event.preventDefault();
+    const button = event.target.closest(".tah-action-button");
+    const value = button?.value;
+    if (!value) return;
+    try {
+      this.rollHandler.handleActionClickCore(event, value, this.actionHandler);
+      event.currentTarget.blur();
+    } catch(error) {
+      Logger.error(event);
+    }
+  }
+
+  /**
+   * Toggle the group
+   * @param {object} event The event
+   */
+  toggleGroup(event) {
+    const group = event.target.closest(".tah-tab-group") ?? event.target.closest("tah-group");
+    if (group.classList.contains("hover")) {
+      this.closeGroup(event, group);
+    } else {
+      const groupElements = group.parentElement.querySelectorAll(".tah-tab-group");
+      for (const groupElement of groupElements) {
+        groupElement.classList.remove("hover");
+        this.#deleteOpenGroup(groupElement.id);
+      }
+      this.openGroup(event, group);
+    }
+    // Remove focus to allow core ESC interactions
+    event.currentTarget.blur();
+  }
+
+  /**
+   * Collapse/expand group
+   * @param {object} event                       The event
+   * @param {boolean} enableCustomizationSetting Whether customization is enabled
+   */
+  collapseExpandGroup(event, enableCustomizationSetting) {
+    const target = event.target.classList.contains("tah-subtitle-text")
+      ? event.target.parentElement
+      : event.target;
+    const groupElement = target?.closest(".tah-group");
+    const nestId = groupElement?.dataset?.nestId;
+    const tabGroup = target.closest(".tah-tab-group.hover");
+    const groupsElement = groupElement?.querySelector(".tah-groups");
+    const collapseIcon = target.querySelector(".tah-collapse-icon");
+    const expandIcon = target.querySelector(".tah-expand-icon");
+    const imageElement = groupElement.querySelector(".tah-list-image");
+
+    const toggleGroupVisibility = () => {
+      groupsElement?.classList.toggle("tah-hidden");
+      collapseIcon?.classList.toggle("tah-hidden");
+      expandIcon?.classList.toggle("tah-hidden");
+      imageElement?.classList.toggle("tah-hidden");
+    };
+
+    const saveGroupSettings = collapse => {
+      if (enableCustomizationSetting) {
+        this.actionHandler.saveGroupSettings({ nestId, settings: { collapse } });
+      }
+    };
+
+    if (groupsElement?.classList.contains("tah-hidden")) {
+      toggleGroupVisibility();
+      saveGroupSettings(false);
+      this.GroupResizer.resizeGroup(this.actionHandler, tabGroup, this.autoDirection, this.gridSetting);
+    } else {
+      toggleGroupVisibility();
+      saveGroupSettings(true);
+    }
+  }
+
+  /**
+   * Close the group
+   * @param {object} event The event
+   * @param {object} group The group
+   */
+  closeGroup(event, group = null) {
+    if (game.tokenActionHud.rendering) return;
+    if (!group) group = event.target.closest(".tah-tab-group") ?? event.target.closest("tah-group");
+    group.classList.remove("hover");
+    const closestGroupElement = group.closest(".tah-group");
+    let sibling = closestGroupElement?.nextElementSibling;
+    while (sibling) {
+      if (sibling.classList.contains("tah-group")) {
+        sibling.classList.remove("tah-hidden");
+      }
+      sibling = sibling.nextElementSibling;
+    }
+    this.#deleteOpenGroup(group.id);
+  }
+
+  /**
+   * Open the group
+   * @param {object} event The event
+   * @param {object} group The group
+   */
+  openGroup(event, group) {
+    if (!group) group = event.target.closest(".tah-tab-group") ?? event.target.closest("tah-group");
+    group.classList.add("hover");
+    const closestGroupElement = group.closest(".tah-tab-group") ?? group.closest(".tah-group");
+    let sibling = closestGroupElement?.nextElementSibling;
+    while (sibling) {
+      if (sibling.classList.contains("tah-group")) {
+        sibling.classList.add("tah-hidden");
+      }
+      sibling = sibling.nextElementSibling;
+    }
+    this.GroupResizer.resizeGroup(this.actionHandler, group, this.autoDirection, this.gridSetting);
+    this.#addOpenGroup(group.id);
+  }
+
+  /**
+   * Group click
+   * @param {object} event The event
+   */
+  groupClick(event) {
+    const target = (event.target.classList.contains("tah-button-text"))
+    || (event.target.classList.contains("tah-button-image"))
+    || (event.target.classList.contains("tah-group-button"))
+      ? event.target.closest(".tah-tab-group")
+      : event.target.closest(".tah-group");
+    if (!target?.dataset?.nestId) return;
+    const nestId = target?.dataset?.nestId;
+    try {
+      this.rollHandler.handleGroupClickCore(event, nestId, this.actionHandler);
+    } catch(error) {
+      Logger.error(event);
+    }
+  }
+
+  /**
+   * Open the group dialog
+   * @param {object} event
+   */
+  openGroupDialog(event) {
+    const target = event.currentTarget;
+    if (!target?.parentElement?.dataset?.nestId) return;
+
+    const nestId = target?.parentElement?.dataset?.nestId;
+    const name = target?.parentElement?.dataset?.name ?? target.innerText ?? target.outerText;
+    const level = parseInt(target?.parentElement?.dataset?.level) || null;
+    const type = target?.parentElement?.dataset?.type;
+
+    TagDialogHelper.showGroupDialog(
+      this.actionHandler,
+      { nestId, name, level, type }
+    );
+  }
+
+  /**
+   * Open the Action dialog
+   * @param {object} event The event
+   */
+  openActionDialog(event) {
+    const target = (event.target.classList.contains("tah-button-text"))
+      || (event.target.classList.contains("tah-button-image"))
+      || (event.target.classList.contains("tah-group-button"))
+      ? event.target.closest(".tah-tab-group")
+      : event.target.closest(".tah-group");
+    if (!target?.dataset?.nestId) return;
+    const nestId = target?.dataset?.nestId;
+    const name = this.actionHandler.groups[nestId].name;
+    const level = parseInt(target?.dataset?.level) || null;
+    const type = target?.dataset?.type;
+
+    TagDialogHelper.showActionDialog(
+      this.actionHandler,
+      { nestId, name, level, type }
+    );
+  }
+
+  /**
+   * Action hover
+   * @param {object} event The event
+   */
+  actionHover(event) {
+    const target = ((event.target.tagName === "BUTTON")) ? event.target : event.currentTarget.children[0];
+    const value = target.value;
+    try {
+      this.rollHandler.handleActionHoverCore(event, value, this.actionHandler);
+    } catch(error) {
+      Logger.error(event);
+    }
   }
 
   /**
    * Activate listeners
    * @override
    */
-  activateListeners(html) {
-    const elements = {
-      action: html.find(".tah-action"),
-      buttons: html.find("#tah-buttons"),
-      tabGroup: html.find(".tah-tab-group"),
-      groups: html.find("#tah-groups"),
-      editHudButton: html.find("#tah-edit-hud"),
-      listGroups: html.find(".tah-list-groups"),
-      group: html.find(".tah-group"),
-      subtitle: html.find(".tah-subtitle"),
-      groupButton: html.find(".tah-group-button"),
-      collapseHudButton: html.find("#tah-collapse-hud"),
-      expandHudButton: html.find("#tah-expand-hud"),
-      unlockButton: html.find("#tah-unlock"),
-      lockButton: html.find("#tah-lock")
+  _onRender(context, options) {
+    super._onRender(context, options);
+    this.elements = {
+      actionArr: this.element.querySelectorAll(".tah-action"),
+      buttons: this.element.querySelector("#tah-buttons"),
+      tabGroupArr: this.element.querySelectorAll(".tah-tab-group"),
+      groups: this.element.querySelector("#tah-groups"),
+      editHudButton: this.element.querySelector("#tah-edit-hud"),
+      listGroupsArr: this.element.querySelectorAll(".tah-list-groups"),
+      groupArr: this.element.querySelectorAll(".tah-group"),
+      subtitleArr: this.element.querySelectorAll(".tah-subtitle"),
+      groupButtonArr: this.element.querySelectorAll(".tah-group-button"),
+      collapseHudButton: this.element.querySelector("#tah-collapse-hud"),
+      expandHudButton: this.element.querySelector("#tah-expand-hud"),
+      unlockButton: this.element.querySelector("#tah-unlock"),
+      lockButton: this.element.querySelector("#tah-lock")
     };
 
     // Bind event listeners
-    this.#bindGroupEvents(elements);
-    this.#bindActionEvents(elements);
-    this.#bindEditHudButton(elements);
-    this.#bindLockUnlockButtons(elements);
-    this.#bindCollapseExpandButtons(elements);
+    this.#addHoverEvents(this.elements);
+
+    // Set initial collapsed state
+    if (this.isCollapsed) { TokenActionHud.collapseHud.call(this); }
+
+    // Set initial lock state
+    if (this.isUnlocked && this.enableCustomizationSetting) {
+      TokenActionHud.unlockHud.call(this);
+    } else {
+      TokenActionHud.lockHud.call(this);
+    }
+
+    if (!this.enableCustomizationSetting) {
+      this.elements.unlockButton.classList.add("tah-hidden");
+    }
   }
 
   /**
    * Post-render HUD
    */
   postRender() {
+    this.rendering = false;
     this.#applySettings();
+    this.#reopenGroups();
 
     // Resize category
-    if (this.hoveredGroups.length) {
-      for (const groupId of this.hoveredGroups) {
-        const group = document.querySelector(`#${groupId}`);
+    this.openGroups.forEach(groupId => {
+      const group = this.element.querySelector(`#${groupId}`);
+      if (group) {
         this.GroupResizer.resizeGroup(this.actionHandler, group, this.autoDirection, this.gridSetting);
       }
-    }
+    });
   }
 
   /**
-   * Bind category events
-   * @param elements
-   * @private
+   * Add hover events
+   * @param {object} elements The elements
    */
-  #bindGroupEvents(elements) {
-    /**
-     * Close the group
-     * @param {object} event The event
-     */
-    const closeGroup = event => {
-      if (game.tokenActionHud.rendering) return;
-      const group = (this.clickOpenCategorySetting) ? event.currentTarget.parentElement : event.currentTarget;
-      group.classList.remove("hover");
-      const closestGroupElement = group.closest(".tah-group");
-      let sibling = closestGroupElement?.nextElementSibling;
-      while (sibling) {
-        if (sibling.classList.contains("tah-group")) {
-          sibling.classList.remove("tah-hidden");
-        }
-        sibling = sibling.nextElementSibling;
-      }
-      this.#clearHoveredGroup(group.id);
-    };
-
-    /**
-     * Open the group
-     * @param {object} event The event
-     */
-    const openGroup = async event => {
-      const group = (this.clickOpenCategorySetting) ? event.currentTarget.parentElement : event.currentTarget;
-      group.classList.add("hover");
-      const closestGroupElement = group.closest(".tah-group");
-      let sibling = closestGroupElement?.nextElementSibling;
-      while (sibling) {
-        if (sibling.classList.contains("tah-group")) {
-          sibling.classList.add("tah-hidden");
-        }
-        sibling = sibling.nextElementSibling;
-      }
-      this.GroupResizer.resizeGroup(this.actionHandler, group, this.autoDirection, this.gridSetting);
-      this.#setHoveredGroup(group.id);
-    };
-
-    /**
-     * Toggle the group
-     * @param {object} event The event
-     */
-    const toggleGroup = event => {
-      const group = event.currentTarget.parentElement;
-      if (group.classList.contains("hover")) {
-        closeGroup(event);
-      } else {
-        const groupElements = group.parentElement.querySelectorAll(".tah-tab-group");
-        for (const groupElement of groupElements) {
-          groupElement.classList.remove("hover");
-          this.#clearHoveredGroup(groupElement.id);
-        }
-        openGroup(event);
-      }
-      // Remove focus to allow core ESC interactions
-      event.currentTarget.blur();
-    };
-
-    // Bring HUD to top
-    elements.groupButton.on("click", event => {
-      this.bringToTop();
-      // Remove focus to allow core ESC interactions
-      event.currentTarget.blur();
-    });
-
-    if (this.clickOpenCategorySetting) {
-      // When a category button is clicked...
-      elements.groupButton.on("click", toggleGroup);
-    } else {
+  #addHoverEvents(elements) {
+    if (!this.clickOpenCategorySetting) {
       // When a category button is hovered over...
-      elements.tabGroup.get().forEach(element => {
-        element.addEventListener("touchstart", toggleGroup, { passive: true });
+      elements.tabGroupArr.forEach(element => {
+        element.addEventListener("touchstart", this.toggleGroup.bind(this), { passive: true });
+        element.addEventListener("pointerenter", this.openGroup.bind(this));
+        element.addEventListener("pointerleave", this.closeGroup.bind(this));
+        element.addEventListener("mouseleave", this.closeGroup.bind(this));
       });
-      elements.tabGroup.hover(openGroup, closeGroup);
     }
 
     // When a category button is clicked and held...
-    elements.groupButton.on("mousedown", event => this.#dragEvent(event));
-    elements.groupButton.get().forEach(element => {
-      element.addEventListener("touchstart", event => this.#dragEvent(event), { passive: true });
-    });
-  }
-
-  /**
-   * Bind action events
-   * @private
-   * @param {object} elements The DOM elements
-   */
-  #bindActionEvents(elements) {
-    /**
-     * Action click
-     * @param {object} event The event
-     */
-    const actionClick = event => {
-      const target = ((event.target.tagName === "BUTTON")) ? event.target : event.currentTarget.children[0];
-      const value = target.value;
-      try {
-        this.rollHandler.handleActionClickCore(event, value, this.actionHandler);
-        target.blur();
-      } catch(error) {
-        Logger.error(event);
-      }
-    };
-
-    /**
-     * Action hover
-     * @param {object} event The event
-     */
-    const actionHover = event => {
-      const target = ((event.target.tagName === "BUTTON")) ? event.target : event.currentTarget.children[0];
-      const value = target.value;
-      try {
-        this.rollHandler.handleActionHoverCore(event, value, this.actionHandler);
-      } catch(error) {
-        Logger.error(event);
-      }
-    };
-
-    /**
-     * Group click
-     * @param {object} event The event
-     */
-    const groupClick = event => {
-      const target = (event.target.classList.contains("tah-button-text")) || (event.target.classList.contains("tah-button-image")) || (event.target.classList.contains("tah-group-button"))
-        ? event.target.closest(".tah-tab-group")
-        : event.target.closest(".tah-group");
-      if (!target?.dataset?.nestId) return;
-      const nestId = target?.dataset?.nestId;
-      try {
-        this.rollHandler.handleGroupClickCore(event, nestId, this.actionHandler);
-      } catch(error) {
-        Logger.error(event);
-      }
-    };
-
-    /**
-     * Open the group dialog
-     * @param {object} event
-     */
-    const openGroupDialog = event => {
-      const target = event.currentTarget;
-      if (!target?.parentElement?.dataset?.nestId) return;
-
-      const nestId = target?.parentElement?.dataset?.nestId;
-      const name = target?.parentElement?.dataset?.name ?? target.innerText ?? target.outerText;
-      const level = parseInt(target?.parentElement?.dataset?.level) || null;
-      const type = target?.parentElement?.dataset?.type;
-
-      TagDialogHelper.showGroupDialog(
-        this.actionHandler,
-        { nestId, name, level, type }
-      );
-    };
-
-    /**
-     * Open the Action dialog
-     * @param {object} event The event
-     */
-    const openActionDialog = event => {
-      const target = (event.target.classList.contains("tah-button-text")) || (event.target.classList.contains("tah-button-image")) || (event.target.classList.contains("tah-group-button"))
-        ? event.target.closest(".tah-tab-group")
-        : event.target.closest(".tah-group");
-      if (!target?.dataset?.nestId) return;
-      const nestId = target?.dataset?.nestId;
-      const name = this.actionHandler.groups[nestId].name;
-      const level = parseInt(target?.dataset?.level) || null;
-      const type = target?.dataset?.type;
-
-      TagDialogHelper.showActionDialog(
-        this.actionHandler,
-        { nestId, name, level, type }
-      );
-    };
-
-    /**
-     * Collapse/expand group
-     * @param {object} event                   The event
-     * @param {boolean} enableCustomizationSetting Whether customization is enabled
-     */
-    const collapseExpandGroup = (event, enableCustomizationSetting) => {
-      const target = event.target.classList.contains("tah-subtitle-text")
-        ? event.target.parentElement
-        : event.target;
-      const groupElement = target?.closest(".tah-group");
-      const nestId = groupElement?.dataset?.nestId;
-      const tabGroup = target.closest(".tah-tab-group.hover");
-      const groupsElement = groupElement?.querySelector(".tah-groups");
-      const collapseIcon = target.querySelector(".tah-collapse-icon");
-      const expandIcon = target.querySelector(".tah-expand-icon");
-      const imageElement = groupElement.querySelector(".tah-list-image");
-
-      const toggleGroupVisibility = () => {
-        groupsElement?.classList.toggle("tah-hidden");
-        collapseIcon?.classList.toggle("tah-hidden");
-        expandIcon?.classList.toggle("tah-hidden");
-        imageElement?.classList.toggle("tah-hidden");
-      };
-
-      const saveGroupSettings = collapse => {
-        if (enableCustomizationSetting) {
-          this.actionHandler.saveGroupSettings({ nestId, settings: { collapse } });
-        }
-      };
-
-      if (groupsElement?.classList.contains("tah-hidden")) {
-        toggleGroupVisibility();
-        saveGroupSettings(false);
-        this.GroupResizer.resizeGroup(this.actionHandler, tabGroup, this.autoDirection, this.gridSetting);
-      } else {
-        toggleGroupVisibility();
-        saveGroupSettings(true);
-      }
-    };
-
-    // When a subcategory title is right-clicked...
-    elements.subtitle.on("contextmenu", event => {
-      if (this.isUnlocked) {
-        openActionDialog(event);
-      } else {
-        groupClick(event);
-      }
-    });
-
-    // When a subcategory title is clicked...
-    elements.subtitle.on("click", event => {
-      if (event.target.classList.contains("tah-button-text")) return;
-      collapseExpandGroup(event, this.enableCustomizationSetting);
-    });
-
-    // When an action is clicked or right-clicked...
-    elements.action.on("click contextmenu", event => {
-      event.preventDefault();
-      actionClick(event);
+    elements.groupButtonArr.forEach(element => {
+      element.addEventListener("mousedown", this.#dragEvent.bind(this));
+      element.addEventListener("touchstart", this.#dragEvent.bind(this), { passive: true });
     });
 
     // When an action is hovered...
-    elements.action.hover(event => {
-      actionHover(event);
-    });
-
-    elements.groupButton.on("contextmenu", event => {
-      if (this.isUnlocked) {
-        if (event.currentTarget.parentElement.dataset.level === "1") {
-          openGroupDialog(event);
-        } else {
-          openActionDialog(event);
-        }
-      } else {
-        groupClick(event);
-      }
+    elements.actionArr.forEach(element => {
+      element.addEventListener("pointerenter", this.actionHover.bind(this));
+      element.addEventListener("pointerleave", this.actionHover.bind(this));
     });
   }
 
-  /**
-   * Bind 'Edit HUD' button
-   * @param elements
-   * @private
-   */
-  #bindEditHudButton(elements) {
-    // When the 'Edit HUD' button is clicked...
-    elements.editHudButton.on("click", event => {
-      event.preventDefault();
-      event = event || window.event;
-      TagDialogHelper.showHudDialog(this.actionHandler);
-    });
-  }
-
-  /**
-   * Bind lock and unlock buttons
-   * @param elements
-   * @private
-   */
-  #bindLockUnlockButtons(elements) {
-    /**
-     * Unlock the HUD
-     * @param {object} event
-     */
-    const unlockHud = async event => {
-      if (event) {
-        event.preventDefault();
-      }
-
-      const target = event?.target || elements.unlockButton;
-      $(target).addClass("tah-hidden");
-      elements.editHudButton.removeClass("tah-hidden");
-      elements.group.removeClass("tah-hidden");
-      elements.groupButton.removeClass("disable-edit");
-      elements.groups.addClass("tah-unlocked");
-      elements.listGroups.removeClass("tah-hidden");
-      elements.lockButton.removeClass("tah-hidden");
-      elements.tabGroup.removeClass("tah-hidden");
-      elements.subtitle.removeClass("disable-edit tah-hidden");
-
-      if (!this.isUnlocked) {
-        await Utils.setUserFlag("isUnlocked", true);
-        this.isUnlocked = true;
-      }
-    };
-
-    /**
-     * Lock the HUD
-     * @param {object} event
-     */
-    const lockHud = async (event = null) => {
-      if (event) {
-        event.preventDefault();
-      }
-      const target = event?.target || elements.lockButton;
-      $(target).addClass("tah-hidden");
-      elements.unlockButton.removeClass("tah-hidden");
-      elements.editHudButton.addClass("tah-hidden");
-      elements.groups.removeClass("tah-unlocked");
-      for (const topGroupElement of elements.tabGroup) {
-        const hasActions = (topGroupElement.getElementsByClassName("tah-action").length > 0);
-        if (!hasActions) topGroupElement.classList.add("tah-hidden");
-      }
-      for (const groupElement of elements.group) {
-        const hasActions = (groupElement.getElementsByClassName("tah-action").length > 0);
-        if (!hasActions) groupElement.classList.add("tah-hidden");
-      }
-      for (const listGroupsElement of elements.listGroups) {
-        const hasActions = (listGroupsElement.getElementsByClassName("tah-action").length > 0);
-        if (!hasActions) listGroupsElement.classList.add("tah-hidden");
-      }
-      for (const subtitleElement of elements.subtitle) {
-        const groupElement = subtitleElement.closest(".tah-group");
-        if (groupElement?.dataset?.showTitle === "false") {
-          subtitleElement.classList.add("tah-hidden");
-        }
-      }
-      elements.groupButton.addClass("disable-edit");
-      elements.subtitle.addClass("disable-edit");
-      if (this.isUnlocked) {
-        await Utils.setUserFlag("isUnlocked", false);
-        this.isUnlocked = false;
-      }
-    };
-
-    // Set initial lock state
-    if (this.isUnlocked && this.enableCustomizationSetting) {
-      unlockHud();
-    } else {
-      lockHud();
-    }
-
-    if (!this.enableCustomizationSetting) {
-      elements.unlockButton.addClass("tah-hidden");
-    }
-
-    // Add event listeners
-    elements.unlockButton.on("click", unlockHud);
-    elements.lockButton.on("click", lockHud);
-  }
-
-  /**
-   * Bind collapse and expand buttons
-   * @param elements
-   * @private
-   */
-  #bindCollapseExpandButtons(elements) {
-    /**
-     * Collapse the HUD
-     * @param {object} event The event
-     */
-    const collapseHud = (event = null) => {
-      if (event) {
-        event.preventDefault();
-        event = event || window.event;
-      }
-      const target = event?.target || elements.collapseHudButton;
-      $(target).addClass("tah-hidden");
-      elements.expandHudButton.removeClass("tah-hidden");
-      elements.groups.addClass("tah-hidden");
-      elements.buttons.addClass("tah-hidden");
-      if (!this.isCollapsed) {
-        Utils.setUserFlag("isCollapsed", true);
-        this.isCollapsed = true;
-      }
-    };
-
-    /**
-     * Expand the HUD
-     * @param {object} event The event
-     */
-    const expandHud = event => {
-      event.preventDefault();
-      event = event || window.event;
-      $(event.target).addClass("tah-hidden");
-      elements.collapseHudButton.removeClass("tah-hidden");
-      elements.groups.removeClass("tah-hidden");
-      elements.buttons.removeClass("tah-hidden");
-      if (this.isCollapsed) {
-        Utils.setUserFlag("isCollapsed", false);
-        this.isCollapsed = false;
-      }
-    };
-
-    // Set initial state
-    if (this.isCollapsed) { collapseHud(); }
-
-    // Add event listeners
-    // When the 'Collapse HUD' button is clicked...
-    elements.collapseHudButton.on("click", collapseHud);
-
-    // When the 'Expand HUD' Button is clicked...
-    elements.expandHudButton.on("click", expandHud);
-
-    // When the 'Expand HUD' button is clicked and held...
-    elements.expandHudButton.on("mousedown", event => this.#dragEvent(event));
-    elements.expandHudButton.get(0).addEventListener("touchstart", event => this.#dragEvent(event), { passive: true });
-  }
 
   /**
    * Drag event handler
@@ -672,10 +659,10 @@ export class TokenActionHud extends Application {
    * @param {object} event The event
    */
   #dragEvent(event) {
-    if (!this.#isDraggable()) return;
+    if (!this.isDraggable) return;
 
     // Get the main element
-    const element = document.getElementById("token-action-hud");
+    const element = this.element;
 
     const clientX = event.clientX ?? event.changedTouches[0].clientX;
     const clientY = event.clientY ?? event.changedTouches[0].clientY;
@@ -789,8 +776,6 @@ export class TokenActionHud extends Application {
   setPosition() {
     if (!this.hud) return;
     this.#setPositionFromFlag();
-    this.#restoreHoveredGroups();
-    this.rendering = false;
   }
 
   /**
@@ -805,18 +790,17 @@ export class TokenActionHud extends Application {
 
     return new Promise(resolve => {
       const check = () => {
-        const element = document.getElementById("token-action-hud");
-        if (element) {
-          element.style.bottom = null;
+        if (this.element) {
+          this.element.style.bottom = null;
           this.topPos = this.hudPosition.top < 5 || this.hudPosition.top > window.innerHeight + 5
             ? defaultTopPos
             : this.hudPosition.top;
-          element.style.top = `${this.topPos}px`;
           this.leftPos = this.hudPosition.left < 5 || this.hudPosition.left > window.innerWidth + 5
             ? defaultLeftPos
             : this.hudPosition.left;
-          element.style.left = `${this.leftPos}px`;
-          element.style.position = "fixed";
+          this.element.style.top = `${this.topPos}px`;
+          this.element.style.left = `${this.leftPos}px`;
+          this.element.style.position = "fixed";
           resolve();
         } else {
           setTimeout(check, 10);
@@ -843,9 +827,8 @@ export class TokenActionHud extends Application {
    * @private
    * @param {string} groupId The group id
    */
-  #setHoveredGroup(groupId) {
-    if (this.hoveredGroups.length > 10) { this.hoveredGroups = []; }
-    this.hoveredGroups.push(groupId);
+  #addOpenGroup(groupId) {
+    this.openGroups.add(groupId);
   }
 
   /**
@@ -853,29 +836,24 @@ export class TokenActionHud extends Application {
    * @private
    * @param {string} groupId The group id
    */
-  #clearHoveredGroup(groupId) {
-    this.hoveredGroups = this.hoveredGroups.filter(id => id !== groupId);
+  #deleteOpenGroup(groupId) {
+    this.openGroups.delete(groupId);
   }
 
   /**
-   * Restore the hovered category state on the HUD
+   * Restore the open state of HD groups
+   * @param {Event|null} event
    * @private
    */
-  #restoreHoveredGroups() {
-    if (!this.hoveredGroups.length) return;
+  #reopenGroups(event = null) {
+    if (!this.openGroups.size) return;
 
-    for (const groupId of this.hoveredGroups) {
-      const groupElement = $(`#${groupId}`);
-
-      if (!groupElement[0]) continue;
-
-      if (this.clickOpenCategorySetting) {
-        const button = groupElement.find(".tah-group-button")[0];
-        button.click();
-      } else {
-        groupElement.mouseenter();
+    this.openGroups.forEach(groupId => {
+      const group = this.element.querySelector(`#${groupId}`);
+      if (group) {
+        this.openGroup(event, group);
       }
-    }
+    });
   }
 
   /**
@@ -917,8 +895,9 @@ export class TokenActionHud extends Application {
   /**
    * Copy user's 'groups' flag to others users
    * @private
-   * @param {string} fromUserId      The user id to copy from
+   * @param {string} fromUserId        The user id to copy from
    * @param {string | Array} toUserIds The user ids to copy to
+   * @returns {boolean}                Whether the user data was copied
    */
   async #copyUserData(fromUserId, toUserIds) {
     // Exit if parameters are missing
@@ -945,69 +924,65 @@ export class TokenActionHud extends Application {
    * @public
    */
   async resetDialog() {
-    const d = new Dialog({
-      title: game.i18n.localize("tokenActionHud.dialog.resetLayout.title"),
+    await foundry.applications.api.DialogV2.confirm({
+      window: {
+        title: game.i18n.localize("tokenActionHud.dialog.resetLayout.title")
+      },
       content: `<p>${game.i18n.localize("tokenActionHud.dialog.resetLayout.content")}</p>`,
-      buttons: {
-        yes: {
-          icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.localize("tokenActionHud.dialog.button.yes"),
-          callback: async () => {
-            const customLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=customLayout]");
-            if (customLayoutElement) {
-              await this.updateSettings("customLayout", customLayoutElement?.value ?? "");
-              await Utils.setSetting("customLayout", customLayoutElement?.value ?? "");
-            }
-            const userCustomLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=userCustomLayout]");
-            if (userCustomLayoutElement) {
-              await this.updateSettings("userCustomLayout", userCustomLayoutElement?.value ?? "");
-              await Utils.setUserFlag("userCustomLayout", userCustomLayoutElement?.value ?? "");
-            }
-            await TokenActionHud.reset();
-            Logger.info("Layout reset", true);
+      modal: true,
+      yes: {
+        label: game.i18n.localize("tokenActionHud.dialog.button.yes"),
+        callback: async () => {
+          const customLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=customLayout]");
+          if (customLayoutElement) {
+            await this.updateSettings("customLayout", customLayoutElement?.value ?? "");
+            await Utils.setSetting("customLayout", customLayoutElement?.value ?? "");
           }
-        },
-        no: {
-          icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize("tokenActionHud.dialog.button.no")
+          const userCustomLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=userCustomLayout]");
+          if (userCustomLayoutElement) {
+            await this.updateSettings("userCustomLayout", userCustomLayoutElement?.value ?? "");
+            await Utils.setUserFlag("userCustomLayout", userCustomLayoutElement?.value ?? "");
+          }
+          await TokenActionHud.reset();
+          Logger.info("Layout reset", true);
         }
+      },
+      no: {
+        label: game.i18n.localize("tokenActionHud.dialog.button.no")
       }
     });
-    d.render(true);
   }
 
   /**
-   * Reset the HUD
+   * Reset all HUD layouts for everyone
    * @public
    */
   async resetAllDialog() {
-    const d = new Dialog({
-      title: game.i18n.localize("tokenActionHud.dialog.resetAllLayouts.title"),
+    await foundry.applications.api.DialogV2.confirm({
+      window: {
+        title: game.i18n.localize("tokenActionHud.dialog.resetAllLayouts.title")
+      },
       content: `<p>${game.i18n.localize("tokenActionHud.dialog.resetAllLayouts.content")}</p>`,
-      buttons: {
-        yes: {
-          icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.localize("tokenActionHud.dialog.button.yes"),
-          callback: async () => {
-            const customLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=customLayout]");
-            if (customLayoutElement) {
-              await Utils.setSetting("customLayout", customLayoutElement?.value ?? "");
-            }
-            const userCustomLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=userCustomLayout]");
-            if (userCustomLayoutElement) {
-              await Utils.setUserFlag("userCustomLayout", userCustomLayoutElement?.value ?? "");
-            }
-            await game.tokenActionHud.socket.executeForEveryone("reset");
-            Logger.info("All layouts reset", true);
+      modal: true,
+      yes: {
+        label: game.i18n.localize("tokenActionHud.dialog.button.yes"),
+        callback: async () => {
+          const customLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=customLayout]");
+          if (customLayoutElement) {
+            await Utils.setSetting("customLayout", customLayoutElement?.value ?? "");
           }
-        },
-        no: {
-          icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize("tokenActionHud.dialog.button.no")
+          const userCustomLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=userCustomLayout]");
+          if (userCustomLayoutElement) {
+            await Utils.setUserFlag("userCustomLayout", userCustomLayoutElement?.value ?? "");
+          }
+          await game.tokenActionHud.socket.executeForEveryone("reset");
+          Logger.info("All layouts reset", true);
         }
+      },
+      no: {
+        label: game.i18n.localize("tokenActionHud.dialog.button.no")
       }
     });
-    d.render(true);
   }
 
   static async reset() {
@@ -1024,10 +999,10 @@ export class TokenActionHud extends Application {
     Logger.debug("Resetting actor data...");
 
     await DataHandler.saveDataAsGm("actor", this.actor.id, {});
-    this.actionHandler.hardResetActionHandler();
 
     Logger.debug("Actor data reset");
 
+    this.actionHandler.hardResetActionHandler();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetActorData" } };
     this.update(trigger);
   }
@@ -1043,10 +1018,9 @@ export class TokenActionHud extends Application {
       Logger.debug(`Resetting flags for actor [${actor.id}]`, { actor });
       await DataHandler.saveDataAsGm("actor", actor.id, {});
     }
-    this.actionHandler.hardResetActionHandler();
 
     Logger.debug("All actor data reset");
-
+    this.actionHandler.hardResetActionHandler();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetAllActorData" } };
     this.update(trigger);
   }
@@ -1092,7 +1066,6 @@ export class TokenActionHud extends Application {
     Logger.debug("Actor data reset");
 
     this.actionHandler.hardResetActionHandler();
-
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetUserAndActorData" } };
     this.update(trigger);
   }
@@ -1112,7 +1085,6 @@ export class TokenActionHud extends Application {
     }
 
     await this.#handleUpdate();
-
     await this.#performUpdate(trigger);
   }
 
@@ -1167,19 +1139,16 @@ export class TokenActionHud extends Application {
 
     if ((!character && !multipleTokens) || !this.isHudEnabled) {
       this.#close();
-      this.hoveredGroups = [];
       Logger.debug("HUD update aborted as no character(s) found or HUD is disabled");
       this.isUpdating = false;
       return;
     }
 
     const options = (trigger === "controlToken" && previousActorId !== this.actor?.id) ? { saveActor: true } : {};
-
     this.hud = await this.actionHandler.buildHud(options);
 
-    if (this.hud.length === 0) {
+    if (this.actionHandler.availableActionsMap.size === 0) {
       this.#close();
-      this.hoveredGroups = [];
       Logger.debug("HUD update aborted as action list empty");
       this.isUpdating = false;
       return;
@@ -1191,6 +1160,8 @@ export class TokenActionHud extends Application {
       ui.windows[this.appId] = this;
     }
 
+    this.#reopenGroups();
+
     this.isUpdating = false;
 
     Hooks.callAll("tokenActionHudCoreHudUpdated", this.module);
@@ -1198,11 +1169,12 @@ export class TokenActionHud extends Application {
   }
 
   /**
-   * Close application
+   * Close HUD
    * @private
    */
   #close() {
-    this.close();
+    this.openGroups = new Set();
+    this.close({ animate: false });
   }
 
   /**
@@ -1213,12 +1185,8 @@ export class TokenActionHud extends Application {
    * @returns {boolean}    Whether the token change is valid for a HUD update
    */
   isValidTokenChange(token, data = null) {
-    if (data?.actorData?.flags) return false;
-    if (this.alwaysShowSetting) {
-      return (this.#isRelevantToken(token) || token.actorId === game.user.character?.id);
-    } else {
-      return this.#isRelevantToken(token);
-    }
+    if (data.flags) return false;
+    return this.#isRelevantToken(token) || (this.alwaysShowSetting && token.actorId === game.user.character?.id);
   }
 
   /**
@@ -1231,10 +1199,7 @@ export class TokenActionHud extends Application {
     const controlledTokens = Utils.getControlledTokens();
     return (
       controlledTokens?.some(controlledToken => controlledToken.id === token.id)
-            || (
-              controlledTokens?.length === 0
-                && canvas?.tokens?.placeables?.some(token => token.id === this.hud?.tokenId)
-            )
+        || (!controlledTokens?.length && canvas?.tokens?.placeables?.some(token => token.id === this.hud?.tokenId))
     );
   }
 
@@ -1244,9 +1209,7 @@ export class TokenActionHud extends Application {
    * @returns {boolean}    Whether the given actor is the selected actor
    */
   isSelectedActor(actor) {
-    if (!actor?.id) return true;
-    if (actor?.id === this.actor?.id) return true;
-    return false;
+    return !actor?.id || actor?.id === this.actor?.id;
   }
 
   /**
@@ -1258,20 +1221,18 @@ export class TokenActionHud extends Application {
   isValidActorOrItemUpdate(actor, data) {
     if (!this.isSelectedActor(actor)) return false;
 
-    if (actor) {
-      if (!actor) {
-        Logger.debug("No actor, update hud", { data });
-        return true;
-      }
-
-      if (this.hud && actor.id === this.hud.actorId) {
-        Logger.debug("Same actor, update hud", { actor, data });
-        return true;
-      }
-
-      Logger.debug("Different actor, do not update hud", { actor, data });
-      return false;
+    if (!actor) {
+      Logger.debug("No actor, update hud", { data });
+      return true;
     }
+
+    if (this.hud && actor.id === this.hud.actorId) {
+      Logger.debug("Same actor, update hud", { actor, data });
+      return true;
+    }
+
+    Logger.debug("Different actor, do not update hud", { actor, data });
+    return false;
   }
 
   /**
@@ -1281,8 +1242,7 @@ export class TokenActionHud extends Application {
    * @returns {boolean}           Whether the character is a valid selection for the current user
    */
   #isValidCharacter(token = {}) {
-    const actor = token?.actor;
-    return game.user.isGM || actor?.testUserPermission(game.user, "OWNER");
+    return game.user.isGM || token.actor?.testUserPermission(game.user, "OWNER");
   }
 
   /**
@@ -1291,21 +1251,16 @@ export class TokenActionHud extends Application {
    * @returns {boolean} Whether the hud is enabled for the current user
    */
   #getHudEnabled() {
-    const userRole = game.user.role;
-    const isGM = game.user.isGM;
-    const isEnabled = this.enableSetting;
-
-    if (!isEnabled) return false;
-
-    if (isGM) return true;
-
-    return Utils.checkAllow(userRole, this.allowSetting);
+    if (!this.enableSetting) return false;
+    if (game.user.isGM) return true;
+    return Utils.checkAllow(game.user.role, this.allowSetting);
   }
 
   /**
    * Get character from selected tokens
    * @private
    * @param {Array} [controlled = []] The controlled tokens
+   * @returns {object|null}           The character
    */
   #getCharacter(controlled = []) {
     if (controlled.length > 1) {
