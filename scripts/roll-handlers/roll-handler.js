@@ -48,20 +48,20 @@ export class RollHandler {
 
         this.registerKeyPresses(event)
 
-        for (let i = 0; i < this.rollHandlerExtenders.length; ++i) {
-            if (this.rollHandlerExtenders[i].prehandleActionEvent(event, encodedValue, actionHandler)) {
+        for (let handler of this.rollHandlerExtenders) {
+            if (handler.prehandleActionEvent(event, encodedValue, actionHandler)) {
                 return
             }
         }
         
-        for (let i = 0; i < this.preRollHandlers.length; ++i) {
-            if (this.preRollHandlers[i].prehandleActionEvent(event, encodedValue, actionHandler)) {
+        for (let handler of this.preRollHandlers) {
+            if (handler.prehandleActionEvent(event, encodedValue, actionHandler)) {
                 return
             }
         }
         
-        for (let i = 0; i < this.rollHandlerExtenders.length; ++i) {
-            if (this.rollHandlerExtenders[i].handleActionClick(event, encodedValue, actionHandler)) {
+        for (let handler of this.rollHandlerExtenders) {
+            if (handler.handleActionClick(event, encodedValue, actionHandler)) {
                 return
             }
         }
