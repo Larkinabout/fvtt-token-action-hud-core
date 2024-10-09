@@ -1,5 +1,5 @@
 
-<div class="tah-tab-group{{~#if class}} {{class}}{{~/if~}}" id="tah-group-{{nestId}}" data-nest-id="{{nestId}}" data-level="{{level}}" data-name="{{name}}" data-type="custom">
+<div class="tah-tab-group{{~#if class}} {{class}}{{~/if~}}" id="tah-group-{{nestId}}" data-is-group="true" data-nest-id="{{nestId}}" data-level="{{level}}" data-name="{{name}}" data-type="custom">
     <button class="tah-group-button" value="{{id}}" data-action="clickGroup">
         {{~#if settings.image~}}<img class="tah-button-image" src="{{settings.image}}"{{~#if tooltip}} data-tooltip="{{tooltip}}" data-tooltip-class="tah-tooltip"{{~/if~}}>{{~/if~}}
         <span class="tah-button-content">

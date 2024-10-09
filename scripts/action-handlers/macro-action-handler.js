@@ -5,13 +5,8 @@ import { Utils } from "../utils.js";
  * Handler for building the HUD's macro actions.
  */
 export class MacroActionHandler {
-  actionHandler;
-
-  macroActions;
-
   constructor(actionHandler) {
     this.actionHandler = actionHandler;
-    this.macroActions = null;
   }
 
   /**
@@ -20,9 +15,10 @@ export class MacroActionHandler {
    */
   async buildMacroActions() {
     if (!this.macroActions) {
-      const groupData = { id: "macros", type: "core" };
-      const actionsData = await this.#getActions();
-      this.macroActions = { actionsData, groupData };
+      this.macroActions = {
+        actionsData: await this.#getActions(),
+        groupData: { id: "macros", type: "core" }
+      };
     }
 
     this.actionHandler.addActions(this.macroActions.actionsData, this.macroActions.groupData);
@@ -35,25 +31,38 @@ export class MacroActionHandler {
    */
   async #getActions() {
     const actionType = "macro";
-    const macros = game.macros.filter(macro => {
-      const permissions = macro.ownership;
-      if (permissions[game.userId]) return permissions[game.userId] > 0;
-      return permissions.default > 0;
-    });
+    const macros = game.macros.filter(macro => this.#hasPermission(macro));
+
     return macros.map(macro => {
-      const id = macro.id;
-      const name = macro.name;
-      const actionTypeName = `${game.i18n.localize(ACTION_TYPE[actionType])}: ` ?? "";
-      const listName = `${actionTypeName}${name}`;
-      const encodedValue = [actionType, macro.id].join(DELIMITER);
-      const img = Utils.getImage(macro);
       return {
-        id,
-        name,
-        listName,
-        encodedValue,
-        img
+        id: macro.id,
+        name: macro.name,
+        listName: this.#getListName(actionType, macro.name),
+        encodedValue: [actionType, macro.id].join(DELIMITER),
+        img: Utils.getImage(macro)
       };
     });
+  }
+
+  /**
+   * Check if the user has permission for the macro
+   * @private
+   * @param {object} macro The macro
+   * @returns {boolean}    Whether the user has permission
+   */
+  #hasPermission(macro) {
+    const { ownership } = macro;
+    return ownership[game.userId] ? ownership[game.userId] > 0 : ownership.default > 0;
+  }
+
+  /**
+   * Get list name
+   * @param {string} actionType The action type
+   * @param {string} name       The action name
+   * @returns {string}          The list name
+   */
+  #getListName(actionType, name) {
+    const actionTypeName = `${game.i18n.localize(ACTION_TYPE[actionType])}: ` ?? "";
+    return `${actionTypeName}${name}`;
   }
 }

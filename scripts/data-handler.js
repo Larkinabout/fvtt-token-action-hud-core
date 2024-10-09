@@ -24,7 +24,7 @@ export function isPersistentStorage() {
 export class DataHandler {
   async init() {
     this.path = DataHandler.getPath();
-    this.private = await DataHandler.isPrivate();
+    this.private = DataHandler.isPrivate();
     this.fileMap = await DataHandler.getFilePathsAsGm();
   }
 

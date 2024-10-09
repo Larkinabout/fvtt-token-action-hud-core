@@ -24,7 +24,7 @@
                 {{numberInput this.value name=this.id}}
 
                 {{else if this.isButton}}
-                <button type="button" onClick="{{this.onClick}}" style="flex: 2;">
+                <button type="button" data-action="{{this.action}}" style="flex: 2;">
                     {{#if this.icon}}<i class="{{this.icon}}"></i>{{/if}}
                     <label>{{this.label}}</label>
                 </button>

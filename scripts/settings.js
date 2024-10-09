@@ -1,5 +1,5 @@
-import { CustomStyleForm } from "./application/custom-style-form.js";
-import { TahSettingsFormLayout } from "./application/settings-form.js";
+import { CustomStyleForm } from "./applications/custom-style-form.js";
+import { TahSettingsFormLayout } from "./applications/settings-form.js";
 import { CUSTOM_STYLE, MODULE } from "./constants.js";
 import { Logger, Utils } from "./utils.js";
 

@@ -153,6 +153,17 @@ export const GROUP_TYPE = {
 };
 
 /**
+ * HUD
+ */
+export const HUD = {
+  defaultHeight: 200,
+  defaultWidth: 20,
+  defaultLeftPos: 150,
+  defaultTopPos: 80,
+  defaultScale: 1
+};
+
+/**
  * Item Macro icon
  */
 export const ITEM_MACRO_ICON = {
@@ -186,7 +197,7 @@ export const LAYOUT_SETTING = {
     name: "tokenActionHud.settings.exportLayout.name",
     inputType: "button",
     icon: "fa-solid fa-file-export",
-    onClick: "game?.tokenActionHud?.actionHandler?.exportLayout()"
+    action: "exportLayout"
   },
   resetLayout: {
     hint: "tokenActionHud.settings.resetLayout.hint",
@@ -194,7 +205,7 @@ export const LAYOUT_SETTING = {
     name: "tokenActionHud.settings.resetLayout.name",
     inputType: "button",
     icon: "fa-solid fa-arrow-rotate-left",
-    onClick: "game?.tokenActionHud?.resetDialog()",
+    action: "resetLayout",
     scope: "client"
   },
   resetAllLayouts: {
@@ -203,7 +214,7 @@ export const LAYOUT_SETTING = {
     name: "tokenActionHud.settings.resetAllLayouts.name",
     inputType: "button",
     icon: "fa-solid fa-bomb",
-    onClick: "game?.tokenActionHud?.resetAllDialog()",
+    action: "resetAllLayouts",
     scope: "world"
   }
 };

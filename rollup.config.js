@@ -4,7 +4,7 @@ import terser from "@rollup/plugin-terser";
 
 export default [
   {
-    input: "scripts/init.js",
+    input: "scripts/main.js",
     plugins: [
       commonjs(),
       resolve({ browser: true })

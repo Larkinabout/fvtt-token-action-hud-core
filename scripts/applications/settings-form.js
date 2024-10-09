@@ -1,4 +1,6 @@
-import { CUSTOM_STYLE, MODULE, LAYOUT_SETTING, TEMPLATE } from "../constants.js";
+import { MODULE, LAYOUT_SETTING, TEMPLATE } from "../constants.js";
+import { resetLayoutDialog } from "../dialogs/reset-layout.js";
+import { resetAllLayoutsDialog } from "../dialogs/reset-all-layouts.js";
 import { Utils } from "../utils.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -12,6 +14,9 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static DEFAULT_OPTIONS = {
     actions: {
+      exportLayout: TahSettingsForm.exportLayout,
+      resetLayout: resetLayoutDialog,
+      resetAllLayouts: resetAllLayoutsDialog,
       reset: TahSettingsForm.reset
     },
     classes: [`${MODULE.ID}-app`, "sheet"],
@@ -42,7 +47,7 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
     const context = { settings };
 
     for (const [key, setting] of Object.entries(this.settings)) {
-      const { scope, hint, icon, label, name, type, inputType, range, choices, onClick } = setting;
+      const { scope, hint, icon, label, name, type, inputType, range, choices, action } = setting;
 
       if (scope === "world" && !game.user.isGM) continue;
 
@@ -68,7 +73,7 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
         value,
         type,
         isButton,
-        onClick,
+        action,
         isCheckbox,
         isFilePicker,
         filePickerType,
@@ -78,6 +83,11 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
     return context;
+  }
+
+  static exportLayout() {
+    if (!game.tokenActionHud) return;
+    game.tokenActionHud.actionHandler.exportLayout();
   }
 
   static async submit(event, form, formData) {

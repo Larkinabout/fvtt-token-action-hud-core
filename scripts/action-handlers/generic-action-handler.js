@@ -5,8 +5,6 @@ import { Utils } from "../utils.js";
  * Handler for building the HUD's generic actions.
  */
 export class GenericActionHandler {
-  actionHandler;
-
   constructor(actionHandler) {
     this.actionHandler = actionHandler;
     this.actor = actionHandler.actor;
@@ -16,7 +14,6 @@ export class GenericActionHandler {
   /**
    * Build generic actions
    * @public
-   * @param {object} character The actor and/or token
    */
   buildGenericActions() {
     this.#buildUtilities();
@@ -27,8 +24,11 @@ export class GenericActionHandler {
    * @private
    */
   #buildUtilities() {
-    if (this.actor) return this.#buildSingleTokenUtilities();
-    this.#buildMultipleTokenUtilities();
+    if (this.actor) {
+      this.#buildSingleTokenUtilities();
+    } else {
+      this.#buildMultipleTokenUtilities();
+    }
   }
 
   /**
