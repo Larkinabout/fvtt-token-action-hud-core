@@ -6,7 +6,7 @@ import { RollHandler } from './roll-handler.js'
  * further actions being performed.
  */
 export class PreRollHandler extends RollHandler {
-    prehandleActionEvent (event, encodedValue) {
+    prehandleActionEvent (event, encodedValue, actionHandler) {
         return false
     }
 }

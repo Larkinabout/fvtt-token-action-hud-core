@@ -9,6 +9,7 @@ export class RollHandler {
     token = null
     delimiter = DELIMITER
     preRollHandlers = []
+    rollHandlerExtenders = []
 
     /**
      * Throw error
@@ -19,6 +20,16 @@ export class RollHandler {
         throw new Error(
             `Error handling button click: ${err}`
         )
+    }
+
+    /**
+     * Add action handler extender
+     * @public
+     * @param {object} actioHandlerExtender The action handler extender
+     */
+    addRollHandlerExtender (rollHandlerExtender) {
+        Logger.debug('Adding roll handler extender...', { rollHandlerExtender })
+        this.rollHandlerExtenders.push(rollHandlerExtender)
     }
 
     /**
@@ -37,14 +48,23 @@ export class RollHandler {
 
         this.registerKeyPresses(event)
 
-        let handled = false
-        this.preRollHandlers.forEach((handler) => {
-            if (handled) return
-
-            handled = handler.prehandleActionEvent(event, encodedValue, actionHandler)
-        })
-
-        if (handled) return
+        for (let i = 0; i < this.rollHandlerExtenders.length; ++i) {
+            if (this.rollHandlerExtenders[i].prehandleActionEvent(event, encodedValue, actionHandler)) {
+                return
+            }
+        }
+        
+        for (let i = 0; i < this.preRollHandlers.length; ++i) {
+            if (this.preRollHandlers[i].prehandleActionEvent(event, encodedValue, actionHandler)) {
+                return
+            }
+        }
+        
+        for (let i = 0; i < this.rollHandlerExtenders.length; ++i) {
+            if (this.rollHandlerExtenders[i].handleActionClick(event, encodedValue, actionHandler)) {
+                return
+            }
+        }
 
         if (this.#isGenericAction(encodedValue)) {
             await this.#handleGenericActionClick(encodedValue)

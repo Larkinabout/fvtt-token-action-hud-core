@@ -4,6 +4,7 @@ import { DataHandler } from './data-handler.js'
 import { MigrationManager } from './migration-manager.js'
 import { PreRollHandler } from './roll-handlers/pre-roll-handler.js'
 import { RollHandler } from './roll-handlers/roll-handler.js'
+import { RollHandlerExtender } from './roll-handlers/roll-handler-extender.js'
 import { SystemManager } from './system-manager.js'
 import { TokenActionHud } from './token-action-hud.js'
 import { MODULE, TEMPLATE } from './constants.js'
@@ -32,6 +33,7 @@ Hooks.on('ready', async () => {
         Logger,
         PreRollHandler,
         RollHandler,
+        RollHandlerExtender,
         SystemManager,
         Timer,
         Utils

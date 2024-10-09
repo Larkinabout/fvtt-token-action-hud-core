@@ -112,6 +112,7 @@ export class SystemManager {
         }
         const rollHandler = func(rollHandlerId)
         this.addPreHandlers(rollHandler)
+        this.#addRollHandlerExtenders(rollHandler)
         return rollHandler
     }
 
@@ -126,6 +127,15 @@ export class SystemManager {
         if (Utils.isModuleActive('itemacro') && !Utils.isModuleActive('midi-qol')) {
             rollHandler.addPreRollHandler(new ItemMacroPreRollHandler())
         }
+    }
+
+    /**
+     * Add roll handler extensions
+     * @public
+     * @param {class} rollHandler The RollHandler class
+     */
+    #addRollHandlerExtenders (rollHandler) {
+        Hooks.callAll('tokenActionHudCoreAddRollHandlerExtenders', rollHandler)
     }
 
     /**
