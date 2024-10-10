@@ -13,6 +13,8 @@ export class RollHandler {
 
   preRollHandlers = [];
 
+  rollHandlerExtenders = [];
+
   /**
    * Throw error
    * @public

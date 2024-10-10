@@ -107,6 +107,18 @@ export class SystemManager {
       Utils.setSetting("rollHandler", rollHandlerId);
     }
 
+        let func = null
+        if (this.getRollHandler.toString().slice(-2) !== '{}') {
+            func = this.getRollHandler
+        } else {
+            globalThis.logger.warn('Token Action HUD | SystemHandler.doGetRollHandler is deprecated. Use SystemHandler.getRollHandler')
+            func = this.doGetRollHandler
+        }
+        const rollHandler = func(rollHandlerId)
+        this.addPreHandlers(rollHandler)
+        this.#addRollHandlerExtenders(rollHandler)
+        return rollHandler
+    }
     let func = null;
     if (this.getRollHandler.toString().slice(-2) !== "{}") {
       func = this.getRollHandler;
@@ -132,6 +144,15 @@ export class SystemManager {
     }
   }
 
+    /**
+     * Add roll handler extensions
+     * @public
+     * @param {class} rollHandler The RollHandler class
+     */
+    #addRollHandlerExtenders (rollHandler) {
+        Hooks.callAll('tokenActionHudCoreAddRollHandlerExtenders', rollHandler)
+    }
+
   /**
    * Register module settings
    * @public
@@ -153,12 +174,11 @@ export class SystemManager {
     }
   }
 
-  // DEPRECATED
-  doGetActionHandler() {}
-
-  doGetRollHandler(rollHandlerId) {}
-
-  async doRegisterDefaultFlags() {}
-
-  doRegisterSettings(onChangeFunction) {}
+    // DEPRECATED
+    doGetActionHandler () {}
+    doGetRollHandler (rollHandlerId) {}
+    async doRegisterDefaultFlags () {}
+    doRegisterSettings (onChangeFunction) {}
+    async doRegisterDefaultFlags() {}
+    doRegisterSettings(onChangeFunction) {}
 }
