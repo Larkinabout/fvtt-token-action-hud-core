@@ -1,20 +1,39 @@
 import { CSS_STYLE, CUSTOM_STYLE, MODULE } from "./constants.js";
 
 /**
- * Console logger
+ * A class responsible for logging messages to the console.
  */
 export class Logger {
+  /**
+   * Log an info message to the console. If 'notify' is true, also send a notification
+   * @param {string} message The message
+   * @param {boolean} notify Whether to send a notification
+   */
   static info(message, notify = false) {
     if (notify) ui.notifications.info(`Token Action HUD | ${message}`);
     else console.log(`Token Action HUD Info | ${message}`);
   }
 
+  /* -------------------------------------------- */
+
+  /**
+   * Log an error message to the console. If 'notify' is true, also send a notification
+   * @param {string} message The message
+   * @param {boolean} notify Whether to send a notification
+   */
   static error(message, notify = false) {
     if (notify) ui.notifications.error(`Token Action HUD | ${message}`);
     else console.error(`Token Action HUD Error | ${message}`);
   }
 
-  static debug(message, data) {
+  /* -------------------------------------------- */
+
+  /**
+   * Log a debug message and, optionally, data to the console
+   * @param {string} message   The message
+   * @param {object|null} data The data
+   */
+  static debug(message, data = null) {
     const isDebug = (game.tokenActionHud) ? game.tokenActionHud.debugSetting : Utils.getSetting("debug");
     if (isDebug) {
       if (!data) {
@@ -27,8 +46,10 @@ export class Logger {
   }
 }
 
+/* -------------------------------------------- */
+
 /**
- * Timer for setting and aborting timeouts
+ * A class responsible for setting and aborting timers.
  */
 export class Timer {
   constructor(milliseconds) {
@@ -49,24 +70,29 @@ export class Timer {
   }
 }
 
+/* -------------------------------------------- */
+
+/**
+ * A class of helper functions.
+ */
 export class Utils {
   /**
    * Whether the user is allowed to use the HUD
    * @public
-   * @param allowSetting
-   * @param {number} userRole The user's role
-   * @returns {boolean}
+   * @param {number} userRole     The user's role
+   * @param {number} allowSetting The 'allow' setting value
+   * @returns {boolean} Whether the user is allowed to use the HUD
    */
   static checkAllow(userRole, allowSetting) {
-    if (userRole >= allowSetting) return true;
-    return false;
+    return userRole >= allowSetting;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Capitalize the first letter of every word
-   * @param {string} str The string
-   * @param value
-   * @returns {string}   The capitalized string
+   * @param {string} value The string
+   * @returns {string}     The capitalized string
    */
   static capitalize(value) {
     return value.replace(
@@ -75,19 +101,24 @@ export class Utils {
     );
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Foundry VTT's deepClone function wrapped here to avoid code error highlighting due to missing definition.
+   * Foundry VTT's deepClone function wrapped here to avoid code error highlighting due to missing definition
    * @public
-   * @param {*} original
-   * @param {*} options
+   * @param {object} original The original object
+   * @param {object} options  The options
+   * @returns {object}        The cloned object
    */
   static deepClone(original, options) {
     // eslint-disable-next-line no-undef
     return foundry.utils.deepClone(original, options);
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get actor from the token or actor object
+   * Get actor from the token or actor
    * @public
    * @param {string} actorId The actor id
    * @param {string} tokenId The token id
@@ -100,33 +131,34 @@ export class Utils {
     return game.actors.get(actorId);
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get controlled actors
+   * Get actors of controlled tokens
    * @public
-   * @returns {Array} The controlled actors
+   * @returns {Array} The actors
    */
   static getControlledActors() {
     const tokens = game.canvas.tokens?.controlled ?? [];
     return tokens.map(token => token.actor);
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get status effect from actor based on the status id
+   * Get status effect from actor based on the status ID
    * @param {object} actor    The actor
-   * @param {string} statusId The status id
+   * @param {string} statusId The status ID
    * @returns {object}        The status effect
    */
   static getStatusEffect(actor, statusId) {
-    if (foundry.utils.isNewerVersion(game.version, "10")) {
-      return actor.effects.find(effect => effect.statuses.every(status => status === statusId));
-    } else {
-      // V10
-      return actor.effects.find(effect => effect.flags?.core?.statusId === statusId);
-    }
+    return actor.effects.find(effect => effect.statuses.every(status => status === statusId));
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get image from entity
+   * Get image from the entity
    * @public
    * @param {object} entity       The entity, e.g., actor, item
    * @param {Array} defaultImages Any default images to exclude
@@ -135,12 +167,18 @@ export class Utils {
   static getImage(entity, defaultImages = []) {
     defaultImages.push("icons/svg/mystery-man.svg");
     let result = "";
-    if (game.tokenActionHud.displayIconsSetting) result = (typeof entity === "string") ? entity : entity?.img ?? entity?.icon ?? "";
+    if (game.tokenActionHud.displayIconsSetting) {
+      result = (typeof entity === "string")
+        ? entity
+        : entity?.img ?? entity?.icon ?? "";
+    }
     return !defaultImages.includes(result) ? result : "";
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get item from the actor object
+   * Get item from the actor
    * @public
    * @param {object} actor  The actor
    * @param {string} itemId The item id
@@ -149,6 +187,8 @@ export class Utils {
   static getItem(actor, itemId) {
     return actor.items.get(itemId);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get token
@@ -160,6 +200,8 @@ export class Utils {
     return canvas.tokens.placeables.find(token => token.id === tokenId);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get controlled tokens
    * @public
@@ -169,21 +211,28 @@ export class Utils {
     return game.canvas.tokens?.controlled ?? [];
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get first controlled tokens
    * @public
-   * @returns {object} The first controlled token
+   * @returns {object|null} The first controlled token
    */
   static getFirstControlledToken() {
     const controlledToken = game.canvas.tokens.controlled[0];
     if (controlledToken) {
       return controlledToken;
     }
+
     const character = game.user?.character;
     if (character) {
       return canvas.tokens.placeables.find(token => token.actor?.id === character.id);
     }
+
+    return null;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get setting value
@@ -202,6 +251,8 @@ export class Utils {
     return value;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Set setting value
    * @public
@@ -217,6 +268,8 @@ export class Utils {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get module actor flag
    * @public
@@ -226,6 +279,8 @@ export class Utils {
   static getActorFlag(key) {
     return game.tokenActionHud.actor.getFlag(MODULE.ID, key);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Set module actor flag
@@ -237,6 +292,8 @@ export class Utils {
     await game.tokenActionHud.actor.setFlag(MODULE.ID, key, value);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Unset module actor flag
    * @public
@@ -245,6 +302,8 @@ export class Utils {
   static async unsetActorFlag(key) {
     await game.tokenActionHud.actor.unsetFlag(MODULE.ID, key);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get module user flag
@@ -256,6 +315,8 @@ export class Utils {
     return game.user.getFlag(MODULE.ID, key);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Set module user flag
    * @public
@@ -266,6 +327,8 @@ export class Utils {
     await game.user.setFlag(MODULE.ID, key, value);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Unset module user flag
    * @public
@@ -274,6 +337,8 @@ export class Utils {
   static async unsetUserFlag(key) {
     await game.user.unsetFlag(MODULE.ID, key);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Language translation
@@ -285,6 +350,8 @@ export class Utils {
     return game.i18n.localize(toTranslate);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Whether a GM is active
    * @public
@@ -293,6 +360,8 @@ export class Utils {
   static isGmActive() {
     return game.users.some(user => user.isGM && user.active);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Whether the given module is active
@@ -305,6 +374,8 @@ export class Utils {
     return module && module.active;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get the given module's title
    * @public
@@ -315,6 +386,8 @@ export class Utils {
     return game.modules.get(moduleId)?.title ?? "";
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get the given module's version
    * @public
@@ -324,6 +397,8 @@ export class Utils {
   static getModuleVersion(moduleId) {
     return game.modules.get(moduleId)?.version ?? "";
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Humanize keybinding
@@ -341,6 +416,8 @@ export class Utils {
     return stringParts.join(" + ");
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get the median
    * @public
@@ -352,6 +429,8 @@ export class Utils {
     const nums = [...numbers].sort((a, b) => a - b);
     return numbers.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get upper quartile average
@@ -377,16 +456,20 @@ export class Utils {
     return upperQuartileAverage;
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get modifier
-   * @param {number} value The value
-   * @returns {string}     The modifier
+   * Get modifier (e.g., +5) from number
+   * @param {number} num The number
+   * @returns {string}   The modifier
    */
-  static getModifier(value) {
-    if (!value && value !== 0) return "";
-    const sign = (value >= 0) ? "+" : "";
-    return `${sign}${value}`;
+  static getModifier(num) {
+    if (!num && num !== 0) return "";
+    const sign = (num >= 0) ? "+" : "";
+    return `${sign}${num}`;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Sort items
@@ -398,6 +481,8 @@ export class Utils {
     return new Map([...items.entries()].sort((a, b) => a[1].sort.localeCompare(b[1].sort)));
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Sort items by name
    * @public
@@ -407,6 +492,8 @@ export class Utils {
   static sortItemsByName(items) {
     return new Map([...items.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name)));
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Enable stylesheet based on setting and disable all other stylesheets
@@ -443,6 +530,8 @@ export class Utils {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Register Handlebar helpers
    * @public
@@ -474,16 +563,18 @@ export class Utils {
     });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get the major, minor and patch parts of the module version
    * @public
    * @param {string} moduleVersion The module version
-   * @returns {object}             The module version parts
+   * @returns {object|null}        The module version parts
    */
   static getModuleVersionParts(moduleVersion) {
     if (!moduleVersion) {
       Logger.debug("Module version not retrieved", { trigger: "getModuleVersionParts" });
-      return;
+      return null;
     }
     const moduleVersionParts = moduleVersion.split(".");
     return {
@@ -493,22 +584,22 @@ export class Utils {
     };
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Whether the system module is compatible with the core module version
    * @public
-   * @param requiredCoreModuleVersion
-   * @param {object} systemModuleCoreModuleVersion The system module's required core module version
-   * @returns {boolean}
+   * @param {string} requiredCoreModuleVersion The required core module version
+   * @returns {boolean}                        Whether the system module is compatible with the core module version
    */
-  static checkModuleCompatibility(requiredCoreModuleVersion) {
+  static isSystemModuleCompatible(requiredCoreModuleVersion) {
     // Get core module version in parts
     const requiredCoreModuleVersionParts = this.getModuleVersionParts(requiredCoreModuleVersion);
     const coreModuleVersionParts = this.getModuleVersionParts(game.modules.get(MODULE.ID).version);
 
     if (coreModuleVersionParts.major !== requiredCoreModuleVersionParts.major
-            || coreModuleVersionParts.minor !== requiredCoreModuleVersionParts.minor
-            || (requiredCoreModuleVersionParts.patch
-              && coreModuleVersionParts.patch !== requiredCoreModuleVersionParts.patch)
+      || coreModuleVersionParts.minor !== requiredCoreModuleVersionParts.minor
+      || (requiredCoreModuleVersionParts.patch && coreModuleVersionParts.patch !== requiredCoreModuleVersionParts.patch)
     ) {
       ui.notifications.error(
         `The installed Token Action HUD system module requires Token Action HUD Core module version ${requiredCoreModuleVersion}. Install the required version to continue using Token Action HUD.`
@@ -518,45 +609,18 @@ export class Utils {
     return true;
   }
 
-  /**
-   * Get subcategories by criteria
-   * @public
-   * @param {object} subcategories  The subcategories
-   * @param {object} data           The search data
-   * @returns {object}
-   */
-  static getSubcategories(subcategories, data = {}) {
-    let order = 0;
-    if (!subcategories) return;
-    const subcategoryId = data?.id;
-    const subcategoryType = data?.type;
-    subcategories = (Array.isArray(subcategories)) ? subcategories : Object.values(subcategories);
-    const foundSubcategories = {};
-    for (const subcategory of subcategories) {
-      if ((!subcategoryId || subcategory.id === subcategoryId)
-        && (!subcategoryType || subcategory.type === subcategoryType)) {
-        order++;
-        const level = subcategory.nestId.split("_").length;
-        foundSubcategories[subcategory.nestId] = { ...subcategory, order, level };
-      }
-      if (subcategory.subcategories?.length > 0) {
-        const subcategories = this.getSubcategories(subcategory.subcategories, data);
-        if (subcategories) Object.assign(foundSubcategories, subcategories);
-      }
-    }
-    return (Object.keys(foundSubcategories).length > 0) ? foundSubcategories : null;
-  }
+  /* -------------------------------------------- */
 
   /**
    * Get nested groups by criteria
    * @public
-   * @param {object} groups  The groups
-   * @param {object} data    The search data
-   * @returns {object}
+   * @param {object} groups The groups
+   * @param {object} data   The search data
+   * @returns {object|null} The nested groups
    */
   static getNestedGroups(groups, data = {}) {
     let order = 0;
-    if (!groups) return;
+    if (!groups) return null;
     const groupId = data?.id;
     const groupType = data?.type;
     groups = (Array.isArray(groups)) ? groups : Object.values(groups);
@@ -575,25 +639,30 @@ export class Utils {
     return (Object.keys(foundGroups).length > 0) ? foundGroups : null;
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get group by nest id
+   * Get group by nest ID
    * @public
    * @param {object} groups The groups
    * @param {string} data   The search data
-   * @returns {object}
+   * @returns {object|null} The group
    */
   static async getGroupByNestId(groups, data = {}) {
     const nestId = (typeof data === "string" ? data : data?.nestId);
     const groupType = data?.type;
-    if (!nestId) return;
+    if (!nestId) return null;
 
     const parts = nestId.split("_");
     return await findGroup(groups, parts);
 
+    /* -------------------------------------------- */
+
     /**
-     *
-     * @param groups
-     * @param parts
+     * Find group
+     * @param {object} groups The groups
+     * @param {Array} parts   The nestId parts
+     * @returns {object}      The group
      */
     async function findGroup(groups, parts) {
       groups = (Array.isArray(groups)) ? groups : Object.values(groups);
@@ -614,6 +683,8 @@ export class Utils {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Delete group by nest id
    * @public
@@ -625,29 +696,33 @@ export class Utils {
     if (!nestId) return;
 
     const parts = nestId.split("_");
-    return await findGroup(groups, parts);
+    await findAndDeleteGroup(groups, parts);
+  }
 
-    /**
-     *
-     * @param groups
-     * @param parts
-     */
-    async function findGroup(groups, parts) {
-      groups = (Array.isArray(groups)) ? groups : Object.values(groups);
-      for (const [index, group] of groups.entries()) {
-        if (group.id === parts[0]) {
-          if (parts.length === 1) {
-            groups.splice(index, 1);
-            return;
-          }
-          if (group.groups.length === 0) return;
-          parts.shift();
-          const foundGroup = await findGroup(group.groups, parts);
-          if (foundGroup) return;
+  /* -------------------------------------------- */
+
+  /**
+   * Find and delete a group
+   * @param {object} groups The groups
+   * @param {Array} parts   The nestId parts
+   */
+  static async findAndDeleteGroup(groups, parts) {
+    groups = (Array.isArray(groups)) ? groups : Object.values(groups);
+    for (const [index, group] of groups.entries()) {
+      if (group.id === parts[0]) {
+        if (parts.length === 1) {
+          groups.splice(index, 1);
+          return;
         }
+        if (group.groups.length === 0) return;
+        parts.shift();
+        const foundGroup = await findAndDeleteGroup(group.groups, parts);
+        if (foundGroup) return;
       }
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Delete groups by id
@@ -663,7 +738,7 @@ export class Utils {
       if (groups[i].id === id) {
         groups.splice(i, 1);
       } else if (groups[i].groups?.length > 0) {
-        this.deleteGroupsById(groups[i].groups, data);
+        deleteGroupsById(groups[i].groups, data);
       }
     }
   }

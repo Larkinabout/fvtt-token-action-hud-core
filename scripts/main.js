@@ -3,7 +3,7 @@ import { DataHandler } from "./data-handler.js";
 import { MigrationManager } from "./migration-manager.js";
 import { TokenActionHud } from "./applications/token-action-hud.js";
 import { Logger, Utils } from "./utils.js";
-import { registerSocket, getSocket } from "./sockets.js";
+import { registerSocket, getSocket, isSocketlibActive } from "./sockets.js";
 import { registerApi } from "./api.js";
 
 let systemManager;
@@ -18,13 +18,15 @@ Hooks.on("tokenActionHudCoreReady", registerHud);
 Hooks.on("renderHotbar", (_, html) => addContextMenuListener(html, "li.macro"));
 Hooks.on("renderSceneNavigation", (_, html) => addContextMenuListener(html, "li.scene.nav-item"));
 
+/* -------------------------------------------- */
+
 /**
  * Register the core module
  * @param {object} systemModule The system module
  */
 async function registerCoreModule(systemModule) {
   // Exit if core module version is not compatible with the system module
-  if (!Utils.checkModuleCompatibility(systemModule.api.requiredCoreModuleVersion)) return;
+  if (!Utils.isSystemModuleCompatible(systemModule.api.requiredCoreModuleVersion)) return;
 
   // Exit if socketlit module is not installed or enabled
   if (!isSocketlibActive()) return;
@@ -46,36 +48,34 @@ async function registerCoreModule(systemModule) {
   Hooks.callAll("tokenActionHudCoreReady");
 }
 
-/**
- * Whether the socketlib module is active
- * @returns {boolean} Whether the socketlib module is active
- */
-function isSocketlibActive() {
-  if (game.modules.get("socketlib")?.active) return true;
-
-  Logger.error("This module requires the 'socketlib' module to be installed and enabled.", true);
-  return false;
-}
+/* -------------------------------------------- */
 
 /**
- * Register the HUD
+ * Register the TokenActionHud application
  */
 async function registerHud() {
-  checkColorPicker();
-  createDirectories();
-  registerPostReadyHooks();
+  // Initialise DataHandler
+  const dataHandler = new DataHandler(getSocket());
+  await dataHandler.init();
 
   // Initialise MigrationManager
-  const migrationManager = new MigrationManager(getSocket());
+  const migrationManager = new MigrationManager(dataHandler, getSocket());
   await migrationManager.init();
 
+  checkColorPicker();
+  createDirectories(dataHandler);
+  registerHudHooks();
+
   // If no Token Action Hud application exists, create a new TokenActionHud and initialise it
-  if (game.tokenActionHud) return;
-  game.tokenActionHud = new TokenActionHud(systemManager);
-  game.tokenActionHud.socket = getSocket();
-  await game.tokenActionHud.init();
+  if (!game.tokenActionHud) {
+    game.tokenActionHud = new TokenActionHud(systemManager, dataHandler, getSocket());
+    await game.tokenActionHud.init();
+  }
+
   game.tokenActionHud.update({ type: "hook", name: "tokenActionHudCoreReady" });
 }
+
+/* -------------------------------------------- */
 
 /**
  * Notify GM if the Color Picker is not active
@@ -87,19 +87,24 @@ function checkColorPicker() {
   }
 }
 
+/* -------------------------------------------- */
+
 /**
- * Create directories for HUD data files
+ * If user is the GM and 'Enable Customization' is enabled, create directories for the layout files
+ * @param {DataHandler} dataHandler The data handler
  */
-async function createDirectories() {
+async function createDirectories(dataHandler) {
   if (game.user.isGM && Utils.getSetting("enableCustomization")) {
-    await DataHandler.createDirectories();
+    await dataHandler.createDirectories();
   }
 }
 
+/* -------------------------------------------- */
+
 /**
- * Register post-ready hooks
+ * Register HUD-related hooks
  */
-function registerPostReadyHooks() {
+function registerHudHooks() {
   Hooks.on("renderTokenActionHud", () => game.tokenActionHud.postRender());
   const hooks = [
     "deleteActor", "updateActor", "createActiveEffect", "deleteActiveEffect",
@@ -112,6 +117,8 @@ function registerPostReadyHooks() {
   hooks.forEach(hook => Hooks.on(hook, (...args) => handleHookEvent(...args, hook)));
 }
 
+/* -------------------------------------------- */
+
 /**
  * Handle hook events
  * @param {object} hookData The hook data
@@ -121,6 +128,8 @@ function handleHookEvent(hookData, hookName) {
   if (!validateHookData(hookData, hookName)) return;
   game.tokenActionHud.update({ type: "hook", name: hookName, data: hookData });
 }
+
+/* -------------------------------------------- */
 
 /**
  * Validate hook data
@@ -157,6 +166,8 @@ function validateHookData(hookData, hookName) {
   }
 }
 
+/* -------------------------------------------- */
+
 /**
  * Validate compendium hook
  * @param {string} id The compendium ID
@@ -169,6 +180,8 @@ function validateCompendium(id) {
   return true;
 }
 
+/* -------------------------------------------- */
+
 /**
  * Add context menu listeners
  * @param {object} html     The HTML
@@ -178,6 +191,8 @@ function addContextMenuListener(html, selector) {
   const element = html[0].querySelector(selector);
   if (element) element.addEventListener("contextmenu", sendHudToBottom);
 }
+
+/* -------------------------------------------- */
 
 /**
  * Send HUD to bottom

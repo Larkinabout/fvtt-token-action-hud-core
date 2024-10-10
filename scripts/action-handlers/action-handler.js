@@ -24,6 +24,7 @@ export class ActionHandler {
   delimiter = DELIMITER;
 
   constructor() {
+    this.dataHandler = null;
     this.genericActionHandler = new GenericActionHandler(this);
     this.compendiumActionHandler = new CompendiumActionHandler(this);
     this.macroActionHandler = new MacroActionHandler(this);
@@ -43,6 +44,8 @@ export class ActionHandler {
     this.tooltipsSetting = Utils.getSetting("tooltips");
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset action handler variables except actorGroups and userGroups
    * @public
@@ -57,6 +60,8 @@ export class ActionHandler {
     this.availableActionsMap = new Map();
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset all action handler variables
    * @public
@@ -70,17 +75,21 @@ export class ActionHandler {
     this.userGroups = {};
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Register default categories from the Token Action Hud system module
    * @public
    */
   async registerDefaultCategories() {}
 
+  /* -------------------------------------------- */
+
   /**
    * Build the HUD
-   * @param options
    * @public
-   * @returns {object} The HUD
+   * @param {object} options The options
+   * @returns {object}       The HUD
    */
   async buildHud(options) {
     Logger.debug("Building HUD...", { actor: this.actor, token: this.token });
@@ -92,17 +101,17 @@ export class ActionHandler {
     }
     this.softResetActionHandler();
     await Promise.all([
-      this.#getDefaultGroups(),
-      this.#getDefaultLayout(),
-      this.#getCustomLayout()
+      this.#setDefaultGroups(),
+      this.#setDefaultLayout(),
+      this.#setCustomLayout()
     ]);
-    if (!DataHandler.canGetData() && !this.isGmInactiveUserNotified) {
+    if (!this.dataHandler.canGetData && !this.isGmInactiveUserNotified) {
       Logger.info("Cannot retrieve HUD layout without GM present", true);
       this.isGmInactiveUserNotified = true;
     }
     await Promise.all([
-      this.#getSavedUserGroups(),
-      this.#getSavedActorGroups()
+      this.#setSavedUserGroups(),
+      this.#setSavedActorGroups()
     ]);
     this.hud = await this.#prepareHud();
     await Promise.all([
@@ -119,6 +128,8 @@ export class ActionHandler {
     Logger.debug("HUD built", { hud: this.hud, actor: this.actor, token: this.token });
     return this.hud;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Prepare the HUD
@@ -202,12 +213,16 @@ export class ActionHandler {
     return hud;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Placeholder function for the system module
-   * @param groupIds
-   * @public
+   * @override
+   * @param {Array} groupIds The group IDs
    */
   async buildSystemActions(groupIds) {}
+
+  /* -------------------------------------------- */
 
   /**
    * Build system-specific actions
@@ -220,6 +235,8 @@ export class ActionHandler {
     Logger.debug("System actions built", { hud: this.hud, actor: this.actor, token: this.token });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Build compendium-specific actions
    * @private
@@ -229,6 +246,8 @@ export class ActionHandler {
     await this.compendiumActionHandler.buildCompendiumActions();
     Logger.debug("Compendium actions built", { hud: this.hud });
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Build generic actions
@@ -240,6 +259,8 @@ export class ActionHandler {
     Logger.debug("Generic actions built", { hud: this.hud, actor: this.actor, token: this.token });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Build macro-specific actions
    * @private
@@ -250,6 +271,8 @@ export class ActionHandler {
     Logger.debug("Macro actions built", { hud: this.hud });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Build extended actions
    * @private
@@ -259,6 +282,8 @@ export class ActionHandler {
       async extender => await extender.extendActionHandler()
     ));
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Update non-preset actions
@@ -278,6 +303,8 @@ export class ActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Set property to indicate whether a group has actions within it
    * @private
@@ -292,54 +319,64 @@ export class ActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get the default groups
+   * Set the default groups
    * @private
    */
-  #getDefaultGroups() {
+  #setDefaultGroups() {
     const defaultGroups = game.tokenActionHud.defaults?.groups;
-    if (!defaultGroups) return {};
+    if (!defaultGroups) return;
     for (const defaultGroup of defaultGroups) {
       this.defaultGroups[defaultGroup.id] = defaultGroup;
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get the default layout
+   * Set the default layout
    * @private
    */
-  async #getDefaultLayout() {
+  async #setDefaultLayout() {
     if (Object.keys(this.defaultLayout).length) return;
     const defaultLayout = game.tokenActionHud.defaults?.layout;
-    if (!defaultLayout) return {};
+    if (!defaultLayout) return;
     this.defaultLayout = await Utils.getNestedGroups(defaultLayout);
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get custom layout
+   * Set custom layout
    * @private
    */
-  async #getCustomLayout() {
+  async #setCustomLayout() {
     if (this.customLayout) return;
     const file = this.userCustomLayoutFlag || this.customLayoutSetting || null;
-    this.customLayout = (file) ? await DataHandler.getDataAsGm({ file }) : null;
+    this.customLayout = (file) ? await this.dataHandler.getDataAsGm({ file }) : null;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Export layout to file
    */
   async exportLayout() {
-    const data = await DataHandler.getDataAsGm({ type: "user", id: game.userId }) ?? this.customLayout ?? this.defaultLayout;
+    const data = await this.dataHandler.getDataAsGm({ type: "user", id: game.userId }) ?? this.customLayout ?? this.defaultLayout;
     if (data) {
       saveDataToFile(JSON.stringify(data, null, 2), "text/json", "token-action-hud-layout.json");
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get the saved groups from the actor flag
+   * Set the saved groups from the actor flag
    * @private
    */
-  async #getSavedActorGroups() {
+  async #setSavedActorGroups() {
     if (!this.actor) return;
 
     if (!this.enableCustomizationSetting) {
@@ -349,14 +386,14 @@ export class ActionHandler {
 
     if (this.isSameActor && Object.entries(this.actorGroups).length) return;
 
-    if (!DataHandler.canGetData()) {
+    if (!this.dataHandler.canGetData) {
       this.actorGroups = {};
       return;
     }
 
     Logger.debug("Retrieving groups from actor...", { actor: this.actor });
     this.actorGroups = {};
-    const actorGroups = await DataHandler.getDataAsGm({ type: "actor", id: this.actor.id }) ?? null;
+    const actorGroups = await this.dataHandler.getDataAsGm({ type: "actor", id: this.actor.id }) ?? null;
     if (!actorGroups) return;
     for (const group of Object.entries(actorGroups)) {
       group[1].nestId = group[0];
@@ -365,11 +402,13 @@ export class ActionHandler {
     Logger.debug("Groups from actor retrieved", { actorGroups: this.actorGroups, actor: this.actor });
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get the saved groups from the user flag
+   * Set the saved groups from the user flag
    * @private
    */
-  async #getSavedUserGroups() {
+  async #setSavedUserGroups() {
     const user = game.user;
     const layout = this.customLayout ?? this.defaultLayout;
 
@@ -388,17 +427,19 @@ export class ActionHandler {
 
     if (Object.entries(this.userGroups).length) return;
 
-    if (!DataHandler.canGetData()) {
+    if (!this.dataHandler.canGetData) {
       this.userGroups = getUserGroups(layout);
       return;
     }
 
     Logger.debug("Retrieving groups from user...", { user });
     this.userGroups = {};
-    const savedUserData = await DataHandler.getDataAsGm({ type: "user", id: user.id }) ?? {};
+    const savedUserData = await this.dataHandler.getDataAsGm({ type: "user", id: user.id }) ?? {};
     this.userGroups = getUserGroups(savedUserData);
     Logger.debug("Groups retrieved from user", { userGroups: this.userGroups, user });
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get first matching action group based on criteria
@@ -419,6 +460,8 @@ export class ActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get groups based on criteria
    * @private
@@ -436,6 +479,8 @@ export class ActionHandler {
     );
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get actor-related groups based on criteria
    * @private
@@ -452,6 +497,8 @@ export class ActionHandler {
       )
       .sort((a, b) => (a.level - b.level || a.order - b.order));
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get user-related groups based on criteria
@@ -476,6 +523,8 @@ export class ActionHandler {
       });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get advanced options
    * @public
@@ -487,6 +536,8 @@ export class ActionHandler {
     return group?.settings ?? null;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Save group settings
    * @param {object} groupData The group data
@@ -497,11 +548,13 @@ export class ActionHandler {
     this.saveGroups({ saveActor: true, saveUser: true });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Create group
    * @private
-   * @param keepData
    * @param {object} groupData The group data
+   * @param {boolean} keepData Whether to keep the data
    * @returns {object}         The group
    */
   #createGroup(groupData, keepData = false) {
@@ -555,6 +608,8 @@ export class ActionHandler {
 
     return commonProps;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Update groups
@@ -610,10 +665,12 @@ export class ActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Save groups
-   * @param options
    * @public
+   * @param {object} options The options
    */
   async saveGroups(options = { saveActor: false, saveUser: false }) {
     if (!this.enableCustomizationSetting) return;
@@ -622,6 +679,8 @@ export class ActionHandler {
     if (options?.saveUser) await this.#saveUserGroups();
     Logger.debug("Groups saved", { groups: this.groups });
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Save actor groups to file
@@ -637,14 +696,16 @@ export class ActionHandler {
       this.actorGroups[group.nestId] = group;
       actorGroups[group.nestId] = this.#getReducedGroupData(group, true);
     }
-    if (DataHandler.canSaveData()) {
-      await DataHandler.saveDataAsGm("actor", this.actor.id, actorGroups);
+    if (this.dataHandler.canSaveData) {
+      await this.dataHandler.saveDataAsGm("actor", this.actor.id, actorGroups);
 
       Logger.debug("Actor groups saved", { actorGroups });
     } else {
       Logger.debug("Actor groups not saved as no GM present");
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Save user groups to file
@@ -661,19 +722,21 @@ export class ActionHandler {
         userGroups[group.nestId] = this.#getReducedGroupData(group, false);
       }
     }
-    if (DataHandler.canSaveData()) {
-      await DataHandler.saveDataAsGm("user", game.userId, userGroups);
+    if (this.dataHandler.canSaveData) {
+      await this.dataHandler.saveDataAsGm("user", game.userId, userGroups);
       Logger.debug("User groups saved", { userGroups });
     } else {
       Logger.debug("User groups not saved as no GM present");
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get reduced groups data for saving to flags
    * @param {object} groupData    The group data
    * @param {boolean} keepActions Whether to keep action data
-   * @returns                     The reduced group data
+   * @returns {object}            The reduced group data
    */
   #getReducedGroupData(groupData, keepActions = false) {
     const data = {
@@ -698,6 +761,8 @@ export class ActionHandler {
     return data;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get actions by id
    * @private
@@ -707,6 +772,8 @@ export class ActionHandler {
   #getActions(actionData) {
     return this.actions.filter(action => action.id === actionData.id);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get tooltip based on module setting
@@ -724,6 +791,8 @@ export class ActionHandler {
     }
     return name;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Create action
@@ -773,6 +842,8 @@ export class ActionHandler {
     };
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Update actions
    * @public
@@ -821,6 +892,8 @@ export class ActionHandler {
     group.actions = reorderedActions;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Add to available actions
    * @private
@@ -832,15 +905,20 @@ export class ActionHandler {
     });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get available actions as Tagify entries
    * @public
-   * @param {object} groupData The group data
-   * @returns {Array}          The available actions
+   * @returns {Array} The available actions
    */
   getAvailableActions() {
-    return [...this.availableActionsMap.values()].map(action => this.#toActionTagifyEntry(action)).sort((a, b) => a.value.localeCompare(b.value));
+    return [...this.availableActionsMap.values()]
+      .map(action => this.#toActionTagifyEntry(action))
+      .sort((a, b) => a.value.localeCompare(b.value));
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get selected actions as Tagify entries
@@ -850,11 +928,13 @@ export class ActionHandler {
    */
   getSelectedActions(groupData) {
     const group = this.getGroup(groupData);
-    if (!group) return;
+    if (!group) return null;
     return group.actions
       .filter(action => action.selected === true)
       .map(action => this.#toActionTagifyEntry(action));
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get selected groups as Tagify entries
@@ -869,6 +949,8 @@ export class ActionHandler {
     return groups?.map(group => this.#toGroupTagifyEntry(group)) ?? [];
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get available groups as Tagify entries
    * @public
@@ -882,6 +964,8 @@ export class ActionHandler {
     const macroGroups = await this.#getMacroGroups();
     return [...derivedGroups, ...systemGroups, ...compendiumGroups, ...macroGroups];
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get compendium groups as Tagify entries
@@ -904,6 +988,8 @@ export class ActionHandler {
     return groups.map(group => this.#toGroupTagifyEntry(group));
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get derived groups as Tagify entries
    * @private
@@ -917,6 +1003,8 @@ export class ActionHandler {
     });
     return derivedGroups?.map(group => this.#toGroupTagifyEntry(group)) ?? [];
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get macro groups as Tagify entries
@@ -932,6 +1020,8 @@ export class ActionHandler {
     })];
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get system groups as Tagify entries
    * @private
@@ -940,6 +1030,8 @@ export class ActionHandler {
   #getSystemGroups() {
     return Object.values(this.defaultGroups).map(group => this.#toGroupTagifyEntry(group));
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Add group to the HUD
@@ -990,6 +1082,8 @@ export class ActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Update group in the HUD
    * @public
@@ -1026,6 +1120,8 @@ export class ActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Remove group from HUD
    * @public
@@ -1047,6 +1143,8 @@ export class ActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Add info to group in the HUD
    * @public
@@ -1066,6 +1164,8 @@ export class ActionHandler {
       group.info3 = groupInfo.info3;
     });
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Add actions to the HUD
@@ -1126,6 +1226,8 @@ export class ActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Set character limit for action names based on the 'Character per Word' setting
    * @private
@@ -1167,16 +1269,19 @@ export class ActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Add action handler extender
    * @public
-   * @param actionHandlerExtender
-   * @param {object} actioHandlerExtender The action handler extender
+   * @param {object} actionHandlerExtender The action handler extender
    */
   addActionHandlerExtender(actionHandlerExtender) {
     Logger.debug("Adding action handler extender...", { actionHandlerExtender });
     this.actionHandlerExtenders.push(actionHandlerExtender);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Convert group into Tagify entry
@@ -1193,6 +1298,8 @@ export class ActionHandler {
     };
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Convert action into Tagify entry
    * @private
@@ -1206,17 +1313,5 @@ export class ActionHandler {
       type: "action",
       value: data.listName ?? data.name
     };
-  }
-
-  /** DEPRECATED */
-
-  /**
-   * Add further action handler
-   * @public
-   * @param {object} handler The handler
-   */
-  addFurtherActionHandler(handler) {
-    globalThis.logger.warn("Token Action HUD | ActionHandler.addFurtherActionHandler is deprecated. Use ActionHandler.addActionHandlerExtender");
-    this.addActionHandlerExtender(handler);
   }
 }

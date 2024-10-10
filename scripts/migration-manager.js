@@ -1,14 +1,16 @@
 import { MODULE } from "./constants.js";
-import { isPersistentStorage, DataHandler } from "./data-handler.js";
 import { Logger, Utils } from "./utils.js";
 
 /**
  * Manages migrations between module versions
  */
 export class MigrationManager {
-  constructor(socket) {
+  constructor(dataHandler, socket) {
+    this.dataHandler = dataHandler;
     this.socket = socket;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Initialise migrations
@@ -17,22 +19,29 @@ export class MigrationManager {
   async init() {
     if (!game.user.isGM) return;
 
-    const moduleVersion = game.modules.get("token-action-hud-core").version;
+    const moduleVersion = game.modules.get(MODULE.ID).version;
     const migrationVersion = Utils.getSetting("migrationVersion");
     if (moduleVersion === migrationVersion) return;
 
     let isSuccess = true;
-    isSuccess = (!migrationVersion || migrationVersion < "1.4.10") ? await this.#unsetOldFlags() : true;
-    isSuccess = (isPersistentStorage() && (!migrationVersion || migrationVersion < "1.4.11")) ? await this.#migrateFiles() : true;
+    isSuccess = (!migrationVersion || foundry.utils.isNewerVersion("1.4.10", migrationVersion))
+      ? await this.#unsetOldFlags()
+      : true;
+    isSuccess = (dataHandler.isPersistentStorage && (!migrationVersion || foundry.utils.isNewerVersion("1.4.11", migrationVersion)))
+      ? await this.#migrateFiles()
+      : true;
 
     if (isSuccess) {
       Utils.setSetting("migrationVersion", moduleVersion);
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Unset old flags
    * @private
+   * @returns {boolean} Whether the old flags were unset
    */
   async #unsetOldFlags() {
     try {
@@ -67,20 +76,26 @@ export class MigrationManager {
     }
   }
 
+  /* -------------------------------------------- */
+
+  /**
+   * Migrate files to storage
+   * @returns {boolean} Whether the files were migrated to storage
+   */
   async #migrateFiles() {
     try {
       Logger.info("Migrating files to persistent storage...", true);
       for (const user of game.users) {
-        const data = await DataHandler.getDataMigrate("user", user.id);
+        const data = await dataHandler.getDataMigrate("user", user.id);
         if (data) {
-          await DataHandler.saveData("user", user.id, data);
+          await dataHandler.saveData("user", user.id, data);
         }
       }
 
       for (const actor of game.actors) {
-        const data = await DataHandler.getDataMigrate("actor", actor.id);
+        const data = await dataHandler.getDataMigrate("actor", actor.id);
         if (data) {
-          await DataHandler.saveData("actor", actor.id, data);
+          await dataHandler.saveData("actor", actor.id, data);
         }
       }
       Logger.info("Successfully migrated files to persistent storage", true);

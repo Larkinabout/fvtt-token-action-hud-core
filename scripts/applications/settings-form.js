@@ -12,6 +12,8 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
     this.settings = {};
   }
 
+  /* -------------------------------------------- */
+
   static DEFAULT_OPTIONS = {
     actions: {
       exportLayout: TahSettingsForm.exportLayout,
@@ -36,11 +38,15 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   };
 
+  /* -------------------------------------------- */
+
   static PARTS = {
     form: {
       template: TEMPLATE.settings
     }
   };
+
+  /* -------------------------------------------- */
 
   async _prepareContext() {
     const settings = [];
@@ -85,6 +91,8 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
     return context;
   }
 
+  /* -------------------------------------------- */
+
   static exportLayout() {
     if (!game.tokenActionHud) return;
     game.tokenActionHud.actionHandler.exportLayout();
@@ -107,11 +115,15 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 }
 
+/* -------------------------------------------- */
+
 export class TahSettingsFormLayout extends TahSettingsForm {
   constructor() {
     super();
     this.settings = LAYOUT_SETTING;
   }
+
+  /* -------------------------------------------- */
 
   static DEFAULT_OPTIONS = {
     window: {

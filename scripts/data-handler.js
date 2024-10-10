@@ -1,39 +1,44 @@
 import { MODULE } from "./constants.js";
 import { Logger, Utils } from "./utils.js";
 
-/**
- * Get file parts
- * @param {string} file The file
- * @returns {object}    The file parts
- */
-function getFileParts(file) {
-  const parts = file.split("/");
-  const filename = parts.pop();
-  const folder = parts.join("/");
-  const id = filename.split(".")[0];
-  return { folder, filename, id };
-}
+/* -------------------------------------------- */
 
 /**
- *
+ * A class responsible for handling data-related activities.
  */
-export function isPersistentStorage() {
-  return (game.version >= "11.305" && typeof ForgeVTT === "undefined");
-}
-
 export class DataHandler {
-  async init() {
-    this.path = DataHandler.getPath();
-    this.private = DataHandler.isPrivate();
-    this.fileMap = await DataHandler.getFilePathsAsGm();
+  constructor(socket) {
+    this.socket = socket;
   }
 
   /**
-   * Create directories
+   * Initialise the data handler
    */
-  static async createDirectories() {
+  async init() {
+    await Promise.all([
+      this.private = await this.isPrivate(),
+      this.fileMap = await this.getFilePathsAsGm()
+    ]);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether persistent storage can be used
+   * @returns {boolean} Whether persistent storage can be used
+   */
+  get isPersistentStorage() {
+    return (foundry.utils.isNewerVersion(game.version, "11.305") && typeof ForgeVTT === "undefined");
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Create directories for storage of files
+   */
+  async createDirectories() {
     const DATA_FOLDER = "data";
-    const moduleDirectory = (isPersistentStorage())
+    const moduleDirectory = (this.isPersistentStorage)
       ? `modules/${MODULE.ID}/storage`
       : MODULE.ID;
 
@@ -53,28 +58,45 @@ export class DataHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get base path to the layout files
    * @returns {string} The path
    */
-  static getPath() {
-    return (isPersistentStorage())
+  get path() {
+    return (this.isPersistentStorage)
       ? `modules/${MODULE.ID}/storage/${game.world.id}/`
       : `${MODULE.ID}/${game.world.id}/`;
   }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get file parts
+   * @param {string} file The file
+   * @returns {object}    The file parts
+   */
+  getFileParts(file) {
+    const parts = file.split("/");
+    const filename = parts.pop();
+    const folder = parts.join("/");
+    const id = filename.split(".")[0];
+    return { folder, filename, id };
+  }
+
+  /* -------------------------------------------- */
 
   /**
    * Whether the module directory is set to private
    * @returns {boolean} Whether the module directory is set to private
    */
-  static async isPrivate() {
+  async isPrivate() {
     if (game.user.isGM) return false;
-
-    const dataHandler = game?.tokenActionHud?.dataHandler;
 
     if (game.user.hasPermission("FILES_BROWSE")) {
       try {
-        await FilePicker.browse("data", dataHandler.path);
+        await FilePicker.browse("data", this.path);
         return false;
       } catch{
         return true;
@@ -82,50 +104,63 @@ export class DataHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get file paths as GM
    * @returns {object} The file paths
    */
-  static async getFilePathsAsGm() {
-    const dataHandler = game.tokenActionHud.dataHandler;
-
-    if ((!game.user.hasPermission("FILES_BROWSE") || dataHandler.private) && !Utils.isGmActive()) {
+  async getFilePathsAsGm() {
+    if ((!game.user.hasPermission("FILES_BROWSE") || this.private) && !Utils.isGmActive()) {
       Logger.info("Cannot get file paths without a GM present", true);
       return new Map(); // Return an empty map if no permissions and no GM
     }
 
-    const files = game.user.hasPermission("FILES_BROWSE") && !dataHandler.private
-      ? await DataHandler.getFilePaths()
-      : await game.tokenActionHud.socket.executeAsGM("getFilePaths");
+    const files = game.user.hasPermission("FILES_BROWSE") && !this.private
+      ? await this.getFilePaths()
+      : await this.socket.executeAsGM("getFilePaths", this);
 
     return new Map(files.map(file => {
-      const { id } = getFileParts(file);
+      const { id } = this.getFileParts(file);
       return [id, file];
     }));
   }
 
   /**
-   * Get file paths
+   * Get file paths using socket
+   * @param {Class}   dataHandler The data handler
+   * @returns {Array}             The file paths
    */
-  static async getFilePaths() {
-    const dataHandler = game?.tokenActionHud?.dataHandler;
+  static async getFilePathsWithSocket(dataHandler) {
+    return dataHandler.getFilePaths();
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get file paths
+   * @returns {Array} The file paths
+   */
+  async getFilePaths() {
     const [actorFiles, userFiles] = await Promise.all([
-      FilePicker.browse("data", `${dataHandler.path}actor/`),
-      FilePicker.browse("data", `${dataHandler.path}user/`)
+      FilePicker.browse("data", `${this.path}actor/`),
+      FilePicker.browse("data", `${this.path}user/`)
     ]);
 
     return [...(actorFiles?.files ?? []), ...(userFiles?.files ?? [])];
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Whether the user can save data
    * @returns {boolean} Whether the user can save data
    */
-  static canSaveData() {
-    const dataHandler = game.tokenActionHud.dataHandler;
-
-    return ((game.user.hasPermission("FILES_UPLOAD") && !dataHandler.private) || Utils.isGmActive());
+  get canSaveData() {
+    return ((game.user.hasPermission("FILES_UPLOAD") && !this.private) || Utils.isGmActive());
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Save data the GM
@@ -134,11 +169,9 @@ export class DataHandler {
    * @param {string} id   The actor or user id
    * @param {object} data The data
    */
-  static async saveDataAsGm(type, id, data) {
-    const dataHandler = game.tokenActionHud.dataHandler;
-
-    if (game.user.hasPermission("FILES_UPLOAD") && !dataHandler.private) {
-      return await DataHandler.saveData(type, id, data);
+  async saveDataAsGm(type, id, data) {
+    if (game.user.hasPermission("FILES_UPLOAD") && !this.private) {
+      await this.saveData(type, id, data);
     }
 
     if (!Utils.isGmActive()) {
@@ -146,8 +179,16 @@ export class DataHandler {
       return;
     }
 
-    await game.tokenActionHud.socket.executeAsGM("saveData", type, id, data);
+    await this.socket.executeAsGM("saveData", this, type, id, data);
   }
+
+  /* -------------------------------------------- */
+
+  static async saveDataWithSocket(dataHandler, type, id, data) {
+    dataHandler.saveData(type, id, data);
+  }
+
+  /* -------------------------------------------- */
 
   /**
    * Save data
@@ -155,12 +196,10 @@ export class DataHandler {
    * @param {string} id   The actor or user id
    * @param {object} data The data
    */
-  static async saveData(type, id, data) {
-    const dataHandler = game?.tokenActionHud?.dataHandler;
-
+  async saveData(type, id, data) {
     try {
       // Get the folder path
-      const folder = `${dataHandler.path}${type}`;
+      const folder = `${this.path}${type}`;
 
       // Generate the system-safe filename
       const fileName = encodeURI(`${id}.json`);
@@ -172,8 +211,8 @@ export class DataHandler {
       const response = await FilePicker.upload("data", folder, file, {}, { notify: false });
 
       if (response.path) {
-        if (!dataHandler.fileMap.has(id)) {
-          dataHandler.fileMap.set(id, response.path);
+        if (!this.fileMap.has(id)) {
+          this.fileMap.set(id, response.path);
         }
       } else {
         Logger.debug(`Failed to save data to: ${fileName}\nReason: ${response.error || "Unknown error"}`);
@@ -183,15 +222,17 @@ export class DataHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Whether the user can get data
    * @returns {boolean} Whether the user can get data
    */
-  static canGetData() {
-    const dataHandler = game.tokenActionHud.dataHandler;
-
-    return ((game.user.hasPermission("FILES_BROWSE") && !dataHandler.private) || Utils.isGmActive());
+  get canGetData() {
+    return ((game.user.hasPermission("FILES_BROWSE") && !this.private) || Utils.isGmActive());
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get data as GM
@@ -199,41 +240,45 @@ export class DataHandler {
    * @param {object} options The options: file, type, id
    * @returns {object}       The data
    */
-  static async getDataAsGm(options) {
-    const dataHandler = game.tokenActionHud.dataHandler;
-
+  async getDataAsGm(options) {
     try {
-      if ((!game.user.hasPermission("FILES_BROWSE") || dataHandler.private) && !Utils.isGmActive()) {
+      if ((!game.user.hasPermission("FILES_BROWSE") || this.private) && !Utils.isGmActive()) {
         Logger.info("Cannot get data without a GM present", true);
         return;
       }
 
       return (game.user.hasPermission("FILES_BROWSE"))
-        ? await DataHandler.getData(options)
-        : await game.tokenActionHud.socket.executeAsGM("getData", options);
+        ? await this.getData(options)
+        : await this.socket.executeAsGM("getData", this, options);
     } catch(error) {
       Logger.error(`An error occurred while getting data: ${error.message}`);
       return null;
     }
   }
 
+  /* -------------------------------------------- */
+
+  static async getDataWithSocket(dataHandler, options) {
+    dataHandler.getData(options);
+  }
+
+  /* -------------------------------------------- */
+
   /**
    * Get data
    * @param {string} options The options: file, type, id
    * @returns {object}       The data
    */
-  static async getData(options) {
-    const dataHandler = game.tokenActionHud.dataHandler;
-
+  async getData(options) {
     const { id, file } = options;
 
     // Check if the file is available in the fileMap
-    let foundFile = dataHandler.fileMap.get(id) ?? null;
+    let foundFile = this.fileMap.get(id) ?? null;
 
     // If not found, try to browse, otherwise return null
     if (!foundFile) {
       if (!file) return null;
-      const { folder, filename } = getFileParts(file);
+      const { folder, filename } = this.getFileParts(file);
       const foundFolder = await FilePicker.browse("data", folder);
       foundFile = foundFolder.files.find(file => file.endsWith(filename));
       if (!foundFile) return null;
@@ -255,24 +300,7 @@ export class DataHandler {
     }
   }
 
-  /**
-   * Save data
-   * @param {string} type The type: actor or user
-   * @param {string} id   The actor or user id
-   * @param {object} data The data
-   */
-  static async saveDataMigrate(type, id, data) {
-    // Get the folder path
-    const folderPath = `${MODULE.ID}/${game.world.id}/${type}`;
-    // Generate the system safe filename
-    const fileName = encodeURI(`${id}.json`);
-    // Create the File and contents
-    const file = new File([JSON.stringify(data, null, "")], fileName, { type: "application/json" });
-    const response = await FilePicker.upload("data", folderPath, file, {}, { notify: false });
-    if (!response.path) {
-      Logger.debug(`Failed to save data to: ${fileName}\nReason: ${response}`);
-    }
-  }
+  /* -------------------------------------------- */
 
   /**
    * Get data
@@ -280,7 +308,7 @@ export class DataHandler {
    * @param {string} id   The actor or user id
    * @returns {object}    The data
    */
-  static async getDataMigrate(type, id) {
+  async getDataMigrate(type, id) {
     const folderPath = `${MODULE.ID}/${game.world.id}/${type}`;
     const fileName = encodeURI(`${id}.json`);
     try {

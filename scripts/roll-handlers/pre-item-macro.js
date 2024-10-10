@@ -3,7 +3,14 @@ import { DELIMITER } from "../constants.js";
 import { Logger, Utils } from "../utils.js";
 
 export class ItemMacroPreRollHandler extends PreRollHandler {
-  /** @override */
+  /**
+   * Pre-handle action event
+   * @public
+   * @param {object} event        The event
+   * @param {string} encodedValue The action's encoded value
+   * @param {class} actionHandler The action handler
+   * @returns {boolean}
+   */
   prehandleActionEvent(event, encodedValue, actionHandler) {
     // Update variables with current action context
     this.actor = actionHandler.actor;
@@ -23,6 +30,8 @@ export class ItemMacroPreRollHandler extends PreRollHandler {
 
     return this.#tryExecuteItemMacro(actionId);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Try to execute item macro

@@ -1,12 +1,12 @@
 import { MODULE, TEMPLATE } from "../constants.js";
-import { Logger, Utils } from "../utils.js";
+import { Logger } from "../utils.js";
 import DragSort from "@yaireo/dragsort";
 import Tagify from "@yaireo/tagify";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
- * Form Application for the dialogs.
+ * Application for the dialogs.
  */
 export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   tagify = null;
@@ -21,6 +21,8 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this.subcategoryId = null;
     this.options.window.title = data.title;
   }
+
+  /* -------------------------------------------- */
 
   static DEFAULT_OPTIONS = {
     actions: {
@@ -44,9 +46,13 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   };
 
+  /* -------------------------------------------- */
+
   async _prepareContext() {
     return this.content;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Show dialog
@@ -82,6 +88,8 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
     dialog.render(true);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Prepare dialog hook
@@ -121,10 +129,9 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         });
 
         /**
-         *
-         * @param elm
+         * On drag end
          */
-        function onDragEnd(elm) {
+        function onDragEnd() {
           TagDialog.tagify.updateValueByDOMTags();
         }
 
@@ -150,6 +157,8 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset actions
    * @private
@@ -174,9 +183,13 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
+  /* -------------------------------------------- */
+
   static unselectAllTags() {
     TagDialog.tagify.removeAllTags();
   }
+
+  /* -------------------------------------------- */
 
   /** @override */
   _onKeyDown(event) {
@@ -200,10 +213,13 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Handle form submission
-   * @param {object} event       The event
-   * @param {object} formDataThe form data
+   * @param {object} event    The event
+   * @param {object} form     The form
+   * @param {object} formData The form data
    * @param formData
    */
   static async submit(event, form, formData) {
@@ -220,6 +236,8 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 }
 
+/* -------------------------------------------- */
+
 export class TagDialogHud extends TagDialog {
   static PARTS = {
     form: {
@@ -228,6 +246,8 @@ export class TagDialogHud extends TagDialog {
   };
 }
 
+/* -------------------------------------------- */
+
 export class TagDialogTopLevelGroup extends TagDialog {
   static PARTS = {
     form: {
@@ -235,6 +255,8 @@ export class TagDialogTopLevelGroup extends TagDialog {
     }
   };
 }
+
+/* -------------------------------------------- */
 
 export class TagDialogGroup extends TagDialog {
   static PARTS = {

@@ -2,8 +2,14 @@ import { PreRollHandler } from "./pre-roll-handler.js";
 import { COMPENDIUM_ACTION_TYPES, DELIMITER } from "../constants.js";
 
 export class CompendiumMacroPreHandler extends PreRollHandler {
-  /** @override */
-  prehandleActionEvent(event, encodedValue) {
+  /**
+   * Pre-handle action event
+   * @param {object} event        The event
+   * @param {string} encodedValue The action's encoded value
+   * @param {class} actionHandler The action handler
+   * @returns {boolean}
+   */
+  prehandleActionEvent(event, encodedValue, actionHandler) {
     const payload = encodedValue.split(DELIMITER);
 
     if (payload.length < 2) return false;
@@ -44,6 +50,8 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
     return true;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Handle compendium
    * @private
@@ -55,6 +63,8 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
     pack.getDocument(actionId).then(entity => entity.sheet.render(true));
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Handle macro compendium
    * @private
@@ -65,6 +75,8 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
     const pack = game.packs.get(compendiumKey);
     pack.getDocument(actionId).then(entity => entity.execute());
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Handle playlist compendium
@@ -81,6 +93,8 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
     const sound = playlist.sounds.find(sound => sound._id === soundId);
     AudioHelper.play({ src: sound.path }, {});
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Handle macro

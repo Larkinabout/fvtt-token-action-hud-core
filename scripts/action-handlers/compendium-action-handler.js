@@ -17,6 +17,8 @@ export class CompendiumActionHandler {
     this.packIds = [];
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Build compendium actions
    */
@@ -40,6 +42,8 @@ export class CompendiumActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Set compendium actions into the compendiumActions map
    * @param {string} packId The pack id
@@ -60,6 +64,8 @@ export class CompendiumActionHandler {
     this.compendiumActions.set(packId, { actionsData, groupData });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get compendium action type based on documentName
    * @param {string} documentName The pack document name
@@ -76,13 +82,18 @@ export class CompendiumActionHandler {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
+   * Get the group ID from the pack ID
    * @param {string} packId The pack id
    * @returns {string}      The group id
    */
   #getGroupId(packId) {
     return packId.replace(".", "-");
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Whether the compendium is linked

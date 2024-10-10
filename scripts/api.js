@@ -14,7 +14,6 @@ import { Logger, Timer, Utils } from "./utils.js";
 export function registerApi() {
   const module = game.modules.get(MODULE.ID);
   module.api = {
-    ActionListExtender: ActionHandlerExtender,
     ActionHandlerExtender,
     ActionHandler,
     DataHandler,

@@ -8,6 +8,8 @@ export class CustomStyleForm extends HandlebarsApplicationMixin(ApplicationV2) {
     super(args);
   }
 
+  /* -------------------------------------------- */
+
   static DEFAULT_OPTIONS = {
     actions: {
       reset: CustomStyleForm.reset
@@ -30,11 +32,15 @@ export class CustomStyleForm extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   };
 
+  /* -------------------------------------------- */
+
   static PARTS = {
     form: {
       template: TEMPLATE.customStyleForm
     }
   };
+
+  /* -------------------------------------------- */
 
   async _prepareContext() {
     this.context = {
@@ -66,10 +72,14 @@ export class CustomStyleForm extends HandlebarsApplicationMixin(ApplicationV2) {
     return this.context;
   }
 
+  /* -------------------------------------------- */
+
   _onRender(context, options) {
     super._onRender(context, options);
     if (typeof ColorPicker !== "undefined") { ColorPicker.install(); }
   }
+
+  /* -------------------------------------------- */
 
   static async reset() {
     for (const [key, value] of Object.entries(CUSTOM_STYLE)) {
@@ -78,6 +88,8 @@ export class CustomStyleForm extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     this.render(true);
   }
+
+  /* -------------------------------------------- */
 
   static async submit(event, form, formData) {
     const isCustom = Utils.getSetting("style") === "custom";

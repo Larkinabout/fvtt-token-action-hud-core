@@ -4,13 +4,15 @@ import { CUSTOM_STYLE, MODULE } from "./constants.js";
 import { Logger, Utils } from "./utils.js";
 
 /**
- *
- * @param setting
- * @param value
+ * When a module setting is changed, update the HUD settings
+ * @param {string} key The setting key
+ * @param {*} value    The setting value
  */
-function onChangeFunction(setting, value) { 
-  if (game.tokenActionHud) game.tokenActionHud.updateSettings(setting, value);
+function onChangeFunction(key, value) {
+  if (game.tokenActionHud) game.tokenActionHud.updateSettings(key, value);
 }
+
+/* -------------------------------------------- */
 
 // Register key bindings
 Hooks.on("init", async () => {
@@ -21,11 +23,13 @@ Hooks.on("init", async () => {
   });
 });
 
+/* -------------------------------------------- */
+
 /**
  * Register module settings
- * @param {object} systemManager The SystemManager class
- * @param {Array} rollHandlers   The available roll handlers
- * @param styles
+ * @param {class} systemManager The system manager
+ * @param {Array} rollHandlers  The available roll handlers
+ * @param {object} styles       The styles
  */
 export const registerSettingsCore = function(systemManager, rollHandlers, styles) {
   game.settings.registerMenu(MODULE.ID, "customStyle", {
@@ -38,6 +42,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     scope: "client"
   });
 
+  /* -------------------------------------------- */
+
   game.settings.registerMenu(MODULE.ID, "layout", {
     hint: game.i18n.localize("tokenActionHud.settings.layout.hint"),
     label: game.i18n.localize("tokenActionHud.settings.layout.label"),
@@ -48,6 +54,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     scope: "client"
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "startup", {
     name: "One-Time Startup Prompt",
     scope: "world",
@@ -56,6 +64,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     default: false
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "migrationVersion", {
     name: "Migration Version",
     scope: "world",
@@ -63,6 +73,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     type: String,
     default: "0.0"
   });
+
+  /* -------------------------------------------- */
 
   const styleChoices = Object.fromEntries(Object.entries(styles).map(([key, value]) => [key, value.name]));
 
@@ -79,6 +91,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "customLayout", {
     name: game.i18n.localize("tokenActionHud.settings.customLayout.name"),
     hint: game.i18n.localize("tokenActionHud.settings.customLayout.hint"),
@@ -87,6 +101,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     type: String
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "userCustomLayout", {
     name: game.i18n.localize("tokenActionHud.settings.userCustomLayout.name"),
     hint: game.i18n.localize("tokenActionHud.settings.userCustomLayout.hint"),
@@ -94,6 +110,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     config: false,
     type: String
   });
+
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "direction", {
     name: game.i18n.localize("tokenActionHud.settings.direction.name"),
@@ -112,6 +130,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "grid", {
     name: game.i18n.localize("tokenActionHud.settings.grid.name"),
     hint: game.i18n.localize("tokenActionHud.settings.grid.hint"),
@@ -123,6 +143,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
       onChangeFunction("grid", value);
     }
   });
+
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "scale", {
     name: game.i18n.localize("tokenActionHud.settings.scale.name"),
@@ -141,6 +163,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "drag", {
     name: game.i18n.localize("tokenActionHud.settings.drag.name"),
     hint: game.i18n.localize("tokenActionHud.settings.drag.hint"),
@@ -158,6 +182,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "enable", {
     name: game.i18n.localize("tokenActionHud.settings.enable.name"),
     hint: game.i18n.localize("tokenActionHud.settings.enable.hint"),
@@ -169,6 +195,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
       onChangeFunction("enable", value);
     }
   });
+
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "rollHandler", {
     name: game.i18n.localize("tokenActionHud.settings.rollHandler.name"),
@@ -182,6 +210,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
       onChangeFunction("rollHandler", value);
     }
   });
+
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "allow", {
     name: game.i18n.localize("tokenActionHud.settings.allow.name"),
@@ -199,6 +229,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     requiresReload: true
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "enableCustomization", {
     name: game.i18n.localize("tokenActionHud.settings.enableCustomization.name"),
     hint: game.i18n.localize("tokenActionHud.settings.enableCustomization.hint"),
@@ -210,6 +242,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
       onChangeFunction("enableCustomization", value);
     }
   });
+
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "alwaysShowHud", {
     name: game.i18n.localize("tokenActionHud.settings.alwaysShowHud.name"),
@@ -223,6 +257,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "displayCharacterName", {
     name: game.i18n.localize("tokenActionHud.settings.displayCharacterName.name"),
     hint: game.i18n.localize("tokenActionHud.settings.displayCharacterName.hint"),
@@ -234,6 +270,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
       onChangeFunction("displayCharacterName", value);
     }
   });
+
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "sortActions", {
     name: game.i18n.localize("tokenActionHud.settings.sortActions.name"),
@@ -247,6 +285,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "displayIcons", {
     name: game.i18n.localize("tokenActionHud.settings.displayIcons.name"),
     hint: game.i18n.localize("tokenActionHud.settings.displayIcons.hint"),
@@ -258,6 +298,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
       onChangeFunction("displayIcons", value);
     }
   });
+
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "tooltips", {
     name: game.i18n.localize("tokenActionHud.settings.tooltips.name"),
@@ -276,6 +318,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "tooltipDelay", {
     name: game.i18n.localize("tokenActionHud.settings.tooltipDelay.name"),
     hint: game.i18n.localize("tokenActionHud.settings.tooltipDelay.hint"),
@@ -288,17 +332,21 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
+  /* -------------------------------------------- */
+
   const tooltipDelay = Utils.getSetting("tooltipDelay") || 1500;
   setTooltipDelay(tooltipDelay);
 
   /**
-   *
-   * @param ms
+   * Set the tooltip delay
+   * @param {number} ms Delay amount in milliseconds
    */
   function setTooltipDelay(ms) {
     const root = document.querySelector(":root");
     root.style.setProperty("--tah-tooltip-delay", `${ms}ms`);
   }
+
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "clickOpenCategory", {
     name: game.i18n.localize("tokenActionHud.settings.clickOpenCategory.name"),
@@ -311,6 +359,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
       onChangeFunction("clickOpenCategory", value);
     }
   });
+
+  /* -------------------------------------------- */
 
   if (Utils.isModuleActive("itemacro") && !Utils.isModuleActive("midi-qol")) {
     game.settings.register(MODULE.ID, "itemMacro", {
@@ -331,6 +381,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     });
   }
 
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "activeCssAsText", {
     name: game.i18n.localize("tokenActionHud.settings.activeCssAsText.name"),
     hint: game.i18n.localize("tokenActionHud.settings.activeCssAsText.hint"),
@@ -342,6 +394,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
       onChangeFunction("activeCssAsText", value);
     }
   });
+
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "debug", {
     name: game.i18n.localize("tokenActionHud.settings.debug.name"),
@@ -355,6 +409,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
+  /* -------------------------------------------- */
+
   registerCustomStyleSettings();
 
   if (systemManager.registerSettings.toString().slice(-2) !== "{}") {
@@ -366,6 +422,8 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
 
   Logger.debug("Available roll handlers", { rollHandlers });
 };
+
+/* -------------------------------------------- */
 
 /**
  * Register color settings

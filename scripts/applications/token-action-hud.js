@@ -1,6 +1,5 @@
 import { TagDialogHelper } from "./tag-dialog-helper.js";
 import { GroupResizer } from "../group-resizer.js";
-import { DataHandler } from "../data-handler.js";
 import { HUD, MODULE, SETTING, TEMPLATE } from "../constants.js";
 import { Logger, Timer, Utils } from "../utils.js";
 
@@ -10,14 +9,18 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
  * Token Action HUD application
  */
 export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
-  constructor(systemManager) {
+  constructor(systemManager, dataHandler, socket) {
     super();
     this.module = MODULE;
     this.systemManager = systemManager;
+    this.dataHandler = dataHandler;
+    this.socket = socket;
     this.openGroups = new Set();
     this.updatePendingTimer = new Timer(10);
     this.updateTimer = new Timer(10);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Merge Token Action Hud's default options with ApplicationV2
@@ -59,6 +62,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     zIndex: 100
   };
 
+  /* -------------------------------------------- */
+
   /**
    * Define template parts
    */
@@ -67,6 +72,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       template: TEMPLATE.hud
     }
   };
+
+  /* -------------------------------------------- */
 
   /**
    * Prepare context
@@ -85,9 +92,12 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     return context;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * On render
-   * @override
+   * @param {options} context The context
+   * @param {options} options The options
    */
   _onRender(context, options) {
     super._onRender(context, options);
@@ -95,6 +105,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#setInitialHudState();
     this.#addHoverEvents(this.elements);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Cache HUD elements
@@ -119,6 +131,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Set the initial state of the HUD (collapsed or expanded, locked or unlocked)
    * @private
@@ -131,10 +145,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     } else {
       TokenActionHud.lockHud.call(this);
     }
-
-    const { unlockButton } = this.elements;
-    unlockButton.classList.toggle("tah-hidden", !this.enableCustomizationSetting);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Post-render HUD
@@ -145,6 +158,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#applyDirection();
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Initialise the HUD
    * @public
@@ -154,15 +169,12 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#cacheUserFlags();
 
     await this.systemManager.registerDefaultsCore();
-
-    this.dataHandler = new DataHandler();
-    await this.dataHandler.init();
-
     await this.#cacheActionHandler();
-
     this.groupResizer = new GroupResizer();
     this.rollHandler = this.systemManager.getRollHandlerCore();
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Cache settings
@@ -179,6 +191,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Cache user flags
    */
@@ -188,11 +202,14 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.isUnlocked = Utils.getUserFlag("isUnlocked");
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Cache ActionHandler
    */
   async #cacheActionHandler() {
     this.actionHandler = await this.systemManager.getActionHandlerCore();
+    this.actionHandler.dataHandler = this.dataHandler;
     this.actionHandler.customLayoutSetting = Utils.getSetting("customLayout");
     this.actionHandler.userCustomLayoutFlag = Utils.getUserFlag("userCustomLayout");
     this.actionHandler.enableCustomizationSetting = this.enableCustomizationSetting;
@@ -200,6 +217,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.actionHandler.sortActionsSetting = Utils.getSetting("sortActions");
     this.actionHandler.tooltipsSetting = Utils.getSetting("tooltips");
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Update Token Action HUD following change to module settings
@@ -230,9 +249,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   static editHud() {
     TagDialogHelper.showHudDialog(this.actionHandler);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Unlock the HUD
@@ -242,6 +265,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.toggleHudLock("unlock", event);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Lock the HUD
    * @param {object|null} event The event
@@ -249,6 +274,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   static async lockHud(event = null) {
     this.toggleHudLock("lock", event);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Toggle HUD lock state
@@ -303,6 +330,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.setUnlocked(isUnlocking);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Set unlocked state
    * @param {boolean} bool true or false
@@ -314,6 +343,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Collapse the HUD
    * @param {object|null} event The event
@@ -322,6 +353,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.toggleHudCollapse("collapse", event);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Expand the HUD
    * @param {object|null} event The event
@@ -329,6 +362,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   static expandHud(event = null) {
     this.toggleHudCollapse("expand", event);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Toggle the HUD between collapse and expand states
@@ -349,6 +384,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.setCollapsed(isCollapsing);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Set the collapsed state
    * @param {boolean} isCollapsing Whether the HUD is collapsing
@@ -359,6 +396,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       this.isCollapsed = isCollapsing;
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Click a group
@@ -384,6 +423,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Toggle the group
    * @param {object} event The event
@@ -406,6 +447,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if (event) event.currentTarget.blur();
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get closest group
    * @param {object} event The event
@@ -427,9 +470,10 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reopen groups
-   * @param {Event|null} event
    * @private
    */
   #reopenGroups() {
@@ -443,6 +487,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
+  /* -------------------------------------------- */
 
   /**
    * Click a subgroup
@@ -461,6 +506,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Click an action
    * @param {object} event The event
@@ -476,6 +523,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       Logger.error(event);
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Collapse/expand group
@@ -518,6 +567,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Group click
    * @param {object} event The event
@@ -534,6 +585,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       Logger.error(event);
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Open the group dialog
@@ -552,14 +605,16 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     TagDialogHelper.showGroupDialog(this.actionHandler, { nestId, name, level, type });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Open the Action dialog
    * @param {object} event The event
    */
   openActionDialog(event) {
-    const group = getClosestGroup(event);
+    const group = this.#getClosestGroup(event);
     const { nestId, level = parseInt(level) ?? null, type } = group.dataset;
-    if (!target?.dataset?.nestId) return;
+    if (!nestId) return;
     const name = this.actionHandler.groups[nestId].name;
 
     TagDialogHelper.showActionDialog(
@@ -567,6 +622,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       { nestId, name, level, type }
     );
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Action hover
@@ -581,6 +638,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       Logger.error(event);
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Add hover events
@@ -609,6 +668,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
+  /* -------------------------------------------- */
 
   /**
    * Drag event handler
@@ -660,6 +720,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     };
 
+    /* -------------------------------------------- */
+
     /**
      * Mouse up event handler
      */
@@ -695,6 +757,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     element.ontouchend = mouseUpEvent;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get the automatic direction the HUD expands
    * @private
@@ -705,6 +769,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     return "down";
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Whether the HUD can be dragged
    * @returns {boolean} Whether the HUD can be dragged
@@ -712,6 +778,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   get isDraggable() {
     return ((this.dragSetting === "always") || (this.dragSetting === "whenUnlocked" && this.isUnlocked));
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get the HUD scale
@@ -722,6 +790,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     const scale = parseFloat(this.scaleSetting) || 1;
     return Math.min(Math.max(scale, 0.5), 2);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Apply direction
@@ -747,6 +817,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Set position of the HUD
    * @public
@@ -756,6 +828,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#setPositionFromFlag();
     this.#applyDirection();
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Set the position of the HUD based on user flag
@@ -790,6 +864,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset the position of the HUD
    * @public
@@ -800,6 +876,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     await Utils.setUserFlag("position", this.hudPosition);
     Logger.debug(`Position reset to x: ${this.defaultTopPos}px, y: ${this.defaultLeftPos}px`);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Toggle HUD
@@ -820,6 +898,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Copy user's 'groups' flag to others users
    * @public
@@ -837,6 +917,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Copy user's 'groups' flag to others users
    * @private
@@ -850,13 +932,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     Logger.debug("Copying user data...");
 
-    const fromGroup = await DataHandler.getDataAsGm({ type: "user", id: fromUserId });
+    const fromGroup = await this.dataHandler.getDataAsGm({ type: "user", id: fromUserId });
 
     if (typeof toUserIds === "string") {
-      await DataHandler.saveDataAsGm("user", toUserIds, fromGroup);
+      await this.dataHandler.saveDataAsGm("user", toUserIds, fromGroup);
     } else if (Array.isArray(toUserIds)) {
       for (const userId of toUserIds) {
-        await DataHandler.saveDataAsGm("user", userId, fromGroup);
+        await this.dataHandler.saveDataAsGm("user", userId, fromGroup);
       }
     }
 
@@ -864,12 +946,16 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     return true;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset the HUD
    */
   static async reset() {
     game?.tokenActionHud?.resetLayout();
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Reset the HUD layout
@@ -881,13 +967,15 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     Logger.debug("Layout reset");
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset actor data
    */
   async resetActorData() {
     Logger.debug("Resetting actor data...");
 
-    await DataHandler.saveDataAsGm("actor", this.actor.id, {});
+    await this.dataHandler.saveDataAsGm("actor", this.actor.id, {});
 
     Logger.debug("Actor data reset");
 
@@ -895,6 +983,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetActorData" } };
     this.update(trigger);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Reset all actor data
@@ -905,7 +995,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     for (const actor of game.actors) {
       Logger.debug(`Resetting flags for actor [${actor.id}]`, { actor });
-      await DataHandler.saveDataAsGm("actor", actor.id, {});
+      await this.dataHandler.saveDataAsGm("actor", actor.id, {});
     }
 
     Logger.debug("All actor data reset");
@@ -914,18 +1004,22 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.update(trigger);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset user data
    * @public
    */
   async resetUserData() {
     Logger.debug("Resetting user data...");
-    await DataHandler.saveDataAsGm("user", game.userId, {});
+    await this.dataHandler.saveDataAsGm("user", game.userId, {});
     Logger.debug("User data reset");
     this.actionHandler.hardResetActionHandler();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetUserData" } };
     this.update(trigger);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Reset all user data
@@ -934,7 +1028,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   async resetAllUserData() {
     Logger.debug("Resetting all user data...");
     for (const user of game.users) {
-      await DataHandler.saveDataAsGm("user", user.id, {});
+      await this.dataHandler.saveDataAsGm("user", user.id, {});
     }
     Logger.debug("All user data reset");
     this.actionHandler.hardResetActionHandler();
@@ -942,22 +1036,26 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.update(trigger);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset user and actor data
    */
   async resetUserAndActorData() {
     Logger.debug("Resetting user data...");
-    await DataHandler.saveDataAsGm("user", game.userId, {});
+    await this.dataHandler.saveDataAsGm("user", game.userId, {});
     Logger.debug("User data reset");
 
     Logger.debug("Resetting actor data...");
-    await DataHandler.saveDataAsGm("actor", this.actor.id, {});
+    await this.dataHandler.saveDataAsGm("actor", this.actor.id, {});
     Logger.debug("Actor data reset");
 
     this.actionHandler.hardResetActionHandler();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetUserAndActorData" } };
     this.update(trigger);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Update the HUD
@@ -976,6 +1074,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     await this.#handleUpdate();
     await this.#performUpdate(trigger);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Handles HUD updates to avoid overlapping updates
@@ -1011,6 +1111,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Perform the HUD update following handling
@@ -1051,6 +1153,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     Logger.debug("HUD updated");
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Abort the HUD update with a debug message
    * @param {string} message The debug message to log
@@ -1062,6 +1166,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.isUpdating = false;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Close the HUD
    * @private
@@ -1070,6 +1176,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.openGroups = new Set();
     this.close({ animate: false });
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Whether the token change is valid for a HUD update
@@ -1082,6 +1190,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if (data.flags) return false;
     return this.#isRelevantToken(token) || (this.alwaysShowSetting && token.actorId === game.user.character?.id);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Whether the token is controlled or on the canvas
@@ -1097,6 +1207,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     );
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Whether the given actor is the selected actor
    * @param {object} actor The actor
@@ -1105,6 +1217,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   isSelectedActor(actor) {
     return !actor?.id || actor?.id === this.actor?.id;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Whether the actor or item update is valid for a HUD update
@@ -1129,6 +1243,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     return false;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Whether the hud is enabled for the current user
    * @private
@@ -1139,6 +1255,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if (game.user.isGM) return true;
     return Utils.checkAllow(game.user.role, this.allowSetting);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get character from controlled tokens
@@ -1153,6 +1271,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     return this.#handleSingleToken(controlled);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Handle multiple controlled tokens
@@ -1176,6 +1296,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.rollHandler.tokens = tokens;
     this.rollHandler.actors = actors;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Handle a single controlled token
@@ -1211,6 +1333,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     return character;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Whether the character is a valid selection for the current user

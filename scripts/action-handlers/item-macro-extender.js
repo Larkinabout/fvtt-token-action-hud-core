@@ -13,6 +13,8 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
     this.token = this.actionHandler.token;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Extend the action list
    * @override
@@ -50,6 +52,8 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
     });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Add group actions
    * @private
@@ -80,6 +84,8 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
     this.#addActions(actions, group);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Create item macro action
    * @private
@@ -99,6 +105,8 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
     return action;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Add actions to the group
    * @private
@@ -111,6 +119,8 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
       group.actions.splice(index, 0, macroAction);
     });
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Whether the item is supported by MidiQoL or not

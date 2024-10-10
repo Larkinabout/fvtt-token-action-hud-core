@@ -9,6 +9,8 @@ export class MacroActionHandler {
     this.actionHandler = actionHandler;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Build macro actions
    * @override
@@ -23,6 +25,8 @@ export class MacroActionHandler {
 
     this.actionHandler.addActions(this.macroActions.actionsData, this.macroActions.groupData);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get actions
@@ -44,6 +48,8 @@ export class MacroActionHandler {
     });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Check if the user has permission for the macro
    * @private
@@ -54,6 +60,8 @@ export class MacroActionHandler {
     const { ownership } = macro;
     return ownership[game.userId] ? ownership[game.userId] > 0 : ownership.default > 0;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get list name

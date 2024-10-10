@@ -77,6 +77,8 @@ export class GroupResizer {
     await this.#setHeight();
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset variables
    * @private
@@ -98,6 +100,8 @@ export class GroupResizer {
     this.spacing = 10;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Reset groups elements
    */
@@ -107,6 +111,8 @@ export class GroupResizer {
     const style = { maxHeight: "", overflowY: "" };
     this.#resetCSS(groupsElements, style);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Get the grid width
@@ -136,7 +142,8 @@ export class GroupResizer {
     const minActionButtonTextWidth = 30;
 
     for (const actionWidth of actionWidths) {
-      const availableactionButtonTextWidth = upperQuartileAverage - (actionWidth.actionWidth - actionWidth.actionButtonTextWidth);
+      const availableactionButtonTextWidth = upperQuartileAverage
+        - (actionWidth.actionWidth - actionWidth.actionButtonTextWidth);
       if (availableactionButtonTextWidth < minActionButtonTextWidth) {
         upperQuartileAverage = (upperQuartileAverage - availableactionButtonTextWidth) + minActionButtonTextWidth;
       }
@@ -145,12 +152,13 @@ export class GroupResizer {
     this.gridWidth = upperQuartileAverage;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Resize the actions element into the grid format
    * @private
-   * @param {object} actionsElement The actions element
-   * @param groupCustomWidth
-   * @param {number} customWidth    The custom width
+   * @param {object} actionsElement   The actions element
+   * @param {number} groupCustomWidth The group custom width
    */
   async #resizeGrid(actionsElement, groupCustomWidth) {
     if (!actionsElement) return;
@@ -161,18 +169,21 @@ export class GroupResizer {
     const squaredCols = Math.ceil(Math.sqrt(actions.length));
     const availableGroupWidth = groupCustomWidth ?? this.availableWidth;
     const availableCols = Math.floor(availableGroupWidth / this.gridWidth);
-    const cols = (squaredCols > availableCols || groupCustomWidth) ? availableCols : (actions.length <= this.minCols) ? actions.length : squaredCols;
+    const cols = (squaredCols > availableCols || groupCustomWidth)
+      ? availableCols
+      : (actions.length <= this.minCols) ? actions.length : squaredCols;
     // Apply maxHeight and width styles to content
     const style = { display: "grid", gridTemplateColumns: `repeat(${cols}, ${this.gridWidth}px)` };
     await this.#assignCSS(actionsElement, style);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Resize the actions element
    * @private
-   * @param {object} actionsElement The actions element
-   * @param groupCustomWidth
-   * @param {number} customWidth    The custom width
+   * @param {object} actionsElement   The actions element
+   * @param {number} groupCustomWidth The group custom width
    */
   async #resize(actionsElement, groupCustomWidth) {
     if (!actionsElement) return;
@@ -225,9 +236,12 @@ export class GroupResizer {
     await this.#assignCSS(actionsElement, style);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get available content width
    * @private
+   * @returns {number} The available content width
    */
   #getAvailableWidth() {
     const customWidth = this.settings?.customWidth;
@@ -248,9 +262,12 @@ export class GroupResizer {
     ) - this.spacing - contentLeft);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get available content height
    * @private
+   * @returns {number} The available content height
    */
   #getAvailableHeight() {
     const windowHeight = canvas.screenDimensions[1] || window.innerHeight;
@@ -266,8 +283,10 @@ export class GroupResizer {
     return Math.floor(availableHeight < 100 ? 100 : availableHeight);
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get content
+   * Get groups element
    * @private
    */
   async #getGroupsElement() {
@@ -280,14 +299,18 @@ export class GroupResizer {
             + Math.ceil(parseFloat(this.groupsElementComputed.paddingRight) || 0);
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get groups
+   * Get group elements
    * @private
    */
   #getGroupElements() {
     this.groupElements = this.groupElement.querySelectorAll(".tah-group");
     if (this.groupElements.length === 0) this.groupElements = [this.groupElement];
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Set the content height
@@ -301,6 +324,8 @@ export class GroupResizer {
     });
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Assign CSS
    * @private
@@ -313,6 +338,8 @@ export class GroupResizer {
       Object.assign(element.style, style);
     });
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Reset CSS

@@ -13,13 +13,15 @@ export async function resetLayoutDialog() {
     modal: true,
     yes: {
       label: game.i18n.localize("tokenActionHud.dialog.button.yes"),
-      callback: async () => resetLayout
+      callback: async () => resetLayout()
     },
     no: {
       label: game.i18n.localize("tokenActionHud.dialog.button.no")
     }
   });
 }
+
+/* -------------------------------------------- */
 
 /**
  * Reset user layout

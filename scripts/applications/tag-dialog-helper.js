@@ -40,6 +40,8 @@ export class TagDialogHelper {
     TagDialog.showDialog("hud", null, tags, dialogData, dialogSubmit);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Show group dialog
    * @public
@@ -108,6 +110,8 @@ export class TagDialogHelper {
       dialogSubmit
     );
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Show action dialog

@@ -11,8 +11,9 @@ export class SystemManager {
     this.styles = null;
   }
 
-  /** ACTION HANDLERS */
-  /** OVERRIDDEN BY SYSTEM */
+  /* -------------------------------------------- */
+  /*  Methods for system modules to override      */
+  /* -------------------------------------------- */
 
   getActionHandler() {}
 
@@ -24,19 +25,14 @@ export class SystemManager {
 
   async registerDefaults() {}
 
+  /* -------------------------------------------- */
+
   /**
    * Register defaults
    * @public
    */
   async registerDefaultsCore() {
-    let func = null;
-    if (this.registerDefaults.toString().slice(-2) !== "{}") {
-      func = this.registerDefaults;
-    } else {
-      globalThis.logger.warn("Token Action HUD | SystemHandler.doRegisterDefaultFlags is deprecated. Use SystemHandler.registerDefaults");
-      func = this.doRegisterDefaultFlags;
-    }
-    const defaults = await func() ?? [];
+    const defaults = await this.registerDefaults() ?? [];
 
     Hooks.callAll("tokenActionHudCoreRegisterDefaults", defaults);
 
@@ -44,6 +40,8 @@ export class SystemManager {
       game.tokenActionHud.defaults = defaults;
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Register styles
@@ -55,35 +53,32 @@ export class SystemManager {
     Hooks.callAll("tokenActionHudCoreRegisterStyles", this.styles);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * @override
    */
   async registerStyles() {}
 
+  /* -------------------------------------------- */
+
   /**
    * Initialise the action handler
    * @public
-   * @returns {class} The ActionHandler class
+   * @returns {class} The action handler
    */
   async getActionHandlerCore() {
-    let func = null;
-    if (this.getActionHandler.toString().slice(-2) !== "{}") {
-      func = this.getActionHandler;
-    } else {
-      globalThis.logger.warn("Token Action HUD | SystemHandler.doGetActionHandler is deprecated. Use SystemHandler.getActionHandler");
-      func = this.doGetActionHandler;
-    }
-    const actionHandler = func();
-
+    const actionHandler = this.getActionHandler();
     this.#addActionHandlerExtenders(actionHandler);
-
     return actionHandler;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Add action handler extensions
    * @public
-   * @param {class} actionHandler The ActionHandler class
+   * @param {class} actionHandler The action handler
    */
   #addActionHandlerExtenders(actionHandler) {
     if (Utils.isModuleActive("itemacro") && !Utils.isModuleActive("midi-qol")) {
@@ -93,10 +88,12 @@ export class SystemManager {
     Hooks.callAll("tokenActionHudCoreAddActionHandlerExtenders", actionHandler);
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Get the roll handler
    * @public
-   * @returns {class} The RollHandler class
+   * @returns {class} The roll handler
    */
   getRollHandlerCore() {
     let rollHandlerId = Utils.getSetting("rollHandler");
@@ -107,29 +104,13 @@ export class SystemManager {
       Utils.setSetting("rollHandler", rollHandlerId);
     }
 
-        let func = null
-        if (this.getRollHandler.toString().slice(-2) !== '{}') {
-            func = this.getRollHandler
-        } else {
-            globalThis.logger.warn('Token Action HUD | SystemHandler.doGetRollHandler is deprecated. Use SystemHandler.getRollHandler')
-            func = this.doGetRollHandler
-        }
-        const rollHandler = func(rollHandlerId)
-        this.addPreHandlers(rollHandler)
-        this.#addRollHandlerExtenders(rollHandler)
-        return rollHandler
-    }
-    let func = null;
-    if (this.getRollHandler.toString().slice(-2) !== "{}") {
-      func = this.getRollHandler;
-    } else {
-      globalThis.logger.warn("Token Action HUD | SystemHandler.doGetRollHandler is deprecated. Use SystemHandler.getRollHandler");
-      func = this.doGetRollHandler;
-    }
-    const rollHandler = func(rollHandlerId);
+    const rollHandler = this.getRollHandler(rollHandlerId);
     this.addPreHandlers(rollHandler);
+    this.#addRollHandlerExtenders(rollHandler);
     return rollHandler;
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Add pre-handlers
@@ -144,14 +125,18 @@ export class SystemManager {
     }
   }
 
-    /**
-     * Add roll handler extensions
-     * @public
-     * @param {class} rollHandler The RollHandler class
-     */
-    #addRollHandlerExtenders (rollHandler) {
-        Hooks.callAll('tokenActionHudCoreAddRollHandlerExtenders', rollHandler)
-    }
+  /* -------------------------------------------- */
+
+  /**
+   * Add roll handler extensions
+   * @public
+   * @param {class} rollHandler The roll handler
+   */
+  #addRollHandlerExtenders(rollHandler) {
+    Hooks.callAll("tokenActionHudCoreAddRollHandlerExtenders", rollHandler);
+  }
+
+  /* -------------------------------------------- */
 
   /**
    * Register module settings
@@ -161,6 +146,8 @@ export class SystemManager {
     const rollHandlers = this.getAvailableRollHandlers();
     registerSettingsCore(this, rollHandlers, this.styles);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Add handler
@@ -173,12 +160,4 @@ export class SystemManager {
       foundry.utils.mergeObject(choices, { [id]: title });
     }
   }
-
-    // DEPRECATED
-    doGetActionHandler () {}
-    doGetRollHandler (rollHandlerId) {}
-    async doRegisterDefaultFlags () {}
-    doRegisterSettings (onChangeFunction) {}
-    async doRegisterDefaultFlags() {}
-    doRegisterSettings(onChangeFunction) {}
 }

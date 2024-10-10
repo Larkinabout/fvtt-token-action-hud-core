@@ -6,10 +6,15 @@ export const MODULE = {
   NAME: "Token Action HUD"
 };
 
+
+/* -------------------------------------------- */
+
 /**
  * Template directory
  */
 const TEMPLATE_DIR = `modules/${MODULE.ID}/templates`;
+
+/* -------------------------------------------- */
 
 /**
  * Templates
@@ -27,10 +32,14 @@ export const TEMPLATE = {
   tagDialogTopLevelGroup: `${TEMPLATE_DIR}/tag-dialog-top-level-group.hbs`
 };
 
+/* -------------------------------------------- */
+
 /**
  * Delimiter character
  */
 export const DELIMITER = "|";
+
+/* -------------------------------------------- */
 
 /**
  * Action types
@@ -42,15 +51,21 @@ export const ACTION_TYPE = {
   macro: "tokenActionHud.macro"
 };
 
+/* -------------------------------------------- */
+
 /**
  * Compendium action types
  */
 export const COMPENDIUM_ACTION_TYPES = ["compendiumEntry", "compendiumMacro", "compendiumPlaylist", "macro"];
 
+/* -------------------------------------------- */
+
 /**
  * Compendium pack types
  */
 export const COMPENDIUM_PACK_TYPES = ["JournalEntry", "Macro", "RollTable"];
+
+/* -------------------------------------------- */
 
 /**
  * CSS styles
@@ -112,6 +127,8 @@ export const CSS_STYLE = {
   }
 };
 
+/* -------------------------------------------- */
+
 /**
  * Custom styles
  */
@@ -142,6 +159,8 @@ export const CUSTOM_STYLE = {
   textHoverTertiaryColor: { cssProperty: "--tah-text-tertiary-color-editable", type: String, default: "#FF6400FF" }
 };
 
+/* -------------------------------------------- */
+
 /**
  * Group types
  */
@@ -151,6 +170,8 @@ export const GROUP_TYPE = {
   SYSTEM: "system",
   SYSTEM_DERIVED: "system-derived"
 };
+
+/* -------------------------------------------- */
 
 /**
  * HUD
@@ -163,6 +184,8 @@ export const HUD = {
   defaultScale: 1
 };
 
+/* -------------------------------------------- */
+
 /**
  * Item Macro icon
  */
@@ -170,6 +193,8 @@ export const ITEM_MACRO_ICON = {
   ICON: "fas fa-sd-card",
   TOOLTIP: "Item Macro"
 };
+
+/* -------------------------------------------- */
 
 /**
  * Layout settings
@@ -218,6 +243,8 @@ export const LAYOUT_SETTING = {
     scope: "world"
   }
 };
+
+/* -------------------------------------------- */
 
 /**
  * Settings

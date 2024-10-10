@@ -11,6 +11,8 @@ export class GenericActionHandler {
     this.token = actionHandler.token;
   }
 
+  /* -------------------------------------------- */
+
   /**
    * Build generic actions
    * @public
@@ -18,6 +20,8 @@ export class GenericActionHandler {
   buildGenericActions() {
     this.#buildUtilities();
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Build utilities
@@ -30,6 +34,8 @@ export class GenericActionHandler {
       this.#buildMultipleTokenUtilities();
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Build utilities for a single token
@@ -80,6 +86,8 @@ export class GenericActionHandler {
     // Add actions to HUD
     this.actionHandler.addActions(actionsData, groupData);
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Build utilities for multiple tokens

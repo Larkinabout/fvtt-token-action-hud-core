@@ -13,13 +13,15 @@ export async function resetAllLayoutsDialog() {
     modal: true,
     yes: {
       label: game.i18n.localize("tokenActionHud.dialog.button.yes"),
-      callback: async () => resetAllLayouts
+      callback: async () => resetAllLayouts()
     },
     no: {
       label: game.i18n.localize("tokenActionHud.dialog.button.no")
     }
   });
 }
+
+/* -------------------------------------------- */
 
 /**
  * Reset HUD layouts for everyone
