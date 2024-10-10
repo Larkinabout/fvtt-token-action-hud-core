@@ -4,6 +4,7 @@ import { ActionHandlerExtender } from "./action-handlers/action-handler-extender
 import { DataHandler } from "./data-handler.js";
 import { PreRollHandler } from "./roll-handlers/pre-roll-handler.js";
 import { RollHandler } from "./roll-handlers/roll-handler.js";
+import { RollHandlerExtender } from "./roll-handlers/roll-handler-extender.js";
 import { SystemManager } from "./system-manager.js";
 import { Logger, Timer, Utils } from "./utils.js";
 
@@ -20,6 +21,7 @@ export function registerApi() {
     Logger,
     PreRollHandler,
     RollHandler,
+    RollHandlerExtender,
     SystemManager,
     Timer,
     Utils
