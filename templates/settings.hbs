@@ -1,48 +1,45 @@
-<form class="categories flexcol" autocomplete="off">
-    {{#each this.settings}}
-    <div class="form-group">
-        <label>{{this.name}}</label>
-        <div class="form-fields">
-            {{#if this.isCheckbox}}
-            <input type="checkbox" name="{{this.id}}" data-dtype="Boolean" {{checked this.value}}/>
+<div class="standard-form">
+    <div class="standard-form scrollable">
+        {{#each this.settings}}
+        <div class="form-group">
+            <label>{{this.name}}</label>
+            <div class="form-fields">
+                {{#if this.isCheckbox}}
+                <input type="checkbox" name="{{this.id}}" data-dtype="Boolean" {{checked this.value}}/>
 
-            {{else if this.isSelect}}
-            <select name="{{this.id}}" data-dtype="{{this.type}}">
-                {{selectOptions choices=this.choices selected=this.value localize=true}}
-            </select>
+                {{else if this.isSelect}}
+                <select name="{{this.id}}" data-dtype="{{this.type}}">
+                    {{selectOptions choices=this.choices selected=this.value localize=true}}
+                </select>
 
-            {{else if this.isRange}}
-            <input type="range" name="{{this.id}}" data-dtype="Number" value="{{ this.value }}"
-                min="{{ this.range.min }}" max="{{ this.range.max }}" step="{{ this.range.step }}"/>
-            <span class="range-value">{{this.value}}</span>
+                {{else if this.isRange}}
+                <input type="range" name="{{this.id}}" data-dtype="Number" value="{{ this.value }}"
+                    min="{{ this.range.min }}" max="{{ this.range.max }}" step="{{ this.range.step }}"/>
+                <span class="range-value">{{this.value}}</span>
 
-            {{else if this.isFilePicker}}
-            {{filePicker target=this.id type=this.filePickerType}}
-            <input type="text" name="{{this.id}}" value="{{this.value}}" data-dtype="{{this.dtype}}"/>
+                {{else if this.isFilePicker}}
+                <file-picker id="{{this.id}}" name="{{this.id}}" type="{{this.dtype}}" value="{{this.value}}"></file-picker>
 
-            {{else if this.isNumber}}
-            {{numberInput this.value name=this.id}}
+                {{else if this.isNumber}}
+                {{numberInput this.value name=this.id}}
 
-            {{else if this.isButton}}
-            <button type="button" onClick="{{this.onClick}}" style="flex: 2;">
-                {{#if this.icon}}<i class="{{this.icon}}"></i>{{/if}}
-                <label>{{this.label}}</label>
-            </button>
+                {{else if this.isButton}}
+                <button type="button" data-action="{{this.action}}" style="flex: 2;">
+                    {{#if this.icon}}<i class="{{this.icon}}"></i>{{/if}}
+                    <label>{{this.label}}</label>
+                </button>
 
-            {{else}}
-            <input type="text" name="{{this.id}}" value="{{this.value}}" data-dtype="{{this.dtype}}"/>
-            {{/if}}
+                {{else}}
+                <input type="text" name="{{this.id}}" value="{{this.value}}" data-dtype="{{this.dtype}}"/>
+                {{/if}}
+            </div>
+            <p class="hint">{{this.hint}}</p>
         </div>
-
-        <p class="notes">{{this.hint}}</p>
+        {{/each}}
     </div>
-    {{/each}}
-    <footer class="sheet-footer flexrow" style="padding-top: 5px;">
-        <button type="submit" id="tah-dialog-submit" name="submit" class="">
-            <i class="fas fa-check"></i></i>{{localize "tokenActionHud.accept"}}
-        </button>
-        <button type="button" id="tah-form-cancel" name="cancel" class="">
-            <i class="fas fa-times"></i></i>{{localize "tokenActionHud.cancel"}}
+    <footer class="form-footer" data-application-part="footer">
+        <button type="submit" class="save-button">
+            <i class="fas fa-solid fa-floppy-disk"></i>{{localize "tokenActionHud.saveAndClose"}}
         </button>
     </footer>
-</form>
+</div>
