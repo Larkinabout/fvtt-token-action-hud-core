@@ -1,9 +1,8 @@
-<div id="tah-group-{{nestId}}" class="tah-tab-group{{~#if class}} {{class}}{{~/if~}}" 
-data-part="group" data-group-type="tab" data-nest-id="{{nestId}}" data-level="{{level}}" data-name="{{name}}" data-type="custom">
-    <button class="tah-group-button" value="{{id}}" data-part="groupButton" data-action="clickGroup">
-        {{~#if settings.image~}}
-        <img class="tah-button-image" src="{{settings.image}}"{{~#if tooltip}} data-tooltip="{{tooltip}}" data-tooltip-class="tah-tooltip"{{~/if~}}>
-        {{~/if~}}
+{{~#if (ne selected false)~}}
+<div class="tah-tab-subgroup{{~#if class}} {{class}}{{~/if~}}" id="tah-subgroup-{{nestId}}"
+data-part="subgroup" data-group-type="tab" data-nest-id="{{nestId}}" data-has-actions="{{~#if (tokenActionHudCoreTrue hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
+    <button class="tah-subgroup-button" value="{{id}}" data-part="groupButton" data-action="clickSubgroup">
+        {{~#if settings.image~}}<img class="tah-button-image" src="{{settings.image}}"{{~#if tooltip}} data-tooltip="{{tooltip}}" data-tooltip-class="tah-tooltip"{{~/if~}}>{{~/if~}}
         <span class="tah-button-content">
             {{~#if icon1~}}<div class="tah-icon">{{{icon1}}}</div>{{~/if~}}
             {{~#if icon2~}}<div class="tah-icon">{{{icon2}}}</div>{{~/if~}}
@@ -16,21 +15,29 @@ data-part="group" data-group-type="tab" data-nest-id="{{nestId}}" data-level="{{
         <i class="fa fa-pen-to-square" aria-hidden="true"></i>
     </button>
     <div class="tah-subgroups-container" data-part="subgroupsContainer">
-        <div class="tah-subgroups">
+        <div class="tah-subgroups" data-part="subgroups">
+            {{~#if (tokenActionHudCoreTrue hasActions)~}}
+            <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
+            {{#each actions}}
+                {{>"modules/token-action-hud-core/templates/action.hbs"}}
+            {{/each}}
+            </div>
+            {{~/if~}}
             {{~#if (tokenActionHudCoreTrue groups.lists.length)~}}
             <div class="tah-list-subgroups" data-part="listSubgroups">
                 {{#each groups.lists}}
-                {{>"modules/token-action-hud-core/templates/list-subgroup.hbs" categoryId=../id}}
+                    {{>"modules/token-action-hud-core/templates/list-subgroup.hbs" categoryId=../id}}
                 {{/each}}
             </div>
             {{~/if~}}
             {{~#if (tokenActionHudCoreTrue groups.tabs.length)~}}
             <div class="tah-tab-subgroups" data-part="tabSubgroups">
                 {{#each groups.tabs}}
-                {{>"modules/token-action-hud-core/templates/tab-subgroup.hbs" categoryId=../id}}
+                    {{>"modules/token-action-hud-core/templates/tab-subgroup.hbs" categoryId=../id}}
                 {{/each}}
             </div>
             {{~/if~}}
         </div>
     </div>
 </div>
+{{~/if~}}

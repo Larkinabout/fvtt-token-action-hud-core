@@ -4,14 +4,14 @@ import terser from "@rollup/plugin-terser";
 
 export default [
   {
-    input: "scripts/main.js",
+    input: "module/main.mjs",
     plugins: [
       commonjs(),
       resolve({ browser: true })
     ],
     output: {
       format: "esm",
-      file: "dist/token-action-hud-core.min.js",
+      file: "dist/token-action-hud-core.min.mjs",
       generatedCode: { constBindings: true },
       plugins: [
         terser({ keep_classnames: true, keep_fnames: true })

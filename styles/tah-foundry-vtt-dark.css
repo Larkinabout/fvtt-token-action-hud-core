@@ -242,8 +242,8 @@
     font-size: var(--font-size-16);
 }
 
-#tah-groups,
-.tah-tab-groups {
+.tah-groups,
+.tah-tab-subgroups {
     display: flex;
     gap: var(--tah-gap);
     position: relative;
@@ -253,121 +253,121 @@
     width: max-content;
 }
 
-.tah-tab-group,
-.tah-group {
+.tah-tab-subgroup,
+.tah-subgroup {
     display: flex;
     position: relative;
 }
 
-.tah-groups-container {
+.tah-subgroups-container {
     display: none;
     position: absolute;
 }
 
-.tah-tab-group.hover > .tah-groups-container,
-.tah-tab-group.hover > .tah-groups-container > .tah-groups {
+.tah-tab-group.hover > .tah-subgroups-container,
+.tah-tab-group.hover > .tah-subgroups-container > .tah-subgroups {
     display: flex;
 }
 
-.tah-tab-group > .tah-groups-container.expand-down > .tah-groups {
+.tah-tab-group > .tah-subgroups-container.expand-down > .tah-subgroups {
     flex-direction: column;
     left: -10px;
     padding: 3px 10px 10px 10px;
     position: relative;
 }
 
-.tah-tab-group > .tah-groups-container.expand-up > .tah-groups {
+.tah-tab-group > .tah-subgroups-container.expand-up > .tah-subgroups {
     flex-direction: column;
     left: -10px;
     padding: 10px 10px 3px 10px;
     position: relative;
 }
 
-#tah-groups > .tah-tab-group > .tah-groups-container.expand-up > .tah-groups {
+.tah-groups > .tah-tab-group > .tah-subgroups-container.expand-up > .tah-subgroups {
     flex-direction: column-reverse;
 }
 
-.tah-tab-group > .tah-groups-container.expand-down {
+.tah-tab-group > .tah-subgroups-container.expand-down {
     top: calc(100% - 7px);
     padding-top: 10px;
 }
 
-.tah-tab-group > .tah-groups-container.expand-up {
+.tah-tab-group > .tah-subgroups-container.expand-up {
     bottom: calc(100% + 3px + -10px);
     flex-direction: column-reverse;
     padding-bottom: 10px;
 }
 
 .tah-tab-group
-    > .tah-groups-container.expand-up
-    > .tah-groups
-    > .tah-list-groups {
+    > .tah-subgroups-container.expand-up
+    > .tah-subgroups
+    > .tah-list-subgroups {
     flex-direction: column-reverse;
 }
 
-.tah-list-groups,
-.tah-tab-groups > .tah-tab-group > .tah-groups > .tah-actions {
+.tah-list-subgroups,
+.tah-tab-groups > .tah-tab-subgroup > .tah-subgroups > .tah-actions {
     background: var(--tah-background-color);
     border-radius: var(--tah-border-radius);
 }
 
-.tah-list-groups {
+.tah-list-subgroups {
     flex-direction: column;
     display: flex;
     gap: var(--tah-gap);
 }
 
-.tah-list-groups .tah-list-groups {
+.tah-list-subgroups .tah-list-subgroups {
     background: none;
 }
 
-.tah-list-group {
+.tah-list-subgroup {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.tah-groups {
+.tah-subgroups {
     display: flex;
     flex-direction: column;
     gap: var(--tah-gap);
     width: max-content;
 }
 
-.tah-groups.expand-down {
+.tah-subgroups.expand-down {
     flex-direction: column;
 }
 
-#tah-groups.tah-unlocked
-    .tah-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group {
+.tah-groups.tah-unlocked
+    .tah-subgroup
+    > .tah-subgroups
+    > .tah-list-subgroups
+    > .tah-subgroup {
     padding-left: 10px;
 }
 
-.tah-group[data-show-title="false"]
-    > .tah-list-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group:not([data-show-title="false"]) {
+.tah-subgroup[data-show-title="false"]
+    > .tah-list-subgroup
+    > .tah-subgroups
+    > .tah-list-subgroups
+    > .tah-subgroup:not([data-show-title="false"]) {
     padding-left: 0px;
 }
 
-.tah-group:not([data-show-title="false"])[data-has-image="false"]
-    > .tah-list-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group:not([data-show-title="false"])[data-has-image="false"] {
+.tah-subgroup:not([data-show-title="false"])[data-has-image="false"]
+    > .tah-list-subgroup
+    > .tah-subgroups
+    > .tah-list-subgroups
+    > .tah-subgroup:not([data-show-title="false"])[data-has-image="false"] {
     padding-left: 10px;
 }
 
 .tah-unlocked
-    .tah-group
-    > .tah-list-group
-    > .tah-groups
-    > .tah-list-groups
-    > .tah-group {
+    .tah-subgroup
+    > .tah-list-subgroup
+    > .tah-subgroups
+    > .tah-list-subgroups
+    > .tah-subgroup {
     padding-left: 10px;
 }
 
@@ -393,7 +393,7 @@
     color: var(--tah-text-primary-color);
 }
 
-.tah-group[data-show-title="false"] > div > .tah-subtitle > .tah-subtitle-text {
+.tah-subgroup[data-show-title="false"] > div > .tah-subtitle > .tah-subtitle-text {
     color: var(--tah-text-disabled-color);
 }
 

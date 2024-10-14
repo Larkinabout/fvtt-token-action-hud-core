@@ -22,7 +22,7 @@
     "verified": "12.331"
   },
   "esmodules": [
-    "./dist/token-action-hud-core.min.js"
+    "./dist/token-action-hud-core.min.mjs"
   ],
   "styles": [
     "./styles/token-action-hud.css",
