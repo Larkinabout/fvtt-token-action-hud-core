@@ -10,7 +10,7 @@ export class TagDialogHelper {
    * @public
    * @param {object} actionHandler The ActionHandler class
    */
-  static async showHudDialog(actionHandler) {
+  static async openEditHudApp(actionHandler) {
     // Set available and selected tags
     const tags = {};
     tags.available = [];
@@ -48,7 +48,7 @@ export class TagDialogHelper {
    * @param {object} actionHandler The ActionHandler class
    * @param {object} groupData    The group data
    */
-  static async showGroupDialog(actionHandler, groupData) {
+  static async openEditGroupApp(actionHandler, groupData) {
     const { nestId, name, level } = groupData;
 
     // Set available and selected tags
@@ -119,7 +119,7 @@ export class TagDialogHelper {
    * @param {object} actionHandler The ActionHandler class
    * @param {object} groupData    The group data
    */
-  static async showSubgroupDialog(actionHandler, groupData) {
+  static async openEditSubgroupApp(actionHandler, groupData) {
     const { nestId, name, level } = groupData;
 
     // Set available and selected tags

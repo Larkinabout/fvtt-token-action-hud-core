@@ -26,10 +26,9 @@
   ],
   "styles": [
     "./styles/token-action-hud.css",
-    "./styles/tah-compact.css",
     "./styles/tah-custom.css",
-    "./styles/tah-dorako.css",
     "./styles/tah-foundry-vtt-dark.css",
+    "./styles/tah-foundry-vtt-dark-compact.css",
     "./styles/tah-foundry-vtt-light.css",
     "./styles/tah-high-contrast.css",
     "./styles/tah-pathfinder.css",

@@ -1,0 +1,84 @@
+@text-shadow: 
+  1px 1px 1px rgb(11, 10, 19),
+  1px 1px 1px rgb(11, 10, 19),
+  1px 1px 3px rgb(11, 10, 19),
+  1px 1px 5px rgb(11, 10, 19);
+@font-size: var(--font-size-16);
+@button-font-size: var(--font-size-13);
+@tah-button-content-padding: 0 10px;
+@tah-groups-filter: drop-shadow(0 0 20px var(--color-shadow-dark));
+@tah-edit-group-icon-font-size: 8px;
+@tah-edit-group-icon-top: 2px;
+@tah-subgroups-container-left: 0;
+@tah-subgroups-container-expand-down-tah-subgroups-padding: 10px;
+@tah-subgroups-container-expand-up-tah-subgroups-padding: 10px;
+@tah-list-subgroup-title-font-size: var(--font-size-13);
+@tah-list-subgroup-title-text-transform: none;
+@tah-list-subgroup-title-letter-spacing: normal;
+@tah-info-font-size: x-small;
+
+:root {
+  --tah-background-color: #00000000;
+  --tah-border-radius: 3px;
+  --tah-gap: 3px;
+
+  --tah-button-background: url(../../../ui/parchment.jpg) repeat;
+  --tah-button-background-color: rgba(0, 0, 0, 0.1);
+  --tah-button-border: 2px groove var(--color-border-light-highlight);
+  --tah-button-box-shadow: none;
+  --tah-button-box-font-weight: normal;
+  --tah-button-text-color: var(--tah-text-primary-color);
+  --tah-button-height: 32px;
+  --tah-button-min-width: 32px;
+  --tah-button-text-shadow: none;
+
+  --tah-button-hover-background-color: #ffffff40;
+  --tah-button-hover-border: 2px groove var(--color-border-light-highlight);
+  --tah-button-hover-box-shadow: none;
+  --tah-button-hover-text-primary-color: #000000;
+  --tah-button-hover-text-secondary-color: var(--tah-text-hover-secondary-color);
+  --tah-button-hover-text-tertiary-color: var(--tah-text-hover-tertiary-color);
+
+  --tah-button-active-background-color: #ffffff40;
+  --tah-button-active-border: none;
+  --tah-button-active-box-shadow:
+    inset 0 0 25px #9b8dff,
+    inset 0 0 5px #9b8dff;
+  --tah-button-active-text-color: #000000;
+
+  --tah-button-toggle-background-color: #ffffff00;
+  --tah-button-toggle-hover-background-color: #ffffff00;
+  --tah-button-toggle-hover-border: none;
+  --tah-button-toggle-hover-box-shadow:
+    inset 0 0 25px #9b8dff,
+    inset 0 0 5px #9b8dff;
+
+  --tah-button-image-background-color: #00000080;
+  --tah-button-image-border-radius: var(--tah-border-radius);
+  --tah-button-image-height: 28px;
+  --tah-button-image-width: 28px;
+
+  --tah-icon-color: var(--color-text-light-highlight);
+  --tah-icon-text-shadow: @text-shadow;
+  --tah-icon-hover-color: #ffffff;
+  --tah-icon-hover-text-shadow: 0 0 8px var(--color-shadow-primary);
+
+  --tah-text-primary-color: #000000;
+  --tah-text-secondary-color: #000000;
+  --tah-text-tertiary-color: #000000;
+
+  --tah-character-name-color: var(--color-text-light-highlight);
+  --tah-character-name-text-shadow: @text-shadow;
+  --tah-list-subgroup-title-icon-color: #000000;
+  --tah-list-subgroup-title-hover-icon-color: #000000;
+  --tah-subgroups-background: url(../../../ui/parchment.jpg) repeat;
+
+  --tah-text-disabled-color: var(--color-text-light-7);
+  --tah-text-hover-primary-color: var(--tah-text-primary-color);
+  --tah-text-hover-secondary-color: var(--tah-text-secondary-color);
+  --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
+
+  --tah-text-shadow: none;
+}
+
+@import "tah-hud.less";

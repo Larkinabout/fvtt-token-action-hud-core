@@ -1,31 +1,49 @@
 :root {
     --tah-background-color: #00000000;
     --tah-border-radius: 3px;
-    --tah-gap: 4px;
-
-    --tah-button-background-color: rgba(11, 10, 19, 0.9);
+    --tah-gap: 5px;
+    --tah-icon-color-disabled: var(--tah-text-secondary-color-editable);
+    --tah-text-shadow: 1px 1px 1px rgb(0 0 0), 0px 1px 3px rgb(0 0 0);
+    --tah-button-height-editable: 32;
+    --tah-button-height: calc(var(--tah-button-height-editable) * 1px);
+    --tah-button-min-width: var(--tah-button-height);
+    --tah-button-background-color-editable: #000000b3;
     --tah-button-border-color: none;
-    --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c, 0 0 0 1px #060606, 0 0 5px #000000ff;
-    --tah-button-disabled-text-color: var(--tah-text-secondary-color);
-    --tah-button-text-color: var(--tah-text-primary-color);
-    --tah-button-height: 22px;
-    --tah-button-min-width: 22px;
-    --tah-button-hover-box-shadow: 0 2px 0 -1px var(--tah-text-tertiary-color),
-        0 0 0 1px red, 0 0 10px var(--tah-text-tertiary-color);
-    --tah-button-hover-text-color: #fff;
-    --tah-button-active-background-color: rgba(60, 0, 120, 0.9);
-    --tah-button-active-box-shadow: 0 0 0 1px #9b8dff, inset 0 0 10px #9b8dff;
-    --tah-button-toggle-background-color: #000000b3;
-    --tah-button-toggle-hover-background-color: rgba(60, 0, 120, 0.9);
-    --tah-button-toggle-hover-box-shadow: 0 0 0 1px #9b8dff, 0 0 10px #9b8dff;
-    --tah-text-disabled-color: var(--tah-text-secondary-color);
-    --tah-text-primary-color: #efe6d8;
-    --tah-text-secondary-color: #d0b8a3;
-    --tah-text-tertiary-color: #ff6400;
-    --tah-text-hover-primary-color: var(--tah-text-primary-color);
-    --tah-text-hover-secondary-color: var(--tah-text-secondary-color);
-    --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
-    --tah-text-shadow: 1px 1px 1px rgb(11, 10, 19), 1px 1px 1px rgb(11, 10, 19), 1px 1px 3px rgb(11, 10, 19), 1px 1px 5px rgb(11, 10, 19);
+    --tah-button-border-primary-color-editable: #0c0c0cff;
+    --tah-button-border-secondary-color-editable: #060606ff;
+    --tah-button-box-shadow: 0 2px 0 -1px var(--tah-button-border-primary-color-editable),
+        0 0 0 1px var(--tah-button-border-secondary-color-editable),
+        0 0 5px #000000ff;
+    --tah-button-text-color-editable: #ddddddff;
+    --tah-button-disabled-text-color-editable: #dddddd80;
+    --tah-button-hover-background-color-editable: #000000b3;
+    --tah-button-hover-border-primary-color-editable: #ff6400ff;
+    --tah-button-hover-border-secondary-color-editable: #ff0000ff;
+    --tah-button-hover-box-shadow: 0 2px 0 -1px var(--tah-button-hover-border-primary-color-editable),
+        0 0 0 1px var(--tah-button-hover-border-secondary-color-editable),
+        0 0 10px var(--tah-button-hover-border-primary-color-editable);
+    --tah-button-hover-text-color-editable: #ffffffff;
+    --tah-button-toggle-active-background-color-editable: #3c0078bf;
+    --tah-button-toggle-active-border-primary-color-editable: #9b8dffff;
+    --tah-button-toggle-active-border-secondary-color-editable: #9b8dffff;
+    --tah-button-toggle-active-box-shadow: 0 0 0 1px
+            var(--tah-button-toggle-active-border-primary-color-editable),
+        inset 0 0 10px
+            var(--tah-button-toggle-active-border-secondary-color-editable);
+    --tah-button-toggle-active-text-color-editable: #ffffffff;
+    --tah-button-toggle-hover-background-color-editable: #3c0078bf;
+    --tah-button-toggle-hover-border-primary-color-editable: #9b8dffff;
+    --tah-button-toggle-hover-border-secondary-color-editable: #9b8dffff;
+    --tah-button-toggle-hover-box-shadow: 0 0 0 1px
+            var(--tah-button-toggle-hover-border-primary-color-editable),
+        0 0 10px var(--tah-button-toggle-hover-border-primary-color-editable);
+    --tah-button-toggle-hover-text-color-editable: #ffffffff;
+    --tah-text-primary-color-editable: #ddddddff;
+    --tah-text-hover-primary-color-editable: #ddddddff;
+    --tah-text-secondary-color-editable: #dddddd80;
+    --tah-text-hover-secondary-color-editable: #dddddd80;
+    --tah-text-tertiary-color-editable: #ff6400ff;
+    --tah-text-hover-tertiary-color-editable: #ff6400ff;
 }
 
 #token-action-hud {
@@ -41,15 +59,15 @@
 }
 
 #tah-character-name {
-    color: var(--tah-text-primary-color);
-    font-size: var(--font-size-14);
+    color: var(--tah-text-primary-color-editable);
+    font-size: var(--font-size-16);
     margin: 0;
     padding: 0;
     pointer-events: none;
     position: absolute;
     text-align: left;
     text-shadow: var(--tah-text-shadow);
-    top: -20px !important;
+    top: -22px !important;
 }
 
 .tah-hidden {
@@ -97,7 +115,7 @@
 
 #tah-collapse-expand button > :is(.fa, .fas),
 #tah-buttons button > :is(.fa, .fas) {
-    color: var(--tah-text-primary-color);
+    color: var(--tah-text-primary-color-editable);
     font-size: var(--font-size-12);
     margin: 3px;
     padding: 3px;
@@ -112,26 +130,26 @@
 }
 
 #tah-collapse-hud {
-    left: -2px;
+    left: -3px;
 }
 
 #tah-expand-hud {
-    left: -2px;
-    top: 11px;
+    left: -3px;
+    top: 16px;
 }
 
 #tah-expand-hud,
 #tah-expand-hud:focus,
 .tah-action-button,
 .tah-action-button:focus,
-.tah-group-button,
-.tah-group-button:focus {
+.tah-subgroup-button,
+.tah-subgroup-button:focus {
     align-items: center;
-    background-color: var(--tah-button-background-color);
+    background-color: var(--tah-button-background-color-editable);
     border: var(--tah-button-border-color);
     border-radius: var(--tah-border-radius);
     box-shadow: var(--tah-button-box-shadow);
-    color: var(--tah-button-text-color);
+    color: var(--tah-button-text-color-editable);
     display: flex;
     height: var(--tah-button-height);
     margin: 0;
@@ -146,27 +164,29 @@
 }
 
 .tah-action-button,
-.tah-group-button {
+.tah-subgroup-button {
     font-size: var(--font-size-13);
     min-width: var(--tah-button-min-width);
 }
 
 #tah-expand-hud:hover,
-.tah-action-button:active,
 .tah-action-button:not(.disabled):hover,
-.tah-group-button:not(.disabled):hover {
+.tah-subgroup-button:not(.disabled):hover {
+    background: var(--tah-button-hover-background-color-editable);
     box-shadow: var(--tah-button-hover-box-shadow);
-    color: var(--tah-button-hover-text-color);
+    color: var(--tah-button-hover-text-color-editable);
 }
 
 .tah-action-button.toggle:not(.disabled):hover {
-    background: var(--tah-button-toggle-hover-background-color);
+    background: var(--tah-button-toggle-hover-background-color-editable);
     box-shadow: var(--tah-button-toggle-hover-box-shadow);
+    color: var(--tah-button-toggle-hover-text-color-editable);
 }
 
 .tah-action-button.active {
-    background: var(--tah-button-active-background-color);
-    box-shadow: var(--tah-button-active-box-shadow);
+    background: var(--tah-button-toggle-active-background-color-editable);
+    box-shadow: var(--tah-button-toggle-active-box-shadow);
+    color: var(--tah-button-toggle-active-text-color-editable);
 }
 
 .tah-action-button.active.activeText > .tah-action-button-content:after {
@@ -174,7 +194,7 @@
 }
 
 .tah-action-button.disabled {
-    color: var(--tah-button-disabled-text-color);
+    color: var(--tah-button-disabled-text-color-editable);
 }
 
 .tah-action-button.disabled:hover {
@@ -185,15 +205,15 @@
     min-width: min-content;
 }
 
-.tah-group-button > :is(.fa, .fas) {
-    font-size: 6px;
+.tah-subgroup-button > :is(.fa, .fas) {
+    font-size: 8px;
     position: absolute;
     right: 0px;
-    top: 1px;
+    top: 2px;
     visibility: hidden;
 }
 
-.tah-group-button:hover:not(.disable-edit)
+.tah-subgroup-button:hover:not(.disable-edit)
     > :is(.fa, .fas) {
     visibility: visible;
 }
@@ -207,7 +227,7 @@
     display: flex;
     gap: var(--tah-gap);
     overflow: hidden;
-    padding: 0 5px;
+    padding: 0 10px;
     width: 100%;
 }
 
@@ -220,7 +240,7 @@
     display: flex;
     gap: var(--tah-gap);
     overflow: hidden;
-    padding: 0 5px;
+    padding: 0 10px;
     width: 100%;
 }
 
@@ -234,8 +254,12 @@
 
 #tah-collapse-expand:hover button > i,
 #tah-buttons button:hover > i {
-    color: var(--tah-text-hover-primary-color);
+    color: var(--tah-text-hover-primary-color-editable);
     text-shadow: 0 0 8px var(--color-shadow-primary);
+}
+
+#tah-edit-hud > :is(.fa, .fas) {
+    font-size: var(--font-size-16);
 }
 
 .tah-groups,
@@ -246,6 +270,7 @@
 }
 
 .tah-tab-groups {
+    padding: 3px 0 3px 0;
     width: max-content;
 }
 
@@ -284,8 +309,8 @@
 }
 
 .tah-tab-group > .tah-subgroups-container.expand-down {
-        top: calc(100% - 7px);
-        padding-top: 10px;
+    top: calc(100% - 7px);
+    padding-top: 10px;
 }
 
 .tah-tab-group > .tah-subgroups-container.expand-up {
@@ -367,12 +392,12 @@
     padding-left: 10px;
 }
 
-.tah-subtitle {
+.tah-list-subgroup-title {
     align-items: center;
-    color: var(--tah-text-primary-color);
+    color: var(--tah-text-primary-color-editable);
     display: flex;
     flex-wrap: wrap;
-    font-size: 0.55rem;
+    font-size: var(--tah-font-size-10);
     gap: var(--tah-gap);
     letter-spacing: 0.1em;
     line-height: 1;
@@ -380,20 +405,20 @@
     text-transform: uppercase;
 }
 
-.tah-subtitle:hover {
-    color: var(--tah-text-hover-primary-color);
+.tah-list-subgroup-title:hover {
+    color: var(--tah-text-hover-primary-color-editable);
     cursor: pointer;
 }
 
-.tah-subtitle-text {
-    color: var(--tah-text-primary-color);
+.tah-list-subgroup-title-text {
+    color: var(--tah-text-primary-color-editable);
 }
 
-.tah-subgroup[data-show-title="false"] > div > .tah-subtitle > .tah-subtitle-text {
+.tah-subgroup[data-show-title="false"] > div > .tah-list-subgroup-title > .tah-list-subgroup-title-text {
     color: var(--tah-text-disabled-color);
 }
 
-.tah-subtitle > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {
+.tah-list-subgroup-title > :is(.tah-edit-icon, .tah-collapse-icon, .tah-expand-icon) {
     bottom: 1px;
     font-size: 8px;
     pointer-events: none;
@@ -401,12 +426,12 @@
     visibility: hidden;
 }
 
-.tah-subtitle:hover
+.tah-list-subgroup-title:hover
     > :is(
         .tah-collapse-icon:not(.tah-hidden),
         .tah-expand-icon:not(.tah-hidden)
     ),
-.tah-subtitle:hover:not(.disable-edit) > .tah-edit-icon {
+.tah-list-subgroup-title:hover:not(.disable-edit) > .tah-edit-icon {
     visibility: visible;
 }
 
@@ -425,21 +450,21 @@
 .tah-info1,
 .tah-info2,
 .tah-info3 {
-    color: var(--tah-text-secondary-color);
+    color: var(--tah-text-secondary-color-editable);
     font-size: xx-small;
 }
 
 .tah-info1.tah-spotlight,
 .tah-info2.tah-spotlight,
 .tah-info3.tah-spotlight {
-    color: var(--tah-text-tertiary-color);
+    color: var(--tah-text-tertiary-color-editable);
 }
 
-.tah-subtitle > :is(.tah-info1, .tah-info2, .tah-info3) {
-    background: var(--tah-button-background-color);
+.tah-list-subgroup-title > :is(.tah-info1, .tah-info2, .tah-info3) {
+    background: var(--tah-button-background-color-editable);
     border-radius: 5px;
     margin: 1px;
-    padding: 0 3px;
+    padding: 1px 3px;
 }
 
 .tah-button-image {
@@ -450,7 +475,6 @@
 }
 
 .tah-list-image {
-    border: none;
     border-radius: var(--tah-border-radius);
     box-shadow: var(--tah-button-box-shadow);
     height: var(--tah-button-height);
@@ -465,9 +489,9 @@
 }
 
 .tah-icon-disabled {
-    color: var(--tah-text-disabled-color);
+    color: var(--tah-icon-color-disabled);
 }
 
-.tah-subtitle > .tah-icon > :is(.fa, .fas) {
+.tah-list-subgroup-title > .tah-icon > :is(.fa, .fas) {
     text-shadow: var(--tah-text-shadow);
 }

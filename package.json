@@ -1,7 +1,14 @@
 {
   "type": "module",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && npm run build:css",
+    "build:css": "npm run build:css:custom && npm run build:css:foundry-vtt-dark && npm run build:css:foundry-vtt-dark-compact && npm run build:css:foundry-vtt-light && npm run build:css:high-contrast && npm run build:css:pathfinder",
+    "build:css:custom": "lessc less/tah-custom.less styles/tah-custom.css",
+    "build:css:foundry-vtt-dark": "lessc less/tah-foundry-vtt-dark.less styles/tah-foundry-vtt-dark.css",
+    "build:css:foundry-vtt-dark-compact": "lessc less/tah-foundry-vtt-dark-compact.less styles/tah-foundry-vtt-dark-compact.css",
+    "build:css:foundry-vtt-light": "lessc less/tah-foundry-vtt-light.less styles/tah-foundry-vtt-light.css",
+    "build:css:high-contrast": "lessc less/tah-high-contrast.less styles/tah-high-contrast.css",
+    "build:css:pathfinder": "lessc less/tah-pathfinder.less styles/tah-pathfinder.css",
     "dev": "rollup -wcm"
   },
   "devDependencies": {
@@ -18,6 +25,7 @@
     "eslint-plugin-jsdoc": "^50.2.4",
     "eslint-plugin-n": "^15.3.0",
     "eslint-plugin-promise": "^6.1.0",
+    "less": "^4.2.0",
     "rollup": "^3.26.3"
   }
 }

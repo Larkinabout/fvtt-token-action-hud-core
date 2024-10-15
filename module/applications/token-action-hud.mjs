@@ -126,7 +126,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       listSubgroupsArr: this.element.querySelectorAll("[data-part=\"listSubgroups\"]"),
       subgroupsContainerArr: this.element.querySelectorAll("[data-part=\"subgroupsContainer\"]"),
       subgroupArr: this.element.querySelectorAll("[data-part=\"subgroup\"]"),
-      subtitleArr: this.element.querySelectorAll("[data-part=\"subtitle\"]"),
+      listSubgroupTitleArr: this.element.querySelectorAll("[data-part=\"listSubgroupTitle\"]"),
       groupButtonArr: this.element.querySelectorAll("[data-part=\"groupButton\"]"),
       collapseHudButton: this.element.querySelector("[data-part=\"collapseHudButton\"]"),
       expandHudButton: this.element.querySelector("[data-part=\"expandHudButton\"]"),
@@ -142,7 +142,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @private
    */
   #setInitialHudState() {
-    if (this.isCollapsed) { this.collapseHud(); }
+    if (this.isCollapsed) { TokenActionHud.collapseHud.call(this); }
 
     if (this.isUnlocked && this.enableCustomizationSetting) {
       TokenActionHud.unlockHud.call(this);
@@ -236,10 +236,10 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * When the 'Edit HUD' button is clicked, open the HUD dialog
+   * When the 'Edit HUD' button is clicked, open the Edit HUD app
    */
   static editHud() {
-    TagDialogHelper.showHudDialog(this.actionHandler);
+    TagDialogHelper.openEditHudApp(this.actionHandler);
   }
 
   /* -------------------------------------------- */
@@ -274,7 +274,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const isUnlocking = state === "unlock";
     const { unlockButton, lockButton, editHudButton, subgroupArr, groupButtonArr,
-      groups, listSubgroupsArr, tabSubgroupArr, subtitleArr } = this.elements;
+      groups, listSubgroupsArr, tabSubgroupArr, listSubgroupTitleArr } = this.elements;
 
     // Toggle button visibiltiy
     unlockButton.classList.toggle("tah-hidden", isUnlocking);
@@ -290,14 +290,14 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     };
 
     toggleElements(groupButtonArr, "disable-edit", !isUnlocking);
-    toggleElements(subtitleArr, "disable-edit", !isUnlocking);
+    toggleElements(listSubgroupTitleArr, "disable-edit", !isUnlocking);
 
     if (isUnlocking) {
       // When the HUD is unlocked, unhide elements
       toggleElements(subgroupArr, "tah-hidden", !isUnlocking);
       toggleElements(listSubgroupsArr, "tah-hidden", !isUnlocking);
       toggleElements(tabSubgroupArr, "tah-hidden", !isUnlocking);
-      toggleElements(subtitleArr, "tah-hidden", !isUnlocking);
+      toggleElements(listSubgroupTitleArr, "tah-hidden", !isUnlocking);
     } else {
       // When the HUD is locked, hide elements that have no underlying actions
       const hideIfEmpty = elements => {
@@ -311,7 +311,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       hideIfEmpty(subgroupArr);
       hideIfEmpty(listSubgroupsArr);
 
-      subtitleArr.forEach(element => {
+      listSubgroupTitleArr.forEach(element => {
         const groupElement = element.closest(".tah-subgroup");
         if (groupElement.dataset?.showTitle === "false") {
           element.classList.add("tah-hidden");
@@ -366,8 +366,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if (event) event.preventDefault();
 
     const isCollapsing = state === "collapse";
-    const { collapseHudButton, expandHudButton, groups, buttons } = this.elements;
+    const { characterName, collapseHudButton, expandHudButton, groups, buttons } = this.elements;
 
+    if (this.direction === "down") { characterName.classList.toggle("tah-hidden", isCollapsing); }
     collapseHudButton.classList.toggle("tah-hidden", isCollapsing);
     expandHudButton.classList.toggle("tah-hidden", !isCollapsing);
     groups.classList.toggle("tah-hidden", isCollapsing);
@@ -402,11 +403,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (event.type === "contextmenu") {
       if (this.isUnlocked) {
-        if (event.currentTarget.parentElement.dataset.level === "1") {
-          this.openEditGroupApp(event);
-        } else {
-          this.openEditActionApp(event);
-        }
+        this.openEditGroupApp(event);
       } else {
         this.handleGroupClick(event);
       }
@@ -423,13 +420,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} group The group element
    */
   toggleGroup(event = null, group = null) {
-    group = group || this.#getClosestGroup(event);
+    group = group || this.getClosestGroup(event);
     const isOpen = group.classList.contains("hover");
     const shouldOpen = !isOpen;
     if ((isOpen && event?.type === "pointerenter") || (!isOpen && event?.type === "pointerleave")) return;
     group.classList.toggle("hover", shouldOpen);
     if (shouldOpen) {
-      this.#toggleOtherGroups(group.id);
+      this.#toggleOtherGroups(group);
       this.groupResizer.resizeGroup(this.actionHandler, group, this.direction, this.gridSetting);
       this.openGroups.add(group.id);
     } else {
@@ -446,7 +443,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event The event
    * @returns {object}     The closest group element
    */
-  #getClosestGroup(event) {
+  getClosestGroup(event) {
     if (!event) return null;
     return event.target.closest("[data-part=\"subgroup\"]") || event.target.closest("[data-part=\"group\"]");
   }
@@ -471,17 +468,18 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Toggle visibility of all groups
+   * Toggle visibility of other groups
    * @private
-   * @param {string} ignoreGroupId The group ID to ignore
+   * @param {string} groupToIgnore The group to ignore
    */
-  #toggleOtherGroups(ignoreGroupId) {
+  #toggleOtherGroups(groupToIgnore) {
     if (!this.openGroups.size) return;
 
     this.openGroups.forEach(groupId => {
-      if (groupId === ignoreGroupId) return;
+      if (groupId === groupToIgnore.id) return;
       const group = this.element.querySelector(`#${groupId}`);
-      if (group) {
+      const isParentToIgnore = group.querySelector(`#${groupToIgnore.id}`);
+      if (group && !isParentToIgnore) {
         this.toggleGroup(null, group);
       }
     });
@@ -496,13 +494,17 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   static clickSubgroup(event) {
     if (event.type === "contextmenu") {
       if (this.isUnlocked) {
-        this.openEditActionApp(event);
+        this.openEditGroupApp(event);
       } else {
         this.handleGroupClick(event);
       }
     } else {
-      if (event.target.classList.contains("tah-button-text")) return;
-      this.collapseExpandSubgroup(event, this.enableCustomizationSetting);
+      const group = this.getClosestGroup(event);
+      if (group.dataset?.groupType === "tab") {
+        this.toggleGroup(event, group);
+      } else {
+        this.collapseExpandSubgroup(event, this.enableCustomizationSetting);
+      }
     }
   }
 
@@ -532,11 +534,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {boolean} enableCustomizationSetting Whether customization is enabled
    */
   collapseExpandSubgroup(event, enableCustomizationSetting) {
-    const target = event.target.classList.contains("tah-subtitle-text")
-      ? event.target.parentElement
-      : event.target;
+    const target = event.target.closest('[data-part="listSubgroupTitle"]');
 
-    const groupElement = this.#getClosestGroup(event);
+    const groupElement = this.getClosestGroup(event);
     const nestId = groupElement?.dataset?.nestId;
     const tabSubgroup = target.closest(".tah-tab-subgroup.hover");
     const groupsElement = groupElement?.querySelector("[data-part=\"subgroups\"]");
@@ -574,7 +574,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event The event
    */
   handleGroupClick(event) {
-    const group = this.#getClosestGroup(event);
+    const group = this.getClosestGroup(event);
 
     const nestId = group.dataset?.nestId;
     if (!nestId) return;
@@ -589,38 +589,22 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Open the '
+   * Open the 'Edit Group' or 'Edit Subgroup' app
    * @param {object} event
    */
   openEditGroupApp(event) {
-    const target = event.currentTarget;
-    const parentElement = target.parentElement;
-    if (!parentElement.dataset?.nestId) return;
-
-    const nestId = parentElement.dataset?.nestId;
-    const name = parentElement.dataset?.name ?? target.innerText ?? target.outerText;
-    const level = parseInt(parentElement.dataset?.level) || null;
-    const type = parentElement.dataset?.type;
-
-    TagDialogHelper.showGroupDialog(this.actionHandler, { nestId, name, level, type });
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Open the Action dialog
-   * @param {object} event The event
-   */
-  openEditActionApp(event) {
-    const group = this.#getClosestGroup(event);
-    const { nestId, level = parseInt(level) ?? null, type } = group.dataset;
+    const group = this.getClosestGroup(event);
+    const { nestId, level, type } = group.dataset;
     if (!nestId) return;
     const name = this.actionHandler.groups[nestId].name;
+    const parsedLevel = parseInt(level, 10) || null;
 
-    TagDialogHelper.showSubgroupDialog(
-      this.actionHandler,
-      { nestId, name, level, type }
-    );
+    if (parsedLevel === 1) {
+      TagDialogHelper.openEditGroupApp(this.actionHandler, { nestId, name, level: parsedLevel, type });
+    } else {
+      TagDialogHelper.openEditSubgroupApp(this.actionHandler, { nestId, name, level: parsedLevel, type });
+    }
+
   }
 
   /* -------------------------------------------- */
@@ -786,7 +770,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
         element.classList.add("expand-up");
       });
     } else {
-      characterName.classList.remove("tah-hidden");
+      if (!this.isCollapsed) {
+        characterName.classList.remove("tah-hidden");
+      }
 
       subgroupsContainerArr.forEach(element => {
         element.classList.add("expand-down");

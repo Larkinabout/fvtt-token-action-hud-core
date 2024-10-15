@@ -61,7 +61,7 @@ export class GroupResizer {
       const nestId = groupElement.dataset.nestId;
       const groupSettings = await actionHandler.getGroupSettings({ nestId });
       const groupCustomWidth = groupSettings.customWidth;
-      const grid = gridModuleSetting || this.settings?.grid || groupSettings?.grid;
+      const grid = gridModuleSetting || this.settings?.grid || groupSettings?.grid || actionsElement.style.display;
       if (grid) {
         if (!hasGrid) {
           await this.#getGridWidth();

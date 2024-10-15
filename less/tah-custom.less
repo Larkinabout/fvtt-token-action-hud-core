@@ -1,0 +1,120 @@
+@text-shadow: 
+  1px 1px 1px rgb(11, 10, 19),
+  1px 1px 1px rgb(11, 10, 19),
+  1px 1px 3px rgb(11, 10, 19),
+  1px 1px 5px rgb(11, 10, 19);
+@font-size: var(--font-size-16);
+@button-font-size: var(--font-size-13);
+@tah-button-content-padding: 0 10px;
+@tah-groups-filter: none;
+@tah-edit-group-icon-font-size: 8px;
+@tah-edit-group-icon-top: 2px;
+@tah-subgroups-container-left: -10px;
+@tah-subgroups-container-expand-down-tah-subgroups-padding: 3px 10px 10px 10px;
+@tah-subgroups-container-expand-up-tah-subgroups-padding: 10px 10px 3px 10px;
+@tah-list-subgroup-title-font-size: var(--tah-font-size-10);
+@tah-list-subgroup-title-text-transform: uppercase;
+@tah-list-subgroup-title-letter-spacing: 0.1em;
+@tah-info-font-size: x-small;
+
+:root {
+  /* -------------------------------------------- */
+  /* Editable                                     */
+  /* -------------------------------------------- */
+  --tah-button-background-color-editable: #000000b3;
+  --tah-button-border-primary-color-editable: #0c0c0cff;
+  --tah-button-border-secondary-color-editable: #060606ff;
+  --tah-button-height-editable: 32;
+  --tah-button-text-color-editable: #ddddddff;
+  --tah-button-hover-background-color-editable: #000000b3;
+  --tah-button-hover-border-primary-color-editable: #ff6400ff;
+  --tah-button-hover-border-secondary-color-editable: #ff0000ff;
+  --tah-button-hover-text-color-editable: #ffffffff;
+  --tah-button-active-background-color-editable: #3c0078bf;
+  --tah-button-active-border-primary-color-editable: #9b8dffff;
+  --tah-button-active-border-secondary-color-editable: #9b8dffff;
+  --tah-button-active-text-color-editable: #ffffffff;
+  --tah-button-toggle-hover-background-color-editable: #3c0078bf;
+  --tah-button-toggle-hover-border-primary-color-editable: #9b8dffff;
+  --tah-button-toggle-hover-border-secondary-color-editable: #9b8dffff;
+  --tah-button-toggle-hover-text-color-editable: #ffffffff;
+  --tah-text-disabled-color-editable: #dddddd80;
+  --tah-text-primary-color-editable: #ddddddff;
+  --tah-text-secondary-color-editable: #dddddd80;
+  --tah-text-tertiary-color-editable: #ff6400ff;
+  --tah-text-hover-primary-color-editable: #ddddddff;
+  --tah-text-hover-secondary-color-editable: #dddddd80;
+  --tah-text-hover-tertiary-color-editable: #ff6400ff;
+
+  /* -------------------------------------------- */
+
+  --tah-background-color: #00000000;
+  --tah-border-radius: 3px;
+  --tah-gap: 5px;
+
+  --tah-button-background: var(--tah-button-background-color);
+  --tah-button-background-color: var(--tah-button-background-color-editable);
+  --tah-button-border: none;
+  --tah-button-box-shadow:
+    0 2px 0 -1px var(--tah-button-border-primary-color-editable),
+    0 0 0 1px var(--tah-button-border-secondary-color-editable),
+    0 0 5px #000000ff;
+  --tah-button-box-font-weight: normal;
+  --tah-button-text-color: var(--tah-button-text-color-editable);
+  --tah-button-height: calc(var(--tah-button-height-editable) * 1px);
+  --tah-button-min-width: var(--tah-button-height);
+  --tah-button-text-shadow: @text-shadow;
+
+  --tah-button-hover-background-color: var(--tah-button-background-color);
+  --tah-button-hover-border: none;
+  --tah-button-hover-box-shadow:
+    0 2px 0 -1px var(--tah-button-hover-border-primary-color-editable),
+    0 0 0 1px var(--tah-button-hover-border-secondary-color-editable),
+    0 0 10px var(--tah-button-hover-border-primary-color-editable);
+  --tah-button-hover-text-primary-color: var(--tah-button-hover-text-color-editable);
+  --tah-button-hover-text-secondary-color: var(--tah-text-hover-secondary-color);
+  --tah-button-hover-text-tertiary-color: var(--tah-text-hover-tertiary-color);
+
+  --tah-button-active-background-color: var(--tah-button-active-background-color-editable);
+  --tah-button-active-border: none;
+  --tah-button-active-box-shadow:
+    0 0 0 1px var(--tah-button-active-border-primary-color-editable),
+    inset 0 0 10px var(--tah-button-active-border-secondary-color-editable);
+  --tah-button-active-text-color: var(--tah-button-active-text-color-editable);
+
+  --tah-button-toggle-background-color: var(--tah-button-toggle-active-background-color-editable);
+  --tah-button-toggle-hover-background-color: var(--tah-button-toggle-hover-background-color-editable);
+  --tah-button-toggle-hover-border: none;
+  --tah-button-toggle-hover-box-shadow:
+    0 0 0 1px var(--tah-button-toggle-hover-border-primary-color-editable),
+    0 0 10px var(--tah-button-toggle-hover-border-secondary-color-editable);
+
+  --tah-button-image-background-color: #00000080;
+  --tah-button-image-border-radius: var(--tah-border-radius);
+  --tah-button-image-height: var(--tah-button-height);
+  --tah-button-image-width: var(--tah-button-min-width);
+
+  --tah-icon-color: var(--tah-text-primary-color);
+  --tah-icon-text-shadow: @text-shadow;
+  --tah-icon-hover-color: #ffffff;
+  --tah-icon-hover-text-shadow: 0 0 8px var(--color-shadow-primary);
+
+  --tah-text-primary-color: var(--tah-text-primary-color-editable);
+  --tah-text-secondary-color: var(--tah-text-secondary-color-editable);
+  --tah-text-tertiary-color: var(--tah-text-tertiary-color-editable);
+
+  --tah-character-name-color: var(--tah-text-primary-color-editable);
+  --tah-character-name-text-shadow: @text-shadow;
+  --tah-list-subgroup-title-icon-color: var(--tah-text-primary-color-editable);
+  --tah-list-subgroup-title-hover-icon-color: var(--tah-text-hover-primary-color-editable);
+  --tah-subgroups-background: none;
+
+  --tah-text-disabled-color: var(--tah-text-disabled-color-editable);
+  --tah-text-hover-primary-color: var(--tah-text-hover-primary-color-editable);
+  --tah-text-hover-secondary-color: var(--tah-text-hover-secondary-color-editable);
+  --tah-text-hover-tertiary-color: var(--tah-text-hover-tertiary-color-editable);
+
+  --tah-text-shadow: @text-shadow;
+}
+
+@import "tah-hud.less";

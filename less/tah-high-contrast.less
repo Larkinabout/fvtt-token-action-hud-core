@@ -1,0 +1,80 @@
+@text-shadow: 
+  1px 1px 1px rgb(11, 10, 19),
+  1px 1px 1px rgb(11, 10, 19),
+  1px 1px 3px rgb(11, 10, 19),
+  1px 1px 5px rgb(11, 10, 19);
+@font-size: var(--font-size-16);
+@button-font-size: var(--font-size-14);
+@tah-button-content-padding: 0 10px;
+@tah-groups-filter: none;
+@tah-edit-group-icon-font-size: 8px;
+@tah-edit-group-icon-top: 2px;
+@tah-subgroups-container-left: -10px;
+@tah-subgroups-container-expand-down-tah-subgroups-padding: 3px 10px 10px 10px;
+@tah-subgroups-container-expand-up-tah-subgroups-padding: 10px 10px 3px 10px;
+@tah-list-subgroup-title-font-size: var(--font-size-12);
+@tah-list-subgroup-title-text-transform: uppercase;
+@tah-list-subgroup-title-letter-spacing: 0.1em;
+@tah-info-font-size: small;
+
+:root {
+  --tah-background-color: #00000000;
+  --tah-border-radius: 3px;
+  --tah-gap: 5px;
+
+  --tah-button-background: var(--tah-button-background-color);
+  --tah-button-background-color: rgba(11, 10, 19, 0.9);
+  --tah-button-border: 2px solid var(--tah-text-primary-color);
+  --tah-button-box-shadow: none;
+  --tah-button-box-font-weight: bold;
+  --tah-button-text-color: var(--tah-text-primary-color);
+  --tah-button-height: 36px;
+  --tah-button-min-width: 36px;
+  --tah-button-text-shadow: none;
+
+  --tah-button-hover-background-color: var(--tah-text-primary-color);
+  --tah-button-hover-border: 2px solid #000000;
+  --tah-button-hover-box-shadow: none;
+  --tah-button-hover-text-primary-color: #000000;
+  --tah-button-hover-text-secondary-color: #000000;
+  --tah-button-hover-text-tertiary-color: #000000;
+
+  --tah-button-active-background-color: var(--tah-text-tertiary-color);
+  --tah-button-active-border: 2px solid #000000;
+  --tah-button-active-box-shadow: none;
+  --tah-button-active-text-color: #000000;
+
+  --tah-button-toggle-background-color: #000000b3;
+  --tah-button-toggle-hover-background-color: var(--tah-text-primary-color);
+  --tah-button-toggle-hover-border: 2px solid #000000;  
+  --tah-button-toggle-hover-box-shadow: none;
+
+  --tah-button-image-background-color: #00000080;
+  --tah-button-image-border-radius: 0;
+  --tah-button-image-height: 32px;
+  --tah-button-image-width: 32px;
+
+  --tah-icon-color: var(--tah-text-primary-color);
+  --tah-icon-text-shadow: @text-shadow;
+  --tah-icon-hover-color: var(--tah-text-primary-color);
+  --tah-icon-hover-text-shadow: 0 0 8px var(--color-shadow-primary);
+
+  --tah-text-primary-color: #ffff00;
+  --tah-text-secondary-color: var(--tah-text-primary-color);
+  --tah-text-tertiary-color: #0c7bdc;
+
+  --tah-character-name-color: var(--tah-text-primary-color);
+  --tah-character-name-text-shadow: @text-shadow;
+  --tah-list-subgroup-title-icon-color: var(--tah-text-primary-color);
+  --tah-list-subgroup-title-hover-icon-color: var(--tah-text-primary-color);
+  --tah-subgroups-background: none;
+
+  --tah-text-disabled-color: var(--tah-text-primary-color);
+  --tah-text-hover-primary-color: var(--tah-text-primary-color);
+  --tah-text-hover-secondary-color: var(--tah-text-secondary-color);
+  --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
+
+  --tah-text-shadow: @text-shadow;
+}
+
+@import "tah-hud.less";

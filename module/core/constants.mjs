@@ -91,9 +91,9 @@ export const CSS_STYLE = {
   },
   compact: {
     class: "tah-style-foundry-vtt",
-    file: "tah-compact",
+    file: "tah-foundry-vtt-dark-compact",
     moduleId: MODULE.ID,
-    name: "Foundry VTT Compact",
+    name: "Foundry VTT Dark Compact",
     primaryColor: "#dddddd",
     secondaryColor: "#dddddd80",
     tertiaryColor: "#ff6400"
