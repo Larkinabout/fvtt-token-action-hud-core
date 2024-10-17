@@ -55,22 +55,15 @@
     --tah-text-shadow: 1px 1px 1px #0b0a13, 1px 1px 1px #0b0a13, 1px 1px 3px #0b0a13, 1px 1px 5px #0b0a13;
   }
   #token-action-hud {
-    display: flex;
-    /* -------------------------------------------- */
-    /* Button Container                             */
-    /* -------------------------------------------- */
-    /* -------------------------------------------- */
-    /* Box Button                                   */
-    /* -------------------------------------------- */
-    /* -------------------------------------------- */
-    /* Icon Button                                  */
-    /* -------------------------------------------- */
-    /* -------------------------------------------- */
-    /* Groups                                       */
-    /* -------------------------------------------- */
     flex-direction: column;
-    background-color: #00000060;
     height: 100%;
+    width: 0;
+    transition: width 0.5s;
+  }
+  #token-action-hud > #token-action-hud {
+    background-color: rgba(0,0,0,0.7);
+    z-index: 30;
+    width: 200px;
   }
   #token-action-hud .tah-hidden {
     display: none !important;
@@ -85,27 +78,40 @@
   }
   #token-action-hud:hover #tah-collapse-expand > #tah-collapse-hud,
   #token-action-hud:hover > #tah-buttons {
-    display: flex;
   }
   #token-action-hud #tah-collapse-expand {
-    left: -20px;
+    left: 0;
     position: absolute;
+    top: 50vh;
+    background-color: #00000060;
+    z-index: 1;
   }
   #token-action-hud #tah-collapse-expand #tah-collapse-hud {
-    align-items: center;
-    display: none;
+    background: #0000009c;
     height: var(--tah-button-height);
-    position: relative;
+    position: absolute;
     z-index: 1;
+    width: 12px;
+    border-radius: 3px 0 0 3px;
+    left: -12px;
   }
   #token-action-hud #tah-collapse-expand #tah-expand-hud {
     background: var(--tah-button-background);
+    position: absolute;
+    border-radius: 3px 0 0 3px;
+    width: 12px;
+    padding: 0;
+    margin: 0;
+    display: flex;
     justify-content: center;
-    min-width: auto;
-    padding: 0 5px;
+    left: -12px;
   }
   #token-action-hud #tah-collapse-expand button > i {
-    font-size: var(--font-size-16);
+    font-size: var(--font-size-14);
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    display: flex;
   }
   #token-action-hud #tah-buttons {
     align-items: center;
@@ -115,14 +121,19 @@
     height: var(--tah-button-height);
     position: absolute;
     z-index: 1;
-    left: calc(100% - 30px);
+    right: 0;
+    flex-direction: row-reverse;
+    padding: 0 5px;
   }
   #token-action-hud .tah-tab-group.hover > .tah-button-box {
-    background-color: var(--tah-button-hover-background-color);
+    background-color: #ffffff30;
     border: none;
     color: var(--tah-button-hover-text-primary-color);
-    box-shadow: 0 1px 1px #ff0000,  0 10px 10px #ff000030;
+    /* box-shadow: 0 1px 1px #ff0000,  0 10px 10px #ff000030; */
   }
+#token-action-hud .tah-button-box:focus {
+    box-shadow: none;
+}
   #token-action-hud .tah-button-box {
     align-items: center;
     background-color: transparent;
@@ -131,34 +142,27 @@
     display: flex;
     font-size: var(--font-size-13);
     font-weight: var(--tah-button-box-font-weight);
-    height: var(--tah-button-height);
+    min-height: var(--tah-button-height);
     margin: 0;
-    padding: 0 10px;
+    padding: 5px 10px;
     text-shadow: var(--tah-button-text-shadow);
-    /* -------------------------------------------- */
-    /* Disabled Button                              */
-    /* -------------------------------------------- */
-    /* -------------------------------------------- */
-    /* Toggleable Button                            */
-    /* -------------------------------------------- */
-    /* -------------------------------------------- */
-    /* -------------------------------------------- */
-    /*  Edit Group Icon                             */
-    /* -------------------------------------------- */
-    /* -------------------------------------------- */
     width: 100%;
-    text-overflow: ellipsis;
     border-radius: 0;
     gap: 5px;
+    max-width: 200px;
   }
   #token-action-hud .tah-button-box.tah-group-button {
+  background-color: rgba(0,0,0,0.5);
+  font-size: var(--font-size-12);
+  letter-spacing: 0.1rem;
+  text-transform: uppercase;
   }
   #token-action-hud .tah-button-box:not(.disabled):active,
   #token-action-hud .tah-button-box:not(.disabled):hover {
-    background-color: var(--tah-button-hover-background-color);
+    background-color: #ffffff40;
     border: none;
     color: var(--tah-button-hover-text-primary-color);
-    box-shadow: 0 1px 1px #ff0000, 0 10px 10px #ff000033;
+    box-shadow: none;
   }
   #token-action-hud .tah-button-box:not(.disabled):active .tah-info,
   #token-action-hud .tah-button-box:not(.disabled):hover .tah-info {
@@ -175,14 +179,14 @@
     box-shadow: var(--tah-button-box-shadow);
   }
   #token-action-hud .tah-button-box.toggle:not(.disabled):hover {
-    background: var(--tah-button-toggle-hover-background-color);
+    background: #ffffff40;
     border: var(--tah-button-toggle-hover-border);
     box-shadow: var(--tah-button-toggle-hover-box-shadow);
   }
   #token-action-hud .tah-button-box.active {
     background: var(--tah-button-active-background-color);
     border: var(--tah-button-active-border);
-    box-shadow: var(--tah-button-active-box-shadow);
+    box-shadow: none;
     color: var(--tah-button-active-text-color);
   }
   #token-action-hud .tah-button-box.active.activeText > .tah-action-button-content:after {
@@ -197,23 +201,27 @@
     height: var(--tah-button-image-height);
     min-width: var(--tah-button-image-width);
     width: var(--tah-button-image-width);
+    border: 1px solid #ffffff30;
   }
   #token-action-hud .tah-button-box .tah-button-content {
     display: flex;
     gap: var(--tah-gap);
     width: 100%;
-    text-overflow: ellipsis;
+    align-items: center;
   }
   #token-action-hud .tah-button-box .tah-button-content:empty {
     display: none;
   }
   #token-action-hud .tah-button-box .tah-button-text {
+    overflow: hidden;
     padding: 0;
     padding-right: 1px;
     text-align: left;
     text-overflow: ellipsis;
     width: 100%;
-    text-wrap: nowrap;
+    text-wrap: wrap;
+    max-width: 140px;
+    line-height: 1;
   }
   #token-action-hud .tah-button-box .tah-icon > i {
     font-size: x-small;
@@ -229,9 +237,7 @@
   }
   #token-action-hud .tah-button-box > .tah-edit-group-icon {
     font-size: 8px;
-    position: absolute;
-    right: 0px;
-    top: 2px;
+    position: relative;
     visibility: hidden;
   }
   #token-action-hud .tah-button-box:hover:not(.disable-edit) > .tah-edit-group-icon {
@@ -324,25 +330,33 @@
     display: flex;
     height: max-content;
     width: 100%;
+    padding: 0;
+    border-bottom: 0;
   }
   #token-action-hud .tah-groups .tah-subgroups-container {
     display: none;
   }
-  #token-action-hud .tah-groups .tah-subgroups {
+ #token-action-hud .tah-groups > .tah-tab-group > .tah-subgroups-container > .tah-subgroups {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  #token-action-hud .tah-groups .tah-tab-group .tah-subgroups {
     display: flex;
     flex-direction: column;
     gap: var(--tah-gap);
     width: 100%;
+    border-top: 1px solid rgba(255,255,255,0.3);
+  }
+
+  #token-action-hud .tah-groups .tah-tab-group:last-child {
+    bottom-border: 0;
   }
   #token-action-hud .tah-groups .tah-subgroups.expand-down {
     flex-direction: column;
   }
   #token-action-hud .tah-groups .tah-list-subgroups {
-    background: var(--tah-background-color);
     border-radius: var(--tah-border-radius);
     flex-direction: column;
     display: flex;
-    gap: var(--tah-gap);
   }
   #token-action-hud .tah-groups .tah-list-subgroups .tah-list-subgroups {
     background: none;
@@ -355,7 +369,7 @@
   #token-action-hud .tah-groups .tah-list-subgroup {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    /* border-bottom: 1px solid rgba(255,255,255,0.25); */
   }
   #token-action-hud .tah-groups .tah-list-subgroup .tah-list-subgroup-title {
     align-items: center;
@@ -370,6 +384,11 @@
     text-transform: uppercase;
     padding: 5px 10px;
   }
+#token-action-hud .tah-groups .tah-list-subgroup .tah-list-subgroup-title > i.tah-edit-icon {
+  position: absolute;
+  right: 0;
+  padding-right: 10px;
+}
   #token-action-hud .tah-button-box.tah-action-button:not(.disabled):hover {
     box-shadow: none;
   }
@@ -418,7 +437,6 @@
     border-radius: var(--tah-border-radius);
   }
   #token-action-hud .tah-groups.tah-unlocked .tah-subgroup > .tah-list-subgroup > .tah-subgroups > .tah-list-subgroups {
-    padding-left: 10px;
   }
   #token-action-hud .tah-groups .tah-subgroup[data-show-title="false"] > .tah-list-subgroup > .tah-subgroups > .tah-list-subgroups > .tah-subgroup:not([data-show-title="false"]) {
     padding-left: 0px;
@@ -427,10 +445,22 @@
     color: var(--tah-text-disabled-color);
   }
   #token-action-hud .tah-groups .tah-subgroup:not([data-show-title="false"])[data-has-image="false"] > .tah-list-subgroup > .tah-subgroups > .tah-list-subgroups > .tah-subgroup:not([data-show-title="false"])[data-has-image="false"] {
-    padding-left: 10px;
   }
   #token-action-hud .tah-groups > .tah-actions {
     margin-top: 5px;
   }
-  #token-action-hud .tah-groups .tah-actions {gap: 5px;display: grid;width: 100%;}
+  #token-action-hud .tah-groups .tah-actions {display: grid;width: 100%;padding: 5px 0;}
   
+  .tah-info-container {
+    position: absolute;
+    right: 0;
+    display: flex;
+    gap: 5px;
+    padding-right: 10px;
+  }
+
+  #token-action-hud.tah-expanded {
+    width: 200px;
+    transition: width 0.5s;
+    position: relative;
+  }

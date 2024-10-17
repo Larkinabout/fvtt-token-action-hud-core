@@ -501,16 +501,18 @@ export class Utils {
    * @param {string} style The 'style' setting value
    */
   static switchCSS(style) {
+    const { file, moduleId } = CSS_STYLE[style];
+
     for (const [key, value] of Object.entries(CSS_STYLE)) {
       const href = [`modules/${value.moduleId}/`, `${value.file}`];
+      const stylesheet = Object.values(document.styleSheets).find(
+        ss => ss.href?.includes(href[0]) && ss.href?.includes(href[1])
+      );
+
       if (key === style) {
-        Object.values(document.styleSheets).find(
-          ss => ss.href?.includes(href[0]) && ss.href?.includes(href[1])
-        ).disabled = false;
-      } else {
-        Object.values(document.styleSheets).find(
-          ss => ss.href?.includes(href[0]) && ss.href?.includes(href[1])
-        ).disabled = true;
+        stylesheet.disabled = false;
+      } else if (moduleId !== value.moduleId || file !== value.file) {
+        stylesheet.disabled = true;
       }
     }
 

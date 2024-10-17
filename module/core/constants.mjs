@@ -71,6 +71,40 @@ export const COMPENDIUM_PACK_TYPES = ["JournalEntry", "Macro", "RollTable"];
  * CSS styles
  */
 export const CSS_STYLE = {
+  dockedLeft: {
+    class: "tah-style-docked-left",
+    file: "tah-docked-left",
+    moduleId: MODULE.ID,
+    name: "Docked Left",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400",
+    isDocked: true
+  },
+  dockedRight: {
+    class: "tah-style-docked-right",
+    file: "tah-docked-right",
+    moduleId: MODULE.ID,
+    name: "Docked Right",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400",
+    collapseIcon: "fa-caret-right",
+    expandIcon: "fa-caret-left",
+    isDocked: true
+  },
+  dockedCenterRight: {
+    class: "tah-style-docked-right",
+    file: "tah-docked-right",
+    moduleId: MODULE.ID,
+    name: "Docked Center-Right",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400",
+    collapseIcon: "fa-caret-right",
+    expandIcon: "fa-caret-left",
+    isDocked: true
+  },
   foundryVTT: {
     class: "tah-style-foundry-vtt-dark",
     file: "tah-foundry-vtt-dark",
@@ -97,12 +131,6 @@ export const CSS_STYLE = {
     primaryColor: "#dddddd",
     secondaryColor: "#dddddd80",
     tertiaryColor: "#ff6400"
-  },
-  dorakoUI: {
-    class: "tah-style-dorako-ui",
-    file: "tah-dorako",
-    moduleId: MODULE.ID,
-    name: "Dorako UI"
   },
   pathfinder: {
     class: "tah-style-pathfinder",
@@ -290,7 +318,7 @@ export const SETTING = {
   scale: { classes: ["TokenActionHud"], variable: "scaleSetting" },
   sortActions: { classes: ["ActionHandler"], variable: "sortActionsSetting" },
   startup: {},
-  style: {},
+  style: { classes: ["TokenActionHud"], variable: "styleSetting"},
   tooltips: { classes: ["ActionHandler"], variable: "tooltipsSetting" },
   textPrimaryColor: {},
   textSecondaryColor: {},

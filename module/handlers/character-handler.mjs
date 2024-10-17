@@ -30,12 +30,33 @@ export class CharacterHandler {
    * @private
    */
   setCharacter() {
+    this.resetCharacter();
     const controlledTokens = Utils.getControlledTokens();
     if (controlledTokens.length > 1) {
       this.#handleMultipleTokens(controlledTokens);
     } else {
       this.#handleSingleToken(controlledTokens);
     }
+  }
+
+  /**
+   * Reset actor and token properties
+   */
+  resetCharacter() {
+    this.token = null;
+    this.actor = null;
+    this.tokenActionHud.token = null;
+    this.tokenActionHud.actor = null;
+    this.actionHandler.token = null;
+    this.actionHandler.actor = null;
+    this.rollHandler.token = null;
+    this.rollHandler.actor = null;
+    this.tokens = [];
+    this.actors = [];
+    this.actionHandler.tokens = this.tokens;
+    this.actionHandler.actors = this.actors;
+    this.rollHandler.tokens = this.tokens;
+    this.rollHandler.actors = this.actors;
   }
 
   /* -------------------------------------------- */

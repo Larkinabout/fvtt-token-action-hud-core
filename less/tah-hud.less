@@ -180,15 +180,20 @@
       text-shadow: var(--tah-button-text-shadow);
     }
 
-    .tah-info {
-      color: var(--tah-text-secondary-color);
-      font-size: @tah-info-font-size;
-
-      &.tah-spotlight {
-        color: var(--tah-text-tertiary-color);
+    .tah-info-container {
+      display: flex;
+      gap: var(--tah-gap);
+      
+      .tah-info {
+        color: var(--tah-text-secondary-color);
+        font-size: @tah-info-font-size;
+  
+        &.tah-spotlight {
+          color: var(--tah-text-tertiary-color);
+        }
       }
     }
-
+    
     /* -------------------------------------------- */
     /*  Edit Group Icon                             */
     /* -------------------------------------------- */

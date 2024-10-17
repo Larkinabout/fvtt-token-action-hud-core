@@ -118,7 +118,7 @@ function registerHudHooks() {
     "updateToken", "closeSettingsConfig", "forceUpdateTokenActionHud"
   ];
 
-  hooks.forEach(hook => Hooks.on(hook, (...args) => handleHookEvent(...args, hook)));
+  hooks.forEach(hook => Hooks.on(hook, (...args) => handleHookEvent({ ...args }, hook)));
 }
 
 /* -------------------------------------------- */

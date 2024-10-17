@@ -210,7 +210,8 @@ export class RollHandler {
    * @returns {boolean}
    */
   isRightClick(event) {
-    return event?.originalEvent?.button === 2;
+    const button = event?.originalEvent?.button || event.button;
+    return button === 2;
   }
 
   /* -------------------------------------------- */

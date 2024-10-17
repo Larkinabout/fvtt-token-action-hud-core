@@ -1,4 +1,4 @@
-import { DataHandler } from "../handlers/data-handler.mjs"
+import { DataHandler } from "../handlers/data-handler.mjs";
 import { CharacterHandler } from "../handlers/character-handler.mjs";
 import { TagDialogHelper } from "./tag-dialog-helper.mjs";
 import { GroupResizer } from "../handlers/group-resizer.mjs";
@@ -22,6 +22,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.openGroups = new Set();
     this.updatePendingTimer = new Timer(10);
     this.updateTimer = new Timer(10);
+    this.closeTimer = null;
+    this.renderTimer = null;
   }
 
   /* -------------------------------------------- */
@@ -51,7 +53,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       editHud: TokenActionHud.editHud
     },
     background: "none",
-    id: "token-action-hud",
+    id: "token-action-hud-app",
     position: {
       width: HUD.defaultWidth,
       height: HUD.defaultHeight,
@@ -89,7 +91,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       id: "token-action-hud",
       style: this.systemManager.styles[this.styleSetting].class ?? "",
       scale: this.scale,
-      background: "#00000000"
+      background: "#00000000",
+      collapseIcon: this.systemManager.styles[this.styleSetting].collapseIcon ?? "fa-caret-left",
+      expandIcon: this.systemManager.styles[this.styleSetting].expandIcon ?? "fa-caret-right"
     };
 
     Logger.debug("Application context", { context });
@@ -105,6 +109,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   _onRender(context, options) {
     super._onRender(context, options);
+    this.element.classList.remove("tah-closed");
+    clearTimeout(this.closeTimer);
+    clearTimeout(this.renderTimer);
     this.#cacheElements();
     this.#setInitialHudState();
     this.#addHoverEvents(this.elements);
@@ -128,6 +135,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       subgroupArr: this.element.querySelectorAll("[data-part=\"subgroup\"]"),
       listSubgroupTitleArr: this.element.querySelectorAll("[data-part=\"listSubgroupTitle\"]"),
       groupButtonArr: this.element.querySelectorAll("[data-part=\"groupButton\"]"),
+      collapseExpandContainer: this.element.querySelector("[data-part=\"collapseExpandContainer\"]"),
       collapseHudButton: this.element.querySelector("[data-part=\"collapseHudButton\"]"),
       expandHudButton: this.element.querySelector("[data-part=\"expandHudButton\"]"),
       unlockButton: this.element.querySelector("[data-part=\"unlockHudButton\"]"),
@@ -160,6 +168,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.rendering = false;
     this.#reopenGroups();
     this.#applyDirection();
+    if (!this.isCollapsed) {
+      this.renderTimer = setTimeout(() => {
+        requestAnimationFrame(() => {
+          this.element?.classList?.add("tah-expanded");
+        });
+      }, 25);
+    }
   }
 
   /* -------------------------------------------- */
@@ -230,6 +245,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       case "rollHandler":
         this.rollHandler = this.systemManager.getRollHandlerCore();
         break;
+      case "style":
+        this.setPosition();
     }
   }
 
@@ -368,11 +385,16 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     const isCollapsing = state === "collapse";
     const { characterName, collapseHudButton, expandHudButton, groups, buttons } = this.elements;
 
-    if (this.direction === "down") { characterName.classList.toggle("tah-hidden", isCollapsing); }
     collapseHudButton.classList.toggle("tah-hidden", isCollapsing);
     expandHudButton.classList.toggle("tah-hidden", !isCollapsing);
-    groups.classList.toggle("tah-hidden", isCollapsing);
-    buttons.classList.toggle("tah-hidden", isCollapsing);
+
+    if (this.isDocked) {
+      this.element.classList.toggle("tah-expanded", !isCollapsing);
+    } else {
+      if (this.direction === "down") { characterName.classList.toggle("tah-hidden", isCollapsing); }
+      groups.classList.toggle("tah-hidden", isCollapsing);
+      buttons.classList.toggle("tah-hidden", isCollapsing);
+    }
 
     this.setCollapsed(isCollapsing);
   }
@@ -428,6 +450,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if (shouldOpen) {
       this.#toggleOtherGroups(group);
       this.groupResizer.resizeGroup(this.actionHandler, group, this.direction, this.gridSetting);
+
       this.openGroups.add(group.id);
     } else {
       this.openGroups.delete(group.id);
@@ -630,7 +653,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} elements The elements
    */
   #addHoverEvents(elements) {
-    if (!this.clickOpenCategorySetting) {
+    if (!this.clickOpenCategorySetting && !this.isDocked) {
       // When a category button is hovered over...
       elements.tabSubgroupArr.forEach(element => {
         element.addEventListener("touchstart", this.toggleGroup.bind(this), { passive: true });
@@ -640,10 +663,12 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     // When a category button is clicked and held...
-    elements.groupButtonArr.forEach(element => {
-      element.addEventListener("mousedown", this.#dragEvent.bind(this));
-      element.addEventListener("touchstart", this.#dragEvent.bind(this), { passive: true });
-    });
+    if (!this.isDocked) {
+      elements.groupButtonArr.forEach(element => {
+        element.addEventListener("mousedown", this.#dragEvent.bind(this));
+        element.addEventListener("touchstart", this.#dragEvent.bind(this), { passive: true });
+      });
+    }
 
     // When an action is hovered...
     elements.actionArr.forEach(element => {
@@ -760,6 +785,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @private
    */
   #applyDirection() {
+    if (this.isDocked) return;
+
     const { characterName, subgroupsContainerArr } = this.elements;
 
     if (this.direction === "up") {
@@ -779,6 +806,17 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
         element.classList.remove("expand-up");
       });
     }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the HUD is docked
+   * @returns {boolean} Whether the HUD is docked
+   */
+  get isDocked() {
+    const dockedStyles = ["dockedLeft", "dockedCenterLeft", "dockedCenterRight", "dockedRight"];
+    return dockedStyles.includes(this.styleSetting);
   }
 
   /* -------------------------------------------- */
@@ -811,8 +849,31 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   setPosition() {
     if (!this.hud) return;
+    if (this.isDocked) {
+      this.element.style.top = 0;
+      this.element.style.left = 0;
+      this.#setDock();
+      return;
+    }
     this.#setPositionFromFlag();
     this.#applyDirection();
+  }
+
+  #setDock() {
+    const interfaceElement = document.querySelector("#interface");
+    switch (this.styleSetting) {
+      case "dockedRight":
+        interfaceElement.appendChild(this.element);
+        break;
+      case "dockedCenterRight":
+        const rightUiElement = interfaceElement.querySelector("#ui-right");
+        interfaceElement.insertBefore(this.element, rightUiElement);
+        break;
+      case "dockedLeft":
+        const leftUiElement = interfaceElement.querySelector("#ui-left");
+        interfaceElement.insertBefore(this.element, leftUiElement);
+        break;
+    }
   }
 
   /* -------------------------------------------- */
@@ -1156,8 +1217,15 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @private
    */
   #close() {
+    requestAnimationFrame(() => {
+      this.element?.classList?.remove("tah-expanded");
+      this.element?.classList?.add("tah-closed");
+    });
+
     this.openGroups = new Set();
-    this.close({ animate: false });
+    this.closeTimer = setTimeout(() => {
+      this.close({ animate: false });
+    }, 500);
   }
 
   /* -------------------------------------------- */

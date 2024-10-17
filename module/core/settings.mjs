@@ -88,6 +88,7 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     choices: styleChoices,
     onChange: value => {
       Utils.switchCSS(value);
+      onChangeFunction("style", value);
     }
   });
 

@@ -2,8 +2,10 @@
   "type": "module",
   "scripts": {
     "build": "rollup -c && npm run build:css",
-    "build:css": "npm run build:css:custom && npm run build:css:foundry-vtt-dark && npm run build:css:foundry-vtt-dark-compact && npm run build:css:foundry-vtt-light && npm run build:css:high-contrast && npm run build:css:pathfinder",
+    "build:css": "npm run build:css:custom && npm run build:css:docked-left && npm run build:css:docked-right && npm run build:css:foundry-vtt-dark && npm run build:css:foundry-vtt-dark-compact && npm run build:css:foundry-vtt-light && npm run build:css:high-contrast && npm run build:css:pathfinder",
     "build:css:custom": "lessc less/tah-custom.less styles/tah-custom.css",
+    "build:css:docked-left": "lessc less/tah-docked-left.less styles/tah-docked-left.css",
+    "build:css:docked-right": "lessc less/tah-docked-right.less styles/tah-docked-right.css",
     "build:css:foundry-vtt-dark": "lessc less/tah-foundry-vtt-dark.less styles/tah-foundry-vtt-dark.css",
     "build:css:foundry-vtt-dark-compact": "lessc less/tah-foundry-vtt-dark-compact.less styles/tah-foundry-vtt-dark-compact.css",
     "build:css:foundry-vtt-light": "lessc less/tah-foundry-vtt-light.less styles/tah-foundry-vtt-light.css",
