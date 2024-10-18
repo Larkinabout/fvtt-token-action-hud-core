@@ -101,9 +101,10 @@ export class SystemManager {
   /**
    * Get the roll handler
    * @public
+   * @param {class} actionHandler The action handler
    * @returns {class} The roll handler
    */
-  getRollHandlerCore() {
+  getRollHandlerCore(actionHandler) {
     let rollHandlerId = Utils.getSetting("rollHandler");
 
     if (!(rollHandlerId === "core" || Utils.isModuleActive(rollHandlerId))) {
@@ -113,6 +114,8 @@ export class SystemManager {
     }
 
     const rollHandler = this.getRollHandler(rollHandlerId);
+    rollHandler.actionHandler = actionHandler;
+
     this.addPreHandlers(rollHandler);
     this.#addRollHandlerExtenders(rollHandler);
 

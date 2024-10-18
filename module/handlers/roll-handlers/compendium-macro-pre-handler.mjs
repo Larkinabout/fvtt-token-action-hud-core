@@ -1,47 +1,31 @@
 import { PreRollHandler } from "./pre-roll-handler.mjs";
-import { COMPENDIUM_ACTION_TYPES, DELIMITER } from "../../core/constants.mjs";
+import { COMPENDIUM_ACTION_TYPES } from "../../core/constants.mjs";
 
 export class CompendiumMacroPreHandler extends PreRollHandler {
   /**
    * Pre-handle action event
    * @param {object} event        The event
-   * @param {string} encodedValue The action's encoded value
+   * @param {string} buttonValue  The button value
    * @param {class} actionHandler The action handler
    * @returns {boolean}
    */
-  prehandleActionEvent(event, encodedValue, actionHandler) {
-    const payload = encodedValue.split(DELIMITER);
-
-    if (payload.length < 2) return false;
-
-    let actionType = null;
-    let key = null;
-    let actionId = null;
-
-    if (payload.length === 2) {
-      actionType = payload[0];
-      actionId = payload[1];
-    }
-    if (payload.length === 3) {
-      actionType = payload[0];
-      key = payload[1];
-      actionId = payload[2];
-    }
+  prehandleActionEvent(event, buttonValue, actionHandler) {
+    const { actionType, documentId, packId, soundId } = this.action.system;
 
     if (!COMPENDIUM_ACTION_TYPES.includes(actionType)) return false;
 
     switch (actionType) {
       case "compendiumEntry":
-        this.#handleCompendium(key, actionId);
+        this.#handleCompendium(packId, documentId);
         break;
       case "compendiumMacro":
-        this.#handleMacroCompendium(key, actionId);
+        this.#handleMacroCompendium(packId, documentId);
         break;
       case "compendiumPlaylist":
-        this.#handlePlaylistCompendium(key, actionId);
+        this.#handlePlaylistCompendium(packId, documentId, soundId);
         break;
       case "macro":
-        this.#handleMacro(actionId);
+        this.#handleMacro(packId);
         break;
       default:
         return false;
@@ -55,12 +39,12 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
   /**
    * Handle compendium
    * @private
-   * @param {string} compendiumKey The compendium key
-   * @param {string} actionId      The action id
+   * @param {string} packId     The pack ID
+   * @param {string} documentId The document ID
    */
-  #handleCompendium(compendiumKey, actionId) {
-    const pack = game.packs.get(compendiumKey);
-    pack.getDocument(actionId).then(entity => entity.sheet.render(true));
+  #handleCompendium(packId, documentId) {
+    const pack = game.packs.get(packId);
+    pack.getDocument(documentId).then(entity => entity.sheet.render(true));
   }
 
   /* -------------------------------------------- */
@@ -68,12 +52,12 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
   /**
    * Handle macro compendium
    * @private
-   * @param {string} compendiumKey The compendium key
-   * @param {string} actionId      The action id
+   * @param {string} packId     The pack ID
+   * @param {string} documentId The document ID
    */
-  #handleMacroCompendium(compendiumKey, actionId) {
-    const pack = game.packs.get(compendiumKey);
-    pack.getDocument(actionId).then(entity => entity.execute());
+  #handleMacroCompendium(packId, documentId) {
+    const pack = game.packs.get(packId);
+    pack.getDocument(documentId).then(entity => entity.execute());
   }
 
   /* -------------------------------------------- */
@@ -81,15 +65,13 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
   /**
    * Handle playlist compendium
    * @private
-   * @param {string} compendiumKey The compendium key
-   * @param {string} actionId      The action id
+   * @param {string} packId     The pack ID
+   * @param {string} documentId The document ID
+   * @param {string} soundId    The sound ID
    */
-  async #handlePlaylistCompendium(compendiumKey, actionId) {
-    const pack = game.packs.get(compendiumKey);
-    const actionPayload = actionId.split(">");
-    const playlistId = actionPayload[0];
-    const soundId = actionPayload[1];
-    const playlist = await pack.getDocument(playlistId);
+  async #handlePlaylistCompendium(packId, documentId, soundId) {
+    const pack = game.packs.get(packId);
+    const playlist = await pack.getDocument(documentId);
     const sound = playlist.sounds.find(sound => sound._id === soundId);
     AudioHelper.play({ src: sound.path }, {});
   }
@@ -99,9 +81,9 @@ export class CompendiumMacroPreHandler extends PreRollHandler {
   /**
    * Handle macro
    * @private
-   * @param {string} actionId The action id
+   * @param {string} packId The pack ID
    */
-  #handleMacro(actionId) {
-    game.macros.get(actionId).execute();
+  #handleMacro(packId) {
+    game.macros.get(packId).execute();
   }
 }

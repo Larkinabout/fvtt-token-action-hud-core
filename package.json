@@ -1,7 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "build": "rollup -c && npm run build:css",
+    "build": "npm run build:main && npm run build:css",
+    "build:main": "rollup -c",
     "build:css": "npm run build:css:custom && npm run build:css:docked-left && npm run build:css:docked-right && npm run build:css:foundry-vtt-dark && npm run build:css:foundry-vtt-dark-compact && npm run build:css:foundry-vtt-light && npm run build:css:high-contrast && npm run build:css:pathfinder",
     "build:css:custom": "lessc less/tah-custom.less styles/tah-custom.css",
     "build:css:docked-left": "lessc less/tah-docked-left.less styles/tah-docked-left.css",

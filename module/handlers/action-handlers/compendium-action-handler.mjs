@@ -56,7 +56,11 @@ export class CompendiumActionHandler {
     const actionsData = entries.map(entry => ({
       id: entry._id,
       name: entry.name,
-      encodedValue: [actionType, packId, entry._id].join(DELIMITER),
+      system: {
+        actionType,
+        documentId: entry._id,
+        packId
+      },
       img: Utils.getImage(entry),
       listName: `${game.i18n.localize(ACTION_TYPE[actionType])}: ${entry.name}`
     }));

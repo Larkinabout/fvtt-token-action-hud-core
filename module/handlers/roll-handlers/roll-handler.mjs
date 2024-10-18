@@ -32,34 +32,31 @@ export class RollHandler {
    * Handle action events
    * @public
    * @param {object} event         The event
-   * @param {string} encodedValue  The encoded value
-   * @param {class}  actionHandler The ActionHandler class
    */
-  async handleActionClickCore(event, encodedValue, actionHandler) {
-    Logger.debug(`Handling click event for action [${encodedValue}]`, { event });
+  async handleActionClickCore(event) {
+    Logger.debug("Handling action click event", { event });
 
     // Update variables with current action context
-    this.actor = actionHandler.actor;
-    this.token = actionHandler.token;
+    this.actor = this.actionHandler.actor;
+    this.token = this.actionHandler.token;
+    this.action = this.getAction(event);
 
     this.registerKeyPresses(event);
+    const buttonValue = this.getButtonValue(event);
 
     let handled = false;
     this.preRollHandlers.forEach(handler => {
       if (handled) return;
-
-      handled = handler.prehandleActionEvent(event, encodedValue, actionHandler);
+      handler.action = this.action;
+      handled = handler.prehandleActionEvent(event, buttonValue, this.actionHandler);
     });
 
     if (handled) return;
 
-    if (this.#isGenericAction(encodedValue)) {
-      await this.#handleGenericActionClick(encodedValue);
-    } else if (this.handleActionClick.toString().slice(-2) !== "{}") {
-      this.handleActionClick(event, encodedValue);
+    if (this.#isGenericAction()) {
+      await this.#handleGenericActionClick();
     } else {
-      globalThis.logger.warn("Token Action HUD | RollHandler.doHandleActionEvent is deprecated. Use RollHandler.handleActionClick");
-      this.doHandleActionEvent(event, encodedValue);
+      this.handleActionClick(event, buttonValue);
     }
   }
 
@@ -68,29 +65,29 @@ export class RollHandler {
   /**
    * Overide for the TAH system module
    * @override
-   * @param {object} event        The event
-   * @param {string} encodedValue The encoded value
+   * @param {object} event       The event
+   * @param {string} buttonValue The button value
    */
-  handleActionClick(event, encodedValue) {}
+  handleActionClick(event, buttonValue) {}
 
   /* -------------------------------------------- */
 
   /**
    * Handle action hover events
    * @param {object} event        The event
-   * @param {string} encodedValue The encoded value
-   * @param {class} actionHandler The ActionHandler class
    */
-  async handleActionHoverCore(event, encodedValue, actionHandler) {
-    Logger.debug(`Handling hover event for action [${encodedValue}]`, { event });
+  async handleActionHoverCore(event) {
+    Logger.debug("Handling action hover event", { event });
 
     // Update variables with current action context
-    this.actor = actionHandler.actor;
-    this.token = actionHandler.token;
+    this.actor = this.actionHandler.actor;
+    this.token = this.actionHandler.token;
+    this.action = this.getAction(event);
 
     this.registerKeyPresses(event);
+    const buttonValue = this.getButtonValue(event);
 
-    this.handleActionHover(event, encodedValue);
+    this.handleActionHover(event, buttonValue);
   }
 
   /* -------------------------------------------- */
@@ -98,10 +95,10 @@ export class RollHandler {
   /**
    * Overide for the TAH system module
    * @override
-   * @param {object} event        The event
-   * @param {string} encodedValue The encoded value
+   * @param {object} event       The event
+   * @param {string} buttonValue The button value
    */
-  handleActionHover(event, encodedValue) {}
+  handleActionHover(event, buttonValue) {}
 
   /* -------------------------------------------- */
 
@@ -109,16 +106,15 @@ export class RollHandler {
    * Handle group click events
    * @param {object} event        The event
    * @param {string} nestId       The nest ID
-   * @param {class} actionHandler The ActionHandler class
    */
-  async handleGroupClickCore(event, nestId, actionHandler) {
+  async handleGroupClickCore(event, nestId) {
     Logger.debug(`Handling click event for group [${nestId}]`, { event });
 
     // Update variables with current action context
-    this.actor = actionHandler.actor;
-    this.token = actionHandler.token;
+    this.actor = this.actionHandler.actor;
+    this.token = this.actionHandler.token;
 
-    const group = actionHandler.getGroup({ nestId });
+    const group = this.actionHandler.getGroup({ nestId });
 
     this.registerKeyPresses(event);
 
@@ -145,6 +141,34 @@ export class RollHandler {
   addPreRollHandler(handler) {
     Logger.debug(`Adding pre-roll handler ${handler.constructor.name}`);
     this.preRollHandlers.push(handler);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get button value
+   * @param {object} event  The event
+   * @returns {string}      The button value
+   */
+  getButtonValue(event) {
+    if (!event) return null;
+    return event.target.closest(".tah-action-button")?.value || null;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get the action from the action ID on thee button
+   * @param {object} event  The event
+   * @returns {object}      The action
+   */
+  getAction(event) {
+    if (!event) return {};
+    const actionButtonElement = event.target.closest('[data-part="actionButton"]')
+      ?? event.target.querySelector('[data-part="actionButton"]');
+    const actionId = actionButtonElement?.dataset?.actionId;
+    if (!actionId) return {};
+    return this.actionHandler.availableActionsMap.get(actionId) || {};
   }
 
   /* -------------------------------------------- */
@@ -276,12 +300,11 @@ export class RollHandler {
   /**
    * Whether the action is a generic action
    * @private
-   * @param {string} encodedValue The encoded value
-   * @returns {boolean}           Whether the action is a generic action
+   * @returns {boolean} Whether the action is a generic action
    */
-  #isGenericAction(encodedValue) {
-    const [actionType, actionId] = encodedValue.split(DELIMITER);
-    return actionType === "utility" && actionId.includes("toggle");
+  #isGenericAction() {
+    const { actionType } = this.action.system;
+    return actionType === "utility" && this.action.id.includes("toggle");
   }
 
   /* -------------------------------------------- */
@@ -289,16 +312,12 @@ export class RollHandler {
   /**
    * Handle generic action
    * @private
-   * @param {string} encodedValue The encoded value
    */
-  async #handleGenericActionClick(encodedValue) {
-    const payload = encodedValue.split(DELIMITER);
-    const actionId = payload[1];
-
+  async #handleGenericActionClick() {
     const firstControlledToken = Utils.getFirstControlledToken();
 
-    if (actionId === "toggleVisibility") await firstControlledToken.toggleVisibility();
-    if (actionId === "toggleCombat") await firstControlledToken.toggleCombat();
+    if (this.action.id === "toggleVisibility") await firstControlledToken.toggleVisibility();
+    if (this.action.id === "toggleCombat") await firstControlledToken.toggleCombat();
 
     Hooks.callAll("forceUpdateTokenActionHud");
   }

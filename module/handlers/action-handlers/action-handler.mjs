@@ -783,13 +783,17 @@ export class ActionHandler {
    */
   #getTooltip(tooltip, name) {
     if (this.tooltipsSetting === "none") return null;
-    if (this.tooltipsSetting === "nameOnly") return name;
-    if (this.tooltipsSetting === "full" && tooltip) {
-      return (tooltip.includes("tah-tooltip-wrapper"))
-        ? tooltip
-        : `<div class="tah-tooltip-wrapper">${tooltip}</div>`;
+    if (this.tooltipsSetting === "nameOnly" || !tooltip) return name;
+
+    if (typeof tooltip !== "object") {
+      tooltip = { content: tooltip };
     }
-    return name;
+
+    if (!tooltip.content.includes("tah-tooltip-wrapper")) {
+      tooltip.content = `<div class="tah-tooltip-wrapper">${tooltip.content}</div>`;
+    }
+
+    return tooltip;
   }
 
   /* -------------------------------------------- */
@@ -815,6 +819,7 @@ export class ActionHandler {
 
     return {
       encodedValue: actionData.encodedValue,
+      function: actionData.function || null,
       id: actionData.id,
       name: actionData.name,
       fullName,

@@ -16,7 +16,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.systemManager = systemManager;
     this.dataHandler = new DataHandler(socket);
     this.actionHandler = systemManager.getActionHandlerCore(dataHandler);
-    this.rollHandler = systemManager.getRollHandlerCore();
+    this.rollHandler = systemManager.getRollHandlerCore(this.actionHandler);
     this.characterHandler = new CharacterHandler(this, this.actionHandler, this.rollHandler);
     this.socket = socket;
     this.openGroups = new Set();
@@ -247,7 +247,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
         this.actionHandler.customLayout = null;
         break;
       case "rollHandler":
-        this.rollHandler = this.systemManager.getRollHandlerCore();
+        this.rollHandler = this.systemManager.getRollHandlerCore(this.actionHandler);
         break;
       case "style":
         this.setPosition();
@@ -543,10 +543,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   static clickAction(event) {
     event.preventDefault();
-    const buttonValue = event.target.closest(".tah-action-button")?.value;
-    if (!buttonValue) return;
     try {
-      this.rollHandler.handleActionClickCore(event, buttonValue, this.actionHandler);
+      this.rollHandler.handleActionClickCore(event, this.actionHandler);
       event.currentTarget.blur();
     } catch(error) {
       Logger.error(event);
@@ -641,10 +639,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event The event
    */
   handleActionHover(event) {
-    const target = ((event.target.tagName === "BUTTON")) ? event.target : event.currentTarget.children[0];
-    const value = target.value;
     try {
-      this.rollHandler.handleActionHoverCore(event, value, this.actionHandler);
+      this.rollHandler.handleActionHoverCore(event, this.actionHandler);
     } catch(error) {
       Logger.error(event);
     }

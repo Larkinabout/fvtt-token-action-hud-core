@@ -1,4 +1,4 @@
-import { DELIMITER, GROUP_TYPE } from "../../core/constants.mjs";
+import { GROUP_TYPE } from "../../core/constants.mjs";
 import { Utils } from "../../core/utils.mjs";
 
 /**
@@ -52,14 +52,12 @@ export class GenericActionHandler {
     const toggleCombatName = this.token?.inCombat
       ? game.i18n.localize("tokenActionHud.removeFromCombat")
       : game.i18n.localize("tokenActionHud.addToCombat");
-    const toggleCombatEncodedValue = [
-      actionType,
-      toggleCombatId
-    ].join(DELIMITER);
     const toggleCombatAction = {
       id: toggleCombatId,
       name: toggleCombatName,
-      encodedValue: toggleCombatEncodedValue
+      system: {
+        actionType
+      }
     };
     actionsData.push(toggleCombatAction);
 
@@ -69,14 +67,12 @@ export class GenericActionHandler {
       const toggleVisibilityName = this.token?.document?.hidden
         ? game.i18n.localize("tokenActionHud.makeVisible")
         : game.i18n.localize("tokenActionHud.makeInvisible");
-      const toggleVisbilityEncodedValue = [
-        actionType,
-        toggleVisibilityId
-      ].join(DELIMITER);
       const toggleVisibilityAction = {
         id: toggleVisibilityId,
         name: toggleVisibilityName,
-        encodedValue: toggleVisbilityEncodedValue
+        system: {
+          actionType
+        }
       };
       actionsData.push(toggleVisibilityAction);
     }
@@ -104,11 +100,12 @@ export class GenericActionHandler {
     const toggleCombatName = tokens.every(token => token.inCombat)
       ? game.i18n.localize("tokenActionHud.removeFromCombat")
       : game.i18n.localize("tokenActionHud.addToCombat");
-    const toggleCombatEncodedValue = [actionType, toggleCombatId].join(DELIMITER);
     const toggleCombatAction = {
       id: toggleCombatId,
       name: toggleCombatName,
-      encodedValue: toggleCombatEncodedValue
+      system: {
+        actionType
+      }
     };
     actionsData.push(toggleCombatAction);
 
@@ -118,11 +115,12 @@ export class GenericActionHandler {
       const toggleVisibilityname = tokens.every(token => token.document?.hidden)
         ? game.i18n.localize("tokenActionHud.makeVisible")
         : game.i18n.localize("tokenActionHud.makeInvisible");
-      const toggleVisbilityEncodedValue = [actionType, toggleVisibilityId].join(DELIMITER);
       const toggleVisibilityAction = {
         id: toggleVisibilityId,
         name: toggleVisibilityname,
-        encodedValue: toggleVisbilityEncodedValue
+        system: {
+          actionType
+        }
       };
       actionsData.push(toggleVisibilityAction);
     }

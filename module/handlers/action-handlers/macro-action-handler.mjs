@@ -42,7 +42,7 @@ export class MacroActionHandler {
         id: macro.id,
         name: macro.name,
         listName: this.#getListName(actionType, macro.name),
-        encodedValue: [actionType, macro.id].join(DELIMITER),
+        system: { actionType },
         img: Utils.getImage(macro)
       };
     });

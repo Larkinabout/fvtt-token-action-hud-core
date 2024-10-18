@@ -9,11 +9,11 @@ export class PreRollHandler extends RollHandler {
   /**
    * Pre-handle action event
    * @param {object} event        The event
-   * @param {string} encodedValue The action's encoded value
+   * @param {string} buttonValue  The button value
    * @param {class} actionHandler The action handler
    * @returns {boolean}
    */
-  prehandleActionEvent(event, encodedValue, actionHandler) {
+  prehandleActionEvent(event, buttonValue, actionHandler) {
     return false;
   }
 }
