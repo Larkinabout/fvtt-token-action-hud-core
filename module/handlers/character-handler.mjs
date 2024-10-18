@@ -101,7 +101,7 @@ export class CharacterHandler {
     if (controlledTokens.length === 1 && this.#isValidCharacter(controlledTokens[0])) {
       character.token = controlledTokens[0];
       character.actor = character.token?.actor;
-    } else if (controlledTokens.length === 0 && game.user.character && this.alwaysShowSetting) {
+    } else if (controlledTokens.length === 0 && game.user.character && this.tokenActionHud.alwaysShowHudSetting) {
       character.actor = game.user.character;
       character.token = canvas.tokens?.placeables.find(t => t.actor?.id === character.actor.id) ?? null;
     }

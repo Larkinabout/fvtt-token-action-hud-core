@@ -75,6 +75,9 @@ export class SystemManager {
     actionHandler.systemManager = this;
     actionHandler.dataHandler = dataHandler;
     this.#addActionHandlerExtenders(actionHandler);
+
+    Hooks.callAll("tokenActionHudCoreAddActionHandler", actionHandler);
+
     return actionHandler;
   }
 
@@ -112,6 +115,9 @@ export class SystemManager {
     const rollHandler = this.getRollHandler(rollHandlerId);
     this.addPreHandlers(rollHandler);
     this.#addRollHandlerExtenders(rollHandler);
+
+    Hooks.callAll("tokenActionHudCoreAddRollHandler", rollHandler);
+
     return rollHandler;
   }
 

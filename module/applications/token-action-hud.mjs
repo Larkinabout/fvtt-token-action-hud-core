@@ -157,6 +157,10 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     } else {
       TokenActionHud.lockHud.call(this);
     }
+
+    if (!this.enableCustomizationSetting) {
+      this.elements.unlockButton.classList.add("tah-hidden");
+    }
   }
 
   /* -------------------------------------------- */
@@ -653,7 +657,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} elements The elements
    */
   #addHoverEvents(elements) {
-    if (!this.clickOpenCategorySetting && !this.isDocked) {
+    if (!this.clickOpenCategorySetting) {
       // When a category button is hovered over...
       elements.tabSubgroupArr.forEach(element => {
         element.addEventListener("touchstart", this.toggleGroup.bind(this), { passive: true });
@@ -725,7 +729,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
       // Apply styles
       requestAnimationFrame(() => {
-        Object.assign(element.style, { left: `${newElementLeft}px`, position: "fixed", top: `${newElementTop}px` });
+        Object.assign(element.style, { left: `${newElementLeft}px`, top: `${newElementTop}px` });
       });
     };
 
@@ -837,6 +841,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {number} The scale
    */
   get scale() {
+    if (this.isDocked) return 1;
     const scale = parseFloat(this.scaleSetting) || 1;
     return Math.min(Math.max(scale, 0.5), 2);
   }
@@ -850,16 +855,21 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   setPosition() {
     if (!this.hud) return;
     if (this.isDocked) {
-      this.element.style.top = 0;
-      this.element.style.left = 0;
-      this.#setDock();
-      return;
+      this.#setDockedPosition();
+    } else {
+      this.#setUndockedPosition();
     }
-    this.#setPositionFromFlag();
-    this.#applyDirection();
   }
 
-  #setDock() {
+  /* -------------------------------------------- */
+
+  /**
+   * Set docked position
+   */
+  #setDockedPosition() {
+    this.element.style.top = 0;
+    this.element.style.left = 0;
+
     const interfaceElement = document.querySelector("#interface");
     switch (this.styleSetting) {
       case "dockedRight":
@@ -874,6 +884,17 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
         interfaceElement.insertBefore(this.element, leftUiElement);
         break;
     }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Set undocked position
+   */
+  #setUndockedPosition() {
+    document.body.appendChild(this.element);
+    this.#setPositionFromFlag();
+    this.#applyDirection();
   }
 
   /* -------------------------------------------- */
@@ -900,7 +921,6 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
             : this.hudPosition.left;
           this.element.style.top = `${this.topPos}px`;
           this.element.style.left = `${this.leftPos}px`;
-          this.element.style.position = "fixed";
           resolve();
         } else {
           setTimeout(check, 10);
@@ -1239,7 +1259,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   isValidTokenChange(token, data = null) {
     if (data.flags) return false;
-    return this.#isRelevantToken(token) || (this.alwaysShowSetting && token.actorId === game.user.character?.id);
+    return this.#isRelevantToken(token) || (this.alwaysShowHudSetting && token.actorId === game.user.character?.id);
   }
 
   /* -------------------------------------------- */

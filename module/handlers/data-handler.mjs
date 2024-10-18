@@ -102,6 +102,7 @@ export class DataHandler {
         return true;
       }
     }
+    return true;
   }
 
   /* -------------------------------------------- */
@@ -118,7 +119,7 @@ export class DataHandler {
 
     const files = game.user.hasPermission("FILES_BROWSE") && !this.private
       ? await this.getFilePaths()
-      : await this.socket.executeAsGM("getFilePaths", this);
+      : await this.socket.executeAsGM("getFilePaths");
 
     return new Map(files.map(file => {
       const { id } = this.getFileParts(file);
@@ -128,11 +129,10 @@ export class DataHandler {
 
   /**
    * Get file paths using socket
-   * @param {Class}   dataHandler The data handler
    * @returns {Array}             The file paths
    */
-  static async getFilePathsWithSocket(dataHandler) {
-    return dataHandler.getFilePaths();
+  static async getFilePathsWithSocket() {
+    return game.tokenActionHud.dataHandler.getFilePaths();
   }
 
   /* -------------------------------------------- */
@@ -179,13 +179,13 @@ export class DataHandler {
       return;
     }
 
-    await this.socket.executeAsGM("saveData", this, type, id, data);
+    await this.socket.executeAsGM("saveData", type, id, data);
   }
 
   /* -------------------------------------------- */
 
-  static async saveDataWithSocket(dataHandler, type, id, data) {
-    dataHandler.saveData(type, id, data);
+  static async saveDataWithSocket(type, id, data) {
+    game.tokenActionHud.dataHandler.saveData(type, id, data);
   }
 
   /* -------------------------------------------- */
@@ -249,7 +249,7 @@ export class DataHandler {
 
       return (game.user.hasPermission("FILES_BROWSE"))
         ? await this.getData(options)
-        : await this.socket.executeAsGM("getData", this, options);
+        : await this.socket.executeAsGM("getData", options);
     } catch(error) {
       Logger.error(`An error occurred while getting data: ${error.message}`);
       return null;
@@ -258,8 +258,8 @@ export class DataHandler {
 
   /* -------------------------------------------- */
 
-  static async getDataWithSocket(dataHandler, options) {
-    dataHandler.getData(options);
+  static async getDataWithSocket(options) {
+    game.tokenActionHud.dataHandler.getData(options);
   }
 
   /* -------------------------------------------- */
