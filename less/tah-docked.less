@@ -15,6 +15,12 @@
         transition: all 0.4s allow-discrete;
         transition-delay: 0.1s
       }
+
+      #tah-character-name {
+        opacity: 1;
+        transition: opacity 0.4s;
+        transition-delay: 0.1s
+      }
     }
   }
 
@@ -22,6 +28,7 @@
     #token-action-hud {
       #tah-character-name {
         display: none;
+        opacity: 0;
       }
 
       .tah-groups {
@@ -47,7 +54,7 @@
 
   #token-action-hud {
     background-color: var(--tah-background-color);
-    border-radius: 0 0 4px 4px;
+    border-radius: @tah-hud-border-radius;
     transition: width 0.5s;
     width: 0;
 
@@ -55,9 +62,9 @@
       color: var(--tah-character-name-color);
       font-size: var(--font-size-16);
       height: var(--tah-button-height);
+      opacity: 1;
       padding: 5px;
       text-shadow: var(--tah-character-name-text-shadow);
-      z-index: 1;
     }
   
     #tah-collapse-expand {
@@ -229,7 +236,6 @@
         align-items: center;
         display: flex;
         line-height: 1;
-        max-width: 140px;
         overflow: hidden;
         padding: 0;
         padding-right: 1px;
@@ -248,8 +254,8 @@
       .tah-info-container {
         display: flex;
         gap: var(--tah-gap);
+        padding-right: 2px;
         position: relative;
-        right: 0;
       
         .tah-info {
           color: var(--tah-text-secondary-color);
@@ -356,6 +362,7 @@
               display: flex;
               height: max-content;
               padding: 0;
+              overflow-x: hidden;
               width: 100%;
             }
           }
