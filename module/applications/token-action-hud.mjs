@@ -1,5 +1,4 @@
-import { DataHandler } from "../handlers/data-handler.mjs";
-import { CharacterHandler } from "../handlers/character-handler.mjs";
+import { HudManager } from "../managers/hud-manager.mjs";
 import { TagDialogHelper } from "./tag-dialog-helper.mjs";
 import { GroupResizer } from "../handlers/group-resizer.mjs";
 import { HUD, MODULE, SETTING, TEMPLATE } from "../core/constants.mjs";
@@ -14,10 +13,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(systemManager, dataHandler, socket) {
     super();
     this.systemManager = systemManager;
-    this.dataHandler = new DataHandler(socket);
-    this.actionHandler = systemManager.getActionHandlerCore(dataHandler);
-    this.rollHandler = systemManager.getRollHandlerCore(this.actionHandler);
-    this.characterHandler = new CharacterHandler(this, this.actionHandler, this.rollHandler);
+    this.dataHandler = dataHandler;
+    this.hudManager = new HudManager(this, systemManager, dataHandler, socket);
+    this.groupResizer = new GroupResizer();
     this.socket = socket;
     this.openGroups = new Set();
     this.updatePendingTimer = new Timer(10);
@@ -86,20 +84,84 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @override
    */
   async _prepareContext() {
+    const styleData = this.systemManager.styles[Utils.getSetting("style")];
     const context = {
-      hud: this.hud,
+      hud: this.hudManager.hud,
       id: "token-action-hud",
-      style: this.systemManager.styles[this.styleSetting].class ?? "",
+      style: styleData.class ?? "",
       scale: this.scale,
       background: "#00000000",
-      collapseIcon: this.systemManager.styles[this.styleSetting].collapseIcon ?? "fa-caret-left",
-      expandIcon: this.systemManager.styles[this.styleSetting].expandIcon ?? "fa-caret-right"
+      collapseIcon: styleData.collapseIcon ?? "fa-caret-left",
+      expandIcon: styleData.expandIcon ?? "fa-caret-right"
     };
 
     Logger.debug("Application context", { context });
     return context;
   }
 
+  /* -------------------------------------------- */
+  /* SETTINGS                                     */
+  /* -------------------------------------------- */
+
+  /**
+   * Initialise the HUD
+   * @public
+   */
+  async init() {
+    this.#cacheSettings();
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Cache settings for slightly faster retrieval
+   */
+  #cacheSettings() {
+    const settings = [
+      "activeCssAsText", "allow", "alwaysShowHud", "clickOpenCategory", "direction",
+      "debug", "displayIcons", "drag", "enable", "grid",
+      "scale", "style"
+    ];
+
+    settings.forEach(setting => {
+      this[`${setting}Setting`] = Utils.getSetting(setting);
+    });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Update cached settings following changes
+   * @param {string} key The setting key
+   * @param {*|null} value      The setting value
+   * @public
+   */
+  async updateCachedSettings(key, value = null) {
+    if (!this.updateSettingsPending) {
+      this.updateSettingsPending = true;
+      Logger.debug("Updating settings...");
+    }
+
+    const { classes, variable } = SETTING[key];
+    if (variable) {
+      if (classes.includes("TokenActionHud")) this[variable] = value;
+    }
+
+    switch (key) {
+      case "customLayout":
+      case "userCustomLayout":
+        this.hudManager.layoutHandler.customLayout = null;
+        break;
+      case "rollHandler":
+        this.hudManager.rollHandler = this.systemManager.getRollHandlerCore(this.hudManager.actionHandler);
+        break;
+      case "style":
+        this.setPosition();
+    }
+  }
+
+  /* -------------------------------------------- */
+  /* RENDER                                       */
   /* -------------------------------------------- */
 
   /**
@@ -152,13 +214,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   #setInitialHudState() {
     if (this.isCollapsed) { TokenActionHud.collapseHud.call(this); }
 
-    if (this.isUnlocked && this.enableCustomizationSetting) {
-      TokenActionHud.unlockHud.call(this);
+    if (Utils.getSetting("enableCustomization")) {
+      if (this.isUnlocked) {
+        TokenActionHud.unlockHud.call(this);
+      } else {
+        TokenActionHud.lockHud.call(this);
+      }
     } else {
-      TokenActionHud.lockHud.call(this);
-    }
-
-    if (!this.enableCustomizationSetting) {
       this.elements.unlockButton.classList.add("tah-hidden");
     }
   }
@@ -166,12 +228,45 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
+   * Add hover events
+   * @param {object} elements The elements
+   */
+  #addHoverEvents(elements) {
+    if (!this.clickOpenCategorySetting) {
+      // When a category button is hovered over...
+      elements.tabSubgroupArr.forEach(element => {
+        element.addEventListener("touchstart", this.toggleGroup.bind(this), { passive: true });
+        element.addEventListener("pointerenter", this.toggleGroup.bind(this));
+        element.addEventListener("pointerleave", this.toggleGroup.bind(this));
+      });
+    }
+
+    // When a category button is clicked and held...
+    if (!this.isDocked) {
+      elements.groupButtonArr.forEach(element => {
+        element.addEventListener("mousedown", this.#dragEvent.bind(this));
+        element.addEventListener("touchstart", this.#dragEvent.bind(this), { passive: true });
+      });
+    }
+
+    // When an action is hovered...
+    elements.actionArr.forEach(element => {
+      element.addEventListener("pointerenter", this.handleActionHover.bind(this));
+      element.addEventListener("pointerleave", this.handleActionHover.bind(this));
+    });
+  }
+
+  /* -------------------------------------------- */
+  /* POST-RENDER                                  */
+  /* -------------------------------------------- */
+
+  /**
    * Functions to execute after the application is rendered
    */
   postRender() {
     this.rendering = false;
-    this.#reopenGroups();
     this.#applyDirection();
+    this.#reopenGroups();
     if (!this.isCollapsed) {
       this.renderTimer = setTimeout(() => {
         requestAnimationFrame(() => {
@@ -184,85 +279,127 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Initialise the HUD
-   * @public
+   * Apply classes for HUD direction
+   * @private
    */
-  async init() {
-    this.#cacheSettings();
-    this.#cacheUserFlags();
-    this.groupResizer = new GroupResizer();
+  #applyDirection() {
+    if (this.isDocked) return;
+
+    const { characterName, subgroupsContainerArr } = this.elements;
+
+    if (this.direction === "up") {
+      characterName.classList.add("tah-hidden");
+
+      subgroupsContainerArr.forEach(element => {
+        element.classList.remove("expand-down");
+        element.classList.add("expand-up");
+      });
+    } else {
+      if (!this.isCollapsed) {
+        characterName.classList.remove("tah-hidden");
+      }
+
+      subgroupsContainerArr.forEach(element => {
+        element.classList.add("expand-down");
+        element.classList.remove("expand-up");
+      });
+    }
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Cache settings for slightly faster retrieval
+   * Reopen groups following a re-render of the HUD
+   * @private
    */
-  #cacheSettings() {
-    const settings = [
-      "activeCssAsText", "allow", "alwaysShowHud", "clickOpenCategory", "direction",
-      "debug", "displayIcons", "drag", "enableCustomization", "enable", "grid",
-      "scale", "style"
-    ];
+  #reopenGroups() {
+    if (!this.openGroups.size) return;
 
-    settings.forEach(setting => {
-      this[`${setting}Setting`] = Utils.getSetting(setting);
+    this.openGroups.forEach(groupId => {
+      const group = this.element.querySelector(`#${groupId}`);
+      if (group) {
+        this.toggleGroup(null, group);
+      }
     });
   }
 
   /* -------------------------------------------- */
-
-  /**
-   * Cache user flags for slightly faster retrieval
-   */
-  #cacheUserFlags() {
-    this.hudPosition = Utils.getUserFlag("position");
-    this.isCollapsed = Utils.getUserFlag("isCollapsed");
-    this.isUnlocked = Utils.getUserFlag("isUnlocked");
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Update cached settings following changes
-   * @param {string} key The setting key
-   * @param {*|null} value      The setting value
-   * @public
-   */
-  async updateCachedSettings(key, value = null) {
-    if (!this.updateSettingsPending) {
-      this.updateSettingsPending = true;
-      Logger.debug("Updating settings...");
-    }
-
-    const { classes, variable } = SETTING[key];
-    if (variable) {
-      if (classes.includes("TokenActionHud")) this[variable] = value;
-      if (classes.includes("ActionHandler")) this.actionHandler[variable] = value;
-    }
-
-    switch (key) {
-      case "customLayout":
-      case "userCustomLayout":
-        this.actionHandler.customLayout = null;
-        break;
-      case "rollHandler":
-        this.rollHandler = this.systemManager.getRollHandlerCore(this.actionHandler);
-        break;
-      case "style":
-        this.setPosition();
-    }
-  }
-
+  /* INTERACTIVITY                                */
   /* -------------------------------------------- */
 
   /**
    * When the 'Edit HUD' button is clicked, open the Edit HUD app
    */
   static editHud() {
-    TagDialogHelper.openEditHudApp(this.actionHandler);
+    TagDialogHelper.openEditHudApp(this.hudManager.actionHandler);
   }
 
+  /* -------------------------------------------- */
+  /* ENABLE/DISABLE HUD                           */
+  /* -------------------------------------------- */
+
+  /**
+   * Toggle the HUD enabled state
+   */
+  async toggleHudEnable() {
+    const binding = Utils.humanizeBinding("enableDisableHud");
+    const state = (this.isEnabled) ? "disabled" : "enabled";
+    if (this.isEnabled) {
+      this.#close();
+    } else {
+      Hooks.callAll("forceUpdateTokenActionHud");
+    }
+    await Utils.setSetting("enable", !this.isEnabled);
+    Logger.info(game.i18n.format(`tokenActionHud.keybinding.toggleHud.${state}`, { binding }), true);
+  }
+
+  /* -------------------------------------------- */
+  /* COLLAPSE/EXPAND HUD                          */
+  /* -------------------------------------------- */
+
+  /**
+   * When the 'Collapse HUD' button is clicked, collapse the HUD
+   */
+  static collapseHud() {
+    this.toggleHudCollapse("collapse");
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * When the 'Expand HUD' button is clicked, expand the HUD
+   */
+  static expandHud() {
+    this.toggleHudCollapse("expand");
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Toggle the HUD between collapse and expand states
+   * @param {string} state The state ("collapse" or "expand")
+   */
+  toggleHudCollapse(state) {
+    state = state ?? ((this.isCollapsed) ? "expand" : "collapse");
+    const isCollapsing = state === "collapse";
+    const { characterName, collapseHudButton, expandHudButton, groups, buttons } = this.elements;
+
+    collapseHudButton.classList.toggle("tah-hidden", isCollapsing);
+    expandHudButton.classList.toggle("tah-hidden", !isCollapsing);
+
+    if (this.isDocked) {
+      this.element.classList.toggle("tah-expanded", !isCollapsing);
+    } else {
+      if (this.direction === "down") { characterName.classList.toggle("tah-hidden", isCollapsing); }
+      groups.classList.toggle("tah-hidden", isCollapsing);
+      buttons.classList.toggle("tah-hidden", isCollapsing);
+    }
+
+    this.isCollapsed = isCollapsing;
+  }
+
+  /* -------------------------------------------- */
+  /* LOCK/UNLOCK HUD                              */
   /* -------------------------------------------- */
 
   /**
@@ -340,82 +477,11 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
 
-    this.setUnlocked(isUnlocking);
+    this.isUnlocked = isUnlocking;
   }
 
   /* -------------------------------------------- */
-
-  /**
-   * Set unlocked state and store in user flag for subsequent sessions
-   * @param {boolean} bool true or false
-   */
-  setUnlocked(bool) {
-    if (this.isUnlocked !== bool) {
-      Utils.setUserFlag("isUnlocked", bool);
-      this.isUnlocked = bool;
-    }
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * When the 'Collapse HUD' button is clicked, collapse the HUD
-   * @param {object|null} event The event
-   */
-  static collapseHud(event = null) {
-    this.toggleHudCollapse("collapse", event);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * When the 'Expand HUD' button is clicked, expand the HUD
-   * @param {object|null} event The event
-   */
-  static expandHud(event = null) {
-    this.toggleHudCollapse("expand", event);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Toggle the HUD between collapse and expand states
-   * @param {string} state      The state ("collapse" or "expand")
-   * @param {object|null} event The event
-   */
-  toggleHudCollapse(state, event = null) {
-    if (event) event.preventDefault();
-
-    const isCollapsing = state === "collapse";
-    const { characterName, collapseHudButton, expandHudButton, groups, buttons } = this.elements;
-
-    collapseHudButton.classList.toggle("tah-hidden", isCollapsing);
-    expandHudButton.classList.toggle("tah-hidden", !isCollapsing);
-
-    if (this.isDocked) {
-      this.element.classList.toggle("tah-expanded", !isCollapsing);
-    } else {
-      if (this.direction === "down") { characterName.classList.toggle("tah-hidden", isCollapsing); }
-      groups.classList.toggle("tah-hidden", isCollapsing);
-      buttons.classList.toggle("tah-hidden", isCollapsing);
-    }
-
-    this.setCollapsed(isCollapsing);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Set the collapsed state and store in user flag for subsequent sessions
-   * @param {boolean} isCollapsing Whether the HUD is collapsing
-   */
-  setCollapsed(isCollapsing) {
-    if (this.isCollapsed !== isCollapsing) {
-      Utils.setUserFlag("isCollapsed", isCollapsing);
-      this.isCollapsed = isCollapsing;
-    }
-  }
-
+  /* GROUP EVENTS                                 */
   /* -------------------------------------------- */
 
   /**
@@ -424,6 +490,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   static clickGroup(event) {
     this.bringToFront();
+
     // Remove focus to allow core ESC interactions
     event.currentTarget.blur();
 
@@ -441,19 +508,42 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
+   * When a subgroup is clicked
+   * @param {object} event The event
+   */
+  static clickSubgroup(event) {
+    if (event.type === "contextmenu") {
+      if (this.isUnlocked) {
+        this.openEditGroupApp(event);
+      } else {
+        this.handleGroupClick(event);
+      }
+    } else {
+      const group = this.getClosestGroupElement(event);
+      if (group.dataset?.groupType === "tab") {
+        this.toggleGroup(event, group);
+      } else {
+        this.collapseExpandSubgroup(event);
+      }
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
    * Toggle the visibility of the group
    * @param {object} event The event
    * @param {object} group The group element
    */
   toggleGroup(event = null, group = null) {
-    group = group || this.getClosestGroup(event);
+    group = group || this.getClosestGroupElement(event);
     const isOpen = group.classList.contains("hover");
     const shouldOpen = !isOpen;
     if ((isOpen && event?.type === "pointerenter") || (!isOpen && event?.type === "pointerleave")) return;
     group.classList.toggle("hover", shouldOpen);
     if (shouldOpen) {
       this.#toggleOtherGroups(group);
-      this.groupResizer.resizeGroup(this.actionHandler, group, this.direction, this.gridSetting);
+      this.groupResizer.resizeGroup(this.hudManager.groupHandler, group, this.direction, this.gridSetting);
 
       this.openGroups.add(group.id);
     } else {
@@ -470,26 +560,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event The event
    * @returns {object}     The closest group element
    */
-  getClosestGroup(event) {
+  getClosestGroupElement(event) {
     if (!event) return null;
     return event.target.closest("[data-part=\"subgroup\"]") || event.target.closest("[data-part=\"group\"]");
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Reopen groups following a re-render of the HUD
-   * @private
-   */
-  #reopenGroups() {
-    if (!this.openGroups.size) return;
-
-    this.openGroups.forEach(groupId => {
-      const group = this.element.querySelector(`#${groupId}`);
-      if (group) {
-        this.toggleGroup(null, group);
-      }
-    });
   }
 
   /* -------------------------------------------- */
@@ -515,53 +588,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * When a subgroup is clicked
-   * @param {object} event The event
-   */
-  static clickSubgroup(event) {
-    if (event.type === "contextmenu") {
-      if (this.isUnlocked) {
-        this.openEditGroupApp(event);
-      } else {
-        this.handleGroupClick(event);
-      }
-    } else {
-      const group = this.getClosestGroup(event);
-      if (group.dataset?.groupType === "tab") {
-        this.toggleGroup(event, group);
-      } else {
-        this.collapseExpandSubgroup(event, this.enableCustomizationSetting);
-      }
-    }
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * When an action is clicked
-   * @param {object} event The event
-   */
-  static clickAction(event) {
-    event.preventDefault();
-    try {
-      this.rollHandler.handleActionClickCore(event, this.actionHandler);
-      event.currentTarget.blur();
-    } catch(error) {
-      Logger.error(event);
-    }
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Collapse/expand a subgroup
    * @param {object} event                       The event
-   * @param {boolean} enableCustomizationSetting Whether customization is enabled
    */
-  collapseExpandSubgroup(event, enableCustomizationSetting) {
+  collapseExpandSubgroup(event) {
     const target = event.target.closest('[data-part="listSubgroupTitle"]');
 
-    const groupElement = this.getClosestGroup(event);
+    const groupElement = this.getClosestGroupElement(event);
     const nestId = groupElement?.dataset?.nestId;
     const tabSubgroup = target.closest(".tah-tab-subgroup.hover");
     const groupsElement = groupElement?.querySelector("[data-part=\"subgroups\"]");
@@ -577,15 +610,15 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     };
 
     const saveGroupSettings = collapse => {
-      if (enableCustomizationSetting) {
-        this.actionHandler.saveGroupSettings({ nestId, settings: { collapse } });
+      if (Utils.getSetting("enableCustomization")) {
+        this.hudManager.groupHandler.saveGroupSettings({ nestId, settings: { collapse } });
       }
     };
 
     if (groupsElement?.classList.contains("tah-hidden")) {
       toggleGroupVisibility();
       saveGroupSettings(false);
-      this.groupResizer.resizeGroup(this.actionHandler, tabSubgroup, this.direction, this.gridSetting);
+      this.groupResizer.resizeGroup(this.hudManager.groupHandler, tabSubgroup, this.direction, this.gridSetting);
     } else {
       toggleGroupVisibility();
       saveGroupSettings(true);
@@ -599,16 +632,12 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event The event
    */
   handleGroupClick(event) {
-    const group = this.getClosestGroup(event);
+    const groupElement = this.getClosestGroupElement(event);
 
-    const nestId = group.dataset?.nestId;
+    const nestId = groupElement.dataset?.nestId;
     if (!nestId) return;
 
-    try {
-      this.rollHandler.handleGroupClickCore(event, nestId, this.actionHandler);
-    } catch(error) {
-      Logger.error(event);
-    }
+    this.hudManager.handleHudEvent("groupClick", event, { nestId });
   }
 
   /* -------------------------------------------- */
@@ -618,18 +647,39 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event
    */
   openEditGroupApp(event) {
-    const group = this.getClosestGroup(event);
+    const group = this.getClosestGroupElement(event);
     const { nestId, level, type } = group.dataset;
     if (!nestId) return;
-    const name = this.actionHandler.groups[nestId].name;
+    const name = this.groupHandler.groups[nestId].name;
     const parsedLevel = parseInt(level, 10) || null;
 
     if (parsedLevel === 1) {
-      TagDialogHelper.openEditGroupApp(this.actionHandler, { nestId, name, level: parsedLevel, type });
+      TagDialogHelper.openEditGroupApp(
+        this.groupHandler,
+        { nestId, name, level: parsedLevel, type }
+      );
     } else {
-      TagDialogHelper.openEditSubgroupApp(this.actionHandler, { nestId, name, level: parsedLevel, type });
+      TagDialogHelper.openEditSubgroupApp(
+        this.groupHandler,
+        this.hudManager.actionHandler,
+        { nestId, name, level: parsedLevel, type }
+      );
     }
 
+  }
+
+  /* -------------------------------------------- */
+  /* ACTION EVENTS                                */
+  /* -------------------------------------------- */
+
+  /**
+   * When an action is clicked
+   * @param {object} event The event
+   */
+  static clickAction(event) {
+    event.preventDefault();
+    this.hudManager.handleHudEvent("clickAction", event);
+    event.currentTarget.blur();
   }
 
   /* -------------------------------------------- */
@@ -639,42 +689,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event The event
    */
   handleActionHover(event) {
-    try {
-      this.rollHandler.handleActionHoverCore(event, this.actionHandler);
-    } catch(error) {
-      Logger.error(event);
-    }
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Add hover events
-   * @param {object} elements The elements
-   */
-  #addHoverEvents(elements) {
-    if (!this.clickOpenCategorySetting) {
-      // When a category button is hovered over...
-      elements.tabSubgroupArr.forEach(element => {
-        element.addEventListener("touchstart", this.toggleGroup.bind(this), { passive: true });
-        element.addEventListener("pointerenter", this.toggleGroup.bind(this));
-        element.addEventListener("pointerleave", this.toggleGroup.bind(this));
-      });
-    }
-
-    // When a category button is clicked and held...
-    if (!this.isDocked) {
-      elements.groupButtonArr.forEach(element => {
-        element.addEventListener("mousedown", this.#dragEvent.bind(this));
-        element.addEventListener("touchstart", this.#dragEvent.bind(this), { passive: true });
-      });
-    }
-
-    // When an action is hovered...
-    elements.actionArr.forEach(element => {
-      element.addEventListener("pointerenter", this.handleActionHover.bind(this));
-      element.addEventListener("pointerleave", this.handleActionHover.bind(this));
-    });
+    this.hudManager.handleHudEvent("hoverAction", event);
   }
 
   /* -------------------------------------------- */
@@ -752,9 +767,6 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
       // Save the new position to the user's flags
       this.hudPosition = { top: newElementTop, left: newElementLeft };
-      Utils.setUserFlag("position", this.hudPosition);
-
-      Logger.debug(`Set position to x: ${newElementTop}px, y: ${newElementLeft}px`);
     };
 
     // Bind mouse move and touch move events
@@ -769,87 +781,11 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Get the direction the HUD expands
-   * @private
-   * @returns {string} The direction
-   */
-  get direction() {
-    if (this.directionSetting === "up" || (this.directionSetting === "auto" && this.topPos > window.innerHeight / 2)) return "up";
-    return "down";
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Apply the direction
-   * @private
-   */
-  #applyDirection() {
-    if (this.isDocked) return;
-
-    const { characterName, subgroupsContainerArr } = this.elements;
-
-    if (this.direction === "up") {
-      characterName.classList.add("tah-hidden");
-
-      subgroupsContainerArr.forEach(element => {
-        element.classList.remove("expand-down");
-        element.classList.add("expand-up");
-      });
-    } else {
-      if (!this.isCollapsed) {
-        characterName.classList.remove("tah-hidden");
-      }
-
-      subgroupsContainerArr.forEach(element => {
-        element.classList.add("expand-down");
-        element.classList.remove("expand-up");
-      });
-    }
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Whether the HUD is docked
-   * @returns {boolean} Whether the HUD is docked
-   */
-  get isDocked() {
-    const dockedStyles = ["dockedLeft", "dockedCenterLeft", "dockedCenterRight", "dockedRight"];
-    return dockedStyles.includes(this.styleSetting);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Whether the HUD can be dragged
-   * @returns {boolean} Whether the HUD can be dragged
-   */
-  get isDraggable() {
-    return ((this.dragSetting === "always") || (this.dragSetting === "whenUnlocked" && this.isUnlocked));
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Get the HUD scale
-   * @private
-   * @returns {number} The scale
-   */
-  get scale() {
-    if (this.isDocked) return 1;
-    const scale = parseFloat(this.scaleSetting) || 1;
-    return Math.min(Math.max(scale, 0.5), 2);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Set position of the HUD
    * @public
    */
   setPosition() {
-    if (!this.hud) return;
+    if (!this.hudManager.hud) return;
     if (this.isDocked) {
       this.#setDockedPosition();
     } else {
@@ -930,35 +866,113 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
+   * The direction the HUD will expand
+   * @private
+   * @returns {string} The direction
+   */
+  get direction() {
+    if (this.directionSetting === "up" || (this.directionSetting === "auto" && this.topPos > window.innerHeight / 2)) return "up";
+    return "down";
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * The HUD position
+   * @returns {object} The HUD position
+   */
+  get hudPosition() {
+    return Utils.getUserFlag("position");
+  }
+
+  set hudPosition(obj) {
+    Utils.setUserFlag("position", obj);
+    Logger.debug(`Position set to x: ${obj.top}px, y: ${obj.left}px`);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the HUD is enabled
+   * @returns {boolean} Whether the HUD is enabled
+   */
+  get isEnabled() {
+    return Utils.getSetting("enable");
+  }
+
+  set isEnabled(bool) {
+    Utils.setSetting("enable", bool);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the HUD is collapsed
+   * @returns {boolean} Whether the HUD is collapsed
+   */
+  get isCollapsed() {
+    return Utils.getUserFlag("isCollapsed");
+  }
+
+  set isCollapsed(bool) {
+    Utils.setUserFlag("isCollapsed", bool);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the HUD is docked
+   * @returns {boolean} Whether the HUD is docked
+   */
+  get isDocked() {
+    const dockedStyles = ["dockedLeft", "dockedCenterLeft", "dockedCenterRight", "dockedRight"];
+    return dockedStyles.includes(this.styleSetting);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the HUD is unlocked
+   * @returns {boolean} Whether the HUD is unlocked
+   */
+  get isUnlocked() {
+    return Utils.getUserFlag("isUnlocked");
+  }
+
+  set isUnlocked(bool) {
+    Utils.setUserFlag("isUnlocked", bool);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the HUD is draggable
+   * @returns {boolean} Whether the HUD is draggable
+   */
+  get isDraggable() {
+    return ((this.dragSetting === "always") || (this.dragSetting === "whenUnlocked" && this.isUnlocked));
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * The HUD scale
+   * @private
+   * @returns {number} The scale
+   */
+  get scale() {
+    if (this.isDocked) return 1;
+    const scale = parseFloat(this.scaleSetting) || 1;
+    return Math.min(Math.max(scale, 0.5), 2);
+  }
+
+  /**
    * Reset the position of the HUD
    * @public
    */
   async resetPosition() {
     Logger.debug("Resetting position...");
     this.hudPosition = { top: this.defaultTopPos, left: this.defaultLeftPos };
-    await Utils.setUserFlag("position", this.hudPosition);
-    Logger.debug(`Position reset to x: ${this.defaultTopPos}px, y: ${this.defaultLeftPos}px`);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Toggle HUD enable
-   * @public
-   */
-  async toggleHud() {
-    const binding = Utils.humanizeBinding("toggleHud");
-    if (this.enableSetting) {
-      this.#close();
-      this.enableSetting = false;
-      await Utils.setSetting("enable", false);
-      Logger.info(game.i18n.format("tokenActionHud.keybinding.toggleHud.disabled", { binding }), true);
-    } else {
-      this.enableSetting = true;
-      await Utils.setSetting("enable", true);
-      Logger.info(game.i18n.format("tokenActionHud.keybinding.toggleHud.enabled", { binding }), true);
-      Hooks.callAll("forceUpdateTokenActionHud");
-    }
   }
 
   /* -------------------------------------------- */
@@ -1042,7 +1056,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     Logger.debug("Actor data reset");
 
-    this.actionHandler.hardResetActionHandler();
+    this.hudManager.actionHandler.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetActorData" } };
     this.update(trigger);
   }
@@ -1062,7 +1076,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     Logger.debug("All actor data reset");
-    this.actionHandler.hardResetActionHandler();
+    this.hudManager.actionHandler.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetAllActorData" } };
     this.update(trigger);
   }
@@ -1077,7 +1091,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     Logger.debug("Resetting user data...");
     await this.dataHandler.saveDataAsGm("user", game.userId, {});
     Logger.debug("User data reset");
-    this.actionHandler.hardResetActionHandler();
+    this.hudManager.actionHandler.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetUserData" } };
     this.update(trigger);
   }
@@ -1094,7 +1108,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       await this.dataHandler.saveDataAsGm("user", user.id, {});
     }
     Logger.debug("All user data reset");
-    this.actionHandler.hardResetActionHandler();
+    this.hudManager.actionHandler.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetAllUserData" } };
     this.update(trigger);
   }
@@ -1113,7 +1127,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     await this.dataHandler.saveDataAsGm("actor", this.actor.id, {});
     Logger.debug("Actor data reset");
 
-    this.actionHandler.hardResetActionHandler();
+    this.hudManager.actionHandler.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetUserAndActorData" } };
     this.update(trigger);
   }
@@ -1185,18 +1199,10 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.isUpdating = true;
     Logger.debug("Updating HUD...", trigger);
 
-    this.characterHandler.init();
-
-    if ( !this.characterHandler.isCharacter || !this.isHudEnabled) {
+    // Await does have an effect
+    const initialised = await this.hudManager.init(trigger);
+    if (!initialised) {
       this.#abortUpdate("HUD update aborted as no character(s) found or HUD is disabled");
-      return;
-    }
-
-    const options = (trigger === "controlToken" && this.characterHandler.isSameActor) ? { saveActor: true } : {};
-    this.hud = await this.actionHandler.buildHud(options);
-
-    if (this.actionHandler.availableActionsMap.size === 0) {
-      this.#abortUpdate("HUD update aborted as action list empty");
       return;
     }
 
@@ -1224,6 +1230,16 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#close();
     Logger.debug(`HUD update aborted: ${message}`);
     this.isUpdating = false;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Close the HUD
+   * @public
+   */
+  closeHud() {
+    this.#close();
   }
 
   /* -------------------------------------------- */
@@ -1270,7 +1286,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     const controlledTokens = Utils.getControlledTokens();
     return (
       controlledTokens?.some(controlledToken => controlledToken.id === token.id)
-        || (!controlledTokens?.length && canvas?.tokens?.placeables?.some(token => token.id === this.hud?.tokenId))
+        || (!controlledTokens?.length
+          && canvas?.tokens?.placeables?.some(token => token.id === this.hudManager.hud?.tokenId))
     );
   }
 
@@ -1301,25 +1318,12 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       return true;
     }
 
-    if (this.hud && actor.id === this.hud.actorId) {
+    if (this.hudManager.hud && actor.id === this.hud.actorId) {
       Logger.debug("Same actor, update hud", { actor, data });
       return true;
     }
 
     Logger.debug("Different actor, do not update hud", { actor, data });
     return false;
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Whether the hud is enabled for the current user
-   * @private
-   * @returns {boolean} Whether the hud is enabled for the current user
-   */
-  get isHudEnabled() {
-    if (!this.enableSetting) return false;
-    if (game.user.isGM) return true;
-    return Utils.checkAllow(game.user.role, this.allowSetting);
   }
 }

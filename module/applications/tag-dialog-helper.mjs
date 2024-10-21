@@ -8,13 +8,13 @@ export class TagDialogHelper {
   /**
    * Show the HUD dialog
    * @public
-   * @param {object} actionHandler The ActionHandler class
+   * @param {class} groupHandler The GroupHandler instance
    */
-  static async openEditHudApp(actionHandler) {
+  static async openEditHudApp(groupHandler) {
     // Set available and selected tags
     const tags = {};
     tags.available = [];
-    tags.selected = await actionHandler.getSelectedGroups();
+    tags.selected = await groupHandler.getSelectedGroupsAsTags();
     const grid = await Utils.getSetting("grid");
 
     // Set dialog data
@@ -30,8 +30,8 @@ export class TagDialogHelper {
     // Set function on submit
     const dialogSubmit = async (choices, formData) => {
       const grid = formData?.grid;
-      await actionHandler.updateGroups(choices, { level: 0 });
-      await actionHandler.saveGroups({ saveActor: true, saveUser: true });
+      await groupHandler.updateGroups(choices, { level: 0 });
+      await groupHandler.saveGroups({ saveActor: true, saveUser: true });
       await Utils.setSetting("grid", grid);
       Hooks.callAll("forceUpdateTokenActionHud");
     };
@@ -45,20 +45,20 @@ export class TagDialogHelper {
   /**
    * Show group dialog
    * @public
-   * @param {object} actionHandler The ActionHandler class
-   * @param {object} groupData    The group data
+   * @param {class} groupHandler The GroupHandler instance
+   * @param {object} groupData   The group data
    */
-  static async openEditGroupApp(actionHandler, groupData) {
+  static async openEditGroupApp(groupHandler, groupData) {
     const { nestId, name, level } = groupData;
 
     // Set available and selected tags
     const tags = {};
 
     // Get available subcategories
-    tags.available = await actionHandler.getAvailableGroups({ nestId, level });
+    tags.available = await groupHandler.getAvailableGroupAsTags({ nestId, level });
 
     // Get selected subcategories
-    tags.selected = await actionHandler.getSelectedGroups({ nestId, level });
+    tags.selected = await groupHandler.getSelectedGroupsAsTags({ nestId, level });
 
     // Set dialog data
     const dialogData = {
@@ -66,7 +66,7 @@ export class TagDialogHelper {
       content: {
         topLabel: game.i18n.localize("tokenActionHud.form.hud.groupDetail"),
         placeholder: game.i18n.localize("tokenActionHud.form.hud.tagPlaceholder"),
-        settings: await actionHandler.getGroupSettings(groupData)
+        settings: await groupHandler.getGroupSettings(groupData)
       }
     };
 
@@ -116,23 +116,24 @@ export class TagDialogHelper {
   /**
    * Show action dialog
    * @public
-   * @param {object} actionHandler The ActionHandler class
+   * @param {class} groupHandler  The GroupHandler instance
+   * @param {class} actionHandler The ActionHandler instance
    * @param {object} groupData    The group data
    */
-  static async openEditSubgroupApp(actionHandler, groupData) {
+  static async openEditSubgroupApp(groupHandler, actionHandler, groupData) {
     const { nestId, name, level } = groupData;
 
     // Set available and selected tags
     const tags = {};
 
-    // Get available actions and subcategories
-    const availableActions = await actionHandler.getAvailableActions(groupData);
-    const availableSubcategories = await actionHandler.getAvailableGroups({ nestId, level });
-    tags.available = [...availableActions, ...availableSubcategories];
+    // Get available groups and actions
+    const availableActions = await actionHandler.getAvailableActionsAsTags(groupData);
+    const availableGroups = await groupHandler.getAvailableGroupAsTags({ nestId, level });
+    tags.available = [...availableActions, ...availableGroups];
 
     // Get selected actions and subcategories
-    const selectedActions = await actionHandler.getSelectedActions(groupData);
-    const selectedGroups = await actionHandler.getSelectedGroups({ nestId, level });
+    const selectedActions = await actionHandler.getSelectedActionsAsTags(groupData);
+    const selectedGroups = await groupHandler.getSelectedGroupsAsTags({ nestId, level });
     tags.selected = [...selectedActions, ...selectedGroups];
 
     // Set dialog data
@@ -169,9 +170,9 @@ export class TagDialogHelper {
       groupData.settings = { characterCount, collapse, customWidth, grid, image, showTitle, sort, style };
 
       // Save subcategories to user action list
-      await actionHandler.updateGroups(selectedGroups, groupData);
+      await groupHandler.updateGroups(selectedGroups, groupData);
       await actionHandler.updateActions(selectedActions, groupData);
-      await actionHandler.saveGroups({ saveActor: true, saveUser: true });
+      await groupHandler.saveGroups({ saveActor: true, saveUser: true });
 
       Hooks.callAll("forceUpdateTokenActionHud");
     };

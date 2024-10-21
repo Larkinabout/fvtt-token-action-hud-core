@@ -31,7 +31,7 @@ export class RollHandler {
   /**
    * Handle action events
    * @public
-   * @param {object} event         The event
+   * @param {object} event The event
    */
   async handleActionClickCore(event) {
     Logger.debug("Handling action click event", { event });
@@ -88,7 +88,7 @@ export class RollHandler {
     const buttonValue = this.getButtonValue(event);
 
     this.handleActionHover(event, buttonValue);
-  }
+  } 
 
   /* -------------------------------------------- */
 
@@ -114,7 +114,7 @@ export class RollHandler {
     this.actor = this.actionHandler.actor;
     this.token = this.actionHandler.token;
 
-    const group = this.actionHandler.getGroup({ nestId });
+    const group = this.groupHandler.getGroup({ nestId });
 
     this.registerKeyPresses(event);
 
@@ -152,7 +152,8 @@ export class RollHandler {
    */
   getButtonValue(event) {
     if (!event) return null;
-    return event.target.closest(".tah-action-button")?.value || null;
+    const buttonElement = event.target.querySelector(".tah-action-button") ?? event.target.closest(".tah-action-button");
+    return buttonElement?.value || null;
   }
 
   /* -------------------------------------------- */
@@ -168,7 +169,7 @@ export class RollHandler {
       ?? event.target.querySelector('[data-part="actionButton"]');
     const actionId = actionButtonElement?.dataset?.actionId;
     if (!actionId) return {};
-    return this.actionHandler.availableActionsMap.get(actionId) || {};
+    return this.actionHandler.availableActions.get(actionId) || {};
   }
 
   /* -------------------------------------------- */

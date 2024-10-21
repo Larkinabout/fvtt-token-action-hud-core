@@ -13,12 +13,12 @@ export class GroupResizer {
 
   /**
    * Resize the groups element
-   * @param {ActionHandler} actionHandler The actionHandler class
+   * @param {class} groupHandler The GroupHandler instance
    * @param {object} groupElement         The group element
    * @param {string} autoDirection        The direction the HUD will expand
    * @param {boolean} gridModuleSetting   The grid module setting
    */
-  async resizeGroup(actionHandler, groupElement, autoDirection, gridModuleSetting) {
+  async resizeGroup(groupHandler, groupElement, autoDirection, gridModuleSetting) {
     // Exit early if no group element exists
     if (!groupElement) return;
 
@@ -45,7 +45,7 @@ export class GroupResizer {
 
     // Get group settings
     const nestId = this.groupElement.dataset.nestId;
-    this.settings = await actionHandler.getGroupSettings({ nestId, level: 1 });
+    this.settings = await groupHandler.getGroupSettings({ nestId, level: 1 });
 
     // Get available width
     this.availableWidth = this.#getAvailableWidth();
@@ -59,7 +59,7 @@ export class GroupResizer {
       const actionsElement = groupElement.querySelector(".tah-actions");
       if (!actionsElement) continue;
       const nestId = groupElement.dataset.nestId;
-      const groupSettings = await actionHandler.getGroupSettings({ nestId });
+      const groupSettings = await groupHandler.getGroupSettings({ nestId });
       const groupCustomWidth = groupSettings.customWidth;
       const grid = gridModuleSetting || this.settings?.grid || groupSettings?.grid || actionsElement.style.display;
       if (grid) {

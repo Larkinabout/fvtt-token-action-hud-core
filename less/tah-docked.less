@@ -26,15 +26,6 @@
 
   &:not(.tah-expanded) {
     #token-action-hud {
-      #tah-character-name {
-        display: none;
-        opacity: 0;
-      }
-
-      .tah-groups {
-        display: none;
-      }
-  
       #tah-buttons {
         display: none;
         opacity: 0;
@@ -62,7 +53,9 @@
       color: var(--tah-character-name-color);
       font-size: var(--font-size-16);
       height: var(--tah-button-height);
+      min-width: 120px;
       opacity: 1;
+      overflow: hidden;
       padding: 5px;
       text-shadow: var(--tah-character-name-text-shadow);
     }
@@ -129,24 +122,29 @@
       align-items: center;
       background-color: transparent;
       border: none;
+      border-radius: 0;
       color: var(--tah-button-text-color);
       display: flex;
       font-size: var(--font-size-13);
       font-weight: var(--tah-button-box-font-weight);
       gap: var(--tah-gap);
+      max-width: 200px;
       min-height: var(--tah-button-height);
       margin: 0;
       padding: 5px;
       text-shadow: var(--tah-button-text-shadow);
       width: 100%;
-      border-radius: 0;
-      max-width: 200px;
 
       &.tah-group-button {
         background-color: var(--tah-button-background-color);
         font-size: var(--font-size-12);
         letter-spacing: 0.1rem;
+        min-width: 120px;
         text-transform: uppercase;
+      }
+
+      &.tah-action-button {
+        min-width: 120px;
       }
 
       &:not(.disabled) {
@@ -422,6 +420,7 @@
             gap: var(--tah-gap);
             letter-spacing: @tah-list-subgroup-title-letter-spacing;
             line-height: 1;
+            min-width: 120px;
             padding: 5px;
             text-shadow: var(--tah-text-shadow);
             text-transform: @tah-list-subgroup-title-text-transform;

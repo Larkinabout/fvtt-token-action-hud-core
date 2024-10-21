@@ -1,4 +1,4 @@
-import { DELIMITER, ACTION_TYPE } from "../../core/constants.mjs";
+import { ACTION_TYPE } from "../../core/constants.mjs";
 import { Utils } from "../../core/utils.mjs";
 
 /**
@@ -15,7 +15,7 @@ export class MacroActionHandler {
    * Build macro actions
    * @override
    */
-  async buildMacroActions() {
+  async buildActions() {
     if (!this.macroActions) {
       this.macroActions = {
         actionsData: await this.#getActions(),

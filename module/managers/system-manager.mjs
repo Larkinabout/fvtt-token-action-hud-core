@@ -67,13 +67,17 @@ export class SystemManager {
   /**
    * Initialise the action handler
    * @public
-   * @param {class} dataHandler   The data handler
-   * @returns {class}             The action handler
+   * @param {class} dataHandler  The DataHandler instance
+   * @param {class} groupHandler The GroupHandler instance
+   * @returns {class}            The ActionHandler instance
    */
-  getActionHandlerCore(dataHandler) {
+  getActionHandlerCore(dataHandler, groupHandler) {
     const actionHandler = this.getActionHandler();
     actionHandler.systemManager = this;
     actionHandler.dataHandler = dataHandler;
+    actionHandler.groupHandler = groupHandler;
+    actionHandler.addGroup = groupHandler.addGroup.bind(groupHandler);
+    actionHandler.addGroupInfo = groupHandler.addGroupInfo.bind(groupHandler);
     this.#addActionHandlerExtenders(actionHandler);
 
     Hooks.callAll("tokenActionHudCoreAddActionHandler", actionHandler);
@@ -101,10 +105,11 @@ export class SystemManager {
   /**
    * Get the roll handler
    * @public
-   * @param {class} actionHandler The action handler
-   * @returns {class} The roll handler
+   * @param {class} groupHandler  The GroupHandler instance
+   * @param {class} actionHandler The ActionHandler instance
+   * @returns {class}             The RollHandler instance
    */
-  getRollHandlerCore(actionHandler) {
+  getRollHandlerCore(groupHandler, actionHandler) {
     let rollHandlerId = Utils.getSetting("rollHandler");
 
     if (!(rollHandlerId === "core" || Utils.isModuleActive(rollHandlerId))) {
@@ -114,6 +119,7 @@ export class SystemManager {
     }
 
     const rollHandler = this.getRollHandler(rollHandlerId);
+    rollHandler.groupHandler = groupHandler;
     rollHandler.actionHandler = actionHandler;
 
     this.addPreHandlers(rollHandler);

@@ -16,10 +16,16 @@ function onChangeFunction(key, value) {
 
 // Register key bindings
 Hooks.on("init", async () => {
-  game.keybindings.register(MODULE.ID, "toggleHud", {
-    name: game.i18n.localize("tokenActionHud.toggleHud"),
+  game.keybindings.register(MODULE.ID, "enableDisableHud", {
+    name: game.i18n.localize("tokenActionHud.enableDisableHud"),
     editable: [],
-    onDown: () => { game.tokenActionHud.toggleHud(); }
+    onDown: () => { if (game.tokenActionHud) game.tokenActionHud.toggleHudEnable(); }
+  });
+
+  game.keybindings.register(MODULE.ID, "collapseExpandHud", {
+    name: game.i18n.localize("tokenActionHud.collapseExpandHud"),
+    editable: [],
+    onDown: () => { if (game.tokenActionHud) game.tokenActionHud.toggleHudCollapse(); }
   });
 });
 

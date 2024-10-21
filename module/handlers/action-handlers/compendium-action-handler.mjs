@@ -22,7 +22,7 @@ export class CompendiumActionHandler {
   /**
    * Build compendium actions
    */
-  async buildCompendiumActions() {
+  async buildActions() {
     if (this.compendiumActions.size === 0) {
       this.packIds = game.packs
         .filter(
@@ -34,7 +34,7 @@ export class CompendiumActionHandler {
 
       if (this.packIds.length === 0) return;
 
-      await Promise.all(this.packIds.map(packId => this.#setCompendiumActions(packId)));
+      await Promise.all(this.packIds.map(packId => this.#setActions(packId)));
     }
 
     for (const pack of this.compendiumActions.values()) {
@@ -48,7 +48,7 @@ export class CompendiumActionHandler {
    * Set compendium actions into the compendiumActions map
    * @param {string} packId The pack id
    */
-  async #setCompendiumActions(packId) {
+  async #setActions(packId) {
     const pack = game.packs.get(packId);
     const entries = pack ? pack.index.size > 0 ? pack.index : await pack.getIndex() : null;
     if (!entries) return;

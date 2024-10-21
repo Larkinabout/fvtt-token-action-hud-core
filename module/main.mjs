@@ -76,6 +76,8 @@ async function registerHud() {
 
   await game.tokenActionHud.init();
 
+  Hooks.callAll("tokenActionHudReady");
+
   game.tokenActionHud.update({ type: "hook", name: "tokenActionHudCoreReady" });
 }
 

@@ -1,10 +1,10 @@
 import { Utils } from "../core/utils.mjs";
 
 export class CharacterHandler {
-  constructor(tokenActionHud, actionHandler, rollHandler) {
-    this.tokenActionHud = tokenActionHud;
-    this.actionHandler = actionHandler;
-    this.rollHandler = rollHandler;
+  constructor(hudManager) {
+    this.hudManager = hudManager;
+    this.actionHandler = hudManager.actionHandler;
+    this.rollHandler = hudManager.rollHandler;
   }
 
   init() {
@@ -45,8 +45,6 @@ export class CharacterHandler {
   resetCharacter() {
     this.token = null;
     this.actor = null;
-    this.tokenActionHud.token = null;
-    this.tokenActionHud.actor = null;
     this.actionHandler.token = null;
     this.actionHandler.actor = null;
     this.rollHandler.token = null;
@@ -72,8 +70,6 @@ export class CharacterHandler {
     // Empty singulars
     this.token = null;
     this.actor = null;
-    this.tokenActionHud.token = null;
-    this.tokenActionHud.actor = null;
     this.actionHandler.token = null;
     this.actionHandler.actor = null;
     this.rollHandler.token = null;
@@ -101,7 +97,7 @@ export class CharacterHandler {
     if (controlledTokens.length === 1 && this.#isValidCharacter(controlledTokens[0])) {
       character.token = controlledTokens[0];
       character.actor = character.token?.actor;
-    } else if (controlledTokens.length === 0 && game.user.character && this.tokenActionHud.alwaysShowHudSetting) {
+    } else if (controlledTokens.length === 0 && game.user.character && Utils.getSetting("alwaysShowHud")) {
       character.actor = game.user.character;
       character.token = canvas.tokens?.placeables.find(t => t.actor?.id === character.actor.id) ?? null;
     }
@@ -118,8 +114,6 @@ export class CharacterHandler {
     this.actors = [character.actor];
 
     // Set in other classes for easy access
-    this.tokenActionHud.token = character.token;
-    this.tokenActionHud.actor = character.actor;
     this.actionHandler.token = character.token;
     this.actionHandler.actor = character.actor;
     this.actionHandler.tokens = this.tokens;

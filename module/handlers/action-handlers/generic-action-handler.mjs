@@ -17,7 +17,7 @@ export class GenericActionHandler {
    * Build generic actions
    * @public
    */
-  buildGenericActions() {
+  buildActions() {
     this.#buildUtilities();
   }
 
