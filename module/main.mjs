@@ -33,9 +33,7 @@ async function registerCoreModule(systemModule) {
 
   // Create new SystemManager and register core and system module settings
   systemManager = new systemModule.api.SystemManager(MODULE.ID);
-  await systemManager.registerDefaultsCore();
-  systemManager.registerStylesCore();
-  systemManager.registerSettingsCore();
+  await systemManager.init();
 
   // Set stylesheet to 'style' core module setting
   Utils.switchCSS(Utils.getSetting("style"));
@@ -55,8 +53,6 @@ async function registerCoreModule(systemModule) {
  * Register the TokenActionHud application
  */
 async function registerHud() {
-  game.tokenActionHud = null;
-
   // Get socket
   const socket = getSocket();
 
@@ -69,11 +65,9 @@ async function registerHud() {
   await migrationManager.init();
 
   checkColorPicker();
-  createDirectories(dataHandler);
   registerHudHooks();
 
   game.tokenActionHud = new TokenActionHud(systemManager, dataHandler, socket);
-
   await game.tokenActionHud.init();
 
   Hooks.callAll("tokenActionHudReady");
@@ -90,18 +84,6 @@ function checkColorPicker() {
   if (game.user.isGM && !game.modules.get("color-picker")?.active && Utils.getSetting("startup") === false) {
     Logger.info("To enable color pickers, install the 'Color Picker' module.", true);
     Utils.setSetting("startup", true);
-  }
-}
-
-/* -------------------------------------------- */
-
-/**
- * If user is the GM and 'Enable Customization' is enabled, create directories for the layout files
- * @param {DataHandler} dataHandler The data handler
- */
-async function createDirectories(dataHandler) {
-  if (game.user.isGM && Utils.getSetting("enableCustomization")) {
-    await dataHandler.createDirectories();
   }
 }
 
@@ -147,26 +129,26 @@ function validateHookData(hookData, hookName) {
   switch (hookName) {
     case "deleteActor":
     case "updateActor":
-      return game.tokenActionHud.isValidActorOrItemUpdate(hookData.actor, hookData.data);
+      return game.tokenActionHud.isValidActorOrItemUpdate(hookData[0], hookData[1]);
     case "createActiveEffect":
     case "deleteActiveEffect":
-      return game.tokenActionHud.isSelectedActor(hookData.activeEffect.parent);
+      return game.tokenActionHud.isSelectedActor(hookData[0]?.parent);
     case "createCombatant":
     case "updateCombatant":
-      return game.tokenActionHud.isSelectedActor(hookData.combatant.actor);
+      return game.tokenActionHud.isSelectedActor(hookData[0]?.actor);
     case "deleteCompendium":
     case "updateCompendium":
       return validateCompendium(hookData.source?.metadata?.id);
     case "createItem":
     case "deleteItem":
     case "updateItem":
-      return game.tokenActionHud.isValidActorOrItemUpdate(hookData.item?.actor);
+      return game.tokenActionHud.isValidActorOrItemUpdate(hookData[0]?.actor);
     case "deleteMacro":
     case "updateMacro":
       game.tokenActionHud.actionHandler.macroActionHandler.macroActions = null;
       return true;
     case "updateToken":
-      return Object.hasOwn(hookData.data, "hidden") && game.tokenActionHud.isValidTokenChange(hookData.token, hookData.data);
+      return Object.hasOwn(hookData[1], "hidden") && game.tokenActionHud.isValidTokenChange(hookData[0], hookData[1]);
     default:
       return true;
   }

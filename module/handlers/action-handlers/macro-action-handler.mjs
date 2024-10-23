@@ -42,8 +42,10 @@ export class MacroActionHandler {
         id: macro.id,
         name: macro.name,
         listName: this.#getListName(actionType, macro.name),
-        system: { actionType },
-        img: Utils.getImage(macro)
+        img: Utils.getImage(macro),
+        onClick: () => {
+          game.macros.get(macro.id).execute();
+        }
       };
     });
   }

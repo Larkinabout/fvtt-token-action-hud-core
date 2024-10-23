@@ -6,9 +6,9 @@ import Tagify from "@yaireo/tagify";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
- * Application for the dialogs.
+ * Tagify-based application
  */
-export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
+export class TagifyApp extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(data) {
     super(data);
     this.tagify = null;
@@ -24,14 +24,14 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static DEFAULT_OPTIONS = {
     actions: {
-      resetActions: TagDialog.resetActions,
-      unselectAllTags: TagDialog.unselectAllTags
+      resetActions: TagifyApp.resetActions,
+      unselectAllTags: TagifyApp.unselectAllTags
     },
     classes: [`${MODULE.ID}-app`, "tah-dialog", "sheet"],
     id: "token-action-hud-dialog",
     form: {
       closeOnSubmit: true,
-      handler: TagDialog.submit
+      handler: TagifyApp.submit
     },
     position: {
       width: 600,
@@ -61,9 +61,9 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} dialogData      The dialog data
    * @param {function*} dialogSubmit The dialog submit function
    */
-  static showDialog(dialogType, nestId, tags, dialogData, dialogSubmit) {
+  static open(dialogType, nestId, tags, dialogData, dialogSubmit) {
     this.nestId = nestId;
-    TagDialog.#prepareHook(tags);
+    TagifyApp.#prepareHook(tags);
 
     const data = {
       title: dialogData.title,
@@ -74,13 +74,13 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     let dialog;
     switch (dialogType) {
       case "hud":
-        dialog = new TagDialogHud(data);
+        dialog = new TagifyAppHud(data);
         break;
       case "topLevelGroup":
-        dialog = new tagDialogGroup(data);
+        dialog = new TagifyAppGroup(data);
         break;
       case "group":
-        dialog = new tagDialogSubgroup(data);
+        dialog = new TagifyAppSubgroup(data);
         break;
     }
 
@@ -95,7 +95,7 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} tags The tags
    */
   static #prepareHook(tags) {
-    Hooks.once("renderTagDialog", (app, html, options) => {
+    Hooks.once("renderTagifyApp", (app, html, options) => {
       const tagInput = html.querySelector('input[class="tah-dialog-tagify"]');
 
       if (tagInput) {
@@ -117,12 +117,12 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
         if (tags.available) options.whitelist = tags.available;
 
-        TagDialog.tagify = new Tagify(tagInput, options);
+        TagifyApp.tagify = new Tagify(tagInput, options);
 
-        if (tags.selected) TagDialog.tagify.addTags(tags.selected);
+        if (tags.selected) TagifyApp.tagify.addTags(tags.selected);
 
-        TagDialog.dragSort = new DragSort(TagDialog.tagify.DOM.scope, {
-          selector: `.${TagDialog.tagify.settings.classNames.tag}`,
+        TagifyApp.dragSort = new DragSort(TagifyApp.tagify.DOM.scope, {
+          selector: `.${TagifyApp.tagify.settings.classNames.tag}`,
           callbacks: { dragEnd: onDragEnd }
         });
 
@@ -130,7 +130,7 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
          * On drag end
          */
         function onDragEnd() {
-          TagDialog.tagify.updateValueByDOMTags();
+          TagifyApp.tagify.updateValueByDOMTags();
         }
 
         const tagifyInput = html.querySelector(".tagify__input");
@@ -138,19 +138,19 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
           tagifyInput.addEventListener("keydown", event => {
             if (event.key === "Enter") {
               event.preventDefault();
-              TagDialog.tagify.addTags(TagDialog.tagify.state.inputText, !0);
+              TagifyApp.tagify.addTags(TagifyApp.tagify.state.inputText, !0);
             }
           });
         }
 
-        if (app.constructor.name === "TagDialogHud") return;
+        if (app.constructor.name === "TagifyAppHud") return;
 
-        TagDialog.tagify.dropdown.show();
+        TagifyApp.tagify.dropdown.show();
         const dropdownLabelElement = document.createElement("div");
         dropdownLabelElement.classList.add("tah-dialog-label");
         dropdownLabelElement.innerHTML = game.i18n.localize("tokenActionHud.form.hud.availableItems");
-        TagDialog.tagify.DOM.scope.parentNode.appendChild(dropdownLabelElement);
-        TagDialog.tagify.DOM.scope.parentNode.appendChild(TagDialog.tagify.DOM.dropdown);
+        TagifyApp.tagify.DOM.scope.parentNode.appendChild(dropdownLabelElement);
+        TagifyApp.tagify.DOM.scope.parentNode.appendChild(TagifyApp.tagify.DOM.dropdown);
       }
     });
   }
@@ -188,7 +188,7 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * When the 'Unselect All' button is clicked, unselect all tags
    */
   static unselectAllTags() {
-    TagDialog.tagify.removeAllTags();
+    TagifyApp.tagify.removeAllTags();
   }
 
   /* -------------------------------------------- */
@@ -224,7 +224,7 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} formData The form data
    */
   static async submit(event, form, formData) {
-    const selection = TagDialog.tagify.value.map(c => {
+    const selection = TagifyApp.tagify.value.map(c => {
       c.id = c.id ?? c.value.slugify({ replacement: "-", strict: true });
       return {
         id: c.id,
@@ -239,30 +239,30 @@ export class TagDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
 /* -------------------------------------------- */
 
-export class TagDialogHud extends TagDialog {
+export class TagifyAppHud extends TagifyApp {
   static PARTS = {
     form: {
-      template: TEMPLATE.tagDialogHud
+      template: TEMPLATE.tagifyAppHud
     }
   };
 }
 
 /* -------------------------------------------- */
 
-export class tagDialogGroup extends TagDialog {
+export class TagifyAppGroup extends TagifyApp {
   static PARTS = {
     form: {
-      template: TEMPLATE.tagDialogGroup
+      template: TEMPLATE.tagifyAppGroup
     }
   };
 }
 
 /* -------------------------------------------- */
 
-export class tagDialogSubgroup extends TagDialog {
+export class TagifyAppSubgroup extends TagifyApp {
   static PARTS = {
     form: {
-      template: TEMPLATE.tagDialogSubgroup
+      template: TEMPLATE.tagifyAppSubgroup
     }
   };
 }

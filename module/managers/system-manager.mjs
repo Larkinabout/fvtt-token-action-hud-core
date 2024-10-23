@@ -1,7 +1,6 @@
 import { registerSettingsCore } from "../core/settings.mjs";
 import { ItemMacroActionHandlerExtender } from "../handlers/action-handlers/item-macro-extender.mjs";
-import { CompendiumMacroPreHandler } from "../handlers/roll-handlers/compendium-macro-pre-handler.mjs";
-import { ItemMacroPreRollHandler } from "../handlers/roll-handlers/pre-item-macro.mjs";
+import { RollHandler } from "../handlers/roll-handlers/roll-handler.mjs";
 import { MODULE, CSS_STYLE } from "../core/constants.mjs";
 import { Logger, Utils } from "../core/utils.mjs";
 
@@ -18,7 +17,9 @@ export class SystemManager {
 
   getActionHandler() {}
 
-  getRollHandler(rollHandlerId) {}
+  getRollHandler(rollHandlerId) {
+    return false;
+  }
 
   getAvailableRollHandlers() {}
 
@@ -26,14 +27,28 @@ export class SystemManager {
 
   async registerDefaults() {}
 
+  async registerStyles() {}
+
+  /* -------------------------------------------- */
+
+  /**
+   * Initialise the system manager
+   */
+  async init() {
+    await this.#registerDefaultsCore();
+    this.#registerStylesCore();
+    this.#registerSettingsCore();
+  }
+
+
   /* -------------------------------------------- */
 
   /**
    * Register defaults
-   * @public
+   * @private
    * @returns {Array} The defaults
    */
-  async registerDefaultsCore() {
+  async #registerDefaultsCore() {
     const defaults = await this.registerDefaults() ?? [];
 
     Hooks.callAll("tokenActionHudCoreRegisterDefaults", defaults);
@@ -47,8 +62,9 @@ export class SystemManager {
 
   /**
    * Register styles
+   * @private
    */
-  async registerStylesCore() {
+  async #registerStylesCore() {
     const systemStyles = this.registerStyles() ?? {};
     this.styles = foundry.utils.mergeObject(CSS_STYLE, systemStyles);
 
@@ -58,27 +74,33 @@ export class SystemManager {
   /* -------------------------------------------- */
 
   /**
-   * @override
+   * Register module settings
+   * @private
    */
-  async registerStyles() {}
+  #registerSettingsCore() {
+    const rollHandlers = this.getAvailableRollHandlers();
+    registerSettingsCore(this, rollHandlers, this.styles);
+  }
 
   /* -------------------------------------------- */
 
   /**
    * Initialise the action handler
    * @public
-   * @param {class} dataHandler  The DataHandler instance
-   * @param {class} groupHandler The GroupHandler instance
-   * @returns {class}            The ActionHandler instance
+   * @param {class} hudManager The HudManager instance
+   * @returns {class}          The ActionHandler instance
    */
-  getActionHandlerCore(dataHandler, groupHandler) {
+  getActionHandlerCore(hudManager) {
     const actionHandler = this.getActionHandler();
     actionHandler.systemManager = this;
+
+    const { dataHandler, groupHandler } = hudManager;
+    actionHandler.hudManager = hudManager;
     actionHandler.dataHandler = dataHandler;
     actionHandler.groupHandler = groupHandler;
     actionHandler.addGroup = groupHandler.addGroup.bind(groupHandler);
     actionHandler.addGroupInfo = groupHandler.addGroupInfo.bind(groupHandler);
-    this.#addActionHandlerExtenders(actionHandler);
+    this.#addActionHandlerExtenders(groupHandler, actionHandler);
 
     Hooks.callAll("tokenActionHudCoreAddActionHandler", actionHandler);
 
@@ -90,11 +112,12 @@ export class SystemManager {
   /**
    * Add action handler extensions
    * @public
-   * @param {class} actionHandler The action handler
+   * @param {class} groupHandler The GroupHandler instance
+   * @param {class} actionHandler The ActionHandler instance
    */
-  #addActionHandlerExtenders(actionHandler) {
+  #addActionHandlerExtenders(groupHandler, actionHandler) {
     if (Utils.isModuleActive("itemacro") && !Utils.isModuleActive("midi-qol")) {
-      actionHandler.addActionHandlerExtender(new ItemMacroActionHandlerExtender(actionHandler));
+      actionHandler.addActionHandlerExtender(new ItemMacroActionHandlerExtender(groupHandler, actionHandler));
     }
 
     Hooks.callAll("tokenActionHudCoreAddActionHandlerExtenders", actionHandler);
@@ -105,11 +128,10 @@ export class SystemManager {
   /**
    * Get the roll handler
    * @public
-   * @param {class} groupHandler  The GroupHandler instance
-   * @param {class} actionHandler The ActionHandler instance
-   * @returns {class}             The RollHandler instance
+   * @param {class} hudManager The HudManager instance
+   * @returns {class}          The RollHandler instance
    */
-  getRollHandlerCore(groupHandler, actionHandler) {
+  getRollHandlerCore(hudManager) {
     let rollHandlerId = Utils.getSetting("rollHandler");
 
     if (!(rollHandlerId === "core" || Utils.isModuleActive(rollHandlerId))) {
@@ -118,31 +140,15 @@ export class SystemManager {
       Utils.setSetting("rollHandler", rollHandlerId);
     }
 
-    const rollHandler = this.getRollHandler(rollHandlerId);
-    rollHandler.groupHandler = groupHandler;
-    rollHandler.actionHandler = actionHandler;
+    // If no system RollHandler is returned, use core RollHandler
+    const rollHandler = this.getRollHandler(rollHandlerId) ?? new RollHandler();
+    rollHandler.hudManager = hudManager;
 
-    this.addPreHandlers(rollHandler);
     this.#addRollHandlerExtenders(rollHandler);
 
     Hooks.callAll("tokenActionHudCoreAddRollHandler", rollHandler);
 
     return rollHandler;
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Add pre-handlers
-   * @public
-   * @param {object} rollHandler
-   */
-  addPreHandlers(rollHandler) {
-    rollHandler.addPreRollHandler(new CompendiumMacroPreHandler());
-
-    if (Utils.isModuleActive("itemacro") && !Utils.isModuleActive("midi-qol")) {
-      rollHandler.addPreRollHandler(new ItemMacroPreRollHandler());
-    }
   }
 
   /* -------------------------------------------- */
@@ -154,17 +160,6 @@ export class SystemManager {
    */
   #addRollHandlerExtenders(rollHandler) {
     Hooks.callAll("tokenActionHudCoreAddRollHandlerExtenders", rollHandler);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Register module settings
-   * @public
-   */
-  registerSettingsCore() {
-    const rollHandlers = this.getAvailableRollHandlers();
-    registerSettingsCore(this, rollHandlers, this.styles);
   }
 
   /* -------------------------------------------- */

@@ -1,5 +1,5 @@
 import { HudManager } from "../managers/hud-manager.mjs";
-import { TagDialogHelper } from "./tag-dialog-helper.mjs";
+import { TagifyAppHelper } from "./tagify-app-helper.mjs";
 import { GroupResizer } from "../handlers/group-resizer.mjs";
 import { HUD, MODULE, SETTING, TEMPLATE } from "../core/constants.mjs";
 import { Logger, Timer, Utils } from "../core/utils.mjs";
@@ -331,7 +331,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * When the 'Edit HUD' button is clicked, open the Edit HUD app
    */
   static editHud() {
-    TagDialogHelper.openEditHudApp(this.hudManager.actionHandler);
+    TagifyAppHelper.openEditHudApp(this.hudManager.groupHandler);
   }
 
   /* -------------------------------------------- */
@@ -519,7 +519,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
         this.handleGroupClick(event);
       }
     } else {
-      const group = this.getClosestGroupElement(event);
+      const group = Utils.getClosestGroupElement(event);
       if (group.dataset?.groupType === "tab") {
         this.toggleGroup(event, group);
       } else {
@@ -536,7 +536,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} group The group element
    */
   toggleGroup(event = null, group = null) {
-    group = group || this.getClosestGroupElement(event);
+    group = group || Utils.getClosestGroupElement(event);
     const isOpen = group.classList.contains("hover");
     const shouldOpen = !isOpen;
     if ((isOpen && event?.type === "pointerenter") || (!isOpen && event?.type === "pointerleave")) return;
@@ -556,18 +556,6 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Get closest group to the event target
-   * @param {object} event The event
-   * @returns {object}     The closest group element
-   */
-  getClosestGroupElement(event) {
-    if (!event) return null;
-    return event.target.closest("[data-part=\"subgroup\"]") || event.target.closest("[data-part=\"group\"]");
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Toggle visibility of other groups
    * @private
    * @param {string} groupToIgnore The group to ignore
@@ -578,6 +566,10 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.openGroups.forEach(groupId => {
       if (groupId === groupToIgnore.id) return;
       const group = this.element.querySelector(`#${groupId}`);
+      // If group no longer exists on the HUD, delete it
+      if (!group) {
+        this.openGroups.delete(groupId);
+      }
       const isParentToIgnore = group.querySelector(`#${groupToIgnore.id}`);
       if (group && !isParentToIgnore) {
         this.toggleGroup(null, group);
@@ -594,7 +586,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   collapseExpandSubgroup(event) {
     const target = event.target.closest('[data-part="listSubgroupTitle"]');
 
-    const groupElement = this.getClosestGroupElement(event);
+    const groupElement = Utils.getClosestGroupElement(event);
     const nestId = groupElement?.dataset?.nestId;
     const tabSubgroup = target.closest(".tah-tab-subgroup.hover");
     const groupsElement = groupElement?.querySelector("[data-part=\"subgroups\"]");
@@ -632,12 +624,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event The event
    */
   handleGroupClick(event) {
-    const groupElement = this.getClosestGroupElement(event);
-
-    const nestId = groupElement.dataset?.nestId;
-    if (!nestId) return;
-
-    this.hudManager.handleHudEvent("groupClick", event, { nestId });
+    this.hudManager.handleHudEvent("groupClick", event);
   }
 
   /* -------------------------------------------- */
@@ -647,20 +634,20 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event
    */
   openEditGroupApp(event) {
-    const group = this.getClosestGroupElement(event);
+    const group = Utils.getClosestGroupElement(event);
     const { nestId, level, type } = group.dataset;
     if (!nestId) return;
-    const name = this.groupHandler.groups[nestId].name;
+    const name = this.hudManager.groupHandler.groups[nestId].name;
     const parsedLevel = parseInt(level, 10) || null;
 
     if (parsedLevel === 1) {
-      TagDialogHelper.openEditGroupApp(
-        this.groupHandler,
+      TagifyAppHelper.openEditGroupApp(
+        this.hudManager.groupHandler,
         { nestId, name, level: parsedLevel, type }
       );
     } else {
-      TagDialogHelper.openEditSubgroupApp(
-        this.groupHandler,
+      TagifyAppHelper.openEditSubgroupApp(
+        this.hudManager.groupHandler,
         this.hudManager.actionHandler,
         { nestId, name, level: parsedLevel, type }
       );
@@ -984,14 +971,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {string | Array} toUserIds The user ids to copy to
    */
   async copy(fromUserId, toUserIds) {
-    if (!game.user.isGM) return;
-
-    const isCopied = await this.#copyUserData(fromUserId, toUserIds);
-    if (isCopied) {
-      Logger.info("HUD copied", true);
-    } else {
-      Logger.info("Copy HUD failed", true);
-    }
+    await this.#copyUserData(fromUserId, toUserIds);
   }
 
   /* -------------------------------------------- */
@@ -1001,13 +981,19 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @private
    * @param {string} fromUserId        The user id to copy from
    * @param {string | Array} toUserIds The user ids to copy to
-   * @returns {boolean}                Whether the user data was copied
    */
   async #copyUserData(fromUserId, toUserIds) {
+    if (!game.user.isGM) {
+      Logger.info("Copy failed: User is not a GM", true);
+      return;
+    }
     // Exit if parameters are missing
-    if (!fromUserId || !toUserIds.length) return false;
+    if (!fromUserId || !toUserIds.length) {
+      Logger.info("Copy failed: Parameters missing", true);
+      return;
+    }
 
-    Logger.debug("Copying user data...");
+    Logger.debug("Copying user data to users...");
 
     const fromGroup = await this.dataHandler.getDataAsGm({ type: "user", id: fromUserId });
 
@@ -1019,8 +1005,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       }
     }
 
-    Logger.debug("User data copied");
-    return true;
+    Logger.debug("User data copied to users");
   }
 
   /* -------------------------------------------- */

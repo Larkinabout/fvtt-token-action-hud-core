@@ -1,4 +1,4 @@
-import { ACTION_TYPE, COMPENDIUM_PACK_TYPES, DELIMITER } from "../../core/constants.mjs";
+import { ACTION_TYPE, COMPENDIUM_PACK_TYPES } from "../../core/constants.mjs";
 import { Utils } from "../../core/utils.mjs";
 
 /**
@@ -53,16 +53,13 @@ export class CompendiumActionHandler {
     const entries = pack ? pack.index.size > 0 ? pack.index : await pack.getIndex() : null;
     if (!entries) return;
     const actionType = this.#getCompendiumActionType(pack?.documentName);
+    if (!actionType) return;
     const actionsData = entries.map(entry => ({
       id: entry._id,
       name: entry.name,
-      system: {
-        actionType,
-        documentId: entry._id,
-        packId
-      },
+      listName: `${game.i18n.localize(ACTION_TYPE[actionType])}: ${entry.name}`,
       img: Utils.getImage(entry),
-      listName: `${game.i18n.localize(ACTION_TYPE[actionType])}: ${entry.name}`
+      function: this.#getOnClick(actionType, pack, entry._id)
     }));
     const groupData = { id: this.#getGroupId(packId), type: "core" };
     this.compendiumActions.set(packId, { actionsData, groupData });
@@ -71,7 +68,7 @@ export class CompendiumActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get compendium action type based on documentName
+   * Get compendium action type based on document name
    * @param {string} documentName The pack document name
    * @returns {string}            The compendium action type
    */
@@ -79,11 +76,55 @@ export class CompendiumActionHandler {
     switch (documentName) {
       case "Macro":
         return "compendiumMacro";
-      case "Playlist":
-        return "compendiumPlaylist";
       default:
         return "compendiumEntry";
     }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get on click function
+   * @param {string} actionType The action type
+   * @param {object} pack       The compendium pack
+   * @param {string} documentId The document ID
+   * @returns {Function}        The function
+   */
+  #getOnClick(actionType, pack, documentId) {
+    switch (actionType) {
+      case "compendiumMacro":
+        return this.#getOnClickFunction(pack, documentId);
+      default:
+        return this.#getOnClickEntry(pack, documentId);
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get on click function for compendium journal entry
+   * @param {object} pack       The pack
+   * @param {string} documentId The document ID
+   * @returns {Function}        The function
+   */
+  #getOnClickEntry(pack, documentId) {
+    return async () => {
+      const journalEntry = await pack.getDocument(documentId);
+      journalEntry.sheet.render(true); };
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get on click function for compendium macro
+   * @param {object} pack       The pack
+   * @param {string} documentId The document ID
+   * @returns {Function}        The function
+   */
+  #getOnClickFunction(pack, documentId) {
+    return async () => {
+      await pack.getDocument(documentId).then(macro => macro.execute());
+    };
   }
 
   /* -------------------------------------------- */

@@ -45,8 +45,6 @@ export class GenericActionHandler {
     if (!this.token) return;
     const actionsData = [];
 
-    const actionType = "utility";
-
     // Build Toggle Combat action
     const toggleCombatId = "toggleCombat";
     const toggleCombatName = this.token?.inCombat
@@ -55,8 +53,10 @@ export class GenericActionHandler {
     const toggleCombatAction = {
       id: toggleCombatId,
       name: toggleCombatName,
-      system: {
-        actionType
+      onClick: async () => {
+        const token = Utils.getFirstControlledToken();
+        token.toggleCombat();
+
       }
     };
     actionsData.push(toggleCombatAction);
@@ -70,8 +70,10 @@ export class GenericActionHandler {
       const toggleVisibilityAction = {
         id: toggleVisibilityId,
         name: toggleVisibilityName,
-        system: {
-          actionType
+        onClick: async () => {
+          const token = Utils.getFirstControlledToken();
+          const isHidden = token.document.hidden;
+          await token.document.update({ hidden: !isHidden });
         }
       };
       actionsData.push(toggleVisibilityAction);
@@ -93,8 +95,6 @@ export class GenericActionHandler {
     const tokens = Utils.getControlledTokens();
     const actionsData = [];
 
-    const actionType = "utility";
-
     // Toggle Combat
     const toggleCombatId = "toggleCombat";
     const toggleCombatName = tokens.every(token => token.inCombat)
@@ -103,8 +103,11 @@ export class GenericActionHandler {
     const toggleCombatAction = {
       id: toggleCombatId,
       name: toggleCombatName,
-      system: {
-        actionType
+      onClick: async () => {
+        const controlledTokens = Utils.getControlledTokens();
+        for (const token of controlledTokens) {
+          await token.toggleCombat();
+        }
       }
     };
     actionsData.push(toggleCombatAction);
@@ -118,8 +121,12 @@ export class GenericActionHandler {
       const toggleVisibilityAction = {
         id: toggleVisibilityId,
         name: toggleVisibilityname,
-        system: {
-          actionType
+        onClick: async () => {
+          const controlledTokens = Utils.getControlledTokens();
+          for (const token of controlledTokens) {
+            const isHidden = token.document.hidden;
+            await token.document.update({ hidden: !isHidden });
+          }
         }
       };
       actionsData.push(toggleVisibilityAction);

@@ -1,3 +1,4 @@
+import { COMPENDIUM_PACK_TYPES, GROUP_TYPE } from "../core/constants.mjs";
 import { Logger, Utils } from "../core/utils.mjs";
 import { getTooltip } from "../handlers/tooltip-handler.mjs";
 
@@ -5,13 +6,30 @@ import { getTooltip } from "../handlers/tooltip-handler.mjs";
  * Handler for the HUD groups.
  */
 export class GroupHandler {
-  constructor(systemManager, dataHandler) {
+  constructor(hudManager, systemManager, dataHandler) {
+    this.hudManager = hudManager;
     this.systemManager = systemManager;
     this.dataHandler = dataHandler;
     this.defaultGroups = {};
     this.groups = {};
     this.actorGroups = {};
     this.userGroups = {};
+  }
+
+  get actor() {
+    return this.hudManager?.actor;
+  }
+
+  get actors() {
+    return this.hudManager?.actors;
+  }
+
+  get token() {
+    return this.hudManager?.token;
+  }
+
+  get tokens() {
+    return this.hudManager?.tokens;
   }
 
   /**
@@ -166,12 +184,18 @@ export class GroupHandler {
       for (const actorGroup of actorGroups) {
         const parentNestId = actorGroup.nestId.split("_", actorGroup.level - 1).join("_");
         const existingGroup = await Utils.getGroupByNestId(hud.groups, { nestId: actorGroup.nestId });
-
-        if (!existingGroup) {
+        if (existingGroup) {
+          if (actorGroup.actions?.length) {
+            existingGroup.actions = actorGroup.actions;
+          }
+        } else {
           const parentGroup = await Utils.getGroupByNestId(hud.groups, { nestId: parentNestId });
 
           if (parentGroup && actorGroup.type === "system-derived") {
-            const group = this.createGroup(actorGroup);
+            const group = this.createGroup(actorGroup, true);
+            if (actorGroup.actions?.length) {
+              group.actions = actorGroup.actions;
+            }
 
             if (group.settings.style === "tab") {
               parentGroup.groups.tabs.push(group);

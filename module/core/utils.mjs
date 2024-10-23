@@ -131,6 +131,16 @@ export class Utils {
     return game.actors.get(actorId);
   }
 
+  /**
+   * Get closest group to the event target
+   * @param {object} event The event
+   * @returns {object}     The closest group element
+   */
+  static getClosestGroupElement(event) {
+    if (!event) return null;
+    return event.target.closest("[data-part=\"subgroup\"]") || event.target.closest("[data-part=\"group\"]");
+  }
+
   /* -------------------------------------------- */
 
   /**

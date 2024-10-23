@@ -1,10 +1,10 @@
-import { TagDialog } from "./tagify-dialog.mjs";
+import { TagifyApp } from "./tagify-app.mjs";
 import { Utils } from "../core/utils.mjs";
 
 /**
- * Generates data for the dialogs.
+ * Generates data for the Tagify application.
  */
-export class TagDialogHelper {
+export class TagifyAppHelper {
   /**
    * Show the HUD dialog
    * @public
@@ -37,7 +37,7 @@ export class TagDialogHelper {
     };
 
     // Show dialog
-    TagDialog.showDialog("hud", null, tags, dialogData, dialogSubmit);
+    TagifyApp.open("hud", null, tags, dialogData, dialogSubmit);
   }
 
   /* -------------------------------------------- */
@@ -97,12 +97,12 @@ export class TagDialogHelper {
       groupData.settings = { characterCount, customWidth, grid, image, showTitle, sort };
 
       // Save selected subcategories to user action list
-      await actionHandler.updateGroups(choices, groupData);
-      await actionHandler.saveGroups({ saveActor: true, saveUser: true });
+      await groupHandler.updateGroups(choices, groupData);
+      await groupHandler.saveGroups({ saveActor: true, saveUser: true });
       Hooks.callAll("forceUpdateTokenActionHud");
     };
 
-    TagDialog.showDialog(
+    TagifyApp.open(
       "topLevelGroup",
       nestId,
       tags,
@@ -142,7 +142,7 @@ export class TagDialogHelper {
       content: {
         topLabel: game.i18n.localize("tokenActionHud.form.hud.groupDetail"),
         placeholder: game.i18n.localize("tokenActionHud.form.hud.tagPlaceholder"),
-        settings: await actionHandler.getGroupSettings(groupData)
+        settings: await groupHandler.getGroupSettings(groupData)
       }
     };
 
@@ -177,7 +177,7 @@ export class TagDialogHelper {
       Hooks.callAll("forceUpdateTokenActionHud");
     };
 
-    TagDialog.showDialog(
+    TagifyApp.open(
       "group",
       nestId,
       tags,

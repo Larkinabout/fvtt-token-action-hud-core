@@ -3,6 +3,7 @@ import { Utils } from "../core/utils.mjs";
 export class CharacterHandler {
   constructor(hudManager) {
     this.hudManager = hudManager;
+    this.groupHandler = hudManager.groupHandler;
     this.actionHandler = hudManager.actionHandler;
     this.rollHandler = hudManager.rollHandler;
   }
@@ -45,16 +46,8 @@ export class CharacterHandler {
   resetCharacter() {
     this.token = null;
     this.actor = null;
-    this.actionHandler.token = null;
-    this.actionHandler.actor = null;
-    this.rollHandler.token = null;
-    this.rollHandler.actor = null;
     this.tokens = [];
     this.actors = [];
-    this.actionHandler.tokens = this.tokens;
-    this.actionHandler.actors = this.actors;
-    this.rollHandler.tokens = this.tokens;
-    this.rollHandler.actors = this.actors;
   }
 
   /* -------------------------------------------- */
@@ -65,23 +58,14 @@ export class CharacterHandler {
    */
   #handleMultipleTokens(controlledTokens) {
     this.characterName = game.i18n.localize("tokenActionHud.multiple");
-    this.actionHandler.characterName = game.i18n.localize("tokenActionHud.multiple");
 
     // Empty singulars
     this.token = null;
     this.actor = null;
-    this.actionHandler.token = null;
-    this.actionHandler.actor = null;
-    this.rollHandler.token = null;
-    this.rollHandler.actor = null;
 
     // Set multiples
     this.tokens = controlledTokens;
     this.actors = Utils.getControlledActors();
-    this.actionHandler.tokens = this.tokens;
-    this.actionHandler.actors = this.actors;
-    this.rollHandler.tokens = this.tokens;
-    this.rollHandler.actors = this.actors;
   }
 
   /* -------------------------------------------- */
@@ -105,23 +89,12 @@ export class CharacterHandler {
     if (!character.actor) return;
 
     this.characterName = character.token?.name ?? character.actor.name;
-    this.actionHandler.characterName = this.characterName;
 
     // Set in this class
     this.token = character.token;
     this.actor = character.actor;
     this.tokens = [character.token];
     this.actors = [character.actor];
-
-    // Set in other classes for easy access
-    this.actionHandler.token = character.token;
-    this.actionHandler.actor = character.actor;
-    this.actionHandler.tokens = this.tokens;
-    this.actionHandler.actors = this.actors;
-    this.rollHandler.token = character.token;
-    this.rollHandler.actor = character.actor;
-    this.rollHandler.tokens = this.tokens;
-    this.rollHandler.actors = this.actors;
   }
 
   /* -------------------------------------------- */

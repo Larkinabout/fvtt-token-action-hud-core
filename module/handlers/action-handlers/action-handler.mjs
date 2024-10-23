@@ -10,16 +10,13 @@ import { Logger, Utils } from "../../core/utils.mjs";
  */
 export class ActionHandler {
   constructor() {
+    this.hudManager = {};
     this.genericActionHandler = new GenericActionHandler(this);
     this.compendiumActionHandler = new CompendiumActionHandler(this);
     this.macroActionHandler = new MacroActionHandler(this);
     this.actions = [];
     this.availableActions = new Map();
     this.delimiter = DELIMITER;
-    this.actor = null;
-    this.actors = [];
-    this.token = null;
-    this.tokens = [];
     this.actionHandlerExtenders = [];
   }
 
@@ -239,6 +236,8 @@ export class ActionHandler {
       name: actionData.name,
       fullName,
       listName: actionData.listName || actionData.name,
+      ...(actionData.onClick && { onClick: actionData.onClick }),
+      ...(actionData.onHover && { onClick: actionData.onHover }),
       ...(actionData.encodedValue && { encodedValue: actionData.encodedValue }),
       ...(actionData.cssClass && { cssClass: actionData.cssClass }),
       icons: actionData.icons || {},
@@ -443,5 +442,135 @@ export class ActionHandler {
   #toTagify(actionData) {
     const { id, name, listName } = actionData;
     return { id, name, type: "action", value: listName ?? name };
+  }
+
+  /* -------------------------------------------- */
+  /* Shortcuts to the HudManager properties       */
+  /* -------------------------------------------- */
+
+  /**
+   * Get character name
+   * @returns {string} The character name
+   */
+  get characterName() {
+    return this.hudManager?.characterName;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get actor
+   * @returns {object} The actor
+   */
+  get actor() {
+    return this.hudManager?.actor;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Set actor
+   */
+  set actor(actor) {
+    this.hudManager.actor = actor;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get actors
+   * @returns {Array} The actors
+   */
+  get actors() {
+    return this.hudManager?.actors;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Set actors
+   * @param {Array} actors The actors
+   */
+  set actors(actors) {
+    this.hudManager.actors = actors;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get token
+   * @returns {object} The token
+   */
+  get token() {
+    return this.hudManager?.token;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Set token
+   */
+  set token(token) {
+    this.hudManager.token = token;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get tokens
+   * @returns {Array} The tokens
+   */
+  get tokens() {
+    return this.hudManager?.tokens;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Set tokens
+   * @param {Array} tokens The tokens
+   */
+  set tokens(tokens) {
+    this.hudManager.tokens = tokens;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the right mouse button was clicked
+   * @returns {boolean} Whether the right mouse button was clicked
+   */
+  get isRightClick() {
+    return this.hudManager.isRightClick;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the ALT key was pressed
+   * @returns {boolean} Whether the ALT key was pressed
+   */
+  get isAlt() {
+    return this.hudManager.isAlt;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the CTRL key was pressed
+   * @returns {boolean} Whether the CTRL key was pressed
+   */
+  get isCtrl() {
+    return this.hudManager.isCtrl;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the SHIFT key was pressed
+   * @returns {boolean} Whether the SHIFT key was pressed
+   */
+  get iShift() {
+    return this.hudManager.isShift;
   }
 }

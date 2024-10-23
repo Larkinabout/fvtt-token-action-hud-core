@@ -17,7 +17,8 @@ export class DataHandler {
   async init() {
     await Promise.all([
       this.private = await this.isPrivate(),
-      this.fileMap = await this.getFilePathsAsGm()
+      this.fileMap = await this.getFilePathsAsGm(),
+      await this.#createDirectories()
     ]);
   }
 
@@ -35,8 +36,11 @@ export class DataHandler {
 
   /**
    * Create directories for storage of files
+   * @private
    */
-  async createDirectories() {
+  async #createDirectories() {
+    if (!game.user.isGM || !Utils.getSetting("enableCustomization")) return;
+
     const DATA_FOLDER = "data";
     const moduleDirectory = (this.isPersistentStorage)
       ? `modules/${MODULE.ID}/storage`

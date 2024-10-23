@@ -5,17 +5,12 @@ import { Logger, Utils } from "../../core/utils.mjs";
  * Resolves core actions triggered from the HUD
  */
 export class RollHandler {
-  actor = null;
-
-  token = null;
-
-  delimiter = DELIMITER;
-
-  preRollHandlers = [];
-
-  rollHandlerExtenders = [];
-
-  /* -------------------------------------------- */
+  constructor() {
+    this.hudManager = null;
+    this.delimiter = DELIMITER;
+    this.preRollHandlers = [];
+    this.rollHandlerExtenders = [];
+  }
 
   /**
    * Throw error
@@ -32,16 +27,20 @@ export class RollHandler {
    * Handle action events
    * @public
    * @param {object} event The event
+   * @param {object} action The action
    */
-  async handleActionClickCore(event) {
+  async handleActionClickCore(event, action) {
     Logger.debug("Handling action click event", { event });
 
     // Update variables with current action context
-    this.actor = this.actionHandler.actor;
-    this.token = this.actionHandler.token;
-    this.action = this.getAction(event);
+    this.action = action;
 
-    this.registerKeyPresses(event);
+    if (typeof action?.onClick === "function") {
+      action.onClick();
+      Hooks.callAll("forceUpdateTokenActionHud");
+      return;
+    }
+
     const buttonValue = this.getButtonValue(event);
 
     let handled = false;
@@ -53,11 +52,7 @@ export class RollHandler {
 
     if (handled) return;
 
-    if (this.#isGenericAction()) {
-      await this.#handleGenericActionClick();
-    } else {
-      this.handleActionClick(event, buttonValue);
-    }
+    this.handleActionClick(event, buttonValue);
   }
 
   /* -------------------------------------------- */
@@ -74,21 +69,24 @@ export class RollHandler {
 
   /**
    * Handle action hover events
-   * @param {object} event        The event
+   * @param {object} event  The event
+   * @param {object} action The action
    */
-  async handleActionHoverCore(event) {
+  async handleActionHoverCore(event, action) {
     Logger.debug("Handling action hover event", { event });
 
     // Update variables with current action context
-    this.actor = this.actionHandler.actor;
-    this.token = this.actionHandler.token;
-    this.action = this.getAction(event);
+    this.action = action;
 
-    this.registerKeyPresses(event);
+    if (typeof action?.onHover === "function") {
+      action.onHover();
+      return;
+    }
+
     const buttonValue = this.getButtonValue(event);
 
     this.handleActionHover(event, buttonValue);
-  } 
+  }
 
   /* -------------------------------------------- */
 
@@ -104,19 +102,11 @@ export class RollHandler {
 
   /**
    * Handle group click events
-   * @param {object} event        The event
-   * @param {string} nestId       The nest ID
+   * @param {object} event The event
+   * @param {group} group  The nest ID
    */
-  async handleGroupClickCore(event, nestId) {
-    Logger.debug(`Handling click event for group [${nestId}]`, { event });
-
-    // Update variables with current action context
-    this.actor = this.actionHandler.actor;
-    this.token = this.actionHandler.token;
-
-    const group = this.groupHandler.getGroup({ nestId });
-
-    this.registerKeyPresses(event);
+  async handleGroupClickCore(event, group) {
+    Logger.debug(`Handling click event for group [${group.name}]`, { event });
 
     this.handleGroupClick(event, group);
   }
@@ -159,36 +149,6 @@ export class RollHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get the action from the action ID on thee button
-   * @param {object} event  The event
-   * @returns {object}      The action
-   */
-  getAction(event) {
-    if (!event) return {};
-    const actionButtonElement = event.target.closest('[data-part="actionButton"]')
-      ?? event.target.querySelector('[data-part="actionButton"]');
-    const actionId = actionButtonElement?.dataset?.actionId;
-    if (!actionId) return {};
-    return this.actionHandler.availableActions.get(actionId) || {};
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Registers key presses
-   * @public
-   * @param {object} event The events
-   */
-  registerKeyPresses(event) {
-    this.rightClick = this.isRightClick(event);
-    this.ctrl = this.isCtrl(event);
-    this.alt = this.isAlt(event);
-    this.shift = this.isShift(event);
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Renders the item sheet
    * @public
    * @param {object} actor  The actor
@@ -220,106 +180,88 @@ export class RollHandler {
    * @returns {boolean}
    */
   isRenderItem() {
-    return (
-      this.rightClick
-            && !(this.alt || this.ctrl || this.shift)
-    );
+    return (this.isRightClick && !(this.isAlt || this.isCtrl || this.isShift));
+  }
+
+  /* -------------------------------------------- */
+  /* Shortcuts to the HudManager properties       */
+  /* -------------------------------------------- */
+
+  /**
+   * Get actor
+   * @returns {object} The actor
+   */
+  get actor() {
+    return this.hudManager?.actor;
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Whether the button was right-clicked
-   * @public
-   * @param {object} event The event
-   * @returns {boolean}
+   * Get actors
+   * @returns {Array} The actors
    */
-  isRightClick(event) {
-    const button = event?.originalEvent?.button || event.button;
-    return button === 2;
+  get actors() {
+    return this.hudManager?.actors;
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Whether the ALT key was pressed when the button was clicked
-   * @public
-   * @param {object} event The event
-   * @returns {boolean}
+   * Get token
+   * @returns {object} The token
    */
-  isAlt(event) {
-    const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.ALT);
-    if (event.altKey && !isModiferActive) {
-      Logger.debug("Emulating LEFT ALT key press");
-      KeyboardManager.emulateKeypress(false, "AltLeft", { altKey: true, force: true });
-      game.keyboard.downKeys.add("AltLeft");
-      return true;
-    }
-    return isModiferActive;
+  get token() {
+    return this.hudManager?.token;
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Whether the CTRL key was pressed when the button was clicked
-   * @public
-   * @param {object} event The event
-   * @returns {boolean}
+   * Get tokens
+   * @returns {Array} The tokens
    */
-  isCtrl(event) {
-    const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL);
-    if (event.ctrlKey && !isModiferActive) {
-      Logger.debug("Emulating LEFT CTRL key press");
-      KeyboardManager.emulateKeypress(false, "ControlLeft", { ctrlKey: true, force: true });
-      game.keyboard.downKeys.add("ControlLeft");
-      return true;
-    }
-    return isModiferActive;
+  get tokens() {
+    return this.hudManager?.tokens;
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Whether the SHIFT key was pressed when the button was clicked
-   * @public
-   * @param {object} event The event
-   * @returns {boolean}
+   * Whether the right mouse button was clicked
+   * @returns {boolean} Whether the right mouse button was clicked
    */
-  isShift(event) {
-    const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.SHIFT);
-    if (event.shiftKey && !isModiferActive) {
-      Logger.debug("Emulating LEFT SHIFT key press");
-      KeyboardManager.emulateKeypress(false, "ShiftLeft", { shiftKey: true, force: true });
-      game.keyboard.downKeys.add("ShiftLeft");
-      return true;
-    }
-    return isModiferActive;
+  get isRightClick() {
+    return this.hudManager.isRightClick;
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Whether the action is a generic action
-   * @private
-   * @returns {boolean} Whether the action is a generic action
+   * Whether the ALT key was pressed
+   * @returns {boolean} Whether the ALT key was pressed
    */
-  #isGenericAction() {
-    const { actionType } = this.action.system;
-    return actionType === "utility" && this.action.id.includes("toggle");
+  get isAlt() {
+    return this.hudManager.isAlt;
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Handle generic action
-   * @private
+   * Whether the CTRL key was pressed
+   * @returns {boolean} Whether the CTRL key was pressed
    */
-  async #handleGenericActionClick() {
-    const firstControlledToken = Utils.getFirstControlledToken();
+  get isCtrl() {
+    return this.hudManager.isCtrl;
+  }
 
-    if (this.action.id === "toggleVisibility") await firstControlledToken.toggleVisibility();
-    if (this.action.id === "toggleCombat") await firstControlledToken.toggleCombat();
+  /* -------------------------------------------- */
 
-    Hooks.callAll("forceUpdateTokenActionHud");
+  /**
+   * Whether the SHIFT key was pressed
+   * @returns {boolean} Whether the SHIFT key was pressed
+   */
+  get isShift() {
+    return this.hudManager.isShift;
   }
 }

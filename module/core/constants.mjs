@@ -27,9 +27,9 @@ export const TEMPLATE = {
   listSubgroup: `${TEMPLATE_DIR}/list-subgroup.hbs`,
   settings: `${TEMPLATE_DIR}/settings.hbs`,
   tabSubgroup: `${TEMPLATE_DIR}/tab-subgroup.hbs`,
-  tagDialogHud: `${TEMPLATE_DIR}/tag-dialog-hud.hbs`,
-  tagDialogGroup: `${TEMPLATE_DIR}/tag-dialog-group.hbs`,
-  tagDialogSubgroup: `${TEMPLATE_DIR}/tag-dialog-subgroup.hbs`
+  tagifyAppHud: `${TEMPLATE_DIR}/tag-dialog-hud.hbs`,
+  tagifyAppGroup: `${TEMPLATE_DIR}/tag-dialog-group.hbs`,
+  tagifyAppSubgroup: `${TEMPLATE_DIR}/tag-dialog-subgroup.hbs`
 };
 
 /* -------------------------------------------- */
