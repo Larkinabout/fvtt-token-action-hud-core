@@ -71,40 +71,6 @@ export const COMPENDIUM_PACK_TYPES = ["JournalEntry", "Macro", "RollTable"];
  * CSS styles
  */
 export const CSS_STYLE = {
-  dockedLeft: {
-    class: "tah-style-docked-left",
-    file: "tah-docked-left",
-    moduleId: MODULE.ID,
-    name: "Docked Left",
-    primaryColor: "#dddddd",
-    secondaryColor: "#dddddd80",
-    tertiaryColor: "#ff6400",
-    isDocked: true
-  },
-  dockedRight: {
-    class: "tah-style-docked-right",
-    file: "tah-docked-right",
-    moduleId: MODULE.ID,
-    name: "Docked Right",
-    primaryColor: "#dddddd",
-    secondaryColor: "#dddddd80",
-    tertiaryColor: "#ff6400",
-    collapseIcon: "fa-caret-right",
-    expandIcon: "fa-caret-left",
-    isDocked: true
-  },
-  dockedCenterRight: {
-    class: "tah-style-docked-right",
-    file: "tah-docked-right",
-    moduleId: MODULE.ID,
-    name: "Docked Center-Right",
-    primaryColor: "#dddddd",
-    secondaryColor: "#dddddd80",
-    tertiaryColor: "#ff6400",
-    collapseIcon: "fa-caret-right",
-    expandIcon: "fa-caret-left",
-    isDocked: true
-  },
   foundryVTT: {
     class: "tah-style-foundry-vtt-dark",
     file: "tah-foundry-vtt-dark",
@@ -152,6 +118,40 @@ export const CSS_STYLE = {
     file: "tah-custom",
     moduleId: MODULE.ID,
     name: "Custom"
+  },
+  dockedLeft: {
+    class: "tah-style-docked-left",
+    file: "tah-docked-left",
+    moduleId: MODULE.ID,
+    name: "Docked Left",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400",
+    isDocked: true
+  },
+  dockedCenterRight: {
+    class: "tah-style-docked-right",
+    file: "tah-docked-right",
+    moduleId: MODULE.ID,
+    name: "Docked Center-Right",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400",
+    collapseIcon: "fa-caret-right",
+    expandIcon: "fa-caret-left",
+    isDocked: true
+  },
+  dockedRight: {
+    class: "tah-style-docked-right",
+    file: "tah-docked-right",
+    moduleId: MODULE.ID,
+    name: "Docked Right",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400",
+    collapseIcon: "fa-caret-right",
+    expandIcon: "fa-caret-left",
+    isDocked: true
   }
 };
 

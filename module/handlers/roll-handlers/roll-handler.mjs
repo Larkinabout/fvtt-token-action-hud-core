@@ -30,29 +30,37 @@ export class RollHandler {
    * @param {object} action The action
    */
   async handleActionClickCore(event, action) {
-    Logger.debug("Handling action click event", { event });
+    try {
+      Logger.debug("Handling action click event", { event });
 
-    // Update variables with current action context
-    this.action = action;
+      // Update variables with current action context
+      this.action = action;
 
-    if (typeof action?.onClick === "function") {
-      action.onClick();
-      Hooks.callAll("forceUpdateTokenActionHud");
-      return;
+      // If the action has an onClick function, call it and trigger a HUD update
+      if (typeof action?.onClick === "function") {
+        action.onClick();
+        Hooks.callAll("forceUpdateTokenActionHud");
+        return;
+      }
+
+      // Get the value of the associated button
+      const buttonValue = this.getButtonValue(event);
+
+      // Check pre-handlers
+      let handled = false;
+      for (const handler of this.preRollHandlers) {
+        if (handled) break;
+        handler.action = this.action;
+        handled = handler.prehandleActionEvent(event, buttonValue, this.actionHandler);
+      }
+
+      // If the action was not handled by the pre-handlers, call the default method
+      if (!handled) {
+        this.handleActionClick(event, buttonValue);
+      }
+    } catch(error) {
+      Logger.error("Error handling action click event", { error, event, action });
     }
-
-    const buttonValue = this.getButtonValue(event);
-
-    let handled = false;
-    this.preRollHandlers.forEach(handler => {
-      if (handled) return;
-      handler.action = this.action;
-      handled = handler.prehandleActionEvent(event, buttonValue, this.actionHandler);
-    });
-
-    if (handled) return;
-
-    this.handleActionClick(event, buttonValue);
   }
 
   /* -------------------------------------------- */

@@ -6,10 +6,8 @@ import { Utils } from "../../core/utils.mjs";
  * Handler for building actions related to the Item Macro module.
  */
 export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
-  constructor(groupHandler, actionHandler) {
-    super(actionHandler);
-    this.groupHandler = groupHandler;
-    this.actionHandler = actionHandler;
+  constructor() {
+    super();
   }
 
   /* -------------------------------------------- */
@@ -19,23 +17,18 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
    * @override
    */
   extendActionHandler() {
-    // Update actor and token with current action handler context
-    this.actor = this.actionHandler.actor;
-    this.token = this.actionHandler.token;
-
     if (!this.actor) return;
-    const items = this.actor.items.filter(item => item.flags?.itemacro?.macro?.command);
 
+    const items = this.actor.items.filter(item => item.flags?.itemacro?.macro?.command);
     if (!items?.length) return;
 
     const itemMacroSetting = Utils.getSetting("itemMacro");
-
     if (itemMacroSetting === "original") return;
 
-    const replace = itemMacroSetting === "itemMacro";
+    const replaceExisting = itemMacroSetting === "itemMacro";
 
     Object.values(this.groupHandler.groups).forEach(group => {
-      this.#addGroupActions(items, group, replace);
+      this.#addGroupActions(items, group, replaceExisting);
     });
   }
 
@@ -53,9 +46,9 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
     if (!group?.actions?.length) return;
 
     const actions = [];
-    group.actions.forEach(existingAction => {
+    for (const existingAction of group.actions) {
       const item = items.find(item => item.id === existingAction.id);
-      if (!item) return;
+      if (!item) continue;
 
       const existingItemMacroAction = group.actions.find(action => action.id === `itemMacro+${existingAction.id}`);
       const actionToReplace = existingItemMacroAction ?? existingAction;
@@ -64,8 +57,14 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
 
       const macroAction = this.#createItemMacroAction(item, existingAction, actionToReplace, replace);
 
-      if (!replace) actions.push(macroAction);
-    });
+      if (!replace) {
+        actions.push(macroAction);
+      }
+
+      if (!this.actionHandler.availableActions.has(macroAction.id)) {
+        this.actionHandler.availableActions.set(macroAction.id, macroAction);
+      }
+    }
 
     this.#addActions(actions, group);
   }
@@ -88,7 +87,10 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
     action.fullName = existingAction.fullName;
     action.listName = `Item Macro: ${existingAction.fullName}`;
     action.name = existingAction.name;
+    action.img = existingAction.img;
     action.itemMacroIcon = `<i class="${ITEM_MACRO_ICON.ICON}" data-tooltip="${ITEM_MACRO_ICON.TOOLTIP}"></i>`;
+    action.selected = existingAction.userSelected ?? existingAction.systemSelected;
+
     action.onClick = () => {
       try {
         item.executeMacro();
@@ -113,9 +115,6 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
     actions.forEach(macroAction => {
       const index = group.actions.findIndex(action => action.id === macroAction.id) + 1;
       group.actions.splice(index, 0, macroAction);
-      if (!this.actionHandler.availableActions.has(macroAction.id)) {
-        this.actionHandler.availableActions.set(macroAction.id, macroAction);
-      }
     });
   }
 }

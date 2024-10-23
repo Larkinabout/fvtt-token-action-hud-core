@@ -11,6 +11,7 @@ import { Logger, Utils } from "../../core/utils.mjs";
 export class ActionHandler {
   constructor() {
     this.hudManager = {};
+    this.groupHandler = {};
     this.genericActionHandler = new GenericActionHandler(this);
     this.compendiumActionHandler = new CompendiumActionHandler(this);
     this.macroActionHandler = new MacroActionHandler(this);
@@ -428,6 +429,9 @@ export class ActionHandler {
    */
   addActionHandlerExtender(actionHandlerExtender) {
     Logger.debug("Adding action handler extender...", { actionHandlerExtender });
+    actionHandlerExtender.hudManager = this.hudManager;
+    actionHandlerExtender.groupHandler = this.groupHandler;
+    actionHandlerExtender.actionHandler = this;
     this.actionHandlerExtenders.push(actionHandlerExtender);
   }
 
@@ -541,7 +545,7 @@ export class ActionHandler {
    * @returns {boolean} Whether the right mouse button was clicked
    */
   get isRightClick() {
-    return this.hudManager.isRightClick;
+    return this.hudManager?.isRightClick;
   }
 
   /* -------------------------------------------- */
@@ -551,7 +555,7 @@ export class ActionHandler {
    * @returns {boolean} Whether the ALT key was pressed
    */
   get isAlt() {
-    return this.hudManager.isAlt;
+    return this.hudManager?.isAlt;
   }
 
   /* -------------------------------------------- */
@@ -561,7 +565,7 @@ export class ActionHandler {
    * @returns {boolean} Whether the CTRL key was pressed
    */
   get isCtrl() {
-    return this.hudManager.isCtrl;
+    return this.hudManager?.isCtrl;
   }
 
   /* -------------------------------------------- */
@@ -571,6 +575,6 @@ export class ActionHandler {
    * @returns {boolean} Whether the SHIFT key was pressed
    */
   get iShift() {
-    return this.hudManager.isShift;
+    return this.hudManager?.isShift;
   }
 }

@@ -3,9 +3,9 @@ import { Utils } from "../core/utils.mjs";
 
 /**
  * Get tooltip based on module setting
- * @param {string} tooltip The tooltip
- * @param {string} name    The name
- * @returns {string}       The tooltip
+ * @param {object|string} tooltip The tooltip
+ * @param {string} name           The name
+ * @returns {object}              The tooltip
  */
 export function getTooltip(tooltip, name) {
   const setting = Utils.getSetting("tooltips");

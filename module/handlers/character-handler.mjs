@@ -8,23 +8,46 @@ export class CharacterHandler {
     this.rollHandler = hudManager.rollHandler;
   }
 
+  /**
+   * Initialise Character Handler
+   */
   init() {
     this.previousActorId = this.actor?.id;
     this.setCharacter();
   }
 
-  get multipleTokens() {
+  /* -------------------------------------------- */
+
+  /**
+   * Whether there is a character
+   * @returns {boolean} Whether there is a character
+   */
+  get isCharacter() {
+    return this.actor || this.isMultipleTokens;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether there is multiple tokens
+   * @returns {boolean} Whether there is multiple tokens
+   */
+  get isMultipleTokens() {
     const controlledTokens = Utils.getControlledTokens();
     return controlledTokens.length > 1 && !this.actor;
   }
 
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the current actor is the same actor
+   * @returns {boolean} Whether the current actor is the same actor
+   */
   get isSameActor() {
     return this.previousActorId !== this.actor?.id;
   }
 
-  get isCharacter() {
-    return this.actor || this.multipleTokens;
-  }
+  /* -------------------------------------------- */
 
   /**
    * Set character based on controlled tokens
@@ -39,6 +62,8 @@ export class CharacterHandler {
       this.#handleSingleToken(controlledTokens);
     }
   }
+
+  /* -------------------------------------------- */
 
   /**
    * Reset actor and token properties

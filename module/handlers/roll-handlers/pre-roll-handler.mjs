@@ -10,7 +10,7 @@ export class PreRollHandler extends RollHandler {
    * Pre-handle action event
    * @param {object} event        The event
    * @param {string} buttonValue  The button value
-   * @param {class} actionHandler The action handler
+   * @param {class} actionHandler The ActionHandler instance
    * @returns {boolean}
    */
   prehandleActionEvent(event, buttonValue, actionHandler) {

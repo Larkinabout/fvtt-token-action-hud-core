@@ -55,7 +55,7 @@ export class GenericActionHandler {
       name: toggleCombatName,
       onClick: async () => {
         const token = Utils.getFirstControlledToken();
-        token.toggleCombat();
+        token.document.toggleCombatant();
 
       }
     };
@@ -106,7 +106,7 @@ export class GenericActionHandler {
       onClick: async () => {
         const controlledTokens = Utils.getControlledTokens();
         for (const token of controlledTokens) {
-          await token.toggleCombat();
+          await token.document.toggleCombatant();
         }
       }
     };
