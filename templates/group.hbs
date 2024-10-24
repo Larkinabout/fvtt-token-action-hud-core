@@ -16,7 +16,7 @@ data-part="group" data-group-type="tab" data-nest-id="{{nestId}}" data-level="{{
         <i class="tah-edit-group-icon fa fa-pen-to-square" aria-hidden="true"></i>
     </button>
     <div class="tah-subgroups-container" data-part="subgroupsContainer">
-        <div class="tah-subgroups">
+        <div class="tah-subgroups" data-part="subgroups">
             {{~#if (tokenActionHudCoreTrue groups.lists.length)~}}
             <div class="tah-list-subgroups" data-part="listSubgroups">
                 {{#each groups.lists}}

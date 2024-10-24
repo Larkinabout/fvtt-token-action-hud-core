@@ -44,7 +44,7 @@ export class RollHandler {
       }
 
       // Get the value of the associated button
-      const buttonValue = this.getButtonValue(event);
+      const buttonValue = this.#getButtonValue(event);
 
       // Check pre-handlers
       let handled = false;
@@ -86,12 +86,14 @@ export class RollHandler {
     // Update variables with current action context
     this.action = action;
 
+    // If the action has an onHover function, call it
     if (typeof action?.onHover === "function") {
       action.onHover();
       return;
     }
 
-    const buttonValue = this.getButtonValue(event);
+    // Get the value of the associated button
+    const buttonValue = this.#getButtonValue(event);
 
     this.handleActionHover(event, buttonValue);
   }
@@ -145,10 +147,11 @@ export class RollHandler {
 
   /**
    * Get button value
+   * @private
    * @param {object} event  The event
    * @returns {string}      The button value
    */
-  getButtonValue(event) {
+  #getButtonValue(event) {
     if (!event) return null;
     const buttonElement = event.target.querySelector(".tah-action-button") ?? event.target.closest(".tah-action-button");
     return buttonElement?.value || null;
@@ -271,5 +274,15 @@ export class RollHandler {
    */
   get isShift() {
     return this.hudManager.isShift;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the element was hovered over
+   * @returns {boolean} Whether the element was hovered over
+   */
+  get isHover() {
+    return this.hudManager?.isHover;
   }
 }

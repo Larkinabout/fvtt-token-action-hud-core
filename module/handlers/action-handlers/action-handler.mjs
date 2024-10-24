@@ -574,7 +574,17 @@ export class ActionHandler {
    * Whether the SHIFT key was pressed
    * @returns {boolean} Whether the SHIFT key was pressed
    */
-  get iShift() {
+  get isShift() {
     return this.hudManager?.isShift;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the element was hovered
+   * @returns {boolean} Whether the element was hovered
+   */
+  get isHover() {
+    return this.hudManager?.isHover;
   }
 }

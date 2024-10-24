@@ -1,80 +1,55 @@
 import { Utils } from "../core/utils.mjs";
 
 export class GroupResizer {
-  direction = null;
-
-  minCols = 3;
-
-  isCustomWidth = false;
-
-  settings = null;
-
-  spacing = 10;
+  constructor(tokenActionHud, hudManager) {
+    this.tokenActionHud = tokenActionHud;
+    this.hudManager = hudManager;
+    this.groupHandler = hudManager.groupHandler;
+    this.minCols = 3;
+    this.isCustomWidth = false;
+    this.settings = null;
+    this.spacing = 10;
+  }
 
   /**
    * Resize the groups element
-   * @param {class} groupHandler The GroupHandler instance
-   * @param {object} groupElement         The group element
-   * @param {string} autoDirection        The direction the HUD will expand
-   * @param {boolean} gridModuleSetting   The grid module setting
+   * @param {object} groupElement The group element
    */
-  async resizeGroup(groupHandler, groupElement, autoDirection, gridModuleSetting) {
-    // Exit early if no group element exists
+  async resizeGroup(groupElement) {
     if (!groupElement) return;
 
+    this.#setVariables(groupElement);
+
+    if (!this.subgroupsElement) return;
+
+    if (!this.tokenActionHud.isDocked) {
+      await this.#setWidth();
+    }
+
+    await this.#setHeight();
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Set variables
+   * @private
+   * @param {object} groupElement The group element
+   */
+  async #setVariables(groupElement) {
     this.#resetVariables();
 
     this.groupElement = groupElement;
 
     // Get groups element
-    await this.#getGroupsElement();
-
-    // Exit early if no groups element exists
-    if (!this.groupsElement) return;
-
-    this.actionsElements = this.groupElement.querySelectorAll(".tah-actions");
-
-    // Exit early if no action elements exist
-    if (this.actionsElements.length === 0) return;
+    await this.#setSubgroupsElement();
+    if (!this.subgroupsElement) return;
 
     // Reset groups elements
     this.#resetGroupsElements();
 
-    // Set direction
-    this.direction = autoDirection;
-
-    // Get group settings
-    const nestId = this.groupElement.dataset.nestId;
-    this.settings = await groupHandler.getGroupSettings({ nestId, level: 1 });
-
-    // Get available width
-    this.availableWidth = this.#getAvailableWidth();
-
     // Get groups
-    this.#getGroupElements();
-
-    // Loop groups
-    let hasGrid = false;
-    for (const groupElement of this.groupElements) {
-      const actionsElement = groupElement.querySelector(".tah-actions");
-      if (!actionsElement) continue;
-      const nestId = groupElement.dataset.nestId;
-      const groupSettings = await groupHandler.getGroupSettings({ nestId });
-      const groupCustomWidth = groupSettings.customWidth;
-      const grid = gridModuleSetting || this.settings?.grid || groupSettings?.grid || actionsElement.style.display;
-      if (grid) {
-        if (!hasGrid) {
-          await this.#getGridWidth();
-          hasGrid = true;
-        }
-        await this.#resizeGrid(actionsElement, groupCustomWidth);
-      } else {
-        await this.#resize(actionsElement, groupCustomWidth);
-      }
-    }
-
-    // Set group height
-    await this.#setHeight();
+    this.#setSubgroupElementArr();
   }
 
   /* -------------------------------------------- */
@@ -87,13 +62,12 @@ export class GroupResizer {
     this.actionsElements = null;
     this.availableHeight = null;
     this.availableWidth = null;
-    this.direction = null;
     this.gridWidth = null;
     this.groupElement = null;
-    this.groupElements = null;
-    this.groupsElement = null;
-    this.groupsElementPadding = null;
-    this.groupsElementRect = null;
+    this.subgroupElementArr = null;
+    this.subgroupsElement = null;
+    this.subgroupsElementPadding = null;
+    this.subgroupsElementRect = null;
     this.isCustomWidth = false;
     this.minCols = 3;
     this.settings = null;
@@ -213,10 +187,8 @@ export class GroupResizer {
             currentRow++;
           }
           const actionRect = action.getBoundingClientRect();
-          // Const actionLeft = (index === 0) ? actionRect.left - this.groupsElementRect.left : 0
           const actionWidth = Math.ceil(parseFloat(actionRect.width) + 1 || 0);
           rowWidth += actionWidth;
-          // + actionLeft + 5
           if (index + 1 === actions.length) {
             rowWidth = rowWidth - 5;
             maxRowWidth = (rowWidth > maxRowWidth) ? rowWidth : maxRowWidth;
@@ -225,7 +197,7 @@ export class GroupResizer {
       }
 
       // Add padding to maxAvgGroupWidth and maxGroupWidth
-      maxRowWidth += this.groupsElementPadding;
+      maxRowWidth += this.subgroupsElementPadding;
 
       // Determine width of content
       width = (maxRowWidth < this.availableWidth && actions.length > 3) ? maxRowWidth : this.availableWidth;
@@ -252,7 +224,7 @@ export class GroupResizer {
     }
 
     const windowWidth = canvas.screenDimensions[0] || window.innerWidth;
-    const contentLeft = this.groupsElementRect.left;
+    const contentLeft = this.subgroupsElementRect.left;
     const uiRight = document.querySelector("#ui-right");
     const uiRightClientWidth = uiRight.clientWidth;
     return Math.floor((
@@ -265,63 +237,122 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Get available content height
+   * Get subgroups element
    * @private
-   * @returns {number} The available content height
    */
-  #getAvailableHeight() {
-    const windowHeight = canvas.screenDimensions[1] || window.innerHeight;
-    const contentBottom = this.groupsElementRect.bottom;
-    const contentTop = this.groupsElementRect.top;
-    const uiTopBottom = (this.direction === "down")
-      ? document.querySelector("#ui-bottom")
-      : document.querySelector("#ui-top");
-    const uiTopBottomOffsetHeight = uiTopBottom.offsetHeight;
-    const availableHeight = (this.direction === "down")
-      ? windowHeight - contentTop - uiTopBottomOffsetHeight - this.spacing
-      : contentBottom - uiTopBottomOffsetHeight - this.spacing;
-    return Math.floor(availableHeight < 100 ? 100 : availableHeight);
+  async #setSubgroupsElement() {
+    this.subgroupsElement = this.groupElement.querySelector('[data-part="subgroups"]');
+    if (!this.subgroupsElement) return;
+    this.subgroupsElementRect = this.subgroupsElement.getBoundingClientRect();
+    this.subgroupsElementComputed = getComputedStyle(this.subgroupsElement);
+    this.subgroupsElementPadding =
+      Math.ceil(parseFloat(this.subgroupsElementComputed.paddingLeft) || 0)
+      + Math.ceil(parseFloat(this.subgroupsElementComputed.paddingRight) || 0);
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Get groups element
+   * Get subgroup elements
    * @private
    */
-  async #getGroupsElement() {
-    this.groupsElement = this.groupElement.querySelector(".tah-subgroups");
-    if (!this.groupsElement) return;
-    this.groupsElementRect = this.groupsElement.getBoundingClientRect();
-    this.groupsElementComputed = getComputedStyle(this.groupsElement);
-    this.groupsElementPadding =
-            Math.ceil(parseFloat(this.groupsElementComputed.paddingLeft) || 0)
-            + Math.ceil(parseFloat(this.groupsElementComputed.paddingRight) || 0);
+  #setSubgroupElementArr() {
+    this.subgroupElementArr = this.groupElement.querySelectorAll('[data-part="subgroup"]');
+    if (this.subgroupElementArr.length === 0) this.subgroupElementArr = [this.groupElement];
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Get group elements
-   * @private
+   * Set the width
    */
-  #getGroupElements() {
-    this.groupElements = this.groupElement.querySelectorAll(".tah-subgroup");
-    if (this.groupElements.length === 0) this.groupElements = [this.groupElement];
+  async #setWidth() {
+    this.actionsElements = this.groupElement.querySelectorAll('[data-part="actions"]');
+
+    // Exit early if no action elements exist
+    if (this.actionsElements.length === 0) return;
+
+    // Get group settings
+    const nestId = this.groupElement.dataset.nestId;
+    this.settings = await this.groupHandler.getGroupSettings({ nestId, level: 1 });
+
+    // Get available width
+    this.availableWidth = this.#getAvailableWidth();
+
+    // Loop groups
+    let hasGrid = false;
+    for (const subgroupElement of this.subgroupElementArr) {
+      const actionsElement = subgroupElement.querySelector('[data-part="actions"]');
+      if (!actionsElement) continue;
+      const nestId = subgroupElement.dataset.nestId;
+      const groupSettings = await this.groupHandler.getGroupSettings({ nestId });
+      const groupCustomWidth = groupSettings.customWidth;
+      const grid = Utils.getSetting("grid") || this.settings?.grid || groupSettings?.grid || actionsElement.style.display;
+      if (grid) {
+        if (!hasGrid) {
+          await this.#getGridWidth();
+          hasGrid = true;
+        }
+        await this.#resizeGrid(actionsElement, groupCustomWidth);
+      } else {
+        await this.#resize(actionsElement, groupCustomWidth);
+      }
+    }
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Set the content height
+   * Set the height
    * @private
    */
   async #setHeight() {
     requestAnimationFrame(() => {
       this.availableHeight = this.#getAvailableHeight();
       const style = { maxHeight: `${this.availableHeight}px`, overflowY: "auto" };
-      Object.assign(this.groupsElement.style, style);
+      Object.assign(this.subgroupsElement.style, style);
     });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Get available height
+   * @private
+   * @returns {number} The available height
+   */
+  #getAvailableHeight() {
+    const windowHeight = canvas.screenDimensions[1] || window.innerHeight;
+    const contentBottom = this.subgroupsElementRect.bottom;
+    const contentTop = this.subgroupsElementRect.top;
+
+    if (this.tokenActionHud.isDocked) {
+      let siblingsHeight = 0;
+      let sibling = this.groupElement.nextElementSibling;
+
+      if (sibling) {
+        const siblings = [sibling];
+        while (sibling) {
+          sibling = sibling.nextElementSibling;
+          if (sibling) siblings.push(sibling);
+        }
+        for (const sibling of siblings) {
+          const siblingHeight = sibling.getBoundingClientRect().height;
+          siblingsHeight += siblingHeight ?? 0;
+        }
+      }
+
+      return Math.max(windowHeight - contentTop - siblingsHeight - this.spacing, 100);
+    } else {
+      const uiTopBottom = (this.tokenActionHud.direction === "down")
+        ? document.querySelector("#ui-bottom")
+        : document.querySelector("#ui-top");
+      const uiTopBottomOffsetHeight = uiTopBottom.offsetHeight;
+      const availableHeight = (this.tokenActionHud.direction === "down")
+        ? windowHeight - contentTop - uiTopBottomOffsetHeight - this.spacing
+        : contentBottom - uiTopBottomOffsetHeight - this.spacing;
+      return Math.max(availableHeight, 100);
+    }
   }
 
   /* -------------------------------------------- */

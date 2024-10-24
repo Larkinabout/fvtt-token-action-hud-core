@@ -17,7 +17,7 @@
         </div>
         <div class="tah-subgroups{{~#if (tokenActionHudCoreTrue settings.collapse)}} tah-hidden{{~/if~}}" data-part="subgroups">
             {{~#if (tokenActionHudCoreTrue hasActions)~}}
-            <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
+            <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}" data-part="actions">
                 {{#each actions}}
                     {{>"modules/token-action-hud-core/templates/action.hbs"}}
                 {{/each}}

@@ -17,7 +17,7 @@ data-part="subgroup" data-group-type="tab" data-nest-id="{{nestId}}" data-has-ac
     <div class="tah-subgroups-container" data-part="subgroupsContainer">
         <div class="tah-subgroups" data-part="subgroups">
             {{~#if (tokenActionHudCoreTrue hasActions)~}}
-            <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}">
+            <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}" data-part="actions">
             {{#each actions}}
                 {{>"modules/token-action-hud-core/templates/action.hbs"}}
             {{/each}}

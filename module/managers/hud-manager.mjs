@@ -131,6 +131,7 @@ export class HudManager {
     const action = (["clickAction", "hoverAction"].includes(eventType)) ? this.getAction(event) : null;
 
     this.#registerKeyPresses(event);
+    this.#setIsHover(event);
 
     try {
       switch (eventType) {
@@ -154,10 +155,10 @@ export class HudManager {
    * @param {object} event The events
    */
   #registerKeyPresses(event) {
-    this.isRightClick = this.#setIsRightClick(event);
-    this.isCtrl = this.#setIsCtrl(event);
-    this.isAlt = this.#setIsAlt(event);
-    this.isShift = this.#setIsShift(event);
+    this.#setIsRightClick(event);
+    this.#setIsAlt(event);
+    this.#setIsCtrl(event);
+    this.#setIsShift(event);
   }
 
   /* -------------------------------------------- */
@@ -166,20 +167,18 @@ export class HudManager {
    * Whether the button was right-clicked
    * @public
    * @param {object} event The event
-   * @returns {boolean}
    */
   #setIsRightClick(event) {
     const button = event?.originalEvent?.button || event.button;
-    return button === 2;
+    this.isRightClick = button === 2;
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Whether the ALT key was pressed when the button was clicked
-   * @public
+   * Set isAlt based on event
+   * @private
    * @param {object} event The event
-   * @returns {boolean}
    */
   #setIsAlt(event) {
     const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.ALT);
@@ -187,18 +186,18 @@ export class HudManager {
       Logger.debug("Emulating LEFT ALT key press");
       KeyboardManager.emulateKeypress(false, "AltLeft", { altKey: true, force: true });
       game.keyboard.downKeys.add("AltLeft");
-      return true;
+      this.isAlt = true;
+    } else {
+      this.isAlt = isModiferActive;
     }
-    return isModiferActive;
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Whether the CTRL key was pressed when the button was clicked
-   * @public
+   * Set isCtrl based on event
+   * @private
    * @param {object} event The event
-   * @returns {boolean}
    */
   #setIsCtrl(event) {
     const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL);
@@ -206,18 +205,18 @@ export class HudManager {
       Logger.debug("Emulating LEFT CTRL key press");
       KeyboardManager.emulateKeypress(false, "ControlLeft", { ctrlKey: true, force: true });
       game.keyboard.downKeys.add("ControlLeft");
-      return true;
+      this.isCtrl = true;
+    } else {
+      this.isCtrl = isModiferActive;
     }
-    return isModiferActive;
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Whether the SHIFT key was pressed when the button was clicked
-   * @public
+   * Set isShift based on event
+   * @private
    * @param {object} event The event
-   * @returns {boolean}
    */
   #setIsShift(event) {
     const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.SHIFT);
@@ -225,9 +224,21 @@ export class HudManager {
       Logger.debug("Emulating LEFT SHIFT key press");
       KeyboardManager.emulateKeypress(false, "ShiftLeft", { shiftKey: true, force: true });
       game.keyboard.downKeys.add("ShiftLeft");
-      return true;
+      this.isShift = true;
+    } else {
+      this.isShift = isModiferActive;
     }
-    return isModiferActive;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Set isHover based on event
+   * @private
+   * @param {object} event The event
+   */
+  #setIsHover(event) {
+    this.isHover = ["mouseenter", "mouseover", "pointerenter"].includes(event.type);
   }
 
   /* -------------------------------------------- */

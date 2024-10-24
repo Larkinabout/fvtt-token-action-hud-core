@@ -15,7 +15,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.systemManager = systemManager;
     this.dataHandler = dataHandler;
     this.hudManager = new HudManager(this, systemManager, dataHandler, socket);
-    this.groupResizer = new GroupResizer();
+    this.groupResizer = new GroupResizer(this, this.hudManager);
     this.socket = socket;
     this.openGroups = new Set();
     this.updatePendingTimer = new Timer(10);
@@ -543,7 +543,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     group.classList.toggle("hover", shouldOpen);
     if (shouldOpen) {
       this.#toggleOtherGroups(group);
-      this.groupResizer.resizeGroup(this.hudManager.groupHandler, group, this.direction, this.gridSetting);
+      this.groupResizer.resizeGroup(group);
 
       this.openGroups.add(group.id);
     } else {
@@ -610,7 +610,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if (groupsElement?.classList.contains("tah-hidden")) {
       toggleGroupVisibility();
       saveGroupSettings(false);
-      this.groupResizer.resizeGroup(this.hudManager.groupHandler, tabSubgroup, this.direction, this.gridSetting);
+      this.groupResizer.resizeGroup(tabSubgroup);
     } else {
       toggleGroupVisibility();
       saveGroupSettings(true);
