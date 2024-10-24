@@ -1,26 +1,30 @@
 {{~#if (ne this.selected false)~}}
-<div class="tah-action" {{~#if spellLevel~}}data-spell-lvl="{{spellLevel}}"{{~/if~}}>
-    <button class="tah-action-button{{~#if cssClass}} {{cssClass}}{{~/if~}}{{#tokenActionHudCoreActiveText}} activeText{{/tokenActionHudCoreActiveText}}" value="{{encodedValue}}" {{~#if tooltip~}} data-tooltip="{{tooltip}}" data-tooltip-class="tah-tooltip"{{~/if~}}>
+<div class="tah-action" data-part="action"{{~#if spellLevel~}} data-spell-lvl="{{spellLevel}}"{{~/if~}}>
+    <button class="tah-action-button tah-button-box{{~#if cssClass}} {{cssClass}}{{~/if~}}{{#tokenActionHudCoreActiveText}} activeText{{/tokenActionHudCoreActiveText}}" value="{{encodedValue}}"
+    data-part="actionButton" data-action="clickAction" data-action-id="{{id}}"
+        {{~#if tooltip.content~}} data-tooltip="{{tooltip.content}}" data-tooltip-class="tah-tooltip{{#if tooltip.class}} {{tooltip.class}}{{/if}}"{{#if tooltip.direction}} data-tooltip-direction="{{{tooltip.direction}}}"{{/if}}{{~/if~}}>
         {{~#if img~}}
         <div class="tah-button-image-wrapper">
             <div class="tah-button-image" style="background: url({{img}}) no-repeat center center; background-size:contain"></div>
         </div>
         {{~/if~}}
-        <span class="tah-action-button-content">
+        <span class="tah-button-content">
             {{~#if itemMacroIcon~}}<div class="tah-icon">{{{itemMacroIcon}}}</div>{{~/if~}}
             {{~#if icon1~}}<div class="tah-icon">{{{icon1}}}</div>{{~/if~}}
             {{~#if icon2~}}<div class="tah-icon">{{{icon2}}}</div>{{~/if~}}
             {{~#if icon3~}}<div class="tah-icon">{{{icon3}}}</div>{{~/if~}}
-            {{~#if name~}}<div class="tah-action-button-text">{{~#if useRawHtmlName}}{{{name}}}{{~else~}}{{name}}{{~/if~}}</div>{{~/if~}}
-            {{~#if info1.icon~}} <div class="tah-info1{{~#if info1.class}} {{info1.class}}{{~/if}}" {{~#if info1.title}}data-tooltip="{{info1.title}}"{{~/if}}>{{{info1.icon}}}</div>
-            {{~else~}}{{~#if info1.text~}}<div class="tah-info1{{~#if info1.class}} {{info1.class}}{{~/if}}" data-tooltip="{{~#if info1.title}}{{info1.title}}{{~else~}}{{info1.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info1.text}}</div>{{~/if~}}
-            {{~/if~}}
-            {{~#if info2.icon~}}<div class="tah-info2{{~#if info2.class}} {{info2.class}}{{~/if}}" {{~#if info2.title}}data-tooltip="{{info2.title}}"{{~/if}}>{{{info2.icon}}}</div>
-            {{~else~}}{{~#if info2.text~}}<div class="tah-info2{{~#if info2.class}} {{info2.class}}{{~/if}}" data-tooltip="{{~#if info2.title}}{{info2.title}}{{~else~}}{{info2.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info2.text}}</div>{{~/if~}}
-            {{~/if~}}
-            {{~#if info3.icon~}}<div class="tah-info3{{~#if info3.class}} {{info3.class}}{{~/if}}" {{~#if info3.title}}data-tooltip="{{info3.title}}"{{~/if}}>{{{info3.icon}}}</div>
-            {{~else~}}{{~#if info3.text~}}<div class="tah-info3{{~#if info3.class}} {{info3.class}}{{~/if}}" data-tooltip="{{~#if info3.title}}{{info3.title}}{{~else~}}{{info3.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info3.text}}</div>{{~/if~}}
-            {{~/if~}}
+            {{~#if name~}}<div class="tah-button-text">{{~#if useRawHtmlName}}{{{name}}}{{~else~}}{{name}}{{~/if~}}</div>{{~/if~}}
+            <div class="tah-info-container">
+                {{~#if info1.icon~}} <div class="tah-info tah-info1{{~#if info1.class}} {{info1.class}}{{~/if}}" {{~#if info1.title}}data-tooltip="{{info1.title}}"{{~/if}}>{{{info1.icon}}}</div>
+                {{~else~}}{{~#if info1.text~}}<div class="tah-info tah-info1{{~#if info1.class}} {{info1.class}}{{~/if}}" data-tooltip="{{~#if info1.title}}{{info1.title}}{{~else~}}{{info1.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info1.text}}</div>{{~/if~}}
+                {{~/if~}}
+                {{~#if info2.icon~}}<div class="tah-info tah-info2{{~#if info2.class}} {{info2.class}}{{~/if}}" {{~#if info2.title}}data-tooltip="{{info2.title}}"{{~/if}}>{{{info2.icon}}}</div>
+                {{~else~}}{{~#if info2.text~}}<div class="tah-info tah-info2{{~#if info2.class}} {{info2.class}}{{~/if}}" data-tooltip="{{~#if info2.title}}{{info2.title}}{{~else~}}{{info2.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info2.text}}</div>{{~/if~}}
+                {{~/if~}}
+                {{~#if info3.icon~}}<div class="tah-info tah-info3{{~#if info3.class}} {{info3.class}}{{~/if}}" {{~#if info3.title}}data-tooltip="{{info3.title}}"{{~/if}}>{{{info3.icon}}}</div>
+                {{~else~}}{{~#if info3.text~}}<div class="tah-info tah-info3{{~#if info3.class}} {{info3.class}}{{~/if}}" data-tooltip="{{~#if info3.title}}{{info3.title}}{{~else~}}{{info3.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info3.text}}</div>{{~/if~}}
+                {{~/if~}}
+            </div>
         </span>
     </button>
 </div>

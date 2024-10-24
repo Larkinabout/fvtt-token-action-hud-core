@@ -1,0 +1,518 @@
+#token-action-hud-app {
+  height: min-content;
+  margin: @tah-hud-margin;
+  z-index: 30;
+
+  &.tah-expanded {
+    #token-action-hud {
+      position: relative;
+      transition: width 0.5s;
+      width: var(--tah-hud-width);
+
+      #tah-buttons {
+        display: flex;
+        opacity: 1;
+        transition: all 0.4s allow-discrete;
+        transition-delay: 0.1s
+      }
+
+      #tah-character-name {
+        opacity: 1;
+        transition: opacity 0.4s;
+        transition-delay: 0.1s
+      }
+    }
+  }
+
+  &:not(.tah-expanded) {
+    #token-action-hud {
+      #tah-buttons {
+        display: none;
+        opacity: 0;
+      }
+    }
+  }
+
+  &.tah-closed {
+    #tah-collapse-expand {
+      display: none;
+    }
+  }
+
+  .tah-hidden {
+    display: none !important;
+  }
+
+  #token-action-hud {
+    background-color: var(--tah-background-color);
+    border-radius: @tah-hud-border-radius;
+    transition: width 0.5s;
+    width: 0;
+
+    #tah-character-name {
+      color: var(--tah-character-name-color);
+      font-size: var(--font-size-16);
+      height: var(--tah-button-height);
+      margin: 0 5px;
+      opacity: 1;
+      overflow: hidden;
+      padding: 5px 0;
+      text-shadow: var(--tah-character-name-text-shadow);
+    }
+  
+    #tah-collapse-expand {
+      background-color: var(--tah-background-color);
+      left: @tah-collapse-expand-left;
+      right: @tah-collapse-expand-right;
+      position: absolute;
+      top: 0;
+      z-index: 1;
+
+      #tah-collapse-hud {
+        background: var(--tah-background-color);
+        border-radius: @tah-collapse-expand-border-radius;
+        height: var(--tah-button-height);
+        position: absolute;
+        width: 12px;
+        z-index: 1;
+      }
+
+      #tah-expand-hud {
+        background: var(--tah-background-color);
+        border-radius: @tah-collapse-expand-border-radius;
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        width: 12px;
+        z-index: 1;
+      }
+
+      button>i {
+        display: flex;
+        font-size: var(@font-size);
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+      }
+    }
+
+    /* -------------------------------------------- */
+    /* Button Container                             */
+    /* -------------------------------------------- */
+
+    #tah-buttons {
+      align-items: center;
+      display: flex;
+      flex-direction: row-reverse;
+      height: var(--tah-button-height);
+      padding: 0 5px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 1;
+    }
+
+    /* -------------------------------------------- */
+    /* Box Button                                   */
+    /* -------------------------------------------- */
+
+    .tah-button-box {
+      align-items: center;
+      background-color: transparent;
+      border: none;
+      border-radius: 0;
+      color: var(--tah-button-text-color);
+      display: flex;
+      font-size: var(--font-size-13);
+      font-weight: var(--tah-button-box-font-weight);
+      gap: var(--tah-gap);
+      max-width: 200px;
+      min-height: var(--tah-button-height);
+      margin: 0;
+      padding: 5px;
+      text-shadow: var(--tah-button-text-shadow);
+      width: 100%;
+
+      &.tah-group-button {
+        background-color: var(--tah-button-background-color);
+        font-size: var(--font-size-12);
+        letter-spacing: 0.1rem;
+        min-width: 120px;
+        text-transform: uppercase;
+      }
+
+      &.tah-action-button {
+        min-width: 120px;
+      }
+
+      &:not(.disabled) {
+
+        &:active,
+        &:hover {
+          background-color: var(--tah-button-hover-background-color);
+          border: var(--tah-button-hover-border);
+          box-shadow: var(--tah-button-hover-box-shadow);
+          color: var(--tah-button-hover-text-primary-color);
+
+          .tah-info {
+            color: var(--tah-button-hover-text-secondary-color);
+
+            &.tah-spotlight {
+              color: var(--tah-button-hover-text-tertiary-color);
+            }
+          }
+        }
+      }
+
+      &:focus {
+        box-shadow: none;
+      }
+
+      /* -------------------------------------------- */
+      /* Disabled Button                              */
+      /* -------------------------------------------- */
+
+      &.disabled {
+        color: var(--tah-text-disabled-color);
+
+        &:hover {
+          box-shadow: var(--tah-button-box-shadow);
+        }
+      }
+
+      /* -------------------------------------------- */
+      /* Toggleable Button                            */
+      /* -------------------------------------------- */
+
+      &.toggle:not(.disabled):hover {
+        background: var(--tah-button-toggle-hover-background-color);
+        border: var(--tah-button-toggle-hover-border);
+        box-shadow: var(--tah-button-toggle-hover-box-shadow);
+      }
+
+      &.active {
+        background: var(--tah-button-active-background-color);
+        border: var(--tah-button-active-border);
+        box-shadow: var(--tah-button-active-box-shadow);
+        color: var(--tah-button-active-text-color);
+
+        &.activeText>.tah-action-button-content:after {
+          content: "*";
+        }
+      }
+
+      /* -------------------------------------------- */
+
+      &.shrink {
+        min-width: min-content;
+      }
+
+      .tah-button-image {
+        background-color: var(--tah-button-image-background-color) !important;
+        border: var(--tah-button-image-border);
+        border-radius: var(--tah-button-image-border-radius);
+        height: var(--tah-button-image-height);
+        min-width: var(--tah-button-image-width);
+        width: var(--tah-button-image-width);
+      }
+
+      .tah-button-content {
+        display: flex;
+        gap: var(--tah-gap);
+        overflow: hidden;
+        padding: @tah-button-content-padding;
+        width: 100%;
+
+        &:empty {
+          display: none;
+        }
+      }
+
+      .tah-button-text {
+        align-items: center;
+        display: flex;
+        line-height: 1;
+        overflow: hidden;
+        padding: 1px 0;
+        padding-right: 1px;
+        text-align: left;
+        text-overflow: ellipsis;
+        text-wrap: wrap;
+        width: 100%;
+      }
+
+      .tah-icon>i {
+        font-size: x-small;
+        margin: 0px 2px 0px 0px;
+        text-shadow: var(--tah-button-text-shadow);
+      }
+
+      .tah-info-container {
+        display: flex;
+        gap: var(--tah-gap);
+        padding-right: 2px;
+        position: relative;
+      
+        .tah-info {
+          color: var(--tah-text-secondary-color);
+          font-size: @tah-info-font-size;
+
+          &.tah-spotlight {
+            color: var(--tah-text-tertiary-color);
+          }
+        }
+      }
+
+      /* -------------------------------------------- */
+      /*  Edit Group Icon                             */
+      /* -------------------------------------------- */
+
+      >.tah-edit-group-icon {
+        font-size: @tah-edit-group-icon-font-size;
+        position: relative;
+        visibility: hidden;
+      }
+
+      &:hover:not(.disable-edit)>.tah-edit-group-icon {
+        visibility: visible;
+      }
+
+      /* -------------------------------------------- */
+    }
+
+    /* -------------------------------------------- */
+    /* Icon Button                                  */
+    /* -------------------------------------------- */
+
+    .tah-button-icon {
+      background: transparent;
+      border: 0;
+      line-height: unset;
+      margin: 0;
+      padding: 0;
+
+      &:hover,
+      &:focus {
+        box-shadow: none;
+
+        >i {
+          color: var(--tah-icon-hover-color);
+          text-shadow: var(--tah-icon-hover-text-shadow);
+        }
+      }
+
+      >i {
+        color: var(--tah-icon-color);
+        font-size: var(--font-size-12);
+        margin: 3px;
+        padding: 3px;
+        pointer-events: none;
+        position: relative;
+        text-align: center;
+        text-shadow: var(--tah-icon-text-shadow);
+      }
+    }
+
+    /* -------------------------------------------- */
+    /* Groups                                       */
+    /* -------------------------------------------- */
+
+    .tah-groups {
+      border-radius: 0 0 4px 4px;
+      display: flex;
+      filter: @tah-groups-filter;
+      flex-direction: column;
+      overflow-x: hidden;
+
+      .tah-tab-groups {
+        width: max-content;
+
+        >.tah-tab-subgroup>.tah-subgroups>.tah-actions {
+          background: var(--tah-background-color);
+        }
+      }
+
+      .tah-tab-group {        
+        .tah-subgroups {
+          border-top: 1px solid var(--tah-button-hover-background-color);
+          display: flex;
+          flex-direction: column;
+          gap: var(--tah-gap);
+          width: 100%;
+        }
+      }
+
+      .tah-tab-subgroup {
+        >.tah-subgroups-container>.tah-subgroups {
+          left: -10px;
+        }
+      }
+
+      .tah-tab-group,
+      .tah-tab-subgroup {
+        &.hover {
+          >.tah-subgroups-container {
+            display: flex;
+
+            .tah-subgroups {
+              display: flex;
+              height: max-content;
+              padding: 0;
+              overflow-x: hidden;
+              width: 100%;
+            }
+          }
+        }
+
+        >.tah-subgroups-container {
+          >.tah-subgroups {
+            flex-direction: column;
+          }
+
+          &.hover>.tah-subgroups-container {
+            display: flex;
+
+            >.tah-subgroups {
+              display: flex;
+            }
+          }
+        }
+
+        >.tah-subgroups-container {
+          display: none;
+        }
+
+        .tah-subgroups {
+          display: flex;
+          flex-direction: column;
+          gap: var(--tah-gap);
+          width: max-content;
+        }
+
+        .tah-list-subgroups {
+          flex-direction: column;
+          display: flex;
+
+          .tah-list-subgroups {
+            background: none;
+          }
+        }
+
+        .tah-tab-subgroups {
+          display: flex;
+          gap: var(--tah-gap);
+          position: relative;
+        }
+
+        .tah-list-subgroup {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+
+          .tah-list-subgroup-title {
+            align-items: center;
+            color: var(--tah-text-primary-color);
+            display: flex;
+            flex-wrap: wrap;
+            font-size: @tah-list-subgroup-title-font-size;
+            gap: var(--tah-gap);
+            letter-spacing: @tah-list-subgroup-title-letter-spacing;
+            line-height: 1;
+            min-width: 120px;
+            padding: 5px;
+            text-shadow: var(--tah-text-shadow);
+            text-transform: @tah-list-subgroup-title-text-transform;
+
+            &:hover {
+              box-shadow: none;
+              color: var(--tah-text-hover-primary-color);
+              cursor: pointer;
+
+              >.tah-collapse-icon:not(.tah-hidden),
+              >.tah-expand-icon:not(.tah-hidden) {
+                visibility: visible;
+              }
+
+              &:not(.disable-edit)>.tah-edit-icon {
+                visibility: visible;
+              }
+
+              >i {
+                color: var(--tah-list-subgroup-title-hover-icon-color);
+              }
+            }
+
+            >i {
+              color: var(--tah-list-subgroup-title-icon-color);
+              font-size: 8px;
+              pointer-events: none;
+              position: relative;
+              visibility: hidden;
+
+              &.tah-collapse-icon {
+                bottom: 1px;
+              }
+
+              &.tah-edit-icon {
+                padding-right: 10px;
+                position: absolute;
+                right: 0;
+              }
+            }
+
+            .tah-info {
+              background: var(--tah-button-background-color);
+              border-radius: 5px;
+              color: var(--tah-text-secondary-color);
+              font-size: x-small;
+              padding: 1px 3px;
+
+              &:hover {
+                color: var(--tah-text-hover-secondary-color);
+              }
+
+              &.tah-spotlight {
+                color: var(--tah-text-tertiary-color);
+
+                &:hover {
+                  color: var(--tah-text-hover-secondary-color);
+                }
+              }
+            }
+          }
+        }
+
+        .tah-tab-subgroup {
+          >.tah-tab-subgroup>.tah-subgroups>.tah-actions {
+            background: var(--tah-background-color);
+            border-radius: var(--tah-border-radius);
+          }
+        }
+
+        .tah-subgroup[data-show-title="false"] {
+          >div>.tah-list-subgroup-title>.tah-list-subgroup-title-text {
+            color: var(--tah-text-disabled-color);
+          }
+        }
+
+        /* -------------------------------------------- */
+        /* Actions                                      */
+        /* -------------------------------------------- */
+
+        >.tah-actions {
+          background: var(--tah-background-color);
+          border-radius: var(--tah-border-radius);
+          margin-top: 5px;
+        }
+
+        .tah-actions {
+          align-items: center;
+          display: grid;
+          width: 100%;
+        }
+      }
+    }
+  }
+}

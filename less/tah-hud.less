@@ -1,0 +1,465 @@
+#token-action-hud-app {
+  position: fixed;
+
+  #token-action-hud {
+    border-radius: var(--tah-border-radius);
+    display: flex;
+  
+    .tah-hidden {
+      display: none !important;
+    }
+  
+    #tah-character-name {
+      color: var(--tah-character-name-color);
+      font-size: @font-size;
+      position: absolute;
+      text-shadow: var(--tah-character-name-text-shadow);
+      top: -22px;
+      width: max-content;
+      z-index: 1;
+    }
+  
+    &:hover {
+  
+      #tah-collapse-expand>#tah-collapse-hud,
+      >#tah-buttons {
+        display: flex;
+      }
+    }
+  
+    #tah-collapse-expand {
+      left: -20px;
+      position: absolute;
+  
+      #tah-collapse-hud {
+        align-items: center;
+        display: none;
+        height: var(--tah-button-height);
+        position: relative;
+        z-index: 1;
+      }
+  
+      #tah-expand-hud {
+        background: var(--tah-button-background);
+        justify-content: center;
+        min-width: auto;
+        padding: 0 5px;
+      }
+  
+      button>i {
+        font-size: @font-size;
+      }
+    }
+  
+    /* -------------------------------------------- */
+    /* Button Container                             */
+    /* -------------------------------------------- */
+  
+    #tah-buttons {
+      align-items: center;
+      display: none;
+      font-style: normal;
+      font-weight: normal;
+      height: var(--tah-button-height);
+      position: relative;
+      z-index: 1;
+    }
+  
+    /* -------------------------------------------- */
+    /* Box Button                                   */
+    /* -------------------------------------------- */
+  
+    .tah-button-box {
+      align-items: center;
+      background-color: var(--tah-button-background-color);
+      border: var(--tah-button-border);
+      border-radius: var(--tah-border-radius);
+      box-shadow: var(--tah-button-box-shadow);
+      color: var(--tah-button-text-color);
+      display: flex;
+      font-size: @button-font-size;
+      font-weight: var(--tah-button-box-font-weight);
+      height: var(--tah-button-height);
+      margin: 0;
+      min-width: var(--tah-button-min-width);
+      padding: 0;
+      position: relative;
+      text-shadow: var(--tah-button-text-shadow);
+  
+      &.tah-group-button {
+        background: var(--tah-button-background);
+      }
+  
+      &:not(.disabled) {
+  
+        &:active,
+        &:hover {
+          background-color: var(--tah-button-hover-background-color);
+          border: var(--tah-button-hover-border);
+          box-shadow: var(--tah-button-hover-box-shadow);
+          color: var(--tah-button-hover-text-primary-color);
+  
+          .tah-info {
+            color: var(--tah-button-hover-text-secondary-color);
+  
+            &.tah-spotlight {
+              color: var(--tah-button-hover-text-tertiary-color);
+            }
+          }
+        }
+      }
+  
+      /* -------------------------------------------- */
+      /* Disabled Button                              */
+      /* -------------------------------------------- */
+  
+      &.disabled {
+        color: var(--tah-text-disabled-color);
+  
+        &:hover {
+          box-shadow: var(--tah-button-box-shadow);
+        }
+      }
+  
+      /* -------------------------------------------- */
+      /* Toggleable Button                            */
+      /* -------------------------------------------- */
+  
+      &.toggle:not(.disabled):hover {
+        background: var(--tah-button-toggle-hover-background-color);
+        box-shadow: var(--tah-button-toggle-hover-box-shadow);
+      }
+  
+      &.active {
+        background: var(--tah-button-active-background-color);
+        box-shadow: var(--tah-button-active-box-shadow);
+        color: var(--tah-button-active-text-color);
+  
+        &.activeText>.tah-action-button-content:after {
+          content: "*";
+        }
+      }
+  
+      /* -------------------------------------------- */
+  
+      &.shrink {
+        min-width: min-content;
+      }
+  
+      .tah-button-image {
+        background-color: var(--tah-button-image-background-color) !important;
+        border-radius: var(--tah-button-image-border-radius);
+        height: var(--tah-button-image-height);
+        min-width: var(--tah-button-image-width);
+        width: var(--tah-button-image-width);
+      }
+  
+      .tah-button-content {
+        display: flex;
+        gap: var(--tah-gap);
+        overflow: hidden;
+        padding: @tah-button-content-padding;
+        width: 100%;
+  
+        &:empty {
+          display: none;
+        }
+      }
+  
+      .tah-button-text {
+        overflow: hidden;
+        padding: 1px 0;
+        padding-right: 1px;
+        text-align: left;
+        text-overflow: ellipsis;
+        width: 100%;
+      }
+  
+      .tah-icon>i {
+        font-size: x-small;
+        margin: 0px 2px 0px 0px;
+        text-shadow: var(--tah-button-text-shadow);
+      }
+  
+      .tah-info-container {
+        display: flex;
+        gap: var(--tah-gap);
+        
+        .tah-info {
+          color: var(--tah-text-secondary-color);
+          font-size: @tah-info-font-size;
+    
+          &.tah-spotlight {
+            color: var(--tah-text-tertiary-color);
+          }
+        }
+      }
+      
+      /* -------------------------------------------- */
+      /*  Edit Group Icon                             */
+      /* -------------------------------------------- */
+  
+      >.tah-edit-group-icon {
+        font-size: @tah-edit-group-icon-font-size;
+        position: absolute;
+        right: 0px;
+        top: @tah-edit-group-icon-top;
+        visibility: hidden;
+      }
+  
+      &:hover:not(.disable-edit)>.tah-edit-group-icon {
+        visibility: visible;
+      }
+  
+      /* -------------------------------------------- */
+    }
+  
+    /* -------------------------------------------- */
+    /* Icon Button                                  */
+    /* -------------------------------------------- */
+  
+    .tah-button-icon {
+      background: transparent;
+      border: 0;
+      line-height: unset;
+      margin: 0;
+      padding: 0;
+  
+      &:hover,
+      &:focus {
+        box-shadow: none;
+  
+        >i {
+          color: var(--tah-icon-hover-color);
+          text-shadow: var(--tah-icon-hover-text-shadow);
+        }
+      }
+  
+      >i {
+        color: var(--tah-icon-color);
+        font-size: var(--font-size-12);
+        margin: 3px;
+        padding: 3px;
+        pointer-events: none;
+        position: relative;
+        text-align: center;
+        text-shadow: var(--tah-icon-text-shadow);
+      }
+    }
+  
+    /* -------------------------------------------- */
+    /* Groups                                       */
+    /* -------------------------------------------- */
+  
+    .tah-groups {
+      display: flex;
+      filter: @tah-groups-filter;
+      gap: var(--tah-gap);
+  
+      .tah-tab-group>.tah-subgroups-container>.tah-subgroups {
+        background: var(--tah-subgroups-background);
+        left: @tah-subgroups-container-left;
+      }
+  
+      .tah-tab-subgroup>.tah-subgroups-container>.tah-subgroups {
+        left: -10px;
+      }
+  
+      .tah-tab-groups {
+        width: max-content;
+  
+        >.tah-tab-subgroup>.tah-subgroups>.tah-actions {
+          background: var(--tah-background-color);
+          border-radius: var(--tah-border-radius);
+        }
+      }
+  
+      .tah-tab-group,
+      .tah-tab-subgroup {
+        >.tah-subgroups-container {
+          >.tah-subgroups {
+            background: var(--tah-subgroups-background);
+            border-radius: var(--tah-border-radius);
+            flex-direction: column;
+            position: relative;
+          }
+  
+          &.expand-down {
+            top: calc(100% - 10px);
+            padding-top: 13px;
+  
+            >.tah-subgroups {
+              padding: @tah-subgroups-container-expand-down-tah-subgroups-padding;
+            }
+          }
+  
+          &.expand-up {
+            bottom: calc(100% - 7px);
+            flex-direction: column-reverse;
+            padding-bottom: 10px;
+  
+            >.tah-subgroups {
+              padding: @tah-subgroups-container-expand-up-tah-subgroups-padding;
+  
+              >.tah-list-subgroups {
+                flex-direction: column-reverse;
+              }
+            }
+          }
+        }
+  
+        &.hover>.tah-subgroups-container {
+          display: flex;
+  
+          >.tah-subgroups {
+            display: flex;
+          }
+        }
+      }
+  
+      .tah-subgroups-container {
+        display: none;
+        position: absolute;
+      }
+  
+      .tah-subgroups {
+        display: flex;
+        flex-direction: column;
+        gap: var(--tah-gap);
+        width: max-content;
+  
+        &.expand-down {
+          flex-direction: column;
+        }
+      }
+  
+      .tah-list-subgroups {
+        background: var(--tah-background-color);
+        border-radius: var(--tah-border-radius);
+        flex-direction: column;
+        display: flex;
+        gap: var(--tah-gap);
+  
+        .tah-list-subgroups {
+          background: none;
+        }
+      }
+  
+      .tah-tab-subgroups {
+        display: flex;
+        gap: var(--tah-gap);
+        position: relative;
+      }
+  
+      .tah-list-subgroup {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+  
+        .tah-list-subgroup-title {
+          align-items: center;
+          color: var(--tah-text-primary-color);
+          display: flex;
+          flex-wrap: wrap;
+          font-size: @tah-list-subgroup-title-font-size;
+          gap: var(--tah-gap);
+          letter-spacing: @tah-list-subgroup-title-letter-spacing;
+          line-height: 1;
+          text-shadow: var(--tah-text-shadow);
+          text-transform: @tah-list-subgroup-title-text-transform;
+  
+          &:hover {
+            color: var(--tah-text-hover-primary-color);
+            cursor: pointer;
+  
+            >.tah-collapse-icon:not(.tah-hidden),
+            >.tah-expand-icon:not(.tah-hidden) {
+              visibility: visible;
+            }
+  
+            &:not(.disable-edit)>.tah-edit-icon {
+              visibility: visible;
+            }
+  
+            >i {
+              color: var(--tah-list-subgroup-title-hover-icon-color);
+            }
+          }
+  
+          >i {
+            color: var(--tah-list-subgroup-title-icon-color);
+            font-size: 8px;
+            pointer-events: none;
+            position: relative;
+            visibility: hidden;
+  
+            &.tah-collapse-icon {
+              bottom: 1px;
+            }
+          }
+  
+          .tah-info {
+            background: var(--tah-button-background-color);
+            border-radius: 5px;
+            color: var(--tah-text-secondary-color);
+            font-size: x-small;
+            padding: 1px 3px;
+  
+            &:hover {
+              color: var(--tah-text-hover-secondary-color);
+            }
+  
+            &.tah-spotlight {
+              color: var(--tah-text-tertiary-color);
+  
+              &:hover {
+                color: var(--tah-text-hover-secondary-color);
+              }
+            }
+          }
+        }
+      }
+  
+      .tah-tab-subgroup {
+        >.tah-tab-subgroup>.tah-subgroups>.tah-actions {
+          background: var(--tah-background-color);
+          border-radius: var(--tah-border-radius);
+        }
+      }
+  
+      &.tah-unlocked .tah-subgroup>.tah-list-subgroup>.tah-subgroups>.tah-list-subgroups {
+        padding-left: 10px;
+      }
+  
+      .tah-subgroup[data-show-title="false"] {
+        >.tah-list-subgroup>.tah-subgroups>.tah-list-subgroups>.tah-subgroup:not([data-show-title="false"]) {
+          padding-left: 0px;
+        }
+  
+        >div>.tah-list-subgroup-title>.tah-list-subgroup-title-text {
+          color: var(--tah-text-disabled-color);
+        }
+      }
+  
+      .tah-subgroup:not([data-show-title="false"])[data-has-image="false"]>.tah-list-subgroup>.tah-subgroups>.tah-list-subgroups>.tah-subgroup:not([data-show-title="false"])[data-has-image="false"] {
+        padding-left: 10px;
+      }
+  
+      /* -------------------------------------------- */
+      /* Actions                                      */
+      /* -------------------------------------------- */
+  
+      >.tah-actions {
+        margin-top: 5px;
+      }
+  
+      .tah-actions {
+        align-items: center;
+        display: flex;
+        flex-flow: row wrap;
+        gap: var(--tah-gap);
+        width: 100%;
+      }
+    }
+  }
+}

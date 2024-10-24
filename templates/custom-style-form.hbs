@@ -1,11 +1,15 @@
-<form>
-    <section>
-        <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.backgroundColor.label"}}">
-            <label for="backgroundColor">{{localize "tokenActionHud.settings.customStyle.form.backgroundColor.label"}}:</label>
-            <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{backgroundColor}}" name="backgroundColor" id="backgroundColor">
-        </div>
-        <fieldset class="tah-fieldset">
-            <legend>{{localize "tokenActionHud.settings.customStyle.form.buttons"}}</legend>
+<div id="token-action-hud-form" class="standard-form">
+    <div class="standard-form scrollable">
+        <div class="form-group">
+                <label>{{localize "tokenActionHud.settings.customStyle.form.backgroundColor.label"}}</label>
+                <div class="form-fields">
+                    <input type="text" id="backgroundColor" name="backgroundColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{backgroundColor}}">
+                </div>
+            </div>
+        <fieldset>
+            <legend>
+                <span>{{localize "tokenActionHud.settings.customStyle.form.buttons"}}</span>
+            </legend>
             <div class="form-group">
                 <label>
                     {{localize "tokenActionHud.settings.customStyle.form.buttonHeight.label"}}
@@ -15,120 +19,176 @@
                     <input type="number" name="buttonHeight" value="{{buttonHeight}}" />
                 </div>
             </div>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonBackgroundColor.label"}}">
-                <label for="buttonBackgroundColor">{{localize "tokenActionHud.settings.customStyle.form.buttonBackgroundColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonBackgroundColor}}" name="buttonBackgroundColor" id="buttonBackgroundColor">
-            </div>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonBorderPrimaryColor.label"}}">
-                <label for="buttonBorderPrimaryColor">{{localize "tokenActionHud.settings.customStyle.form.buttonBorderPrimaryColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonBorderPrimaryColor}}" name="buttonBorderPrimaryColor" id="buttonBorderPrimaryColor">
-            </div>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonBorderSecondaryColor.label"}}">
-                <label for="buttonBorderSecondaryColor">{{localize "tokenActionHud.settings.customStyle.form.buttonBorderSecondaryColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonBorderSecondaryColor}}" name="buttonBorderSecondaryColor" id="buttonBorderSecondaryColor">
-            </div>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonTextColor.label"}}">
-                <label for="buttonTextColor">{{localize "tokenActionHud.settings.customStyle.form.buttonTextColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonTextColor}}" name="buttonTextColor" id="buttonTextColor">
-            </div>
-            <fieldset class="tah-fieldset">
-                <legend>{{localize "tokenActionHud.settings.customStyle.form.hovered"}}</legend>
-                <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonHoverBackgroundColor.label"}}">
-                    <label for="buttonHoverBackgroundColor">{{localize "tokenActionHud.settings.customStyle.form.buttonHoverBackgroundColor.label"}}:</label>
-                    <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonHoverBackgroundColor}}" name="buttonHoverBackgroundColor" id="buttonHoverBackgroundColor">
+            <div class="form-group">
+                <label>{{localize "tokenActionHud.settings.customStyle.form.buttonBackgroundColor.label"}}</label>
+                <div class="form-fields">
+                    <input type="text" id="buttonBackgroundColor" name="buttonBackgroundColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonBackgroundColor}}">
                 </div>
-                <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonHoverBorderPrimaryColor.label"}}">
-                    <label for="buttonHoverBorderPrimaryColor">{{localize "tokenActionHud.settings.customStyle.form.buttonHoverBorderPrimaryColor.label"}}:</label>
-                    <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonHoverBorderPrimaryColor}}" name="buttonHoverBorderPrimaryColor" id="buttonHoverBorderPrimaryColor">
+            </div>
+            <div class="form-group">
+                <label>{{localize "tokenActionHud.settings.customStyle.form.buttonBorderPrimaryColor.label"}}</label>
+                <div class="form-fields">
+                    <input type="text" id="buttonBorderPrimaryColor" name="buttonBorderPrimaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonBorderPrimaryColor}}">
                 </div>
-                <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonHoverBorderSecondaryColor.label"}}">
-                    <label for="buttonHoverBorderSecondaryColor">{{localize "tokenActionHud.settings.customStyle.form.buttonHoverBorderSecondaryColor.label"}}:</label>
-                    <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonHoverBorderSecondaryColor}}" name="buttonHoverBorderSecondaryColor" id="buttonHoverBorderSecondaryColor">
+            </div>
+            <div class="form-group">
+                <label>{{localize "tokenActionHud.settings.customStyle.form.buttonBorderSecondaryColor.label"}}</label>
+                <div class="form-fields">
+                    <input type="text" id="buttonBorderSecondaryColor" name="buttonBorderSecondaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonBorderSecondaryColor}}">
                 </div>
-                <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonHoverTextColor.label"}}">
-                    <label for="buttonHoverTextColor">{{localize "tokenActionHud.settings.customStyle.form.buttonHoverTextColor.label"}}:</label>
-                    <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonHoverTextColor}}" name="buttonHoverTextColor" id="buttonHoverTextColor">
+            </div>
+            <div class="form-group">
+                <label>{{localize "tokenActionHud.settings.customStyle.form.buttonTextColor.label"}}</label>
+                <div class="form-fields">
+                    <input type="text" id="buttonTextColor" name="buttonTextColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonTextColor}}">
+                </div>
+            </div>
+            <fieldset>
+                <legend>
+                    <span>{{localize "tokenActionHud.settings.customStyle.form.hovered"}}</span>
+                </legend>
+                <div class="form-group">
+                    <label>{{localize "tokenActionHud.settings.customStyle.form.buttonHoverBackgroundColor.label"}}</label>
+                    <div class="form-fields">
+                        <input type="text" id="buttonHoverBackgroundColor" name="buttonHoverBackgroundColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonHoverBackgroundColor}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{{localize "tokenActionHud.settings.customStyle.form.buttonHoverBorderPrimaryColor.label"}}</label>
+                    <div class="form-fields">
+                        <input type="text" id="buttonHoverBorderPrimaryColor" name="buttonHoverBorderPrimaryColor"data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonHoverBorderPrimaryColor}}" >
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{{localize "tokenActionHud.settings.customStyle.form.buttonHoverBorderSecondaryColor.label"}}</label>
+                    <div class="form-fields">
+                        <input type="text" id="buttonHoverBorderSecondaryColor" name="buttonHoverBorderSecondaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonHoverBorderSecondaryColor}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{{localize "tokenActionHud.settings.customStyle.form.buttonHoverTextColor.label"}}</label>
+                    <div class="form-fields">
+                        <input type="text" id="buttonHoverTextColor" name="buttonHoverTextColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonHoverTextColor}}">
+                    </div>
                 </div>
             </fieldset>
-            <fieldset class="tah-fieldset">
-                <legend>{{localize "tokenActionHud.settings.customStyle.form.toggleable"}}</legend>
-                <fieldset class="tah-fieldset">
-                    <legend>{{localize "tokenActionHud.settings.customStyle.form.active"}}</legend>
-                    <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveBackgroundColor.label"}}">
-                        <label for="buttonToggleActiveBackgroundColor">{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveBackgroundColor.label"}}:</label>
-                        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleActiveBackgroundColor}}" name="buttonToggleActiveBackgroundColor" id="buttonToggleActiveBackgroundColor">
+            <fieldset>
+                <legend>
+                    <span>{{localize "tokenActionHud.settings.customStyle.form.toggleable"}}</span>
+                </legend>
+                <fieldset>
+                    <legend>
+                        <span>{{localize "tokenActionHud.settings.customStyle.form.active"}}</span>
+                    </legend>
+                    <div class="form-group">
+                        <label>{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveBackgroundColor.label"}}</label>
+                        <div class="form-fields">
+                            <input type="text" id="buttonToggleActiveBackgroundColor" name="buttonToggleActiveBackgroundColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleActiveBackgroundColor}}">
+                        </div>
                     </div>
-                    <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderPrimaryColor.label"}}">
-                        <label for="buttonToggleActiveBorderPrimaryColor">{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderPrimaryColor.label"}}:</label>
-                        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleActiveBorderPrimaryColor}}" name="buttonToggleActiveBorderPrimaryColor" id="buttonToggleActiveBorderPrimaryColor">
+                    <div class="form-group">
+                        <label>{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderPrimaryColor.label"}}</label>
+                        <div class="form-fields">
+                            <input type="text" id="buttonToggleActiveBorderPrimaryColor" name="buttonToggleActiveBorderPrimaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleActiveBorderPrimaryColor}}">
+                        </div>
                     </div>
-                    <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderSecondaryColor.label"}}">
-                        <label for="buttonToggleActiveBorderSecondaryColor">{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderSecondaryColor.label"}}:</label>
-                        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleActiveBorderSecondaryColor}}" name="buttonToggleActiveBorderSecondaryColor" id="buttonToggleActiveBorderSecondaryColor">
+                    <div class="form-group">
+                        <label>{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveBorderSecondaryColor.label"}}</label>
+                        <div class="form-fields">
+                            <input type="text" id="buttonToggleActiveBorderSecondaryColor" name="buttonToggleActiveBorderSecondaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleActiveBorderSecondaryColor}}">
+                        </div>
                     </div>
-                    <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveTextColor.label"}}">
-                        <label for="buttonToggleActiveTextColor">{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveTextColor.label"}}:</label>
-                        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleActiveTextColor}}" name="buttonToggleActiveTextColor" id="buttonToggleActiveTextColor">
+                    <div class="form-group">
+                        <label>{{localize "tokenActionHud.settings.customStyle.form.buttonToggleActiveTextColor.label"}}</label>
+                        <div class="form-fields">
+                            <input type="text" id="buttonToggleActiveTextColor" name="buttonToggleActiveTextColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleActiveTextColor}}">
+                        </div>
                     </div>
                 </fieldset>
-                <fieldset class="tah-fieldset">
-                    <legend>{{localize "tokenActionHud.settings.customStyle.form.hovered"}}</legend>
-                    <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverBackgroundColor.label"}}">
-                        <label for="buttonToggleHoverBackgroundColor">{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverBackgroundColor.label"}}:</label>
-                        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleHoverBackgroundColor}}" name="buttonToggleHoverBackgroundColor" id="buttonToggleHovereBackgroundColor">
+                <fieldset>
+                    <legend>
+                        <span>{{localize "tokenActionHud.settings.customStyle.form.hovered"}}</span>
+                    </legend>
+                    <div class="form-group">
+                        <label>{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverBackgroundColor.label"}}</label>
+                        <div class="form-fields">
+                            <input type="text" id="buttonToggleHovereBackgroundColor" name="buttonToggleHoverBackgroundColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleHoverBackgroundColor}}">
+                        </div>
                     </div>
-                    <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderPrimaryColor.label"}}">
-                        <label for="buttonToggleHoverBorderPrimaryColor">{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderPrimaryColor.label"}}:</label>
-                        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleHoverBorderPrimaryColor}}" name="buttonToggleHoverBorderPrimaryColor" id="buttonToggleHoverBorderPrimaryColor">
+                    <div class="form-group">
+                        <label>{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderPrimaryColor.label"}}</label>
+                        <div class="form-fields">
+                            <input type="text" id="buttonToggleHoverBorderPrimaryColor" name="buttonToggleHoverBorderPrimaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleHoverBorderPrimaryColor}}">
+                        </div>
                     </div>
-                    <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderSecondaryColor.label"}}">
-                        <label for="buttonToggleHoverBorderSecondaryColor">{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderSecondaryColor.label"}}:</label>
-                        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleHoverBorderSecondaryColor}}" name="buttonToggleHoverBorderSecondaryColor" id="buttonToggleHoverBorderSecondaryColor">
+                    <div class="form-group">
+                        <label>{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverBorderSecondaryColor.label"}}</label>
+                        <div class="form-fields">
+                            <input type="text" id="buttonToggleHoverBorderSecondaryColor" name="buttonToggleHoverBorderSecondaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleHoverBorderSecondaryColor}}">
+                        </div>
                     </div>
-                    <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverTextColor.label"}}">
-                        <label for="buttonToggleHoverTextColor">{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverTextColor.label"}}:</label>
-                        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleHoverTextColor}}" name="buttonToggleHoverTextColor" id="buttonToggleHoverTextColor">
+                    <div class="form-group">
+                        <label>{{localize "tokenActionHud.settings.customStyle.form.buttonToggleHoverTextColor.label"}}</label>
+                        <div class="form-fields">
+                            <input type="text" id="buttonToggleHoverTextColor" name="buttonToggleHoverTextColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{buttonToggleHoverTextColor}}">
+                        </div>
                     </div>
                 </fieldset>
             </fieldset>
         </fieldset>
-        <fieldset class="tah-fieldset">
-            <legend>{{localize "tokenActionHud.settings.customStyle.form.text"}}</legend>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.textPrimaryColor.label"}}">
-                <label for="textPrimaryColor">{{localize "tokenActionHud.settings.customStyle.form.textPrimaryColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textPrimaryColor}}" name="textPrimaryColor" id="textPrimaryColor">
+        <fieldset>
+            <legend>
+                <span>{{localize "tokenActionHud.settings.customStyle.form.text"}}</span>
+            </legend>
+            <div class="form-group">
+                <label>{{localize "tokenActionHud.settings.customStyle.form.textPrimaryColor.label"}}</label>
+                <div class="form-fields">
+                    <input type="text" id="textPrimaryColor" name="textPrimaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textPrimaryColor}}">
+                </div>
             </div>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.textSecondaryColor.label"}}">
-                <label for="textSecondaryColor">{{localize "tokenActionHud.settings.customStyle.form.textSecondaryColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textSecondaryColor}}" name="textSecondaryColor" id="textSecondaryColor">
+            <div class="form-group">
+                <label>{{localize "tokenActionHud.settings.customStyle.form.textSecondaryColor.label"}}</label>
+                <div class="form-fields">
+                    <input type="text" id="textSecondaryColor" name="textSecondaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textSecondaryColor}}">
+                </div>
             </div>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.textTertiaryColor.label"}}">
-                <label for="textTertiaryColor">{{localize "tokenActionHud.settings.customStyle.form.textTertiaryColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textTertiaryColor}}" name="textTertiaryColor" id="textTertiaryColor">
+            <div class="form-group">
+                <label>{{localize "tokenActionHud.settings.customStyle.form.textTertiaryColor.label"}}</label>
+                <div class="form-fields">
+                    <input type="text" id="textTertiaryColor" name="textTertiaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textTertiaryColor}}">
+                </div>
             </div>
-            <fieldset class="tah-fieldset">
-            <legend>{{localize "tokenActionHud.settings.customStyle.form.hovered"}}</legend>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.textHoverPrimaryColor.label"}}">
-                <label for="textHoverPrimaryColor">{{localize "tokenActionHud.settings.customStyle.form.textHoverPrimaryColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textHoverPrimaryColor}}" name="textHoverPrimaryColor" id="textHoverPrimaryColor">
-            </div>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.textHoverSecondaryColor.label"}}">
-                <label for="textHoverSecondaryColor">{{localize "tokenActionHud.settings.customStyle.form.textHoverSecondaryColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textHoverSecondaryColor}}" name="textHoverSecondaryColor" id="textHoverSecondaryColor">
-            </div>
-            <div class="form-group" title="{{localize "tokenActionHud.settings.customStyle.form.textHoverTertiaryColor.label"}}">
-                <label for="textHoverTertiaryColor">{{localize "tokenActionHud.settings.customStyle.form.textHoverTertiaryColor.label"}}:</label>
-                <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textHoverTertiaryColor}}" name="textHoverTertiaryColor" id="textHoverTertiaryColor">
-            </div>
+            <fieldset>
+                <legend>
+                    <span>{{localize "tokenActionHud.settings.customStyle.form.hovered"}}</span>
+                </legend>
+                <div class="form-group">
+                    <label>{{localize "tokenActionHud.settings.customStyle.form.textHoverPrimaryColor.label"}}</label>
+                    <div class="form-fields">
+                        <input type="text" id="textHoverPrimaryColor" name="textHoverPrimaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textHoverPrimaryColor}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{{localize "tokenActionHud.settings.customStyle.form.textHoverSecondaryColor.label"}}</label>
+                    <div class="form-fields">
+                        <input type="text" id="textHoverSecondaryColor" name="textHoverSecondaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textHoverSecondaryColor}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>{{localize "tokenActionHud.settings.customStyle.form.textHoverTertiaryColor.label"}}</label>
+                    <div class="form-fields">
+                        <input type="text" id="textHoverTertiaryColor" name="textHoverTertiaryColor" data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{textHoverTertiaryColor}}">
+                    </div>
+                </div>
+            </fieldset>
         </fieldset>
-        </fieldset>
-    </section>
-    <footer class="flexrow">
-        <button type="reset" id="tah-custom-style-reset-button" name="submit" class="tah-custom-style-reset-button">
-            <i class="fas fa-rotate-left"></i>{{localize "tokenActionHud.settings.customStyle.form.reset"}}
+    </div>
+    <footer class="form-footer" data-application-part="footer">
+        <button type="button" data-action="reset" class="reset-button bright">
+            <i class="fas fa-arrow-rotate-left"></i>{{localize "tokenActionHud.resetToDefault"}}
         </button>
-        <button type="submit" id="tah-custom-style-submit-button" name="submit" class="tah-custom-style-submit-button">
-            <i class="fas fa-save"></i>{{localize "tokenActionHud.settings.customStyle.form.save"}}
+        <button type="submit" class="save-button">
+            <i class="fas fa-solid fa-floppy-disk"></i>{{localize "tokenActionHud.saveAndClose"}}
         </button>
     </footer>
-</form>
+</div>

@@ -3,20 +3,71 @@
     --tah-tooltip-delay: 1500ms;
 }
 
+.tagify.tah-dialog-tagify {
+    --tag-bg: none;
+    --tag-hover: none;
+    --tag-text-color: #fff;
+    --tag-border-color: none;
+    --tag-remove-btn-color: #fff;
+    --tag-remove-btn-bg--hover: none;
+}
+
+/*
+ * APPLICATION
+ */ 
+
+.flex0 {
+    flex: 0;
+}
+
+.token-action-hud-core-app {
+    height: 100%;
+}
+
+.token-action-hud-core-app .standard-form {
+    height: 100%;
+}
+
+.token-action-hud-core-app.application .flexrow {
+    display: flex;
+    flex: 1;
+    gap: 0.5rem;
+}
+
+.token-action-hud-core-app nav.sheet-tabs {
+    margin: 0;
+}
+
+.token-action-hud-core-app.application h2,
+.token-action-hud-core-app.application h3 {
+    margin: 0;
+    padding-bottom: 0.25rem;
+}
+
+.token-action-hud-core-app.application h2 {
+    font-family: var(--font-h3);
+    font-size: 1.5rem;
+}
+
+.token-action-hud-core-app.application h3 {
+    font-size: 1.2rem;
+}
+
+.token-action-hud-core-app .form-group > label {
+    line-height: 1.2rem;
+}
+
 /*
  * DIALOGS
  */
 
  .tagify.tah-dialog-tagify {
     align-content: start;
-    background: rgba(0, 0, 0, 0.05);
     border: 1px solid var(--color-border-light-tertiary);
     border-radius: 3px;
     display: inline-flex;
-    font-family: inherit;
-    font-size: var(--font-size-12);
     gap: 5px;
-    height: 200px;
+    height: 155px;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 5px;
@@ -24,36 +75,26 @@
     width: 100%;
 }
 
-.tagify.tah-dialog-tagify:hover {
-    border: 1px solid var(--color-border-light-tertiary);
-}
-
 .tah-dialog-tagify .tagify__tag {
-    font-size: var(--font-size-12);
     margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-12);
+    border-radius: 4px;
 }
 
-.tah-dialog-tagify .tagify__tag>div::before {
-    background-color: rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--color-border-light-tertiary);
-    box-shadow: none;
+.tah-dialog-tagify .tagify__tag:hover {
+    cursor: grab;
 }
 
-.tah-dialog-tagify .tagify__tag:focus div::before,.tagify__tag:hover:not([readonly]) div::before {
+.tah-dialog-tagify .tagify__tag:focus:not([readonly]) div::before,
+.tah-dialog-tagify .tagify__tag:hover:not([readonly]) div::before {
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    box-shadow: 0 0 5px var(--color-shadow-primary);
-}
-
-.tah-dialog-tagify .tagify__tag__removeBtn:hover+div::before {
-    box-shadow: 0 0 5px var(--color-shadow-primary);
-}
-
-.tah-dialog-tagify .tagify__input {
-    font-size: var(--font-size-12);
-    margin: 0;
+    border: 1px solid transparent;
+    box-shadow: 0px 0px 4px var(--color-shadow-primary) !important; 
 }
 
 .tah-dialog-tagify .tagify__tag .tagify__tag__removeBtn:focus + div span,
@@ -61,14 +102,14 @@
     opacity: 100%;
 }
 
-.tah-dialog-tagify .tagify__tag__removeBtn:focus + div::before,
-.tah-dialog-tagify .tagify__tag__removeBtn:hover + div::before {
-    border: 1px solid var(--color-shadow-primary);
-    box-shadow: 0 0 5px var(--color-shadow-primary) !important;
+.tah-dialog-tagify .tagify__tag__removeBtn + div::before {
+    border: 1px solid var(--color-border-dark-3);
+    box-shadow: none !important;
 }
 
-.tah-dialog-tagify .tagify__tag__removeBtn:hover {
-    background: var(--color-border-highlight-alt);
+.tah-dialog-tagify .tagify__tag__removeBtn:focus::after,
+.tah-dialog-tagify .tagify__tag__removeBtn:hover::after{
+    text-shadow: 0 0 3px var(--color-shadow-primary);
 }
 
 .tah-dialog-light-button {
@@ -99,7 +140,7 @@
     border-radius: 3px;
     display: flex;
     flex-wrap: wrap;
-    height: 200px;
+    height: 155px;
     font-size: var(--font-size-12);
     gap: 5px;
     padding: 5px;
@@ -107,24 +148,21 @@
 }
 
 .tah-dialog-tags-dropdown .tagify__dropdown__item {
-    border: 1px solid var(--color-border-light-tertiary);
     display: inline-block;
     vertical-align: middle;
-    border-radius: 3px;
+    border: 1px solid var(--color-border-dark-3);
+    border-radius: 4px;
     padding: 0.3em 0.5em;
-    background: rgba(0,0,0, 0.05);
+    background: none;
     margin: 0;
     font-size: var(--font-size-12);
-    color: black;
+    color: white;
     transition: 0s;
 }
 
-.tah-dialog-tags-dropdown .tagify__dropdown__item--active {
-    color: black;
-}
-
 .tah-dialog-tags-dropdown .tagify__dropdown__item:hover {
-    box-shadow: 0 0 5px var(--color-shadow-primary);
+    border: 1px solid transparent;
+    box-shadow: 0px 0px 4px var(--color-shadow-primary); 
 }
 
 .tah-dialog-tags-dropdown .tagify__dropdown__item--hidden {
@@ -250,4 +288,8 @@
 .tah-tooltip .tah-property:last-child {
     border-right: none;
     padding-right: 0;
+}
+
+.tah-icon > i {
+    font-size: 10px;
 }

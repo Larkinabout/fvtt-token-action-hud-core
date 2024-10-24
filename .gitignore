@@ -1,4 +1,12 @@
 .idea/
 dist/
 node_modules/*
+styles/tah-custom.css
+styles/tah-docked-left.css
+styles/tah-docked-right.css
+styles/tah-foundry-vtt-dark-compact.css
+styles/tah-foundry-vtt-dark.css
+styles/tah-foundry-vtt-light.css
+styles/tah-high-contrast.css
+styles/tah-pathfinder.css
 

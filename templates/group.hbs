@@ -1,31 +1,33 @@
-
-<div class="tah-tab-group{{~#if class}} {{class}}{{~/if~}}" id="tah-group-{{nestId}}" data-nest-id="{{nestId}}" data-level="{{level}}" data-name="{{name}}" data-type="custom">
-    <button class="tah-group-button" value="{{id}}">
-        {{~#if settings.image~}}<img class="tah-button-image" src="{{settings.image}}"{{~#if tooltip}} data-tooltip="{{tooltip}}" data-tooltip-class="tah-tooltip"{{~/if~}}>{{~/if~}}
+<div id="tah-group-{{nestId}}" class="tah-tab-group{{~#if class}} {{class}}{{~/if~}}" 
+data-part="group" data-group-type="tab" data-nest-id="{{nestId}}" data-level="{{level}}" data-name="{{name}}" data-type="custom">
+    <button class="tah-group-button tah-button-box" value="{{id}}" data-part="groupButton" data-action="clickGroup">
+        {{~#if settings.image~}}
+        <img class="tah-button-image" src="{{settings.image}}"{{~#if tooltip}} data-tooltip="{{tooltip}}" data-tooltip-class="tah-tooltip"{{~/if~}}>
+        {{~/if~}}
         <span class="tah-button-content">
             {{~#if icon1~}}<div class="tah-icon">{{{icon1}}}</div>{{~/if~}}
             {{~#if icon2~}}<div class="tah-icon">{{{icon2}}}</div>{{~/if~}}
             {{~#if icon3~}}<div class="tah-icon">{{{icon3}}}</div>{{~/if~}}
             {{~#if settings.showTitle~}}<div class="tah-button-text">{{tokenActionHudCoreCap name}}</div>{{~/if~}}
-            {{~#if info1.text~}}<div class="tah-info1{{~#if info1.class}} {{info1.class}}{{~/if~}}" data-tooltip="{{~#if info1.title}}{{info1.title}}{{~else~}}{{info1.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info1.text}}</div>{{~/if~}}
-            {{~#if info2.text~}}<div class="tah-info2{{~#if info2.class}} {{info2.class}}{{~/if~}}" data-tooltip="{{~#if info2.title}}{{info2.title}}{{~else~}}{{info2.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info2.text}}</div>{{~/if~}}
-            {{~#if info3.text~}}<div class="tah-info3{{~#if info3.class}} {{info3.class}}{{~/if~}}" data-tooltip="{{~#if info3.title}}{{info3.title}}{{~else~}}{{info3.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info3.text}}</div>{{~/if~}}
+            {{~#if info1.text~}}<div class="tah-info tah-info1{{~#if info1.class}} {{info1.class}}{{~/if~}}" data-tooltip="{{~#if info1.title}}{{info1.title}}{{~else~}}{{info1.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info1.text}}</div>{{~/if~}}
+            {{~#if info2.text~}}<div class="tah-info tah-info2{{~#if info2.class}} {{info2.class}}{{~/if~}}" data-tooltip="{{~#if info2.title}}{{info2.title}}{{~else~}}{{info2.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info2.text}}</div>{{~/if~}}
+            {{~#if info3.text~}}<div class="tah-info tah-info3{{~#if info3.class}} {{info3.class}}{{~/if~}}" data-tooltip="{{~#if info3.title}}{{info3.title}}{{~else~}}{{info3.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info3.text}}</div>{{~/if~}}
         </span>
-        <i class="fa fa-pen-to-square" aria-hidden="true"></i>
+        <i class="tah-edit-group-icon fa fa-pen-to-square" aria-hidden="true"></i>
     </button>
-    <div class="tah-groups-container">
-        <div class="tah-groups">
+    <div class="tah-subgroups-container" data-part="subgroupsContainer">
+        <div class="tah-subgroups" data-part="subgroups">
             {{~#if (tokenActionHudCoreTrue groups.lists.length)~}}
-            <div class="tah-list-groups">
+            <div class="tah-list-subgroups" data-part="listSubgroups">
                 {{#each groups.lists}}
-                {{>"modules/token-action-hud-core/templates/list-group.hbs" categoryId=../id}}
+                {{>"modules/token-action-hud-core/templates/list-subgroup.hbs" categoryId=../id}}
                 {{/each}}
             </div>
             {{~/if~}}
             {{~#if (tokenActionHudCoreTrue groups.tabs.length)~}}
-            <div class="tah-tab-groups">
+            <div class="tah-tab-subgroups" data-part="tabSubgroups">
                 {{#each groups.tabs}}
-                {{>"modules/token-action-hud-core/templates/tab-group.hbs" categoryId=../id}}
+                {{>"modules/token-action-hud-core/templates/tab-subgroup.hbs" categoryId=../id}}
                 {{/each}}
             </div>
             {{~/if~}}

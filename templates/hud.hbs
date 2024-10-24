@@ -1,34 +1,34 @@
 
-<div id="{{id}}" class="{{style}}" style="top: {{top}}; left: {{left}}; transform: scale({{scale}}); transform-origin: top left;">
-    {{~#if hud.actorId~}}
-    <div id="tah-collapse-expand">
-        <button id="tah-collapse-hud" data-tooltip="{{localize "tokenActionHud.collapseHud"}}">
-            <i class="fas fa-caret-left"></i>
-        </button>
-        <button id="tah-expand-hud" class="tah-hidden" data-tooltip="{{localize "tokenActionHud.expandHud"}}">
-            <i class="fas fa-caret-right"></i>
-        </button>
-    </div>
-    <div id="tah-groups">
-        {{~#if hud.title~}}
-        <div id="tah-character-name">{{hud.title}}</div>
-        {{~/if~}}
-        {{#each hud.groups}}
-        {{>"modules/token-action-hud-core/templates/group.hbs" background=../background}}
-        {{/each}}
-    </div>
-    {{#unless hovering}}
-    <div id="tah-buttons" data-tooltip="{{localize "tokenActionHud.unlockHud"}}">
-        <button id="tah-unlock">
-            <i class="fa fa-lock"></i>
-        </button>
-        <button id="tah-lock" class="tah-hidden" data-tooltip="{{localize "tokenActionHud.lockHud"}}">
-            <i class="fa fa-lock-open"></i>
-        </button>
-        <button id="tah-edit-hud" class="tah-hidden" data-tooltip="{{localize "tokenActionHud.editHud"}}">
-            <i class="fa fa-pen-to-square"></i>
-        </button>
-    </div>
-    {{/unless}}
-    {{~/if~}}
+<div id="{{id}}" class="{{style}}" style="transform: scale({{scale}}); transform-origin: top left;">
+{{~#if hud.actorId~}}
+{{~#if hud.name~}}
+<div id="tah-character-name" data-part="characterName">{{hud.name}}</div>
+{{~/if~}}
+<div id="tah-collapse-expand" data-part="collapseExpandContainer">
+    <button id="tah-collapse-hud" class="tah-button-icon" data-part="collapseHudButton" data-action="collapseHud" data-tooltip="{{localize "tokenActionHud.collapseHud"}}">
+        <i class="fas {{collapseIcon}}"></i>
+    </button>
+    <button id="tah-expand-hud" class="tah-button-box tah-hidden" data-part="expandHudButton" data-action="expandHud" data-tooltip="{{localize "tokenActionHud.expandHud"}}">
+        <i class="fas {{expandIcon}}"></i>
+    </button>
+</div>
+<div class="tah-groups" data-part="groups">
+    {{#each hud.groups}}
+    {{>"modules/token-action-hud-core/templates/group.hbs" background=../background}}
+    {{/each}}
+</div>
+{{#unless hovering}}
+<div id="tah-buttons" data-part="buttons">
+    <button id="tah-unlock" class="tah-button-icon" data-part="unlockHudButton" data-action="unlockHud" data-tooltip="{{localize "tokenActionHud.unlockHud"}}">
+        <i class="fa fa-lock"></i>
+    </button>
+    <button id="tah-lock" class="tah-button-icon tah-hidden" data-part="lockHudButton" data-action="lockHud" data-tooltip="{{localize "tokenActionHud.lockHud"}}">
+        <i class="fa fa-lock-open"></i>
+    </button>
+    <button id="tah-edit-hud" class="tah-button-icon tah-hidden" data-part="editHudButton" data-action="editHud" data-tooltip="{{localize "tokenActionHud.editHud"}}">
+        <i class="fa fa-pen-to-square"></i>
+    </button>
+</div>
+{{/unless}}
+{{~/if~}}
 </div>
