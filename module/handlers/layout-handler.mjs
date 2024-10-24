@@ -78,5 +78,11 @@ export class LayoutHandler {
     }
   }
 
-
+  /**
+   * Get the layout
+   * @returns {object} The layout
+   */
+  get layout() {
+    return Object.keys(this.customLayout).length ? this.customLayout : this.defaultLayout;
+  }
 }

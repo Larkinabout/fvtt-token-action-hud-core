@@ -10,7 +10,7 @@ export class HudManager {
     this.dataHandler = dataHandler;
     this.socket = socket;
     this.layoutHandler = new LayoutHandler(systemManager, dataHandler);
-    this.groupHandler = new GroupHandler(this, systemManager, dataHandler);
+    this.groupHandler = new GroupHandler(this, systemManager, dataHandler, this.layoutHandler);
     this.actionHandler = systemManager.getActionHandlerCore(this, this.dataHandler, this.groupHandler);
     this.rollHandler = systemManager.getRollHandlerCore(this);
     this.characterHandler = new CharacterHandler(this);
@@ -76,10 +76,8 @@ export class HudManager {
 
     this.softResetHud();
 
-    await Promise.all([
-      this.layoutHandler.init(),
-      this.groupHandler.init()
-    ]);
+    await this.layoutHandler.init();
+    await this.groupHandler.init();
 
     if (!this.dataHandler.canGetData && !this.isGmInactiveUserNotified) {
       Logger.info("Cannot retrieve HUD layout without GM present", true);

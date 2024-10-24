@@ -6,10 +6,11 @@ import { getTooltip } from "../handlers/tooltip-handler.mjs";
  * Handler for the HUD groups.
  */
 export class GroupHandler {
-  constructor(hudManager, systemManager, dataHandler) {
+  constructor(hudManager, systemManager, dataHandler, layoutHandler) {
     this.hudManager = hudManager;
     this.systemManager = systemManager;
     this.dataHandler = dataHandler;
+    this.layoutHandler = layoutHandler;
     this.defaultGroups = {};
     this.groups = {};
     this.actorGroups = {};
@@ -118,7 +119,7 @@ export class GroupHandler {
    */
   async #setSavedUserGroups() {
     const user = game.user;
-    const layout = this.customLayout ?? this.defaultLayout;
+    const layout = this.layoutHandler.layout;
 
     const getUserGroups = data => {
       const userGroups = Object.keys(data).length ? data : layout;
