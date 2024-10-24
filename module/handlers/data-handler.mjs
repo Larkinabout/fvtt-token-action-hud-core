@@ -15,10 +15,10 @@ export class DataHandler {
    * Initialise the data handler
    */
   async init() {
+    await this.#createDirectories();
     await Promise.all([
       this.private = await this.isPrivate(),
-      this.fileMap = await this.getFilePathsAsGm(),
-      await this.#createDirectories()
+      this.fileMap = await this.getFilePathsAsGm()
     ]);
   }
 
