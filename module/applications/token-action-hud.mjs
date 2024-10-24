@@ -1284,7 +1284,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {boolean}    Whether the given actor is the selected actor
    */
   isSelectedActor(actor) {
-    return !actor?.id || actor?.id === this.actor?.id;
+    return !actor?.id || actor?.id === this.hudManager.actor?.id;
   }
 
   /* -------------------------------------------- */
