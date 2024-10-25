@@ -1037,11 +1037,11 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   async resetActorData() {
     Logger.debug("Resetting actor data...");
 
-    await this.dataHandler.saveDataAsGm("actor", this.actor.id, {});
+    await this.dataHandler.saveDataAsGm("actor", this.hudManager.actor.id, {});
 
     Logger.debug("Actor data reset");
 
-    this.hudManager.actionHandler.hardResetHud();
+    this.hudManager.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetActorData" } };
     this.update(trigger);
   }
@@ -1061,7 +1061,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     Logger.debug("All actor data reset");
-    this.hudManager.actionHandler.hardResetHud();
+    this.hudManager.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetAllActorData" } };
     this.update(trigger);
   }
@@ -1076,7 +1076,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     Logger.debug("Resetting user data...");
     await this.dataHandler.saveDataAsGm("user", game.userId, {});
     Logger.debug("User data reset");
-    this.hudManager.actionHandler.hardResetHud();
+    this.hudManager.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetUserData" } };
     this.update(trigger);
   }
@@ -1093,7 +1093,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       await this.dataHandler.saveDataAsGm("user", user.id, {});
     }
     Logger.debug("All user data reset");
-    this.hudManager.actionHandler.hardResetHud();
+    this.hudManager.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetAllUserData" } };
     this.update(trigger);
   }
@@ -1109,10 +1109,10 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     Logger.debug("User data reset");
 
     Logger.debug("Resetting actor data...");
-    await this.dataHandler.saveDataAsGm("actor", this.actor.id, {});
+    await this.dataHandler.saveDataAsGm("actor", this.hudManager.actor.id, {});
     Logger.debug("Actor data reset");
 
-    this.hudManager.actionHandler.hardResetHud();
+    this.hudManager.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetUserAndActorData" } };
     this.update(trigger);
   }

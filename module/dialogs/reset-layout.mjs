@@ -31,13 +31,13 @@ async function resetLayout() {
 
   const customLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=customLayout]");
   if (customLayoutElement) {
-    await game.tokenActionHud.updateSettings("customLayout", customLayoutElement?.value ?? "");
+    await game.tokenActionHud.updateCachedSettings("customLayout", customLayoutElement?.value ?? "");
     await Utils.setSetting("customLayout", customLayoutElement?.value ?? "");
   }
 
   const userCustomLayoutElement = document.querySelector("#token-action-hud-core-settings input[name=userCustomLayout]");
   if (userCustomLayoutElement) {
-    await game.tokenActionHud.updateSettings("userCustomLayout", userCustomLayoutElement?.value ?? "");
+    await game.tokenActionHud.updateCachedSettings("userCustomLayout", userCustomLayoutElement?.value ?? "");
     await Utils.setUserFlag("userCustomLayout", userCustomLayoutElement?.value ?? "");
   }
 

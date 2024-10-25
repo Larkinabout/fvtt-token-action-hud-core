@@ -7,8 +7,8 @@ export class LayoutHandler {
   constructor(systemManager, dataHandler) {
     this.systemManager = systemManager;
     this.dataHandler = dataHandler;
-    this.defaultLayout = {};
-    this.customLayout = {};
+    this.defaultLayout = null;
+    this.customLayout = null;
   }
 
   /**
@@ -27,7 +27,7 @@ export class LayoutHandler {
    * Soft reset variables
    */
   softReset() {
-    this.defaultLayout = {};
+    this.defaultLayout = null;
   }
 
   /* -------------------------------------------- */
@@ -47,9 +47,9 @@ export class LayoutHandler {
    * @private
    */
   async #setDefaultLayout() {
-    if (Object.keys(this.defaultLayout).length) return;
+    if (this.defaultLayout) return;
     const defaultLayout = this.systemManager.defaults?.layout;
-    if (!defaultLayout) return;
+    if (!defaultLayout) { this.defaultLayout = null; return; }
     this.defaultLayout = await Utils.getNestedGroups(defaultLayout);
   }
 
@@ -83,6 +83,6 @@ export class LayoutHandler {
    * @returns {object} The layout
    */
   get layout() {
-    return Object.keys(this.customLayout).length ? this.customLayout : this.defaultLayout;
+    return this.customLayout ?? this.defaultLayout;
   }
 }

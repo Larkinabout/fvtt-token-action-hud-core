@@ -29,7 +29,7 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     position: {
       width: 600,
-      height: "auto"
+      height: 800
     },
     tag: "form",
     window: {
@@ -95,7 +95,7 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static exportLayout() {
     if (!game.tokenActionHud) return;
-    game.tokenActionHud.actionHandler.exportLayout();
+    game.tokenActionHud.hudManager.layoutHandler.exportLayout();
   }
 
   static async submit(event, form, formData) {
@@ -108,7 +108,7 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
           await Utils.setUserFlag(key, value); break;
       }
 
-      await game.tokenActionHud.updateSettings(key, value);
+      await game.tokenActionHud.updateCachedSettings(key, value);
     }
 
     game.tokenActionHud.update();
