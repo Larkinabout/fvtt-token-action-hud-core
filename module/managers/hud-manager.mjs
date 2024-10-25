@@ -278,7 +278,7 @@ export class HudManager {
   get isHudEnabled() {
     if (!Utils.getSetting("enable")) return false;
     if (game.user.isGM) return true;
-    return Utils.checkAllow(game.user.role, this.allowSetting);
+    return Utils.checkAllow(game.user.role, Utils.getSetting("allow"));
   }
 
   /* -------------------------------------------- */

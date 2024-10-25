@@ -232,7 +232,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} elements The elements
    */
   #addHoverEvents(elements) {
-    if (!this.clickOpenCategorySetting) {
+    if (!Utils.getSetting("clickOpenCategory")) {
       // When a category button is hovered over...
       elements.tabSubgroupArr.forEach(element => {
         element.addEventListener("touchstart", this.toggleGroup.bind(this), { passive: true });
@@ -500,7 +500,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       } else {
         this.handleGroupClick(event);
       }
-    } else if (this.clickOpenCategorySetting) {
+    } else if (Utils.getSetting("clickOpenCategory")) {
       this.toggleGroup(event);
     }
   }
@@ -858,7 +858,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {string} The direction
    */
   get direction() {
-    if (this.directionSetting === "up" || (this.directionSetting === "auto" && this.topPos > window.innerHeight / 2)) return "up";
+    const direction = Utils.getSetting("direction");
+    if (direction === "up" || (direction === "auto" && this.topPos > window.innerHeight / 2)) return "up";
     return "down";
   }
 
@@ -913,7 +914,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   get isDocked() {
     const dockedStyles = ["dockedLeft", "dockedCenterLeft", "dockedCenterRight", "dockedRight"];
-    return dockedStyles.includes(this.styleSetting);
+    return dockedStyles.includes(Utils.getSetting("style"));
   }
 
   /* -------------------------------------------- */
@@ -937,7 +938,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {boolean} Whether the HUD is draggable
    */
   get isDraggable() {
-    return ((this.dragSetting === "always") || (this.dragSetting === "whenUnlocked" && this.isUnlocked));
+    const drag = Utils.getSetting("drag");
+    return ((drag === "always") || (drag === "whenUnlocked" && this.isUnlocked));
   }
 
   /* -------------------------------------------- */
@@ -949,7 +951,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   get scale() {
     if (this.isDocked) return 1;
-    const scale = parseFloat(this.scaleSetting) || 1;
+    const scale = parseFloat(Utils.getSetting("scale")) || 1;
     return Math.min(Math.max(scale, 0.5), 2);
   }
 
@@ -1256,7 +1258,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   isValidTokenChange(token, data = null) {
     if (data.flags) return false;
-    return this.#isRelevantToken(token) || (this.alwaysShowHudSetting && token.actorId === game.user.character?.id);
+    return this.#isRelevantToken(token) || (Utils.getSetting("alwaysShowHud") && token.actorId === game.user.character?.id);
   }
 
   /* -------------------------------------------- */

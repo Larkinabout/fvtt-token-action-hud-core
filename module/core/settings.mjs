@@ -420,12 +420,7 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
 
   registerCustomStyleSettings();
 
-  if (systemManager.registerSettings.toString().slice(-2) !== "{}") {
-    systemManager.registerSettings(onChangeFunction);
-  } else {
-    globalThis.logger.warn("Token Action HUD | SystemHandler.doRegisterSettings is deprecated. Use SystemHandler.registerSettings");
-    systemManager.doRegisterSettings(onChangeFunction);
-  }
+  systemManager.registerSettings(onChangeFunction);
 
   Logger.debug("Available roll handlers", { rollHandlers });
 };

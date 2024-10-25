@@ -133,10 +133,10 @@ export class DataHandler {
 
   /**
    * Get file paths using socket
-   * @returns {Array}             The file paths
+   * @returns {Array} The file paths
    */
   static async getFilePathsWithSocket() {
-    return game.tokenActionHud.dataHandler.getFilePaths();
+    return await game.tokenActionHud?.dataHandler?.getFilePaths() ?? [];
   }
 
   /* -------------------------------------------- */
