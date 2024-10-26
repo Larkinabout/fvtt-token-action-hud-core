@@ -86,16 +86,16 @@ export class MigrationManager {
     try {
       Logger.info("Migrating files to persistent storage...", true);
       for (const user of game.users) {
-        const data = await dataHandler.getDataMigrate("user", user.id);
+        const data = await this.dataHandler.getDataMigrate("user", user.id);
         if (data) {
-          await dataHandler.saveData("user", user.id, data);
+          await this.dataHandler.saveData("user", user.id, data);
         }
       }
 
       for (const actor of game.actors) {
-        const data = await dataHandler.getDataMigrate("actor", actor.id);
+        const data = await this.dataHandler.getDataMigrate("actor", actor.id);
         if (data) {
-          await dataHandler.saveData("actor", actor.id, data);
+          await this.dataHandler.saveData("actor", actor.id, data);
         }
       }
       Logger.info("Successfully migrated files to persistent storage", true);
