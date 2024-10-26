@@ -26,7 +26,7 @@ Hooks.on("renderSceneNavigation", (_, html) => addContextMenuListener(html, "li.
  */
 async function registerCoreModule(systemModule) {
   // Exit if core module version is not compatible with the system module
-  if (!Utils.isSystemModuleCompatible(systemModule.api.requiredCoreModuleVersion)) return;
+  if (!Utils.isSystemModuleCompatible(systemModule.api?.requiredCoreModuleVersion)) return;
 
   // Exit if socketlit module is not installed or enabled
   if (!isSocketlibActive()) return;

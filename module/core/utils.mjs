@@ -605,6 +605,8 @@ export class Utils {
    * @returns {boolean}                        Whether the system module is compatible with the core module version
    */
   static isSystemModuleCompatible(requiredCoreModuleVersion) {
+    if (!requiredCoreModuleVersion) return true;
+
     // Get core module version in parts
     const requiredCoreModuleVersionParts = this.getModuleVersionParts(requiredCoreModuleVersion);
     const coreModuleVersionParts = this.getModuleVersionParts(game.modules.get(MODULE.ID).version);
