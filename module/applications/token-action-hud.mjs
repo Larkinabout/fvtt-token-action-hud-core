@@ -1189,7 +1189,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     // Await does have an effect
     const initialised = await this.hudManager.init(trigger);
     if (!initialised) {
-      this.#abortUpdate("HUD update aborted as no character(s) found or HUD is disabled");
+      this.#abortUpdate();
       return;
     }
 
@@ -1210,12 +1210,11 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /**
    * Abort the HUD update with a debug message
-   * @param {string} message The debug message to log
    * @private
    */
-  #abortUpdate(message) {
+  #abortUpdate() {
     this.#close();
-    Logger.debug(`HUD update aborted: ${message}`);
+    Logger.debug("HUD update aborted as no character(s) found or HUD is disabled");
     this.isUpdating = false;
   }
 
@@ -1274,7 +1273,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     return (
       controlledTokens?.some(controlledToken => controlledToken.id === token.id)
         || (!controlledTokens?.length
-          && canvas?.tokens?.placeables?.some(token => token.id === this.hudManager.hud?.tokenId))
+          && canvas?.tokens?.placeables?.some(token => token.id === this.hudManager.token?.id))
     );
   }
 
@@ -1285,8 +1284,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} actor The actor
    * @returns {boolean}    Whether the given actor is the selected actor
    */
-  isSelectedActor(actor) {
-    return !actor?.id || actor?.id === this.hudManager.actor?.id;
+  isControlledActor(actor) {
+    return actor?.id === this.hudManager.actor?.id;
   }
 
   /* -------------------------------------------- */
@@ -1298,19 +1297,17 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {boolean}    Whether the actor or item update is valid for a HUD update
    */
   isValidActorOrItemUpdate(actor, data) {
-    if (!this.isSelectedActor(actor)) return false;
-
     if (!actor) {
-      Logger.debug("No actor, update hud", { data });
+      Logger.debug("No actor; updating HUD", { data });
       return true;
     }
 
-    if (this.hudManager.hud && actor.id === this.hud.actorId) {
-      Logger.debug("Same actor, update hud", { actor, data });
+    if (this.isControlledActor(actor)) {
+      Logger.debug("Same actor; updating HUD", { actor, data });
       return true;
+    } else {
+      Logger.debug("Different actor; skipping HUD update", { actor, data });
+      return false;
     }
-
-    Logger.debug("Different actor, do not update hud", { actor, data });
-    return false;
   }
 }

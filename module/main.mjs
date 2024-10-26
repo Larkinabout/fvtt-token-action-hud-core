@@ -132,10 +132,10 @@ function validateHookData(hookData, hookName) {
       return game.tokenActionHud.isValidActorOrItemUpdate(hookData[0], hookData[1]);
     case "createActiveEffect":
     case "deleteActiveEffect":
-      return game.tokenActionHud.isSelectedActor(hookData[0]?.parent);
+      return game.tokenActionHud.isControlledActor(hookData[0]?.parent);
     case "createCombatant":
     case "updateCombatant":
-      return game.tokenActionHud.isSelectedActor(hookData[0]?.actor);
+      return game.tokenActionHud.isControlledActor(hookData[0]?.actor);
     case "deleteCompendium":
     case "updateCompendium":
       return validateCompendium(hookData.source?.metadata?.id);
