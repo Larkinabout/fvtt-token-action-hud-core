@@ -690,6 +690,9 @@ export class GroupHandler {
         }
       } else {
         const group = this.createGroup({ ...groupData, nestId });
+
+        if (!parentGroup.groups) parentGroup.groups = { lists: [], tabs: [] };
+
         if (group.settings.style === "tab") {
           parentGroup.groups.tabs.push(group);
         } else {
