@@ -615,8 +615,10 @@ export class Utils {
       || coreModuleVersionParts.minor !== requiredCoreModuleVersionParts.minor
       || (requiredCoreModuleVersionParts.patch && coreModuleVersionParts.patch !== requiredCoreModuleVersionParts.patch)
     ) {
+      const requiredVersion = `${requiredCoreModuleVersionParts.major}.${requiredCoreModuleVersionParts.minor}.${requiredCoreModuleVersionParts.patch ?? "X"}`;
+      const installedVersion = game.modules.get(MODULE.ID).version;
       ui.notifications.error(
-        `The installed Token Action HUD system module requires Token Action HUD Core module version ${requiredCoreModuleVersion}. Install the required version to continue using Token Action HUD.`
+        `The installed Token Action HUD system module requires Token Action HUD Core module version ${requiredVersion}, but version ${installedVersion} is installed. Install Token Action HUD Core module version ${requiredVersion} to continue using Token Action HUD. Earlier versions of Token Action HUD Core are available on the module's package page on the Foundry VTT site.`
       );
       return false;
     }
