@@ -142,6 +142,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       Logger.debug("Updating settings...");
     }
 
+    if (!SETTING[key]) return;
+
     const { classes, variable } = SETTING[key];
     if (variable) {
       if (classes.includes("TokenActionHud")) this[variable] = value;

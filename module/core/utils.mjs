@@ -679,6 +679,7 @@ export class Utils {
      * @returns {object}      The group
      */
     async function findGroup(groups, parts) {
+      if (!groups) return null;
       groups = (Array.isArray(groups)) ? groups : Object.values(groups);
       for (const group of groups) {
         if (group.id === parts[0]) {
@@ -687,6 +688,7 @@ export class Utils {
             return;
           }
           parts.shift();
+          if (!group.groups) continue;
           for (const groupStyle of Object.values(group.groups)) {
             if (groupStyle.length === 0) continue;
             const foundGroup = await findGroup(groupStyle, parts);

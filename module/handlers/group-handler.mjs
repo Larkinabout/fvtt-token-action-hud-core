@@ -193,7 +193,10 @@ export class GroupHandler {
           const parentGroup = await Utils.getGroupByNestId(hud.groups, { nestId: parentNestId });
 
           if (parentGroup && actorGroup.type === "system-derived") {
+            if (!parentGroup.groups) parentGroup.groups = { lists: [], tabs: [] };
+
             const group = this.createGroup(actorGroup, true);
+
             if (actorGroup.actions?.length) {
               group.actions = actorGroup.actions;
             }
