@@ -339,9 +339,23 @@
         flex-direction: column;
         display: flex;
         gap: var(--tah-gap);
+
+        .tah-list-image {
+          border: var(--tah-button-border);
+          border-radius: var(--tah-border-radius);
+          box-shadow: var(--tah-button-box-shadow);
+          height: var(--tah-button-height);
+          margin-right: 5px;
+          min-width: var(--tah-button-min-width);
+          width: var(--tah-button-min-width);
+        }
   
         .tah-list-subgroups {
           background: none;
+        }
+
+        .tah-list-subgroup[data-has-image="true"] {
+          flex-direction: row;
         }
       }
   
