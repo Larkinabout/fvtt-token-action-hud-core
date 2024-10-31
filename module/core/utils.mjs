@@ -22,7 +22,7 @@ export class Logger {
    * @param {boolean} notify Whether to send a notification
    */
   static error(message, notify = false) {
-    if (notify) ui.notifications.error(`Token Action HUD | ${message}`);
+    if (notify) ui.notifications.error(`Token Action HUD | ${message}`, { permanent: true });
     else console.error(`Token Action HUD Error | ${message}`);
   }
 
@@ -618,7 +618,8 @@ export class Utils {
       const requiredVersion = `${requiredCoreModuleVersionParts.major}.${requiredCoreModuleVersionParts.minor}.${requiredCoreModuleVersionParts.patch ?? "X"}`;
       const installedVersion = game.modules.get(MODULE.ID).version;
       ui.notifications.error(
-        `The installed Token Action HUD system module requires Token Action HUD Core module version ${requiredVersion}, but version ${installedVersion} is installed. Install Token Action HUD Core module version ${requiredVersion} to continue using Token Action HUD. Earlier versions of Token Action HUD Core are available on the module's package page on the Foundry VTT site.`
+        `The installed Token Action HUD system module requires Token Action HUD Core module version ${requiredVersion}, but version ${installedVersion} is installed. Install Token Action HUD Core module version ${requiredVersion} to continue using Token Action HUD. Earlier versions of Token Action HUD Core are available on the module's package page on the Foundry VTT site.`,
+        { permanent: true }
       );
       return false;
     }
