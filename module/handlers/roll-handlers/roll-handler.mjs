@@ -24,12 +24,23 @@ export class RollHandler {
   }
 
   /**
+   * Add roll handler extender
+   * @public
+   * @param {object} rollHandlerExtender The roll handler extender
+   */
+  addRollHandlerExtender(rollHandlerExtender) {
+      Logger.debug('Adding roll handler extender...', { rollHandlerExtender });
+      this.rollHandlerExtenders.push(rollHandlerExtender);
+  }
+
+  /**
    * Handle action events
    * @public
    * @param {object} event The event
    * @param {object} action The action
+   * @param {class} actionHandler The ActionHandler instance
    */
-  async handleActionClickCore(event, action) {
+  async handleActionClickCore(event, action, actionHandler) {
     try {
       Logger.debug("Handling action click event", { event });
 
@@ -46,18 +57,32 @@ export class RollHandler {
       // Get the value of the associated button
       const buttonValue = this.#getButtonValue(event);
 
-      // Check pre-handlers
-      let handled = false;
-      for (const handler of this.preRollHandlers) {
-        if (handled) break;
+      // Check pre-handlers in extenders
+      for (let handler of this.rollHandlerExtenders) {
         handler.action = this.action;
-        handled = handler.prehandleActionEvent(event, buttonValue, this.actionHandler);
+          if (handler.prehandleActionEvent(event, buttonValue, actionHandler)) {
+              return;
+          }
       }
 
-      // If the action was not handled by the pre-handlers, call the default method
-      if (!handled) {
-        this.handleActionClick(event, buttonValue);
+      // Check pre-handlers
+      for (let handler of this.preRollHandlers) {
+        handler.action = this.action;
+          if (handler.prehandleActionEvent(event, buttonValue, actionHandler)) {
+              return;
+          }
       }
+
+      // Check handlers in extenders
+      for (let handler of this.rollHandlerExtenders) {
+        handler.action = this.action;
+          if (handler.handleActionClick(event, buttonValue, actionHandler)) {
+              return;
+          }
+      }
+
+      // If the action was not yet handled, call the default method
+      this.handleActionClick(event, buttonValue);
     } catch(error) {
       Logger.error("Error handling action click event", { error, event, action });
     }

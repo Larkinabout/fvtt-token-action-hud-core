@@ -137,7 +137,7 @@ export class HudManager {
           this.rollHandler.handleGroupClickCore(event, group);
           break;
         case "clickAction":
-          this.rollHandler.handleActionClickCore(event, action);
+          this.rollHandler.handleActionClickCore(event, action, this.actionHandler);
           break;
         case "hoverAction":
           this.rollHandler.handleActionHoverCore(event, action);
