@@ -205,11 +205,11 @@ export const GROUP_TYPE = {
  * HUD
  */
 export const HUD = {
-  defaultHeight: 200,
-  defaultWidth: 20,
-  defaultLeftPos: 150,
-  defaultTopPos: 80,
-  defaultScale: 1
+  DEFAULT_HEIGHT: 200,
+  DEFAULT_WIDTH: 20,
+  DEFAULT_LEFT_POS: 150,
+  DEFAULT_TOP_POS: 80,
+  DEFAULT_SCALE: 1
 };
 
 /* -------------------------------------------- */

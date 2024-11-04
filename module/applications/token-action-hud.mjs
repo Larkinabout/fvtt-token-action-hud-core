@@ -53,11 +53,11 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     background: "none",
     id: "token-action-hud-app",
     position: {
-      width: HUD.defaultWidth,
-      height: HUD.defaultHeight,
-      left: HUD.defaultLeftPos,
-      top: HUD.defaultTopPos,
-      scale: HUD.defaultScale
+      width: HUD.DEFAULT_WIDTH,
+      height: HUD.DEFAULT_HEIGHT,
+      left: HUD.DEFAULT_LEFT_POS,
+      top: HUD.DEFAULT_TOP_POS,
+      scale: HUD.DEFAULT_SCALE
     },
     window: {
       frame: false,
@@ -825,21 +825,22 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @private
    */
   #setPositionFromFlag() {
-    if (!this.hudPosition) return;
-
-    const defaultLeftPos = this.defaultLeftPos;
-    const defaultTopPos = this.defaultTopPos;
+    if (!this.hudPosition) {
+      this.element.style.top = `${HUD.DEFAULT_TOP_POS}px`;
+      this.element.style.left = `${HUD.DEFAULT_LEFT_POS}px`;
+      return;
+    }
 
     return new Promise(resolve => {
       const check = () => {
         if (this.element) {
           this.element.style.bottom = null;
           this.topPos = this.hudPosition.top < 5 || this.hudPosition.top > window.innerHeight + 5
-            ? defaultTopPos
-            : this.hudPosition.top;
+            ? HUD.DEFAULT_TOP_POS
+            : this.hudPosition.top ?? HUD.DEFAULT_TOP_POS;
           this.leftPos = this.hudPosition.left < 5 || this.hudPosition.left > window.innerWidth + 5
-            ? defaultLeftPos
-            : this.hudPosition.left;
+            ? HUD.DEFAULT_LEFT_POS
+            : this.hudPosition.left ?? HUD.DEFAULT_LEFT_POS;
           this.element.style.top = `${this.topPos}px`;
           this.element.style.left = `${this.leftPos}px`;
           resolve();
@@ -963,7 +964,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   async resetPosition() {
     Logger.debug("Resetting position...");
-    this.hudPosition = { top: this.defaultTopPos, left: this.defaultLeftPos };
+    this.hudPosition = { top: HUD.DEFAULT_TOP_POS, left: HUD.DEFAULT_LEFT_POS };
   }
 
   /* -------------------------------------------- */
@@ -1196,7 +1197,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     this.rendering = true;
-    this.render(true);
+    this.render({ force: true, position: {} });
 
     if (!ui.windows[this.appId]) {
       ui.windows[this.appId] = this;

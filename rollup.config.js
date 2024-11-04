@@ -14,7 +14,14 @@ export default [
       file: "dist/token-action-hud-core.min.mjs",
       generatedCode: { constBindings: true },
       plugins: [
-        terser({ keep_classnames: true, keep_fnames: true })
+        terser({
+          compress: {
+            collapse_vars: false,
+            reduce_vars: false
+          },
+          keep_classnames: true,
+          keep_fnames: true
+        })
       ],
       sourcemap: true
     }
