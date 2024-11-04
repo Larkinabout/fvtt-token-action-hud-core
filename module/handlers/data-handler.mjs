@@ -189,7 +189,7 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   static async saveDataWithSocket(type, id, data) {
-    game.tokenActionHud.dataHandler.saveData(type, id, data);
+    return await game.tokenActionHud.dataHandler.saveData(type, id, data);
   }
 
   /* -------------------------------------------- */
@@ -251,9 +251,11 @@ export class DataHandler {
         return;
       }
 
-      return (game.user.hasPermission("FILES_BROWSE"))
+      const data = (game.user.hasPermission("FILES_BROWSE"))
         ? await this.getData(options)
         : await this.socket.executeAsGM("getData", options);
+
+      return data;
     } catch(error) {
       Logger.error(`An error occurred while getting data: ${error.message}`);
       return null;
@@ -263,7 +265,7 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   static async getDataWithSocket(options) {
-    game.tokenActionHud.dataHandler.getData(options);
+    return await game.tokenActionHud.dataHandler.getData(options);
   }
 
   /* -------------------------------------------- */
@@ -294,7 +296,8 @@ export class DataHandler {
 
       // Check if the fetch was successful
       if (response.ok) {
-        return await response.json();
+        const data = await response.json();
+        return data;
       } else {
         return null;
       }
