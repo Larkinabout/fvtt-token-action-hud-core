@@ -26,11 +26,11 @@ export class RollHandler {
   /**
    * Add roll handler extender
    * @public
-   * @param {object} rollHandlerExtender The roll handler extender
+   * @param {object} rollHandlerExtender The RollHandlerExtender instance
    */
   addRollHandlerExtender(rollHandlerExtender) {
-      Logger.debug('Adding roll handler extender...', { rollHandlerExtender });
-      this.rollHandlerExtenders.push(rollHandlerExtender);
+    Logger.debug("Adding roll handler extender...", { rollHandlerExtender });
+    this.rollHandlerExtenders.push(rollHandlerExtender);
   }
 
   /**
@@ -60,25 +60,25 @@ export class RollHandler {
       // Check pre-handlers in extenders
       for (let handler of this.rollHandlerExtenders) {
         handler.action = this.action;
-          if (handler.prehandleActionEvent(event, buttonValue, actionHandler)) {
-              return;
-          }
+        if (handler.prehandleActionEvent(event, buttonValue, actionHandler)) {
+          return;
+        }
       }
 
       // Check pre-handlers
       for (let handler of this.preRollHandlers) {
         handler.action = this.action;
-          if (handler.prehandleActionEvent(event, buttonValue, actionHandler)) {
-              return;
-          }
+        if (handler.prehandleActionEvent(event, buttonValue, actionHandler)) {
+          return;
+        }
       }
 
       // Check handlers in extenders
       for (let handler of this.rollHandlerExtenders) {
         handler.action = this.action;
-          if (handler.handleActionClick(event, buttonValue, actionHandler)) {
-              return;
-          }
+        if (handler.handleActionClick(event, buttonValue, actionHandler)) {
+          return;
+        }
       }
 
       // If the action was not yet handled, call the default method
