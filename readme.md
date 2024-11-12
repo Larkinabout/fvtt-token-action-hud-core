@@ -40,10 +40,12 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD COF1e](https://foundryvtt.com/packages/fvtt-token-action-hud-cof1e)
 - [Token Action HUD for Coriolis](https://foundryvtt.com/packages/token-action-hud-coriolis)
 - [Token Action HUD CypherSystem](https://foundryvtt.com/packages/token-action-hud-cyphersystem)
+- [Token Action HUD DC20 RPG](https://foundryvtt.com/packages/token-action-hud-dc20rpg)
 - [Token Action HUD D&D 5e](https://foundryvtt.com/packages/token-action-hud-dnd5e)
 - [Token Action HUD for Dungeon Crawl Classics](https://foundryvtt.com/packages/token-action-hud-dcc)
 - [Token Action HUD Earthdawn](https://foundryvtt.com/packages/token-action-hud-ed4e)
 - [Token Action HUD Exalted Third Edition](https://foundryvtt.com/packages/token-action-hud-exaltedthird)
+- [Token Action HUD for FFG Star Wars](https://foundryvtt.com/packages/token-action-hud-ffgsw)
 - [Token Action HUD Forbidden Lands](https://foundryvtt.com/packages/token-action-hud-forbidden-lands)
 - [Token Action HUD Ghostbusters](https://foundryvtt.com/packages/token-action-hud-gb)
 - [Token Action HUD Ironsworn](https://foundryvtt.com/packages/token-action-hud-ironsworn)
@@ -62,8 +64,6 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD for Twodsix](https://foundryvtt.com/packages/fvtt-token-action-hud-twodsix)
 - [Token Action HUD WFRP4e](https://foundryvtt.com/packages/token-action-hud-wfrp4e)
 - [Token Action HUD Worlds Without Number](https://foundryvtt.com/packages/token-action-hud-wwn)
-
-For other systems, continue to use the [Token Action HUD Classic](https://foundryvtt.com/packages/token-action-hud).
 
 ## socketlib
 Token Action HUD Core requires the [socketlib](https://foundryvtt.com/packages/socketlib) library module.
