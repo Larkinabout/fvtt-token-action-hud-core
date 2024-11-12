@@ -127,7 +127,8 @@ export const CSS_STYLE = {
     primaryColor: "#dddddd",
     secondaryColor: "#dddddd80",
     tertiaryColor: "#ff6400",
-    isDocked: true
+    isDocked: true,
+    dockPosition: "left"
   },
   dockedCenterRight: {
     class: "tah-style-docked-right",
@@ -139,7 +140,8 @@ export const CSS_STYLE = {
     tertiaryColor: "#ff6400",
     collapseIcon: "fa-caret-right",
     expandIcon: "fa-caret-left",
-    isDocked: true
+    isDocked: true,
+    dockPosition: "center-right"
   },
   dockedRight: {
     class: "tah-style-docked-right",
@@ -151,7 +153,8 @@ export const CSS_STYLE = {
     tertiaryColor: "#ff6400",
     collapseIcon: "fa-caret-right",
     expandIcon: "fa-caret-left",
-    isDocked: true
+    isDocked: true,
+    dockPosition: "right"
   }
 };
 

@@ -792,15 +792,17 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.element.style.left = 0;
 
     const interfaceElement = document.querySelector("#interface");
-    switch (this.styleSetting) {
-      case "dockedRight":
+    const dockPosition = this.systemManager.styles[this.styleSetting]?.dockPosition;
+
+    switch (dockPosition) {
+      case "right":
         interfaceElement.appendChild(this.element);
         break;
-      case "dockedCenterRight":
+      case "center-right":
         const rightUiElement = interfaceElement.querySelector("#ui-right");
         interfaceElement.insertBefore(this.element, rightUiElement);
         break;
-      case "dockedLeft":
+      case "left":
         const leftUiElement = interfaceElement.querySelector("#ui-left");
         interfaceElement.insertBefore(this.element, leftUiElement);
         break;
@@ -916,8 +918,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {boolean} Whether the HUD is docked
    */
   get isDocked() {
-    const dockedStyles = ["dockedLeft", "dockedCenterLeft", "dockedCenterRight", "dockedRight"];
-    return dockedStyles.includes(Utils.getSetting("style"));
+    const style = this.systemManager.styles[this.styleSetting];
+    return style.isDocked || style.dockPosition;
   }
 
   /* -------------------------------------------- */
