@@ -1,6 +1,9 @@
 {{~#if (ne selected false)~}}
 <div class="tah-subgroup tah-list-subgroup" data-nest-id="{{nestId}}" data-part="subgroup" data-has-actions="{{~#if (tokenActionHudCoreTrue hasActions)~}}true{{~else~}}false{{~/if~}}" data-has-image="{{~#if (tokenActionHudCoreTrue settings.image)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
-    {{~#if settings.image~}}<img class="tah-list-image{{~#if (tokenActionHudCoreTrue settings.collapse)}} tah-hidden{{~/if}}" src="{{settings.image}}" {{~#if tooltip~}} data-tooltip="{{tooltip}}" data-tooltip-class="tah-tooltip"{{~/if~}}>{{~/if~}}
+    {{~#if settings.image~}}
+    <img class="tah-list-image{{~#if (tokenActionHudCoreTrue settings.collapse)}} tah-hidden{{~/if}}" src="{{settings.image}}"
+        {{~#if tooltip.content~}} data-tooltip="{{tooltip.content}}" data-tooltip-class="tah-tooltip{{#if tooltip.class}} {{tooltip.class}}{{/if}}"{{#if tooltip.direction}} data-tooltip-direction="{{{tooltip.direction}}}"{{/if}}{{~/if~}}
+    >{{~/if~}}
     <div class="tah-list-subgroup{{~#if class}} {{class}}{{~/if~}}" data-part="listSubgroup">
         <div class="tah-list-subgroup-title{{~#if subtitleClass}} {{subtitleClass}}{{~/if~}}" data-action="clickSubgroup" data-part="listSubgroupTitle">
             {{~#if icon~}}<div class="tah-icon">{{{icon}}}</div>{{~/if~}}

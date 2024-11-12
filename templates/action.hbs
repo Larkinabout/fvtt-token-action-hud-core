@@ -1,7 +1,7 @@
 {{~#if (ne this.selected false)~}}
 <div class="tah-action" data-part="action"{{~#if spellLevel~}} data-spell-lvl="{{spellLevel}}"{{~/if~}}>
     <button class="tah-action-button tah-button-box{{~#if cssClass}} {{cssClass}}{{~/if~}}{{#tokenActionHudCoreActiveText}} activeText{{/tokenActionHudCoreActiveText}}" value="{{encodedValue}}"
-    data-part="actionButton" data-action="clickAction" data-action-id="{{id}}"
+        data-part="actionButton" data-action="clickAction" data-action-id="{{id}}"
         {{~#if tooltip.content~}} data-tooltip="{{tooltip.content}}" data-tooltip-class="tah-tooltip{{#if tooltip.class}} {{tooltip.class}}{{/if}}"{{#if tooltip.direction}} data-tooltip-direction="{{{tooltip.direction}}}"{{/if}}{{~/if~}}>
         {{~#if img~}}
         <div class="tah-button-image-wrapper">
