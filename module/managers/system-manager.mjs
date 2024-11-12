@@ -27,7 +27,7 @@ export class SystemManager {
 
   async registerDefaults() {}
 
-  async registerStyles() {}
+  registerStyles() {}
 
   /* -------------------------------------------- */
 
@@ -64,7 +64,7 @@ export class SystemManager {
    * Register styles
    * @private
    */
-  async #registerStylesCore() {
+  #registerStylesCore() {
     const systemStyles = this.registerStyles() ?? {};
     this.styles = foundry.utils.mergeObject(CSS_STYLE, systemStyles);
 

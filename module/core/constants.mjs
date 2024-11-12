@@ -80,20 +80,57 @@ export const CSS_STYLE = {
     secondaryColor: "#dddddd80",
     tertiaryColor: "#ff6400"
   },
-  foundryVttLight: {
-    class: "tah-style-foundry-vtt-light",
-    file: "tah-foundry-vtt-light",
-    moduleId: MODULE.ID,
-    name: "Foundry VTT Light",
-    primaryColor: "#dddddd",
-    secondaryColor: "#dddddd80",
-    tertiaryColor: "#ff6400"
-  },
   compact: {
     class: "tah-style-foundry-vtt",
     file: "tah-foundry-vtt-dark-compact",
     moduleId: MODULE.ID,
     name: "Foundry VTT Dark Compact",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400"
+  },
+  dockedLeft: {
+    class: "tah-style-docked-left",
+    file: "tah-docked-left",
+    moduleId: MODULE.ID,
+    name: "Foundry VTT Dark Docked Left",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400",
+    isDocked: true,
+    dockPosition: "left"
+  },
+  dockedCenterRight: {
+    class: "tah-style-docked-right",
+    file: "tah-docked-right",
+    moduleId: MODULE.ID,
+    name: "Foundry VTT Dark Docked Center-Right",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400",
+    collapseIcon: "fa-caret-right",
+    expandIcon: "fa-caret-left",
+    isDocked: true,
+    dockPosition: "center-right"
+  },
+  dockedRight: {
+    class: "tah-style-docked-right",
+    file: "tah-docked-right",
+    moduleId: MODULE.ID,
+    name: "Foundry VTT Dark Docked Right",
+    primaryColor: "#dddddd",
+    secondaryColor: "#dddddd80",
+    tertiaryColor: "#ff6400",
+    collapseIcon: "fa-caret-right",
+    expandIcon: "fa-caret-left",
+    isDocked: true,
+    dockPosition: "right"
+  },
+  foundryVttLight: {
+    class: "tah-style-foundry-vtt-light",
+    file: "tah-foundry-vtt-light",
+    moduleId: MODULE.ID,
+    name: "Foundry VTT Light",
     primaryColor: "#dddddd",
     secondaryColor: "#dddddd80",
     tertiaryColor: "#ff6400"
@@ -118,43 +155,6 @@ export const CSS_STYLE = {
     file: "tah-custom",
     moduleId: MODULE.ID,
     name: "Custom"
-  },
-  dockedLeft: {
-    class: "tah-style-docked-left",
-    file: "tah-docked-left",
-    moduleId: MODULE.ID,
-    name: "Docked Left",
-    primaryColor: "#dddddd",
-    secondaryColor: "#dddddd80",
-    tertiaryColor: "#ff6400",
-    isDocked: true,
-    dockPosition: "left"
-  },
-  dockedCenterRight: {
-    class: "tah-style-docked-right",
-    file: "tah-docked-right",
-    moduleId: MODULE.ID,
-    name: "Docked Center-Right",
-    primaryColor: "#dddddd",
-    secondaryColor: "#dddddd80",
-    tertiaryColor: "#ff6400",
-    collapseIcon: "fa-caret-right",
-    expandIcon: "fa-caret-left",
-    isDocked: true,
-    dockPosition: "center-right"
-  },
-  dockedRight: {
-    class: "tah-style-docked-right",
-    file: "tah-docked-right",
-    moduleId: MODULE.ID,
-    name: "Docked Right",
-    primaryColor: "#dddddd",
-    secondaryColor: "#dddddd80",
-    tertiaryColor: "#ff6400",
-    collapseIcon: "fa-caret-right",
-    expandIcon: "fa-caret-left",
-    isDocked: true,
-    dockPosition: "right"
   }
 };
 
