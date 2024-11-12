@@ -46,6 +46,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD Exalted Third Edition](https://foundryvtt.com/packages/token-action-hud-exaltedthird)
 - [Token Action HUD Forbidden Lands](https://foundryvtt.com/packages/token-action-hud-forbidden-lands)
 - [Token Action HUD Ghostbusters](https://foundryvtt.com/packages/token-action-hud-gb)
+- [Token Action HUD Ironsworn](https://foundryvtt.com/packages/token-action-hud-ironsworn)
 - [Token Action HUD L5R 5e](https://foundryvtt.com/packages/token-action-hud-l5r5e)
 - [Token Action HUD Lancer](https://foundryvtt.com/packages/token-action-hud-lancer)
 - [Token Action HUD Mutants and Masterminds 3E](https://foundryvtt.com/packages/token-action-hud-mm3)
