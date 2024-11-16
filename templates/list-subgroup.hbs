@@ -14,8 +14,10 @@
             {{~#if info1.text~}}<div class="tah-info tah-info1{{~#if info1.class}} {{info1.class}}{{~/if~}}" data-tooltip="{{~#if info1.title}}{{info1.title}}{{~else~}}{{info1.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info1.text}}</div>{{~/if~}}
             {{~#if info2.text~}}<div class="tah-info tah-info2{{~#if info2.class}} {{info2.class}}{{~/if~}}" data-tooltip="{{~#if info2.title}}{{info2.title}}{{~else~}}{{info2.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info2.text}}</div>{{~/if~}}
             {{~#if info3.text~}}<div class="tah-info tah-info2{{~#if info3.class}} {{info3.class}}{{~/if~}}" data-tooltip="{{~#if info3.title}}{{info3.title}}{{~else~}}{{info3.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info3.text}}</div>{{~/if~}}
+            {{~#if collapsibleSubgroups}}
             <i class="tah-collapse-icon{{~#if (tokenActionHudCoreTrue settings.collapse)}} tah-hidden{{~/if}} fa fa-chevron-down"></i>
             <i class="tah-expand-icon{{~#if (tokenActionHudCoreTrue settings.collapse)}}{{else}} tah-hidden{{~/if}} fa fa-chevron-up"></i>
+            {{~/if}}
             <i class="tah-edit-icon fa fa-pen-to-square" aria-hidden="true"></i>
         </div>
         <div class="tah-subgroups{{~#if (tokenActionHudCoreTrue settings.collapse)}} tah-hidden{{~/if~}}" data-part="subgroups">
@@ -29,7 +31,7 @@
             {{~#if (tokenActionHudCoreTrue groups.lists.length)~}}
             <div class="tah-list-subgroups" data-part="listSubgroups">
                 {{#each groups.lists}}
-                    {{>"modules/token-action-hud-core/templates/list-subgroup.hbs" categoryId=../id}}
+                    {{>"modules/token-action-hud-core/templates/list-subgroup.hbs" collapsibleSubgroups=../collapsibleSubgroups categoryId=../id}}
                 {{/each}}
             </div>
             {{~/if~}}

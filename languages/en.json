@@ -89,6 +89,8 @@
     "tokenActionHud.settings.alwaysShowHud.name": "Always Show HUD",
     "tokenActionHud.settings.clickOpenCategory.hint": "Open groups by clicking instead of hovering",
     "tokenActionHud.settings.clickOpenCategory.name": "Click to Open",
+    "tokenActionHud.settings.collapsibleSubgroups.hint": "Collapse subgroups by left-clicking on their title",
+    "tokenActionHud.settings.collapsibleSubgroups.name": "Collapsible Subgroups",
     "tokenActionHud.settings.customLayout.hint": "GM setting: Select a layout to use as the default for all users. Leave blank to use the system layout",
     "tokenActionHud.settings.customLayout.name": "Global Default Layout",
     "tokenActionHud.settings.customStyle.hint": "Customise the HUD style. To enable, set the 'Style' setting to 'Custom'",

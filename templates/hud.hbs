@@ -14,7 +14,7 @@
 </div>
 <div class="tah-groups" data-part="groups">
     {{#each hud.groups}}
-    {{>"modules/token-action-hud-core/templates/group.hbs" background=../background}}
+    {{>"modules/token-action-hud-core/templates/group.hbs" collapsibleSubgroups=../collapsibleSubgroups background=../background}}
     {{/each}}
 </div>
 {{#unless hovering}}

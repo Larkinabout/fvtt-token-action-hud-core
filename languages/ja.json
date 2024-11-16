@@ -28,7 +28,7 @@
     "tokenActionHud.token": "トークン",
     "tokenActionHud.unlockHud": "HUDをアンロック",
     "tokenActionHud.utility": "ユーティリティ",
-    
+
     "tokenActionHud.dialog.button.yes": "はい",
     "tokenActionHud.dialog.button.no": "いいえ",
     "tokenActionHud.dialog.resetActions.title": "アクションのリセット",
@@ -37,7 +37,7 @@
     "tokenActionHud.dialog.resetLayout.content": "デフォルトのレイアウトにリセットされます。続行しますか？",
     "tokenActionHud.dialog.resetAllLayouts.title": "Token Action HUD | Reset All Layouts",
     "tokenActionHud.dialog.resetAllLayouts.content": "This will reset every user's HUD to the default layout. Do you wish to continue?",
-    
+
     "tokenActionHud.form.hud.availableItems": "利用可能なアイテム",
     "tokenActionHud.form.hud.groupDetail": "利用可能なアイテムをクリックして選択し、選択したアイテムをドラッグして順序を変更し、選択したアイテムの<strong>X</strong>をクリックして選択を解除します。 <strong>選択したアイテム</strong> ボックスの空いている領域をクリックしてから入力を開始して、利用可能なアイテムをフィルタリングします。",
     "tokenActionHud.form.hud.groupTitle": "グループをカスタマイズ",
@@ -90,6 +90,8 @@
     "tokenActionHud.settings.clickOpenCategory.hint": "ホバーする代わりにクリックでグループを開く",
     "tokenActionHud.settings.clickOpenCategory.name": "クリックで開く",
     "tokenActionHud.settings.customLayout.hint": "GM設定: すべてのユーザーにデフォルトとして使用するレイアウトを選択します。システムのレイアウトを使用するには空白のままにします",
+    "tokenActionHud.settings.collapsibleSubgroups.hint": "タイトルを左クリックしてサブグループを折りたたむ",
+    "tokenActionHud.settings.collapsibleSubgroups.name": "折りたたみ可能なサブグループ",
     "tokenActionHud.settings.customLayout.name": "グローバルデフォルトレイアウト",
     "tokenActionHud.settings.customStyle.hint": "HUDのスタイルをカスタマイズします。有効にするには、「スタイル」設定を「カスタム」に設定します",
     "tokenActionHud.settings.customStyle.label": "スタイルのカスタマイズ",
@@ -166,9 +168,9 @@
     "tokenActionHud.settings.resetLayout.hint": "デフォルトのレイアウトにリセットする",
     "tokenActionHud.settings.resetLayout.label": "レイアウトのリセット",
     "tokenActionHud.settings.resetLayout.name": "レイアウトのリセット",
-    "tokenActionHud.settings.resetAllLayouts.hint": "GM setting: Reset all users to the default layout",
-    "tokenActionHud.settings.resetAllLayouts.label": "Reset All Layouts",
-    "tokenActionHud.settings.resetAllLayouts.name": "Reset All Layouts",
+    "tokenActionHud.settings.resetAllLayouts.hint": "GM 設定：すべてのユーザーをデフォルトレイアウトにリセット",
+    "tokenActionHud.settings.resetAllLayouts.label": "すべてのレイアウトをリセット",
+    "tokenActionHud.settings.resetAllLayouts.name": "すべてのレイアウトをリセット",
     "tokenActionHud.settings.rollHandler.hint": "GM設定: HUDがロールを処理するために使用するモジュールを設定します",
     "tokenActionHud.settings.rollHandler.name": "ロールハンドラー",
     "tokenActionHud.settings.scale.hint": "HUDのスケールを調整します（1がデフォルトです）",

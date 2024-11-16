@@ -21,7 +21,7 @@ data-part="group" data-group-type="tab" data-nest-id="{{nestId}}" data-level="{{
             {{~#if (tokenActionHudCoreTrue groups.lists.length)~}}
             <div class="tah-list-subgroups" data-part="listSubgroups">
                 {{#each groups.lists}}
-                {{>"modules/token-action-hud-core/templates/list-subgroup.hbs" categoryId=../id}}
+                {{>"modules/token-action-hud-core/templates/list-subgroup.hbs" collapsibleSubgroups=../collapsibleSubgroups categoryId=../id}}
                 {{/each}}
             </div>
             {{~/if~}}

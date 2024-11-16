@@ -404,6 +404,20 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
 
   /* -------------------------------------------- */
 
+  game.settings.register(MODULE.ID, "collapsibleSubgroups", {
+    name: game.i18n.localize("tokenActionHud.settings.collapsibleSubgroups.name"),
+    hint: game.i18n.localize("tokenActionHud.settings.collapsibleSubgroups.hint"),
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: value => {
+      onChangeFunction("collapsibleSubgroups", value);
+    }
+  });
+
+  /* -------------------------------------------- */
+
   game.settings.register(MODULE.ID, "debug", {
     name: game.i18n.localize("tokenActionHud.settings.debug.name"),
     hint: game.i18n.localize("tokenActionHud.settings.debug.hint"),

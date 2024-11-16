@@ -92,7 +92,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       scale: this.scale,
       background: "#00000000",
       collapseIcon: styleData.collapseIcon ?? "fa-caret-left",
-      expandIcon: styleData.expandIcon ?? "fa-caret-right"
+      expandIcon: styleData.expandIcon ?? "fa-caret-right",
+      collapsibleSubgroups: Utils.getSetting("collapsibleSubgroups")
     };
 
     Logger.debug("Application context", { context });
@@ -586,6 +587,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event                       The event
    */
   collapseExpandSubgroup(event) {
+    if (!Utils.getSetting("collapsibleSubgroups")) return;
+
     const target = event.target.closest('[data-part="listSubgroupTitle"]');
 
     const groupElement = Utils.getClosestGroupElement(event);
