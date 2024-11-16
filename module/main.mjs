@@ -187,6 +187,6 @@ function addContextMenuListener(html, selector) {
  */
 function sendHudToBottom() {
   if (game.tokenActionHud?.element) {
-    game.tokenActionHud.element.style.zIndex = 0;
+    game.tokenActionHud.element.style.zIndex = 20;
   }
 }

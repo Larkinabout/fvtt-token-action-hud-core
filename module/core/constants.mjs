@@ -212,7 +212,8 @@ export const HUD = {
   DEFAULT_WIDTH: 20,
   DEFAULT_LEFT_POS: 150,
   DEFAULT_TOP_POS: 80,
-  DEFAULT_SCALE: 1
+  DEFAULT_SCALE: 1,
+  DEFAULT_ZINDEX: 100
 };
 
 /* -------------------------------------------- */

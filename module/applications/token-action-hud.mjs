@@ -57,13 +57,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       height: HUD.DEFAULT_HEIGHT,
       left: HUD.DEFAULT_LEFT_POS,
       top: HUD.DEFAULT_TOP_POS,
-      scale: HUD.DEFAULT_SCALE
+      scale: HUD.DEFAULT_SCALE,
+      zIndex: HUD.DEFAULT_ZINDEX
     },
     window: {
       frame: false,
       title: "token-action-hud"
-    },
-    zIndex: 100
+    }
   };
 
   /* -------------------------------------------- */

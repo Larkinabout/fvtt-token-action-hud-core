@@ -2,7 +2,10 @@
 <div class="tah-subgroup tah-tab-subgroup{{~#if class}} {{class}}{{~/if~}}" id="tah-subgroup-{{nestId}}"
 data-part="subgroup" data-group-type="tab" data-nest-id="{{nestId}}" data-has-actions="{{~#if (tokenActionHudCoreTrue hasActions)~}}true{{~else~}}false{{~/if~}}" data-level="{{level}}" data-type="{{type}}" data-show-title="{{settings.showTitle}}">
     <button class="tah-subgroup-button tah-button-box" value="{{id}}" data-part="groupButton" data-action="clickSubgroup">
-        {{~#if settings.image~}}<img class="tah-button-image" src="{{settings.image}}"{{~#if tooltip}} data-tooltip="{{tooltip}}" data-tooltip-class="tah-tooltip"{{~/if~}}>{{~/if~}}
+        {{~#if settings.image~}}
+        <img class="tah-button-image" src="{{settings.image}}"
+            {{~#if tooltip.content}} data-tooltip="{{tooltip.content}}" data-tooltip-class="tah-tooltip{{#if tooltip.class}} {{tooltip.class}}{{/if}}"{{#if tooltip.direction}} data-tooltip-direction="{{{tooltip.direction}}}"{{/if}}{{~/if~}}>
+        {{~/if~}}
         <span class="tah-button-content">
             {{~#if icon1~}}<div class="tah-icon">{{{icon1}}}</div>{{~/if~}}
             {{~#if icon2~}}<div class="tah-icon">{{{icon2}}}</div>{{~/if~}}
