@@ -40,6 +40,7 @@ export class HudManager {
    * @public
    */
   softResetHud() {
+    this.hud = null;
     this.hud = [];
     this.groupHandler.softReset();
     this.layoutHandler.softReset();

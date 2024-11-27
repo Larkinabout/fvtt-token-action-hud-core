@@ -51,6 +51,7 @@ export class GroupHandler {
    */
   softReset() {
     this.defaultGroups = {};
+    this.groups = null;
     this.groups = {};
   }
 

@@ -27,6 +27,8 @@ export class GroupResizer {
     }
 
     await this.#setHeight();
+
+    this.#resetVariables();
   }
 
   /* -------------------------------------------- */
