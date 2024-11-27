@@ -224,6 +224,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
         TokenActionHud.lockHud.call(this);
       }
     } else {
+      TokenActionHud.lockHud.call(this);
       this.elements.unlockButton.classList.add("tah-hidden");
     }
   }
