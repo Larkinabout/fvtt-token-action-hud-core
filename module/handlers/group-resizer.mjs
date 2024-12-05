@@ -309,10 +309,13 @@ export class GroupResizer {
    * @private
    */
   async #setHeight() {
-    requestAnimationFrame(() => {
-      this.availableHeight = this.#getAvailableHeight();
-      const style = { maxHeight: `${this.availableHeight}px`, overflowY: "auto" };
-      Object.assign(this.subgroupsElement.style, style);
+    await new Promise(resolve => {
+      requestAnimationFrame(() => {
+        this.availableHeight = this.#getAvailableHeight();
+        const style = { maxHeight: `${this.availableHeight}px`, overflowY: "auto" };
+        Object.assign(this.subgroupsElement.style, style);
+        resolve();
+      });
     });
   }
 
