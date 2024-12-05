@@ -65,6 +65,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD The Witcher TRPG](https://foundryvtt.com/packages/token-action-hud-thewitchertrpg)
 - [Token Action HUD for Twodsix](https://foundryvtt.com/packages/fvtt-token-action-hud-twodsix)
 - [Token Action HUD WFRP4e](https://foundryvtt.com/packages/token-action-hud-wfrp4e)
+- [Token Action HUD for WoD](https://foundryvtt.com/packages/token-action-hud-wod)
 - [Token Action HUD Worlds Without Number](https://foundryvtt.com/packages/token-action-hud-wwn)
 
 ## socketlib
