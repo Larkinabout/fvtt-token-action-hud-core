@@ -21,5 +21,18 @@ export function getTooltip(tooltip, name) {
     tooltip.content = `<div class="tah-tooltip-wrapper">${tooltip.content}</div>`;
   }
 
+  let direction = "RIGHT";
+  if (tooltip.direction) {
+    direction = tooltip.direction;
+  } else {
+    const style = game.tokenActionHud.systemManager.styles[game.tokenActionHud.styleSetting];
+
+    if (["center-right", "right"].includes(style.dockPosition)) {
+      direction = "LEFT";
+    }
+  }
+
+  tooltip.direction = direction;
+
   return tooltip;
 }

@@ -35,7 +35,7 @@ export class TagifyApp extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     position: {
       width: 600,
-      height: 680
+      height: 800
     },
     tag: "form",
     window: {

@@ -62,12 +62,22 @@
  */
 
  .tagify.tah-dialog-tagify {
+    --tag-bg: none;
+    --tag-hover: none;
+    --tag-text-color: var(--color-text-primary);
+    --tags-border-color: var(--color-border);
+    --tags-focus-border-color: var(--color-border);
+    --tags-hover-border-color: var(--color-border);
+    --tag-text-color: var(--color-text-primary);
+    --tag-remove-btn-color: var(--color-text-primary);
+    --tag-remove-btn-bg--hover: none;
     align-content: start;
-    border: 1px solid var(--color-border-light-tertiary);
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--color-border);
     border-radius: 3px;
     display: inline-flex;
     gap: 5px;
-    height: 155px;
+    height: 150px;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 5px;
@@ -87,6 +97,14 @@
     cursor: grab;
 }
 
+.tah-dialog-tagify .tagify__tag__removeBtn::after {
+    content: "\f00d";
+    font-family: "Font Awesome 5 Free";
+    font-size: var(--font-size-10);
+    font-weight: 700;
+    padding-bottom: 2px;
+}
+
 .tah-dialog-tagify .tagify__tag:focus:not([readonly]) div::before,
 .tah-dialog-tagify .tagify__tag:hover:not([readonly]) div::before {
     top: 0;
@@ -103,7 +121,7 @@
 }
 
 .tah-dialog-tagify .tagify__tag__removeBtn + div::before {
-    border: 1px solid var(--color-border-dark-3);
+    border: 1px solid var(--color-border);
     box-shadow: none !important;
 }
 
@@ -112,9 +130,53 @@
     text-shadow: 0 0 3px var(--color-shadow-primary);
 }
 
-.tah-dialog-light-button {
-    background: rgba(255, 255, 240, 0.8);
-    border: 1px solid var(--color-border-light-primary);
+
+.tah-dialog-tags-dropdown .tagify__dropdown__wrapper {
+    align-content: start;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    display: flex;
+    flex-wrap: wrap;
+    height: 280px;
+    font-size: var(--font-size-12);
+    gap: 5px;
+    padding: 5px;
+    text-overflow: ellipsis;
+}
+
+.tah-dialog-tags-dropdown .tagify__dropdown__item {
+    display: inline-block;
+    vertical-align: middle;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.3em 0.5em;
+    background: none;
+    margin: 0;
+    font-size: var(--font-size-12);
+    color: var(--color-text-primary);
+    transition: 0s;
+}
+
+.tah-dialog-tags-dropdown .tagify__dropdown__item:hover {
+    border: 1px solid transparent;
+    box-shadow: 0px 0px 5px var(--color-shadow-primary); 
+}
+
+.tah-dialog-tags-dropdown .tagify__dropdown__item--hidden {
+    display: none;
+}
+
+.tah-dialog-tagify .tagify__input {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    font-size: var(--font-size-12);
+    margin: 0;
+    line-height: 1;
+    padding: var(--tag-pad,.3em .5em);
+    border: 1px solid var(--color-border);
+    min-width: 100px;
+    flex-grow: 0;
 }
 
 .tah-dialog-col-group {
@@ -133,50 +195,14 @@
     margin-top: 0.2rem;
 }
 
-.tah-dialog-tags-dropdown .tagify__dropdown__wrapper {
-    align-content: start;
-    background: rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--color-border-light-tertiary);
-    border-radius: 3px;
-    display: flex;
-    flex-wrap: wrap;
-    height: 155px;
-    font-size: var(--font-size-12);
-    gap: 5px;
-    padding: 5px;
-    text-overflow: ellipsis;
-}
-
-.tah-dialog-tags-dropdown .tagify__dropdown__item {
-    display: inline-block;
-    vertical-align: middle;
-    border: 1px solid var(--color-border-dark-3);
-    border-radius: 4px;
-    padding: 0.3em 0.5em;
-    background: none;
-    margin: 0;
-    font-size: var(--font-size-12);
-    color: white;
-    transition: 0s;
-}
-
-.tah-dialog-tags-dropdown .tagify__dropdown__item:hover {
-    border: 1px solid transparent;
-    box-shadow: 0px 0px 4px var(--color-shadow-primary); 
-}
-
-.tah-dialog-tags-dropdown .tagify__dropdown__item--hidden {
-    display: none;
-}
-
 #tah-dialog-reset-actions {
     margin-top: 2px;
 }
 
 .tah-dialog-detail {
-    border-bottom: 1px solid var(--color-border-light-primary);
-    margin-bottom: 5px;
-    padding: 5px 0;
+    border-bottom: 1px solid var(--color-border);
+    margin: 0 0 0.5rem 0;
+    padding: 0.5rem 0;
 
 }
 
