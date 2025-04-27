@@ -71,6 +71,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD WFRP4e](https://foundryvtt.com/packages/token-action-hud-wfrp4e)
 - [Token Action HUD for WoD](https://foundryvtt.com/packages/token-action-hud-wod)
 - [Token Action HUD Worlds Without Number](https://foundryvtt.com/packages/token-action-hud-wwn)
+- [Token Action HUD The One Ring 2e](https://foundryvtt.com/packages/token-action-hud-tor2e)
 
 ## socketlib
 Token Action HUD Core requires the [socketlib](https://foundryvtt.com/packages/socketlib) library module.
