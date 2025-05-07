@@ -162,6 +162,7 @@ function validateHookData(hookData, hookName) {
  * @returns {boolean} Whether the compendium hook is valid
  */
 function validateCompendium(id) {
+  if (!game.tokenActionHud) return false;
   const compendiumHandler = game.tokenActionHud.actionHandler.compendiumActionHandler;
   if (!compendiumHandler.isLinkedCompendium(id)) return false;
   compendiumHandler.compendiumActions = new Map();
