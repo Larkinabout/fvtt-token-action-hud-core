@@ -806,9 +806,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     switch (dockPosition) {
       case "right":
         if (isV13) {
-          const rightUiElement = interfaceElement.querySelector("#ui-right");
-          const sidebarElement = rightUiElement.querySelector("#sidebar");
-          rightUiElement.insertBefore(this.element, sidebarElement);
+          const sidebarElement = document.querySelector("#sidebar");
+          sidebarElement.prepend(this.element);
         } else {
           interfaceElement.appendChild(this.element);
         }
