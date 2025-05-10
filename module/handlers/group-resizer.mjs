@@ -331,6 +331,7 @@ export class GroupResizer {
     const contentBottom = this.subgroupsElementRect.bottom;
     const contentTop = this.subgroupsElementRect.top;
 
+    let uiTopBottom = null;
     if (this.tokenActionHud.isDocked) {
       let siblingsHeight = 0;
       let sibling = this.groupElement.nextElementSibling;
@@ -348,16 +349,22 @@ export class GroupResizer {
       }
 
       return Math.max(windowHeight - contentTop - siblingsHeight - this.spacing, 100);
+    } else if (this.tokenActionHud.direction === "down") {
+      if (foundry.utils.isNewerVersion(game.version, "12.999")) {
+        uiTopBottom = document.querySelector("#hotbar");
+      } else {
+        uiTopBottom = document.querySelector("#ui-bottom");
+      }
+    } else if (foundry.utils.isNewerVersion(game.version, "12.999")) {
+      uiTopBottom = document.querySelector("scene-navigation-active");
     } else {
-      const uiTopBottom = (this.tokenActionHud.direction === "down")
-        ? document.querySelector("#ui-bottom")
-        : document.querySelector("#ui-top");
-      const uiTopBottomOffsetHeight = uiTopBottom.offsetHeight;
-      const availableHeight = (this.tokenActionHud.direction === "down")
-        ? windowHeight - contentTop - uiTopBottomOffsetHeight - this.spacing
-        : contentBottom - uiTopBottomOffsetHeight - this.spacing;
-      return Math.max(availableHeight, 100);
+      uiTopBottom = document.querySelector("#ui-top");
     }
+    const uiTopBottomOffsetHeight = uiTopBottom?.offsetHeight ?? 0;
+    const availableHeight = (this.tokenActionHud.direction === "down")
+      ? windowHeight - contentTop - uiTopBottomOffsetHeight - this.spacing
+      : contentBottom - uiTopBottomOffsetHeight - this.spacing;
+    return Math.max(availableHeight, 100);
   }
 
   /* -------------------------------------------- */

@@ -272,6 +272,7 @@
   text-shadow: var(--tah-button-text-shadow);
 }
 #token-action-hud-app.tah-style-docked-left-v13 #token-action-hud .tah-button-box .tah-info-container {
+  align-items: center;
   display: flex;
   gap: var(--tah-gap);
   padding-right: 2px;
