@@ -416,13 +416,14 @@ export class Utils {
    * @returns {string}   The humanized keybinding
    */
   static humanizeBinding(key) {
+    const keyboardManager = foundry?.helpers?.interaction?.KeyboardManager ?? KeyboardManager;
     const binding = game.keybindings.get(MODULE.ID, key);
     if (!binding) return "";
     const stringParts = binding[0].modifiers.reduce((parts, part) => {
-      if (KeyboardManager.MODIFIER_CODES[part]?.includes(binding[0].key)) return parts;
-      parts.unshift(KeyboardManager.getKeycodeDisplayString(part));
+      if (keyboardManager.MODIFIER_CODES[part]?.includes(binding[0].key)) return parts;
+      parts.unshift(keyboardManager.getKeycodeDisplayString(part));
       return parts;
-    }, [KeyboardManager.getKeycodeDisplayString(binding[0].key)]);
+    }, [keyboardManager.getKeycodeDisplayString(binding[0].key)]);
     return stringParts.join(" + ");
   }
 

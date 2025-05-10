@@ -178,7 +178,9 @@ function validateCompendium(id) {
  * @param {string} selector The selector for the HTML element
  */
 function addContextMenuListener(html, selector) {
-  const element = html[0].querySelector(selector);
+  // Supports both v12 and v13
+  const htmlElement = html[0] ?? html;
+  const element = htmlElement.querySelector(selector);
   if (element) element.addEventListener("contextmenu", sendHudToBottom);
 }
 

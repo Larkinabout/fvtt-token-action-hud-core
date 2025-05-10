@@ -180,10 +180,11 @@ export class HudManager {
    * @param {object} event The event
    */
   #setIsAlt(event) {
-    const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.ALT);
+    const keyboardManager = foundry?.helpers?.interaction?.KeyboardManager ?? KeyboardManager;
+    const isModiferActive = game.keyboard.isModifierActive(keyboardManager.MODIFIER_KEYS.ALT);
     if (event.altKey && !isModiferActive) {
       Logger.debug("Emulating LEFT ALT key press");
-      KeyboardManager.emulateKeypress(false, "AltLeft", { altKey: true, force: true });
+      keyboardManager.emulateKeypress(false, "AltLeft", { altKey: true, force: true });
       game.keyboard.downKeys.add("AltLeft");
       this.isAlt = true;
     } else {
@@ -199,10 +200,11 @@ export class HudManager {
    * @param {object} event The event
    */
   #setIsCtrl(event) {
-    const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.CONTROL);
+    const keyboardManager = foundry?.helpers?.interaction?.KeyboardManager ?? KeyboardManager;
+    const isModiferActive = game.keyboard.isModifierActive(keyboardManager.MODIFIER_KEYS.CONTROL);
     if (event.ctrlKey && !isModiferActive) {
       Logger.debug("Emulating LEFT CTRL key press");
-      KeyboardManager.emulateKeypress(false, "ControlLeft", { ctrlKey: true, force: true });
+      keyboardManager.emulateKeypress(false, "ControlLeft", { ctrlKey: true, force: true });
       game.keyboard.downKeys.add("ControlLeft");
       this.isCtrl = true;
     } else {
@@ -218,10 +220,11 @@ export class HudManager {
    * @param {object} event The event
    */
   #setIsShift(event) {
-    const isModiferActive = game.keyboard.isModifierActive(KeyboardManager.MODIFIER_KEYS.SHIFT);
+    const keyboardManager = foundry?.helpers?.interaction?.KeyboardManager ?? KeyboardManager;
+    const isModiferActive = game.keyboard.isModifierActive(keyboardManager.MODIFIER_KEYS.SHIFT);
     if (event.shiftKey && !isModiferActive) {
       Logger.debug("Emulating LEFT SHIFT key press");
-      KeyboardManager.emulateKeypress(false, "ShiftLeft", { shiftKey: true, force: true });
+      keyboardManager.emulateKeypress(false, "ShiftLeft", { shiftKey: true, force: true });
       game.keyboard.downKeys.add("ShiftLeft");
       this.isShift = true;
     } else {
