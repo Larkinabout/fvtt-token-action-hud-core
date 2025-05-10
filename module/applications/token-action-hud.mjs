@@ -296,7 +296,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     const { characterName, subgroupsContainerArr } = this.elements;
 
     if (this.direction === "up") {
-      characterName.classList.add("tah-hidden");
+      characterName?.classList?.add("tah-hidden");
 
       subgroupsContainerArr.forEach(element => {
         element.classList.remove("expand-down");
@@ -304,7 +304,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     } else {
       if (!this.isCollapsed) {
-        characterName.classList.remove("tah-hidden");
+        characterName?.classList?.remove("tah-hidden");
       }
 
       subgroupsContainerArr.forEach(element => {
