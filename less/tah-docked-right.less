@@ -21,7 +21,7 @@
 @tah-list-subgroup-title-letter-spacing: 0.1em;
 @tah-info-font-size: x-small;
 
-:root {
+#token-action-hud-app.tah-style-docked-right {
   --tah-background-color: #0b0a13bf;
   --tah-border-radius: 4px;
   --tah-gap: 5px;
@@ -75,6 +75,12 @@
   --tah-text-hover-secondary-color: var(--tah-text-secondary-color);
   --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
   --tah-text-shadow: 1px 1px 1px #0b0a13, 1px 1px 1px #0b0a13, 1px 1px 3px #0b0a13, 1px 1px 5px #0b0a13;
-}
 
-@import "tah-docked.less";
+  flex: 0;
+  height: min-content;
+  margin: @tah-hud-margin;
+  pointer-events: all;
+  z-index: 20;
+
+  @import "tah-docked.less";
+}

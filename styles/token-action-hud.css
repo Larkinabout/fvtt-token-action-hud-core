@@ -99,10 +99,9 @@
 
 .tah-dialog-tagify .tagify__tag__removeBtn::after {
     content: "\f00d";
-    font-family: "Font Awesome 5 Free";
+    font-family: "Font Awesome 6 Pro";
     font-size: var(--font-size-10);
     font-weight: 700;
-    padding-bottom: 2px;
 }
 
 .tah-dialog-tagify .tagify__tag:focus:not([readonly]) div::before,

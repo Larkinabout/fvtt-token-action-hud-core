@@ -84,11 +84,14 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @override
    */
   async _prepareContext() {
-    const styleData = this.systemManager.styles[Utils.getSetting("style")];
+    const styleData = this.systemManager.styles[this.styleSetting];
+    const styleClass = foundry.utils.isNewerVersion(game.version, "12.999") && ["dockedLeft", "dockedCenterRight", "dockedRight"].includes(this.styleSetting)
+      ? `${styleData.class}-v13`
+      : styleData.class;
     const context = {
       hud: this.hudManager.hud,
       id: "token-action-hud",
-      style: styleData.class ?? "",
+      style: styleClass ?? "",
       scale: this.scale,
       background: "#00000000",
       collapseIcon: styleData.collapseIcon ?? "fa-caret-left",
@@ -175,6 +178,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   _onRender(context, options) {
     super._onRender(context, options);
     this.element.classList.remove("tah-closed");
+    Utils.switchCSS(this.styleSetting);
     clearTimeout(this.closeTimer);
     clearTimeout(this.renderTimer);
     this.#cacheElements();
@@ -797,18 +801,33 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const interfaceElement = document.querySelector("#interface");
     const dockPosition = this.systemManager.styles[this.styleSetting]?.dockPosition;
+    const isV13 = foundry.utils.isNewerVersion(game.version, "12.999");
 
     switch (dockPosition) {
       case "right":
-        interfaceElement.appendChild(this.element);
+        if (isV13) {
+          const rightUiElement = interfaceElement.querySelector("#ui-right");
+          const sidebarElement = rightUiElement.querySelector("#sidebar");
+          rightUiElement.insertBefore(this.element, sidebarElement);
+        } else {
+          interfaceElement.appendChild(this.element);
+        }
         break;
       case "center-right":
         const rightUiElement = interfaceElement.querySelector("#ui-right");
-        interfaceElement.insertBefore(this.element, rightUiElement);
+        if (isV13) {
+          rightUiElement.prepend(this.element);
+        } else {
+          interfaceElement.insertBefore(this.element, rightUiElement);
+        }
         break;
       case "left":
         const leftUiElement = interfaceElement.querySelector("#ui-left");
-        interfaceElement.insertBefore(this.element, leftUiElement);
+        if (isV13) {
+          leftUiElement.prepend(this.element);
+        } else {
+          interfaceElement.insertBefore(this.element, leftUiElement);
+        }
         break;
     }
   }

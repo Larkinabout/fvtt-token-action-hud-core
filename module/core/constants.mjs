@@ -81,7 +81,7 @@ export const CSS_STYLE = {
     tertiaryColor: "#ff6400"
   },
   compact: {
-    class: "tah-style-foundry-vtt",
+    class: "tah-style-foundry-vtt-dark-compact",
     file: "tah-foundry-vtt-dark-compact",
     moduleId: MODULE.ID,
     name: "Foundry VTT Dark Compact",

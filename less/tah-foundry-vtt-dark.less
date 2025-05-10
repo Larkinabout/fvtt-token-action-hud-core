@@ -17,7 +17,7 @@
 @tah-list-subgroup-title-letter-spacing: 0.1em;
 @tah-info-font-size: x-small;
 
-:root {
+#token-action-hud-app.tah-style-foundry-vtt-dark {
   --tah-background-color: #00000000;
   --tah-border-radius: 3px;
   --tah-gap: 5px;
@@ -86,6 +86,9 @@
   --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
 
   --tah-text-shadow: @text-shadow;
-}
 
-@import "tah-hud.less";
+  position: fixed;
+  z-index: 20;
+
+  @import "tah-hud.less";
+}

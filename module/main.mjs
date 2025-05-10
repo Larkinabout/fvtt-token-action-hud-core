@@ -15,8 +15,8 @@ Hooks.once("socketlib.ready", registerSocket);
 Hooks.on("ready", registerApi);
 Hooks.on("tokenActionHudSystemReady", registerCoreModule);
 Hooks.on("tokenActionHudCoreReady", registerHud);
-Hooks.on("renderHotbar", (_, html) => addContextMenuListener(html, "li.macro"));
-Hooks.on("renderSceneNavigation", (_, html) => addContextMenuListener(html, "li.scene.nav-item"));
+Hooks.on("renderHotbar", (_, html) => addContextMenuListener(html, foundry.utils.isNewerVersion(game.version, "12.999") ? "li.slot" : "li.macro"));
+Hooks.on("renderSceneNavigation", (_, html) => addContextMenuListener(html, foundry.utils.isNewerVersion(game.version, "12.999") ? "li.ui-control" : "li.scene.nav-item"));
 
 /* -------------------------------------------- */
 
@@ -35,14 +35,15 @@ async function registerCoreModule(systemModule) {
   systemManager = new systemModule.api.SystemManager(MODULE.ID);
   await systemManager.init();
 
-  // Set stylesheet to 'style' core module setting
-  Utils.switchCSS(Utils.getSetting("style"));
-
   // Register Handlebar helpers
   Utils.registerHandlebars();
 
   // Load templates
-  loadTemplates(Object.values(TEMPLATE));
+  if (foundry.utils.isNewerVersion(game.version, "12.9999")) {
+    foundry.applications.handlebars.loadTemplates(Object.values(TEMPLATE));
+  } else {
+    loadTemplates(Object.values(TEMPLATE));
+  }
 
   Hooks.callAll("tokenActionHudCoreReady");
 }

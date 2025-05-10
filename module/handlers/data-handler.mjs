@@ -3,6 +3,8 @@ import { Logger, Utils } from "../core/utils.mjs";
 
 /* -------------------------------------------- */
 
+const filePicker = foundry?.applications?.apps?.FilePicker?.implementation ?? FilePicker;
+
 /**
  * A class responsible for handling data-related activities.
  */
@@ -54,8 +56,8 @@ export class DataHandler {
     ];
 
     for (const directory of directoriesToCreate) {
-      await FilePicker.browse(DATA_FOLDER, directory).catch(async _ => {
-        if (!(await FilePicker.createDirectory(DATA_FOLDER, directory, {}))) {
+      await filePicker.browse(DATA_FOLDER, directory).catch(async _ => {
+        if (!(await filePicker.createDirectory(DATA_FOLDER, directory, {}))) {
           Logger.debug(`Failed to create directory: ${directory}`);
         }
       });
@@ -100,7 +102,7 @@ export class DataHandler {
 
     if (game.user.hasPermission("FILES_BROWSE")) {
       try {
-        await FilePicker.browse("data", this.path);
+        await filePicker.browse("data", this.path);
         return false;
       } catch{
         return true;
@@ -147,8 +149,8 @@ export class DataHandler {
    */
   async getFilePaths() {
     const [actorFiles, userFiles] = await Promise.all([
-      FilePicker.browse("data", `${this.path}actor/`),
-      FilePicker.browse("data", `${this.path}user/`)
+      filePicker.browse("data", `${this.path}actor/`),
+      filePicker.browse("data", `${this.path}user/`)
     ]);
 
     return [...(actorFiles?.files ?? []), ...(userFiles?.files ?? [])];
@@ -212,7 +214,7 @@ export class DataHandler {
       const file = new File([JSON.stringify(data, null, "")], fileName, { type: "application/json" });
 
       // Upload the file
-      const response = await FilePicker.upload("data", folder, file, {}, { notify: false });
+      const response = await filePicker.upload("data", folder, file, {}, { notify: false });
 
       if (response.path) {
         if (!this.fileMap.has(id)) {
@@ -285,7 +287,7 @@ export class DataHandler {
     if (!foundFile) {
       if (!file) return null;
       const { folder, filename } = this.getFileParts(file);
-      const foundFolder = await FilePicker.browse("data", folder);
+      const foundFolder = await filePicker.browse("data", folder);
       foundFile = foundFolder.files.find(file => file.endsWith(filename));
       if (!foundFile) return null;
     }
@@ -319,7 +321,7 @@ export class DataHandler {
     const folderPath = `${MODULE.ID}/${game.world.id}/${type}`;
     const fileName = encodeURI(`${id}.json`);
     try {
-      const foundFolderPath = await FilePicker.browse("data", folderPath);
+      const foundFolderPath = await filePicker.browse("data", folderPath);
       const foundFilePath = foundFolderPath.files.find(file => file.endsWith(fileName));
       if (foundFilePath) {
         const ms = Date.now();

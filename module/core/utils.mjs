@@ -511,34 +511,13 @@ export class Utils {
    * @param {string} style The 'style' setting value
    */
   static switchCSS(style) {
-    const { file, moduleId } = CSS_STYLE[style];
-
-    for (const [key, value] of Object.entries(CSS_STYLE)) {
-      const href = [`modules/${value.moduleId}/`, `${value.file}`];
-      const stylesheet = Object.values(document.styleSheets).find(
-        ss => ss.href?.includes(href[0]) && ss.href?.includes(href[1])
-      );
-
-      if (key === style) {
-        stylesheet.disabled = false;
-      } else if (moduleId !== value.moduleId || file !== value.file) {
-        stylesheet.disabled = true;
-      }
-    }
-
-    if (style === "custom") {
-      for (const [key, value] of Object.entries(CUSTOM_STYLE)) {
-        const setting = Utils.getSetting(key);
-        if (setting) {
-          document.querySelector(":root").style.setProperty(value.cssProperty, setting);
-        }
-      }
-    }
-
-    const tahElement = document.querySelector("#token-action-hud");
+    const tahElement = document.querySelector("#token-action-hud-app");
     if (tahElement) {
       tahElement.classList.remove(...tahElement.classList);
-      tahElement.classList.add(CSS_STYLE[style].class);
+      const styleClass = foundry.utils.isNewerVersion(game.version, "12.999") && ["dockedLeft", "dockedCenterRight", "dockedRight"].includes(style)
+        ? `${CSS_STYLE[style].class}-v13`
+        : CSS_STYLE[style].class;
+      tahElement.classList.add(styleClass);
     }
   }
 
