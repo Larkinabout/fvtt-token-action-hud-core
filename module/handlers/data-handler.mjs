@@ -119,7 +119,7 @@ export class DataHandler {
    */
   async getFilePathsAsGm() {
     if ((!game.user.hasPermission("FILES_BROWSE") || this.private) && !Utils.isGmActive()) {
-      Logger.info("Cannot get file paths without a GM present", true);
+      Logger.info("Cannot get file paths without a GM present", false);
       return new Map(); // Return an empty map if no permissions and no GM
     }
 
@@ -181,7 +181,7 @@ export class DataHandler {
     }
 
     if (!Utils.isGmActive()) {
-      Logger.info("Cannot save data without a GM present", true);
+      Logger.info("Cannot save data without a GM present", false);
       return;
     }
 
@@ -249,7 +249,7 @@ export class DataHandler {
   async getDataAsGm(options) {
     try {
       if ((!game.user.hasPermission("FILES_BROWSE") || this.private) && !Utils.isGmActive()) {
-        Logger.info("Cannot get data without a GM present", true);
+        Logger.info("Cannot get data without a GM present", false);
         return;
       }
 
