@@ -99,8 +99,8 @@ function registerHudHooks() {
     "deleteActor", "updateActor", "createActiveEffect", "deleteActiveEffect",
     "createCombat", "deleteCombat", "updateCombat", "updateCombatant",
     "deleteCompendium", "updateCompendium", "createItem", "deleteItem",
-    "updateItem", "deleteMacro", "updateMacro", "controlToken", "deleteToken",
-    "updateToken", "closeSettingsConfig", "forceUpdateTokenActionHud"
+    "updateItem", "createMacro", "deleteMacro", "updateMacro", "controlToken",
+    "deleteToken", "updateToken", "closeSettingsConfig", "forceUpdateTokenActionHud"
   ];
 
   hooks.forEach(hook => Hooks.on(hook, (...args) => handleHookEvent({ ...args }, hook)));
@@ -145,9 +145,10 @@ function validateHookData(hookData, hookName) {
     case "deleteItem":
     case "updateItem":
       return game.tokenActionHud.isValidActorOrItemUpdate(hookData[0]?.actor);
+    case "createMacro":
     case "deleteMacro":
     case "updateMacro":
-      game.tokenActionHud.actionHandler.macroActionHandler.macroActions = null;
+      game.tokenActionHud.hudManager.actionHandler.macroActionHandler.clearCache();
       return true;
     case "updateToken":
       return Object.hasOwn(hookData[1], "hidden") && game.tokenActionHud.isValidTokenChange(hookData[0], hookData[1]);
@@ -164,7 +165,7 @@ function validateHookData(hookData, hookName) {
  * @returns {boolean} Whether the compendium hook is valid
  */
 function validateCompendium(id) {
-  const compendiumHandler = game.tokenActionHud.actionHandler.compendiumActionHandler;
+  const compendiumHandler = game.tokenActionHud.hudManager.actionHandler.compendiumActionHandler;
   if (!compendiumHandler.isLinkedCompendium(id)) return false;
   compendiumHandler.compendiumActions = new Map();
   return true;

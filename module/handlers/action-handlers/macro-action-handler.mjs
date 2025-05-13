@@ -12,6 +12,15 @@ export class MacroActionHandler {
   /* -------------------------------------------- */
 
   /**
+   * Clear cached macro actions.
+   */
+  clearCache() {
+    this.macroActions = null;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
    * Build macro actions
    * @override
    */
