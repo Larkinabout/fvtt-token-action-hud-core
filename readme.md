@@ -18,7 +18,7 @@ Token Action HUD is a repositionable HUD of actions for a selected token.
 ## Method 1
 1. In Foundry VTT's **Configuration and Setup** screen, click **Add-on Modules**
 2. Click **Install Module**
-3. Search for **Token Action HUD Core** 
+3. Search for **Token Action HUD Core**
 4. Click **Install** next to the module listing
 
 ## Method 2
@@ -49,6 +49,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD Delta Green](https://foundryvtt.com/packages/token-action-hud-dg)
 - [Token Action HUD D&D 5e](https://foundryvtt.com/packages/token-action-hud-dnd5e)
 - [Token Action HUD for Dungeon Crawl Classics](https://foundryvtt.com/packages/token-action-hud-dcc)
+- [Token Action HUD DS4](https://foundryvtt.com/packages/token-action-hud-ds4)
 - [Token Action HUD Earthdawn](https://foundryvtt.com/packages/token-action-hud-ed4e)
 - [Token Action HUD Exalted Third Edition](https://foundryvtt.com/packages/token-action-hud-exaltedthird)
 - [Token Action HUD for FFG Star Wars](https://foundryvtt.com/packages/token-action-hud-ffgsw)
