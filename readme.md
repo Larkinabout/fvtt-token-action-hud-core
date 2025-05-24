@@ -45,6 +45,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD for Coriolis](https://foundryvtt.com/packages/token-action-hud-coriolis)
 - [Token Action HUD Crucible](https://foundryvtt.com/packages/token-action-hud-crucible)
 - [Token Action HUD CypherSystem](https://foundryvtt.com/packages/token-action-hud-cyphersystem)
+- [Token Action HUD Cuberpunk RED](https://foundryvtt.com/packages/token-action-hud-cyberpunk-red)
 - [Token Action HUD DC20 RPG](https://foundryvtt.com/packages/token-action-hud-dc20rpg)
 - [Token Action HUD Delta Green](https://foundryvtt.com/packages/token-action-hud-dg)
 - [Token Action HUD D&D 5e](https://foundryvtt.com/packages/token-action-hud-dnd5e)
