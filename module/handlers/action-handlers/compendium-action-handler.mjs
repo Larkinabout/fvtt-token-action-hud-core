@@ -23,6 +23,8 @@ export class CompendiumActionHandler {
    * Build compendium actions
    */
   async buildActions() {
+    if (!Utils.getSetting("enableCompendiumActions")) return;
+
     if (this.compendiumActions.size === 0) {
       this.packIds = game.packs
         .filter(

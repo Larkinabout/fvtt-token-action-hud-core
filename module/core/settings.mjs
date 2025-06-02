@@ -82,6 +82,35 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
 
   /* -------------------------------------------- */
 
+  game.settings.register(MODULE.ID, "enable", {
+    name: game.i18n.localize("tokenActionHud.settings.enable.name"),
+    hint: game.i18n.localize("tokenActionHud.settings.enable.hint"),
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: value => {
+      onChangeFunction("enable", value);
+    }
+  });
+
+  /* -------------------------------------------- */
+
+  game.settings.register(MODULE.ID, "rollHandler", {
+    name: game.i18n.localize("tokenActionHud.settings.rollHandler.name"),
+    hint: game.i18n.localize("tokenActionHud.settings.rollHandler.hint"),
+    scope: "world",
+    config: true,
+    type: String,
+    choices: rollHandlers,
+    default: "core",
+    onChange: value => {
+      onChangeFunction("rollHandler", value);
+    }
+  });
+
+  /* -------------------------------------------- */
+
   const styleChoices = Object.fromEntries(Object.entries(styles).map(([key, value]) => [key, value.name]));
 
   game.settings.register(MODULE.ID, "style", {
@@ -119,6 +148,66 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
   });
 
   /* -------------------------------------------- */
+
+  game.settings.register(MODULE.ID, "allow", {
+    name: game.i18n.localize("tokenActionHud.settings.allow.name"),
+    hint: game.i18n.localize("tokenActionHud.settings.allow.hint"),
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      4: game.i18n.localize("tokenActionHud.settings.allow.choice.4"),
+      3: game.i18n.localize("tokenActionHud.settings.allow.choice.3"),
+      2: game.i18n.localize("tokenActionHud.settings.allow.choice.2"),
+      1: game.i18n.localize("tokenActionHud.settings.allow.choice.1")
+    },
+    default: 1,
+    requiresReload: true
+  });
+
+  /* -------------------------------------------- */
+
+  game.settings.register(MODULE.ID, "enableCustomization", {
+    name: game.i18n.localize("tokenActionHud.settings.enableCustomization.name"),
+    hint: game.i18n.localize("tokenActionHud.settings.enableCustomization.hint"),
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: value => {
+      onChangeFunction("enableCustomization", value);
+    }
+  });
+
+  /* -------------------------------------------- */
+
+  game.settings.register(MODULE.ID, "enableCompendiumActions", {
+    name: game.i18n.localize("tokenActionHud.settings.enableCompendiumActions.name"),
+    hint: game.i18n.localize("tokenActionHud.settings.enableCompendiumActions.hint"),
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: value => {
+      onChangeFunction("enableCompendiumActions", value);
+    }
+  });
+
+  /* -------------------------------------------- */
+
+  game.settings.register(MODULE.ID, "enableMacroActions", {
+    name: game.i18n.localize("tokenActionHud.settings.enableMacroActions.name"),
+    hint: game.i18n.localize("tokenActionHud.settings.enableMacroActions.hint"),
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: value => {
+      onChangeFunction("enableMacroActions", value);
+    }
+  });
+
+   /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "direction", {
     name: game.i18n.localize("tokenActionHud.settings.direction.name"),
@@ -191,67 +280,6 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
 
   /* -------------------------------------------- */
 
-  game.settings.register(MODULE.ID, "enable", {
-    name: game.i18n.localize("tokenActionHud.settings.enable.name"),
-    hint: game.i18n.localize("tokenActionHud.settings.enable.hint"),
-    scope: "client",
-    config: true,
-    type: Boolean,
-    default: true,
-    onChange: value => {
-      onChangeFunction("enable", value);
-    }
-  });
-
-  /* -------------------------------------------- */
-
-  game.settings.register(MODULE.ID, "rollHandler", {
-    name: game.i18n.localize("tokenActionHud.settings.rollHandler.name"),
-    hint: game.i18n.localize("tokenActionHud.settings.rollHandler.hint"),
-    scope: "world",
-    config: true,
-    type: String,
-    choices: rollHandlers,
-    default: "core",
-    onChange: value => {
-      onChangeFunction("rollHandler", value);
-    }
-  });
-
-  /* -------------------------------------------- */
-
-  game.settings.register(MODULE.ID, "allow", {
-    name: game.i18n.localize("tokenActionHud.settings.allow.name"),
-    hint: game.i18n.localize("tokenActionHud.settings.allow.hint"),
-    scope: "world",
-    config: true,
-    type: String,
-    choices: {
-      4: game.i18n.localize("tokenActionHud.settings.allow.choice.4"),
-      3: game.i18n.localize("tokenActionHud.settings.allow.choice.3"),
-      2: game.i18n.localize("tokenActionHud.settings.allow.choice.2"),
-      1: game.i18n.localize("tokenActionHud.settings.allow.choice.1")
-    },
-    default: 1,
-    requiresReload: true
-  });
-
-  /* -------------------------------------------- */
-
-  game.settings.register(MODULE.ID, "enableCustomization", {
-    name: game.i18n.localize("tokenActionHud.settings.enableCustomization.name"),
-    hint: game.i18n.localize("tokenActionHud.settings.enableCustomization.hint"),
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: true,
-    onChange: value => {
-      onChangeFunction("enableCustomization", value);
-    }
-  });
-
-  /* -------------------------------------------- */
-
   game.settings.register(MODULE.ID, "alwaysShowHud", {
     name: game.i18n.localize("tokenActionHud.settings.alwaysShowHud.name"),
     hint: game.i18n.localize("tokenActionHud.settings.alwaysShowHud.hint"),
@@ -261,6 +289,34 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     default: true,
     onChange: value => {
       onChangeFunction("alwaysShowHud", value);
+    }
+  });
+
+  /* -------------------------------------------- */
+
+  game.settings.register(MODULE.ID, "clickOpenCategory", {
+    name: game.i18n.localize("tokenActionHud.settings.clickOpenCategory.name"),
+    hint: game.i18n.localize("tokenActionHud.settings.clickOpenCategory.hint"),
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: value => {
+      onChangeFunction("clickOpenCategory", value);
+    }
+  });
+
+  /* -------------------------------------------- */
+
+  game.settings.register(MODULE.ID, "collapsibleSubgroups", {
+    name: game.i18n.localize("tokenActionHud.settings.collapsibleSubgroups.name"),
+    hint: game.i18n.localize("tokenActionHud.settings.collapsibleSubgroups.hint"),
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: value => {
+      onChangeFunction("collapsibleSubgroups", value);
     }
   });
 
@@ -355,20 +411,6 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
 
   /* -------------------------------------------- */
 
-  game.settings.register(MODULE.ID, "clickOpenCategory", {
-    name: game.i18n.localize("tokenActionHud.settings.clickOpenCategory.name"),
-    hint: game.i18n.localize("tokenActionHud.settings.clickOpenCategory.hint"),
-    scope: "client",
-    config: true,
-    type: Boolean,
-    default: false,
-    onChange: value => {
-      onChangeFunction("clickOpenCategory", value);
-    }
-  });
-
-  /* -------------------------------------------- */
-
   if (Utils.isModuleActive("itemacro") && !Utils.isModuleActive("midi-qol")) {
     game.settings.register(MODULE.ID, "itemMacro", {
       name: game.i18n.localize("tokenActionHud.settings.itemMacro.name"),
@@ -399,20 +441,6 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     default: false,
     onChange: value => {
       onChangeFunction("activeCssAsText", value);
-    }
-  });
-
-  /* -------------------------------------------- */
-
-  game.settings.register(MODULE.ID, "collapsibleSubgroups", {
-    name: game.i18n.localize("tokenActionHud.settings.collapsibleSubgroups.name"),
-    hint: game.i18n.localize("tokenActionHud.settings.collapsibleSubgroups.hint"),
-    scope: "client",
-    config: true,
-    type: Boolean,
-    default: true,
-    onChange: value => {
-      onChangeFunction("collapsibleSubgroups", value);
     }
   });
 

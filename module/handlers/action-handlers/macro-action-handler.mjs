@@ -25,6 +25,8 @@ export class MacroActionHandler {
    * @override
    */
   async buildActions() {
+    if (!Utils.getSetting("enableMacroActions")) return;
+
     if (!this.macroActions) {
       this.macroActions = {
         actionsData: await this.#getActions(),
