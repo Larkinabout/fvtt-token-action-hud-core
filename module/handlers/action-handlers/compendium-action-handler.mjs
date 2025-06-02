@@ -59,7 +59,7 @@ export class CompendiumActionHandler {
       name: entry.name,
       listName: `${game.i18n.localize(ACTION_TYPE[actionType])}: ${entry.name}`,
       img: Utils.getImage(entry),
-      function: this.#getOnClick(actionType, pack, entry._id)
+      onClick: this.#getOnClick(actionType, pack, entry._id)
     }));
     const groupData = { id: this.#getGroupId(packId), type: "core" };
     this.compendiumActions.set(packId, { actionsData, groupData });
