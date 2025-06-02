@@ -22,6 +22,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.updateTimer = new Timer(10);
     this.closeTimer = null;
     this.renderTimer = null;
+    this.setting = {};
   }
 
   /* -------------------------------------------- */
@@ -84,8 +85,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @override
    */
   async _prepareContext() {
-    const styleData = this.systemManager.styles[this.styleSetting];
-    const styleClass = foundry.utils.isNewerVersion(game.version, "12.999") && ["dockedLeft", "dockedCenterRight", "dockedRight"].includes(this.styleSetting)
+    const styleData = this.systemManager.styles[this.setting.style];
+    const styleClass = foundry.utils.isNewerVersion(game.version, "12.999") && ["dockedLeft", "dockedCenterRight", "dockedRight"].includes(this.setting.style)
       ? `${styleData.class}-v13`
       : styleData.class;
     const context = {
@@ -121,14 +122,10 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * Cache settings for slightly faster retrieval
    */
   #cacheSettings() {
-    const settings = [
-      "activeCssAsText", "allow", "alwaysShowHud", "clickOpenCategory", "direction",
-      "debug", "displayIcons", "drag", "enable", "grid",
-      "scale", "style"
-    ];
-
-    settings.forEach(setting => {
-      this[`${setting}Setting`] = Utils.getSetting(setting);
+    Object.entries(SETTING).forEach(([key, value]) => {
+      if (value.cache) {
+        this.setting[key] = Utils.getSetting(key);
+      }
     });
   }
 
@@ -147,11 +144,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     if (!SETTING[key]) return;
+    if (!SETTING[key].cache) return;
 
-    const { classes, variable } = SETTING[key];
-    if (variable) {
-      if (classes.includes("TokenActionHud")) this[variable] = value;
-    }
+    this.setting[key] = value;
 
     switch (key) {
       case "customLayout":
@@ -178,7 +173,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   _onRender(context, options) {
     super._onRender(context, options);
     this.element.classList.remove("tah-closed");
-    Utils.switchCSS(this.styleSetting);
+    Utils.switchCSS(this.setting.style);
     clearTimeout(this.closeTimer);
     clearTimeout(this.renderTimer);
     this.#cacheElements();
@@ -800,7 +795,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.element.style.left = 0;
 
     const interfaceElement = document.querySelector("#interface");
-    const dockPosition = this.systemManager.styles[this.styleSetting]?.dockPosition;
+    const dockPosition = this.systemManager.styles[this.setting.style]?.dockPosition;
     const isV13 = foundry.utils.isNewerVersion(game.version, "12.999");
 
     switch (dockPosition) {
@@ -940,7 +935,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @returns {boolean} Whether the HUD is docked
    */
   get isDocked() {
-    const style = this.systemManager.styles[this.styleSetting];
+    const style = this.systemManager.styles[this.setting.style];
     return style.isDocked || style.dockPosition;
   }
 

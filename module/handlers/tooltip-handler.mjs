@@ -8,7 +8,7 @@ import { Utils } from "../core/utils.mjs";
  * @returns {object}              The tooltip
  */
 export function getTooltip(tooltip, name) {
-  const setting = Utils.getSetting("tooltips");
+  const setting = game.tokenActionHud?.setting?.tooltips ?? Utils.getSetting("tooltips");
 
   if (setting === "none") return null;
   if (setting === "nameOnly" || !tooltip) return name;
@@ -25,7 +25,7 @@ export function getTooltip(tooltip, name) {
   if (tooltip.direction) {
     direction = tooltip.direction;
   } else {
-    const style = game.tokenActionHud.systemManager.styles[game.tokenActionHud.styleSetting];
+    const style = game.tokenActionHud.systemManager.styles[game.tokenActionHud.setting.style];
 
     if (["center-right", "right"].includes(style.dockPosition)) {
       direction = "LEFT";
