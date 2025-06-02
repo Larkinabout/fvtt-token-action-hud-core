@@ -151,7 +151,7 @@ export class ActionHandler {
       if (availableAction) {
         const systemSelected = availableAction.systemSelected ?? nonPresetAction.systemSelected;
         const userSelected = nonPresetAction.userSelected ?? availableAction.userSelected;
-        Object.assign(nonPresetAction, this.#createAction({ ...availableAction, systemSelected, userSelected }));
+        Object.assign(nonPresetAction, this.createAction({ ...availableAction, systemSelected, userSelected }));
       }
     }
   }
@@ -214,11 +214,11 @@ export class ActionHandler {
 
   /**
    * Create action
-   * @private
+   * @public
    * @param {object} actionData The action data
    * @returns {object}          The action
    */
-  #createAction(actionData) {
+  createAction(actionData) {
     const fullName = actionData.fullName ?? actionData.name;
     const tooltip = getTooltip(actionData.tooltip, fullName);
 
@@ -275,7 +275,10 @@ export class ActionHandler {
     if (!actionsData.length) return;
 
     // Create actions
-    const actions = new Map(actionsData.map(actionData => [actionData.id, this.#createAction(actionData)]));
+    const actions = new Map(actionsData.map(actionData => [
+      actionData.id,
+      (actionData.isAction) ? actionData : this.createAction(actionData)]
+    ));
     this.#addToAvailableActions(actions);
 
     if (!groupData?.id) return;
@@ -284,7 +287,7 @@ export class ActionHandler {
 
     const groups = this.groupHandler.getGroups(groupData);
 
-    if (!groups) return;
+    if (!groups.length) return;
 
     for (const group of groups) {
       // Get existing actions
@@ -304,14 +307,14 @@ export class ActionHandler {
           Object.assign(existingAction, { ...action, isPreset: true, selected, systemSelected, userSelected });
         } else if (!existingAction.selected && existingAction.isPreset) {
           const systemSelected = false;
-          Object.assign(existingAction, this.#createAction({ ...existingAction, systemSelected }));
+          Object.assign(existingAction, this.createAction({ ...existingAction, systemSelected }));
         }
       });
 
       // Loop the generated actions and add any not previously saved
       actions.forEach((action, actionId) => {
         const existingAction = existingActions.get(actionId);
-        if (!existingAction) reorderedActions.push(this.#createAction({ ...action, isPreset: true }));
+        if (!existingAction) reorderedActions.push(this.createAction({ ...action, isPreset: true }));
       });
 
       // Sort actions alphabetically
@@ -386,9 +389,11 @@ export class ActionHandler {
    * @param {Array} actions The actions
    */
   #addToAvailableActions(actions) {
-    actions.forEach((action, actionId) => {
-      if (!this.availableActions.has(actionId)) this.availableActions.set(actionId, action);
-    });
+    for (const [actionId, action] of actions) {
+      if (!this.availableActions.has(actionId)) {
+        this.availableActions.set(actionId, action);
+      }
+    }
   }
 
   /* -------------------------------------------- */

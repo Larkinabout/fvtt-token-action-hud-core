@@ -29,12 +29,12 @@ export class MacroActionHandler {
 
     if (!this.macroActions) {
       this.macroActions = {
-        actionsData: await this.#getActions(),
+        actions: await this.#getActions(),
         groupData: { id: "macros", type: "core" }
       };
     }
 
-    this.actionHandler.addActions(this.macroActions.actionsData, this.macroActions.groupData);
+    this.actionHandler.addActions(this.macroActions.actions, this.macroActions.groupData);
   }
 
   /* -------------------------------------------- */
@@ -48,8 +48,8 @@ export class MacroActionHandler {
     const actionType = "macro";
     const macros = game.macros.filter(macro => this.#hasPermission(macro));
 
-    return macros.map(macro => {
-      return {
+    return macros.map(macro =>
+      this.actionHandler.createAction({
         id: macro.id,
         name: macro.name,
         listName: this.#getListName(actionType, macro.name),
@@ -57,8 +57,8 @@ export class MacroActionHandler {
         onClick: () => {
           game.macros.get(macro.id).execute();
         }
-      };
-    });
+      })
+    );
   }
 
   /* -------------------------------------------- */

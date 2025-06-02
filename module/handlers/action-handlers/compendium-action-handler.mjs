@@ -40,7 +40,7 @@ export class CompendiumActionHandler {
     }
 
     for (const pack of this.compendiumActions.values()) {
-      this.actionHandler.addActions(pack.actionsData, pack.groupData);
+      this.actionHandler.addActions(pack.actions, pack.groupData);
     }
   }
 
@@ -56,15 +56,18 @@ export class CompendiumActionHandler {
     if (!entries) return;
     const actionType = this.#getCompendiumActionType(pack?.documentName);
     if (!actionType) return;
-    const actionsData = entries.map(entry => ({
-      id: entry._id,
-      name: entry.name,
-      listName: `${game.i18n.localize(ACTION_TYPE[actionType])}: ${entry.name}`,
-      img: Utils.getImage(entry),
-      onClick: this.#getOnClick(actionType, pack, entry._id)
-    }));
+    const actions = entries.map(entry => (
+      this.actionHandler.createAction(
+        {
+          id: entry._id,
+          name: entry.name,
+          listName: `${game.i18n.localize(ACTION_TYPE[actionType])}: ${entry.name}`,
+          img: Utils.getImage(entry),
+          onClick: this.#getOnClick(actionType, pack, entry._id)
+        })
+    ));
     const groupData = { id: this.#getGroupId(packId), type: "core" };
-    this.compendiumActions.set(packId, { actionsData, groupData });
+    this.compendiumActions.set(packId, { actions, groupData });
   }
 
   /* -------------------------------------------- */
