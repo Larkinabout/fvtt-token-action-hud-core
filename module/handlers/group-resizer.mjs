@@ -18,7 +18,7 @@ export class GroupResizer {
   async resizeGroup(groupElement) {
     if (!groupElement) return;
 
-    this.#setVariables(groupElement);
+    await this.#setVariables(groupElement);
 
     if (!this.subgroupsElement) return;
 
