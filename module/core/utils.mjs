@@ -34,7 +34,7 @@ export class Logger {
    * @param {object|null} data The data
    */
   static debug(message, data = null) {
-    const isDebug = (game.tokenActionHud) ? game.tokenActionHud.debugSetting : Utils.getSetting("debug");
+    const isDebug = game.tokenActionHud?.setting?.debug ?? Utils.getSetting("debug");
     if (isDebug) {
       if (!data) {
         console.log(`Token Action HUD Debug | ${message}`);
@@ -177,7 +177,7 @@ export class Utils {
   static getImage(entity, defaultImages = []) {
     defaultImages.push("icons/svg/mystery-man.svg");
     let result = "";
-    if (game.tokenActionHud.displayIconsSetting) {
+    if (game.tokenActionHud?.setting?.displayIcons) {
       result = (typeof entity === "string")
         ? entity
         : entity?.img ?? entity?.icon ?? "";
@@ -551,7 +551,7 @@ export class Utils {
 
     // Add asterisk to toggleable actions
     Handlebars.registerHelper("tokenActionHudCoreActiveText", function(block) {
-      if (game.tokenActionHud.activeCssAsTextSetting) {
+      if (game.tokenActionHud?.setting?.activeCssAsText) {
         return block.fn(this);
       }
       return block.inverse(this);
