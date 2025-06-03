@@ -56,6 +56,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD for FFG Star Wars](https://foundryvtt.com/packages/token-action-hud-ffgsw)
 - [Token Action HUD for Forbidden Lands](https://foundryvtt.com/packages/token-action-hud-forbidden-lands)
 - [Token Action HUD Ghostbusters](https://foundryvtt.com/packages/token-action-hud-gb)
+- [Token Action HUD GURPS](https://foundryvtt.com/packages/token-action-hud-gurps)
 - [Token Action HUD Ironsworn](https://foundryvtt.com/packages/token-action-hud-ironsworn)
 - [Token Action HUD L5R 5e](https://foundryvtt.com/packages/token-action-hud-l5r5e)
 - [Token Action HUD LANCER](https://foundryvtt.com/packages/token-action-hud-lancer)
