@@ -3,7 +3,7 @@
     --tah-tooltip-delay: 1500ms;
 }
 
-.tagify.tah-dialog-tagify {
+#token-action-hud-dialog .tagify.tah-dialog-tagify {
     --tag-bg: none;
     --tag-hover: none;
     --tag-text-color: #fff;
@@ -61,7 +61,7 @@
  * DIALOGS
  */
 
- .tagify.tah-dialog-tagify {
+#token-action-hud-dialog .tagify.tah-dialog-tagify {
     --tag-bg: none;
     --tag-hover: none;
     --tag-text-color: var(--color-text-primary);
@@ -85,7 +85,7 @@
     width: 100%;
 }
 
-.tah-dialog-tagify .tagify__tag {
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag {
     margin: 0;
     display: flex;
     align-items: center;
@@ -93,19 +93,20 @@
     border-radius: 4px;
 }
 
-.tah-dialog-tagify .tagify__tag:hover {
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag:hover {
     cursor: grab;
 }
 
-.tah-dialog-tagify .tagify__tag__removeBtn::after {
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag__removeBtn::after {
     content: "\f00d";
     font-family: "Font Awesome 6 Pro";
     font-size: var(--font-size-10);
     font-weight: 700;
+    margin-top: 1px;
 }
 
-.tah-dialog-tagify .tagify__tag:focus:not([readonly]) div::before,
-.tah-dialog-tagify .tagify__tag:hover:not([readonly]) div::before {
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag:focus:not([readonly]) div::before,
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag:hover:not([readonly]) div::before {
     top: 0;
     right: 0;
     bottom: 0;
@@ -114,23 +115,23 @@
     box-shadow: 0px 0px 4px var(--color-shadow-primary) !important; 
 }
 
-.tah-dialog-tagify .tagify__tag .tagify__tag__removeBtn:focus + div span,
-.tah-dialog-tagify .tagify__tag .tagify__tag__removeBtn:hover + div span {
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag .tagify__tag__removeBtn:focus + div span,
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag .tagify__tag__removeBtn:hover + div span {
     opacity: 100%;
 }
 
-.tah-dialog-tagify .tagify__tag__removeBtn + div::before {
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag__removeBtn + div::before {
     border: 1px solid var(--color-border);
     box-shadow: none !important;
 }
 
-.tah-dialog-tagify .tagify__tag__removeBtn:focus::after,
-.tah-dialog-tagify .tagify__tag__removeBtn:hover::after{
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag__removeBtn:focus::after,
+#token-action-hud-dialog .tah-dialog-tagify .tagify__tag__removeBtn:hover::after{
     text-shadow: 0 0 3px var(--color-shadow-primary);
 }
 
 
-.tah-dialog-tags-dropdown .tagify__dropdown__wrapper {
+#token-action-hud-dialog .tah-dialog-tags-dropdown .tagify__dropdown__wrapper {
     align-content: start;
     background: rgba(0, 0, 0, 0.05);
     border: 1px solid var(--color-border);
@@ -144,7 +145,7 @@
     text-overflow: ellipsis;
 }
 
-.tah-dialog-tags-dropdown .tagify__dropdown__item {
+#token-action-hud-dialog .tah-dialog-tags-dropdown .tagify__dropdown__item {
     display: inline-block;
     vertical-align: middle;
     border: 1px solid var(--color-border);
@@ -157,16 +158,16 @@
     transition: 0s;
 }
 
-.tah-dialog-tags-dropdown .tagify__dropdown__item:hover {
+#token-action-hud-dialog .tah-dialog-tags-dropdown .tagify__dropdown__item:hover {
     border: 1px solid transparent;
     box-shadow: 0px 0px 5px var(--color-shadow-primary); 
 }
 
-.tah-dialog-tags-dropdown .tagify__dropdown__item--hidden {
+#token-action-hud-dialog .tah-dialog-tags-dropdown .tagify__dropdown__item--hidden {
     display: none;
 }
 
-.tah-dialog-tagify .tagify__input {
+#token-action-hud-dialog .tah-dialog-tagify .tagify__input {
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     font-size: var(--font-size-12);

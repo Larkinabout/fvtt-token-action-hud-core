@@ -11,6 +11,7 @@ styles/tah-foundry-vtt-dark.css
 styles/tah-foundry-vtt-light.css
 styles/tah-high-contrast.css
 styles/tah-pathfinder.css
+styles/lib/tagify/tagify.css
 
 /.vscode
 token-action-hud-core.lock
