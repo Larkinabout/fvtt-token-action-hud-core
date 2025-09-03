@@ -49,6 +49,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD DC20 RPG](https://foundryvtt.com/packages/token-action-hud-dc20rpg)
 - [Token Action HUD Delta Green](https://foundryvtt.com/packages/token-action-hud-dg)
 - [Token Action HUD D&D 5e](https://foundryvtt.com/packages/token-action-hud-dnd5e)
+- [Token Action HUD Dragonbane](https://foundryvtt.com/packages/token-action-hud-dragonbane)
 - [Token Action HUD for Dungeon Crawl Classics](https://foundryvtt.com/packages/token-action-hud-dcc)
 - [Token Action HUD DS4](https://foundryvtt.com/packages/token-action-hud-ds4)
 - [Token Action HUD Earthdawn](https://foundryvtt.com/packages/token-action-hud-ed4e)
