@@ -71,6 +71,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD for Savage Worlds](https://foundryvtt.com/packages/token-action-hud-swade)
 - [Token Action HUD Shadowdark](https://foundryvtt.com/packages/token-action-hud-shadowdark)
 - [Token Action HUD Sword World 2.5](https://foundryvtt.com/packages/token-action-hud-sw25)
+- [Token Action Hud Tormenta 20](https://foundryvtt.com/packages/token-action-hud-t20)
 - [Token Action HUD for Symbaroum RPG](https://foundryvtt.com/packages/token-action-hud-symbaroum)
 - [Token Action HUD Synthetic Dream Machine](https://foundryvtt.com/packages/token-action-hud-sdm)
 - [Token Action HUD The One Ring 2e](https://foundryvtt.com/packages/token-action-hud-tor2e)
