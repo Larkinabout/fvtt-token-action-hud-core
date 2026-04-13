@@ -496,7 +496,12 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     // Remove focus to allow core ESC interactions
     event.currentTarget.blur();
 
-    if (event.type === "contextmenu") {
+    if (this._wasDragged) {
+      this._wasDragged = false;
+      return;
+    }
+
+    if (event.button === 2) {
       if (this.isUnlocked) {
         this.openEditGroupApp(event);
       } else {
@@ -514,7 +519,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {object} event The event
    */
   static clickSubgroup(event) {
-    if (event.type === "contextmenu") {
+    if (event.button === 2) {
       if (this.isUnlocked) {
         this.openEditGroupApp(event);
       } else {
@@ -593,7 +598,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const groupElement = Utils.getClosestGroupElement(event);
     const nestId = groupElement?.dataset?.nestId;
-    const tabSubgroup = target.closest(".tah-tab-subgroup.hover");
+    const resizeTarget = target.closest(".tah-tab-subgroup.hover") || target.closest("[data-part=\"group\"]");
     const groupsElement = groupElement?.querySelector("[data-part=\"subgroups\"]");
     const collapseIcon = target.querySelector(".tah-collapse-icon");
     const expandIcon = target.querySelector(".tah-expand-icon");
@@ -616,7 +621,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       toggleGroupVisibility();
       saveGroupSettings(false);
       const groupResizer = new GroupResizer(this, this.hudManager);
-      groupResizer.resizeGroup(tabSubgroup);
+      groupResizer.resizeGroup(resizeTarget);
     } else {
       toggleGroupVisibility();
       saveGroupSettings(true);
@@ -726,6 +731,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       // If the mouse has not moved, do not update
       if (pos1 === pos3 && pos2 === pos4) return;
 
+      this._wasDragged = true;
       newElementTop = newElementTop - pos2;
       newElementLeft = newElementLeft - pos1;
 

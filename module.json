@@ -19,7 +19,7 @@
   "version": "2.0.11",
   "compatibility": {
     "minimum": "12.331",
-    "verified": "13.342"
+    "verified": "14.360"
   },
   "esmodules": [
     "./dist/token-action-hud-core.min.mjs"
@@ -36,7 +36,6 @@
     "./styles/tah-foundry-vtt-light.css",
     "./styles/tah-high-contrast.css",
     "./styles/tah-pathfinder.css",
-    "./styles/lib/tagify/tagify.css",
     "./styles/lib/dragsort/dragsort.css"
   ],
   "languages": [

@@ -99,7 +99,7 @@
 
 #token-action-hud-dialog .tah-dialog-tagify .tagify__tag__removeBtn::after {
     content: "\f00d";
-    font-family: "Font Awesome 6 Pro";
+    font-family: "Font Awesome 7 Pro", "Font Awesome 6 Pro";
     font-size: var(--font-size-10);
     font-weight: 700;
     margin-top: 1px;

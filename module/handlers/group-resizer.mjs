@@ -356,7 +356,7 @@ export class GroupResizer {
         uiTopBottom = document.querySelector("#ui-bottom");
       }
     } else if (foundry.utils.isNewerVersion(game.version, "12.999")) {
-      uiTopBottom = document.querySelector("scene-navigation-active");
+      uiTopBottom = document.querySelector("#scene-navigation-active");
     } else {
       uiTopBottom = document.querySelector("#ui-top");
     }

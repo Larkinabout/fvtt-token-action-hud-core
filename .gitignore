@@ -1,6 +1,7 @@
 .idea/
 dist/
 node_modules/*
+storage/*
 styles/tah-custom.css
 styles/tah-docked-left.css
 styles/tah-docked-left-v13.css
@@ -12,6 +13,7 @@ styles/tah-foundry-vtt-light.css
 styles/tah-high-contrast.css
 styles/tah-pathfinder.css
 styles/lib/tagify/tagify.css
+symlink.bat
 
 /.vscode
 token-action-hud-core.lock
