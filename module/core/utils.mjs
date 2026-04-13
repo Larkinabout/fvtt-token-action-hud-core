@@ -522,6 +522,26 @@ export class Utils {
       const classesToRemove = [...tahElement.classList].filter(c => c !== "tah-expanded");
       if (classesToRemove.length) tahElement.classList.remove(classesToRemove);
       tahElement.classList.add(styleClass);
+
+      if (style === "custom") {
+        Utils.applyCustomStyles(tahElement);
+      }
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Apply saved custom style CSS properties to the HUD element
+   * @public
+   * @param {HTMLElement} element HUD element
+   */
+  static applyCustomStyles(element) {
+    for (const [key, value] of Object.entries(CUSTOM_STYLE)) {
+      const saved = Utils.getSetting(key);
+      if (saved != null) {
+        element.style.setProperty(value.cssProperty, saved);
+      }
     }
   }
 
