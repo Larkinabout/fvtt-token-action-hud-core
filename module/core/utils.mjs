@@ -525,6 +525,8 @@ export class Utils {
 
       if (style === "custom") {
         Utils.applyCustomStyles(tahElement);
+      } else {
+        Utils.removeCustomStyles(tahElement);
       }
     }
   }
@@ -542,6 +544,19 @@ export class Utils {
       if (saved != null) {
         element.style.setProperty(value.cssProperty, saved);
       }
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Remove custom style CSS properties from the HUD element
+   * @public
+   * @param {HTMLElement} element HUD element
+   */
+  static removeCustomStyles(element) {
+    for (const value of Object.values(CUSTOM_STYLE)) {
+      element.style.removeProperty(value.cssProperty);
     }
   }
 

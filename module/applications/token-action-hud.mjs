@@ -1225,10 +1225,6 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.rendering = true;
     this.render({ force: true, position: {} });
 
-    if (!ui.windows[MODULE.ID]) {
-      ui.windows[MODULE.ID] = this;
-    }
-
     this.isUpdating = false;
 
     Hooks.callAll("tokenActionHudCoreHudUpdated", MODULE);
@@ -1273,8 +1269,6 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.closeTimer = setTimeout(() => {
       this.close({ animate: false });
     }, 500);
-
-    delete ui.windows[MODULE.ID];
   }
 
   /* -------------------------------------------- */
