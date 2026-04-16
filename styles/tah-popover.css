@@ -1,0 +1,53 @@
+#token-action-hud-popover.tah-add-popover-app {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 400px;
+  overflow: hidden;
+  position: fixed;
+  z-index: 1000;
+  background: var(--background, var(--color-cool-5-90));
+  border-radius: 4px;
+  color: var(--color-text-primary);
+  font-family: var(--font-primary, sans-serif);
+  box-shadow: 0 0 10px #000;
+}
+
+#token-action-hud-popover .tah-add-popover-list {
+  max-height: 240px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+}
+
+#token-action-hud-popover .tah-add-popover-list::marker {
+  content: "";
+}
+
+#token-action-hud-popover .tah-add-popover-item {
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: var(--font-size-13, 13px);
+  margin-bottom: 0;
+  padding: 5px 8px;
+  transition: background-color 0.1s, border-color 0.1s, color 0.1s;
+}
+
+#token-action-hud-popover .tah-add-popover-item:hover,
+#token-action-hud-popover .tah-add-popover-item.focused {
+  background: var(--button-hover-background-color, var(--color-warm-2));
+  border-color: var(--color-warm-1);
+}
+
+#token-action-hud-popover .tah-add-popover-item.tah-add-popover-custom {
+  font-style: italic;
+}
+
+#token-action-hud-popover .tah-add-popover-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

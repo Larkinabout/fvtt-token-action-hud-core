@@ -102,7 +102,7 @@
   .tah-button-box {
     align-items: center;
     background-color: transparent;
-    border: none;
+    border: 1px solid transparent;
     border-radius: 0;
     color: var(--tah-button-text-color);
     display: flex;
@@ -166,7 +166,10 @@
       box-shadow: var(--tah-button-active-box-shadow);
       color: var(--tah-button-active-text-color);
       &.activeText>.tah-button-content:after {
-        content: "*";
+        content: "\f00c"; // fa-check
+        font-family: "Font Awesome 7 Pro", "Font Awesome 6 Pro";
+        font-weight: 900;
+        margin-left: 0.25rem;
       }
     }
     /* -------------------------------------------- */
@@ -223,18 +226,6 @@
         }
       }
     }
-    /* -------------------------------------------- */
-    /*  Edit Group Icon                             */
-    /* -------------------------------------------- */
-    >.tah-edit-group-icon {
-      font-size: @tah-edit-group-icon-font-size;
-      position: relative;
-      visibility: hidden;
-    }
-    &:hover:not(.disable-edit)>.tah-edit-group-icon {
-      visibility: visible;
-    }
-    /* -------------------------------------------- */
   }
   /* -------------------------------------------- */
   /* Icon Button                                  */
@@ -248,6 +239,7 @@
     &:hover,
     &:focus {
       box-shadow: none;
+      outline: none;
       >i {
         color: var(--tah-icon-hover-color);
         text-shadow: var(--tah-icon-hover-text-shadow);
@@ -273,6 +265,58 @@
     filter: @tah-groups-filter;
     flex-direction: column;
     overflow-x: hidden;
+    .tah-add-group-button,
+    .tah-add-subgroup-button {
+      border: 1px dashed var(--tah-text-primary-color, #fff);
+      .tah-drop-icon { display: none; }
+    }
+    /* Hide nested subgroups in docked HUD */
+    [data-part="subgroup"] .tah-add-subgroup-button {
+      display: none;
+    }
+    &.tah-unlocked {
+      .tah-collapse-icon,
+      .tah-expand-icon {
+        display: none;
+      }
+    }
+    .tah-add-action-button {
+      align-items: center;
+      aspect-ratio: 1;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px dashed var(--tah-text-primary-color, #fff);
+      border-radius: 4px;
+      color: var(--tah-text-primary-color, #fff);
+      cursor: pointer;
+      display: inline-flex;
+      height: var(--tah-button-height);
+      justify-content: center;
+      justify-self: center;
+      margin: 0;
+      opacity: 0.6;
+      padding: 0;
+      &:hover {
+        border-color: var(--tah-text-hover-primary-color, #fff);
+        color: var(--tah-text-hover-primary-color, #fff);
+        opacity: 1;
+      }
+    }
+    &.tah-drag-active {
+      .tah-add-group-button,
+      .tah-add-subgroup-button {
+        opacity: 0.5;
+        .tah-add-icon { display: none; }
+        &.tah-drop-indicator {
+          background: var(--color-warm-1, #ee9b3a);
+          border-color: var(--color-warm-1, #ee9b3a);
+          opacity: 1;
+          .tah-drop-icon {
+            color: var(--color-cool-5, #0b0a13);
+            display: inline-block;
+          }
+        }
+      }
+    }
     .tah-tab-groups {
       width: max-content;
       >.tah-tab-subgroup>.tah-subgroups>.tah-actions {
@@ -325,7 +369,8 @@
         display: flex;
         flex-direction: column;
         gap: var(--tah-gap);
-        width: max-content;
+        min-width: max-content;
+        width: 100%;
       }
       .tah-list-subgroups {
         flex-direction: column;
@@ -367,11 +412,8 @@
             >.tah-expand-icon:not(.tah-hidden) {
               visibility: visible;
             }
-            &:not(.disable-edit)>.tah-edit-icon {
-              visibility: visible;
-            }
             >i {
-              color: var(--tah-list-subgroup-title-hover-icon-color);
+              bottom: 1px;
             }
           }
           >i {
@@ -380,14 +422,6 @@
             pointer-events: none;
             position: relative;
             visibility: hidden;
-            &.tah-collapse-icon {
-              bottom: 1px;
-            }
-            &.tah-edit-icon {
-              padding-right: 10px;
-              position: absolute;
-              right: 0;
-            }
           }
           .tah-info {
             background: var(--tah-button-background-color);

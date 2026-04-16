@@ -297,12 +297,11 @@ export class DataHandler {
       const response = await fetch(`${foundFile}?ms=${ms}`);
 
       // Check if the fetch was successful
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      } else {
-        return null;
-      }
+      if (!response.ok) return null;
+
+      const text = await response.text();
+      if (!text) return null;
+      return JSON.parse(text);
     } catch(error) {
       console.error(error);
       return null;

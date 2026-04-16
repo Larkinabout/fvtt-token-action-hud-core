@@ -1,0 +1,19 @@
+<div class="tah-add-popover">
+    <input type="text" class="tah-add-popover-search" autofocus
+           placeholder="{{localize 'tokenActionHud.addSubgroup.placeholder'}}" />
+    <ul class="tah-add-popover-list">
+        {{#each available}}
+        <li class="tah-add-popover-item" data-index="{{@index}}" data-id="{{id}}"
+            data-type="{{type}}" data-list-name="{{value}}" data-name="{{name}}" tabindex="0">
+            <span class="tah-add-popover-name">{{value}}</span>
+        </li>
+        {{/each}}
+        <li class="tah-add-popover-item tah-add-popover-custom tah-hidden" data-custom="true" tabindex="0">
+            <span>{{localize "tokenActionHud.addSubgroup.createCustom"}}</span>
+            <span class="tah-add-popover-custom-name"></span>
+        </li>
+        <li class="tah-add-popover-item tah-add-popover-empty tah-hidden">
+            {{localize "tokenActionHud.addSubgroup.noResults"}}
+        </li>
+    </ul>
+</div>

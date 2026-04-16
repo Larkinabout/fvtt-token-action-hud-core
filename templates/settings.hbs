@@ -1,7 +1,7 @@
-<div class="standard-form">
-    <div class="standard-form scrollable">
+<section class="standard-form">
+    <section class="standard-form scrollable">
         {{#each this.settings}}
-        <div class="form-group">
+        <div class="form-group{{#if this.isCheckbox}} slim{{/if}}">
             <label>{{this.name}}</label>
             <div class="form-fields">
                 {{#if this.isCheckbox}}
@@ -24,9 +24,9 @@
                 {{numberInput this.value name=this.id}}
 
                 {{else if this.isButton}}
-                <button type="button" data-action="{{this.action}}" style="flex: 2;">
+                <button type="button" data-action="{{this.action}}">
                     {{#if this.icon}}<i class="{{this.icon}}"></i>{{/if}}
-                    <label>{{this.label}}</label>
+                    {{this.label}}
                 </button>
 
                 {{else}}
@@ -36,10 +36,10 @@
             <p class="hint">{{this.hint}}</p>
         </div>
         {{/each}}
-    </div>
+    </section>
     <footer class="form-footer" data-application-part="footer">
         <button type="submit" class="save-button">
             <i class="fas fa-solid fa-floppy-disk"></i>{{localize "tokenActionHud.saveAndClose"}}
         </button>
     </footer>
-</div>
+</section>

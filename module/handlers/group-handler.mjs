@@ -1,4 +1,4 @@
-import { COMPENDIUM_PACK_TYPES, GROUP_TYPE } from "../core/constants.mjs";
+import { COMPENDIUM_PACK_TYPES, CSS_STYLE, GROUP_TYPE } from "../core/constants.mjs";
 import { Logger, Utils } from "../core/utils.mjs";
 import { getTooltip } from "../handlers/tooltip-handler.mjs";
 
@@ -157,22 +157,26 @@ export class GroupHandler {
    * @returns {object}   The prepared groups
    */
   async prepareGroups(hud) {
+    const isDocked = !!CSS_STYLE[Utils.getSetting("style")]?.isDocked;
+
     if (Object.keys(this.userGroups).length) {
       const userGroups = this.getUserGroups();
       for (const userGroup of userGroups) {
         if (userGroup.level === 1) {
           const group = this.createGroup(userGroup);
-          hud.groups.push(group);
+          if (group.selected !== false) hud.groups.push(group);
           this.groups[group.nestId] = group;
         } else {
           const parentNestId = userGroup.nestId.split("_", userGroup.level - 1).join("_");
           const parentGroup = await Utils.getGroupByNestId(hud.groups, { nestId: parentNestId });
           if (parentGroup) {
             const group = this.createGroup(userGroup);
-            if (group.settings.style === "tab") {
-              parentGroup.groups.tabs.push(group);
-            } else {
-              parentGroup.groups.lists.push(group);
+            if (group.selected !== false) {
+              if (!isDocked && group.settings.style === "tab") {
+                parentGroup.groups.tabs.push(group);
+              } else {
+                parentGroup.groups.lists.push(group);
+              }
             }
             this.groups[group.nestId] = group;
           }
@@ -202,10 +206,12 @@ export class GroupHandler {
               group.actions = actorGroup.actions;
             }
 
-            if (group.settings.style === "tab") {
-              parentGroup.groups.tabs.push(group);
-            } else {
-              parentGroup.groups.lists.push(group);
+            if (group.selected !== false) {
+              if (!isDocked && group.settings.style === "tab") {
+                parentGroup.groups.tabs.push(group);
+              } else {
+                parentGroup.groups.lists.push(group);
+              }
             }
 
             this.groups[group.nestId] = group;
@@ -562,21 +568,6 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get selected groups as Tagify entries
-   * @public
-   * @param {object} groupData The group data
-   * @returns {object}         The selected groups
-   */
-  getSelectedGroupsAsTags(groupData = {}) {
-    groupData.selected = true;
-    groupData.level = (groupData.level || 0) + 1;
-    const groups = this.getGroups(groupData);
-    return groups?.map(group => this.#toTagify(group)) ?? [];
-  }
-
-  /* -------------------------------------------- */
-
-  /**
    * Get available groups as Tagify entries
    * @public
    * @param {object} groupData The group data
@@ -694,10 +685,13 @@ export class GroupHandler {
 
         if (!parentGroup.groups) parentGroup.groups = { lists: [], tabs: [] };
 
-        if (group.settings.style === "tab") {
-          parentGroup.groups.tabs.push(group);
-        } else {
-          parentGroup.groups.lists.push(group);
+        if (group.selected !== false) {
+          const isDocked = !!CSS_STYLE[Utils.getSetting("style")]?.isDocked;
+          if (!isDocked && group.settings.style === "tab") {
+            parentGroup.groups.tabs.push(group);
+          } else {
+            parentGroup.groups.lists.push(group);
+          }
         }
         this.groups[group.nestId] = group;
       }

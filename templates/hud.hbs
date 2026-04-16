@@ -14,11 +14,28 @@
 </div>
 <div class="tah-groups" data-part="groups">
     {{#each hud.groups}}
+    <button type="button" class="tah-add-group-button tah-hidden"
+            data-part="addGroupButton" data-action="addGroup"
+            data-position="{{@index}}" aria-label="{{localize 'tokenActionHud.addGroup.label'}}"
+            data-tooltip="{{localize 'tokenActionHud.addGroup.label'}}">
+        <i class="tah-add-icon fa-solid fa-plus"></i>
+        <i class="tah-drop-icon fa-solid fa-arrow-down-to-line"></i>
+    </button>
     {{>"modules/token-action-hud-core/templates/group.hbs" collapsibleSubgroups=../collapsibleSubgroups background=../background}}
     {{/each}}
+    <button type="button" class="tah-add-group-button tah-hidden"
+            data-part="addGroupButton" data-action="addGroup"
+            data-position="{{hud.groups.length}}" aria-label="{{localize 'tokenActionHud.addGroup.label'}}"
+            data-tooltip="{{localize 'tokenActionHud.addGroup.label'}}">
+        <i class="tah-add-icon fa-solid fa-plus"></i>
+        <i class="tah-drop-icon fa-solid fa-arrow-down-to-line"></i>
+    </button>
 </div>
 {{#unless hovering}}
 <div id="tah-buttons" data-part="buttons">
+    <button type="button" id="tah-drag-hud" class="tah-button-icon tah-hidden" data-part="dragHudButton" data-tooltip="{{localize "tokenActionHud.dragHud"}}">
+        <i class="fa-solid fa-arrows-up-down-left-right"></i>
+    </button>
     <button id="tah-unlock" class="tah-button-icon" data-part="unlockHudButton" data-action="unlockHud" data-tooltip="{{localize "tokenActionHud.unlockHud"}}">
         <i class="fa fa-lock"></i>
     </button>

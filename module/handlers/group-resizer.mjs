@@ -98,6 +98,7 @@ export class GroupResizer {
     // Reset action elements
     const emptyStyle = { display: "", gridTemplateColumns: "", width: "" };
     await this.#resetCSS(this.actionsElements, emptyStyle);
+    this.actionsElements.forEach(el => el.classList.remove("tah-actions-grid"));
 
     const actionWidths = [];
     const actionWidthsForMedian = [];
@@ -150,6 +151,7 @@ export class GroupResizer {
       : (actions.length <= this.minCols) ? actions.length : squaredCols;
     // Apply maxHeight and width styles to content
     const style = { display: "grid", gridTemplateColumns: `repeat(${cols}, ${this.gridWidth}px)` };
+    actionsElement.classList.add("tah-actions-grid");
     await this.#assignCSS(actionsElement, style);
   }
 
@@ -163,6 +165,7 @@ export class GroupResizer {
    */
   async #resize(actionsElement, groupCustomWidth) {
     if (!actionsElement) return;
+    actionsElement.classList.remove("tah-actions-grid");
 
     let width = 500;
 

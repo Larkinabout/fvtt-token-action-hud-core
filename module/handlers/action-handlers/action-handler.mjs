@@ -176,8 +176,8 @@ export class ActionHandler {
 
         const subgroupCharacterCount = subgroup?.settings?.characterCount;
         const characterCount = (subgroupCharacterCount >= 0)
-          ? groupCharacterCount
-          : subgroupCharacterCount;
+          ? subgroupCharacterCount
+          : groupCharacterCount;
 
         // Exit if character limit is not defined
         if ((!characterCount && characterCount !== 0) || characterCount < 0) continue;
@@ -196,6 +196,24 @@ export class ActionHandler {
         }
       }
     }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether actions should be sorted.
+   * @private
+   * @param {object} group
+   * @returns {boolean}
+   */
+  #shouldSortActions(group) {
+    if (group?.settings?.sort !== undefined) return !!group.settings.sort;
+    const topLevelNestId = group?.nestId?.split("_")[0];
+    if (topLevelNestId && topLevelNestId !== group.nestId) {
+      const topLevelGroup = this.groupHandler.getGroup({ nestId: topLevelNestId });
+      if (topLevelGroup?.settings?.sort !== undefined) return !!topLevelGroup.settings.sort;
+    }
+    return !!Utils.getSetting("sortActions");
   }
 
   /* -------------------------------------------- */
@@ -317,16 +335,13 @@ export class ActionHandler {
         if (!existingAction) reorderedActions.push(this.createAction({ ...action, isPreset: true }));
       });
 
-      // Sort actions alphabetically
-      if (
-        groupData?.settings?.sort
-        || (typeof groupData?.settings?.sort === "undefined" && Utils.getSetting("sortActions"))
-      ) {
-        reorderedActions.sort((a, b) => a.name.localeCompare(b.name));
-      }
-
       // Add actions to group
       group.actions.push(...reorderedActions);
+
+      // Sort actions
+      if (this.#shouldSortActions(group)) {
+        group.actions.sort((a, b) => a.name.localeCompare(b.name));
+      }
     }
   }
 
@@ -371,9 +386,8 @@ export class ActionHandler {
       }
     }
 
-    // Sort actions alphabetically
-    if (groupData?.settings?.sort
-      || (typeof groupData?.settings?.sort === "undefined" && Utils.getSetting("sortActions"))) {
+    // Sort actions
+    if (this.#shouldSortActions(group)) {
       reorderedActions.sort((a, b) => a.name.localeCompare(b.name));
     }
 

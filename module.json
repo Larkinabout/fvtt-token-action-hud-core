@@ -16,7 +16,7 @@
   ],
   "url": "This is auto replaced",
   "flags": {},
-  "version": "2.0.11",
+  "version": "2.1.0",
   "compatibility": {
     "minimum": "12.331",
     "verified": "14.360"
@@ -26,6 +26,7 @@
   ],
   "styles": [
     "./styles/token-action-hud.css",
+    "./styles/tah-popover.css",
     "./styles/tah-custom.css",
     "./styles/tah-docked-left.css",
     "./styles/tah-docked-left-v13.css",
@@ -35,8 +36,7 @@
     "./styles/tah-foundry-vtt-dark-compact.css",
     "./styles/tah-foundry-vtt-light.css",
     "./styles/tah-high-contrast.css",
-    "./styles/tah-pathfinder.css",
-    "./styles/lib/dragsort/dragsort.css"
+    "./styles/tah-pathfinder.css"
   ],
   "languages": [
     {

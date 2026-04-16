@@ -21,15 +21,16 @@ const TEMPLATE_DIR = `modules/${MODULE.ID}/templates`;
  */
 export const TEMPLATE = {
   action: `${TEMPLATE_DIR}/action.hbs`,
+  addPopover: `${TEMPLATE_DIR}/add-popover.hbs`,
   customStyleForm: `${TEMPLATE_DIR}/custom-style-form.hbs`,
   group: `${TEMPLATE_DIR}/group.hbs`,
   hud: `${TEMPLATE_DIR}/hud.hbs`,
   listSubgroup: `${TEMPLATE_DIR}/list-subgroup.hbs`,
   settings: `${TEMPLATE_DIR}/settings.hbs`,
   tabSubgroup: `${TEMPLATE_DIR}/tab-subgroup.hbs`,
-  tagifyAppHud: `${TEMPLATE_DIR}/tag-dialog-hud.hbs`,
-  tagifyAppGroup: `${TEMPLATE_DIR}/tag-dialog-group.hbs`,
-  tagifyAppSubgroup: `${TEMPLATE_DIR}/tag-dialog-subgroup.hbs`
+  formHud: `${TEMPLATE_DIR}/form-hud.hbs`,
+  formGroup: `${TEMPLATE_DIR}/form-group.hbs`,
+  formSubgroup: `${TEMPLATE_DIR}/form-subgroup.hbs`
 };
 
 /* -------------------------------------------- */

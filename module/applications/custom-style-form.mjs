@@ -21,14 +21,15 @@ export class CustomStyleForm extends HandlebarsApplicationMixin(ApplicationV2) {
       handler: CustomStyleForm.submit
     },
     position: {
-      width: 600,
+      width: 540,
       height: 680
     },
     tag: "form",
     window: {
       minimizable: true,
       resizable: true,
-      title: "tokenActionHud.settings.customStyle.form.title"
+      title: "tokenActionHud.settings.customStyle.form.title",
+      icon: "fa-solid fa-palette"
     }
   };
 

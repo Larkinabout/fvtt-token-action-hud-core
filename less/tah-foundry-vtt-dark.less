@@ -1,14 +1,11 @@
 @text-shadow: 
-  1px 1px 1px rgb(11, 10, 19),
-  1px 1px 1px rgb(11, 10, 19),
-  1px 1px 3px rgb(11, 10, 19),
-  1px 1px 5px rgb(11, 10, 19);
+  -1px -1px 3px rgba(0,0,0,0.25),
+  1px 1px 1px rgba(0,0,0,1),
+  1px 1px 3px rgba(0,0,0,0.5);
 @font-size: var(--font-size-16);
 @button-font-size: var(--font-size-13);
 @tah-button-content-padding: 0 10px;
 @tah-groups-filter: none;
-@tah-edit-group-icon-font-size: 8px;
-@tah-edit-group-icon-top: 2px;
 @tah-subgroups-container-left: -10px;
 @tah-subgroups-container-expand-down-tah-subgroups-padding: 3px 10px 10px 10px;
 @tah-subgroups-container-expand-up-tah-subgroups-padding: 10px 10px 3px 10px;
@@ -24,7 +21,7 @@
 
   --tah-button-background: var(--tah-button-background-color);
   --tah-button-background-color: rgba(11, 10, 19, 0.9);
-  --tah-button-border: none;
+  --tah-button-border: 1px solid transparent;
   --tah-button-box-shadow:
     0 2px 0 -1px #0c0c0c,
     0 0 0 1px #060606,
@@ -36,7 +33,7 @@
   --tah-button-text-shadow: @text-shadow;
 
   --tah-button-hover-background-color: var(--tah-button-background-color);
-  --tah-button-hover-border: none;
+  --tah-button-hover-border: 1px solid transparent;
   --tah-button-hover-box-shadow:
     0 2px 0 -1px var(--tah-text-tertiary-color),
     0 0 0 1px red,

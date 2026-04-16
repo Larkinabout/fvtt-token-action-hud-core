@@ -12,8 +12,6 @@
 @tah-groups-filter: none;
 @tah-hud-border-radius: 0 4px 4px 4px; 
 @tah-hud-margin: 16px;
-@tah-edit-group-icon-font-size: 8px;
-@tah-edit-group-icon-top: 2px;
 @tah-subgroups-container-left: -10px;
 @tah-subgroups-container-expand-down-tah-subgroups-padding: 3px 10px 10px 10px;
 @tah-subgroups-container-expand-up-tah-subgroups-padding: 10px 10px 3px 10px;
@@ -29,7 +27,7 @@
   --tah-hud-width: 200px;
   --tah-button-background: var(--tah-button-background-color);
   --tah-button-background-color: #0b0a1360;
-  --tah-button-border: none;
+  --tah-button-border: 1px solid transparent;
   --tah-button-box-shadow: 0 2px 0 -1px #0c0c0c,
     0 0 0 1px #060606,
     0 0 5px #000000ff;
@@ -37,9 +35,9 @@
   --tah-button-text-color: var(--tah-text-primary-color);
   --tah-button-height: 32px;
   --tah-button-min-width: 32px;
-  --tah-button-text-shadow: 1px 1px 1px #0b0a13, 1px 1px 1px #0b0a13, 1px 1px 3px #0b0a13, 1px 1px 5px #0b0a13;
+  --tah-button-text-shadow: -1px -1px 3px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(0, 0, 0, 1), 1px 1px 3px rgba(0, 0, 0, 0.5);
   --tah-button-hover-background-color:  #ffffff40;
-  --tah-button-hover-border: none;
+  --tah-button-hover-border: 1px solid transparent;
   --tah-button-hover-box-shadow: none;
   --tah-button-hover-text-primary-color: #ffffff;
   --tah-button-hover-text-secondary-color: var(--tah-text-hover-secondary-color);
@@ -58,14 +56,14 @@
   --tah-button-image-height: var(--tah-button-height);
   --tah-button-image-width: var(--tah-button-min-width);
   --tah-icon-color: var(--tah-text-primary-color);
-  --tah-icon-text-shadow: 1px 1px 1px #0b0a13, 1px 1px 1px #0b0a13, 1px 1px 3px #0b0a13, 1px 1px 5px #0b0a13;
+  --tah-icon-text-shadow: -1px -1px 3px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(0, 0, 0, 1), 1px 1px 3px rgba(0, 0, 0, 0.5);
   --tah-icon-hover-color: #ffffff;
   --tah-icon-hover-text-shadow: 0 0 8px var(--color-shadow-primary);
   --tah-text-primary-color: #efe6d8;
   --tah-text-secondary-color: #d0b8a3;
   --tah-text-tertiary-color: #ff6400;
   --tah-character-name-color: var(--tah-text-primary-color);
-  --tah-character-name-text-shadow: 1px 1px 1px #0b0a13, 1px 1px 1px #0b0a13, 1px 1px 3px #0b0a13, 1px 1px 5px #0b0a13;
+  --tah-character-name-text-shadow: -1px -1px 3px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(0, 0, 0, 1), 1px 1px 3px rgba(0, 0, 0, 0.5);
   --tah-list-subgroup-title-icon-color: var(--tah-text-primary-color);
   --tah-list-subgroup-title-hover-icon-color: #ffffff;
   --tah-list-subgroup-title-font-size: var(--font-size-16);
@@ -75,7 +73,7 @@
   --tah-text-hover-primary-color: var(--tah-text-primary-color);
   --tah-text-hover-secondary-color: var(--tah-text-secondary-color);
   --tah-text-hover-tertiary-color: var(--tah-text-tertiary-color);
-  --tah-text-shadow: 1px 1px 1px #0b0a13, 1px 1px 1px #0b0a13, 1px 1px 3px #0b0a13, 1px 1px 5px #0b0a13;
+  --tah-text-shadow: -1px -1px 3px rgba(0, 0, 0, 0.25), 1px 1px 1px rgba(0, 0, 0, 1), 1px 1px 3px rgba(0, 0, 0, 0.5);
 
   flex: 0;
   height: min-content;

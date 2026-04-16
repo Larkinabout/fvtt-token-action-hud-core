@@ -514,12 +514,15 @@ export class Utils {
   static switchCSS(style) {
     const tahElement = document.querySelector("#token-action-hud-app");
     if (tahElement) {
+      if (!CSS_STYLE[style]) style = "foundryVTT";
       const styleClass = foundry.utils.isNewerVersion(game.version, "12.999") && ["dockedLeft", "dockedCenterRight", "dockedRight"].includes(style)
         ? `${CSS_STYLE[style].class}-v13`
         : CSS_STYLE[style].class;
 
       if (tahElement.classList.contains(styleClass)) return;
-      const classesToRemove = [...tahElement.classList].filter(c => c !== "tah-expanded");
+
+      const PRESERVE = new Set(["tah-expanded", "faded-ui"]);
+      const classesToRemove = [...tahElement.classList].filter(c => !PRESERVE.has(c));
       if (classesToRemove.length) tahElement.classList.remove(classesToRemove);
       tahElement.classList.add(styleClass);
 
@@ -630,10 +633,10 @@ export class Utils {
     const coreModuleVersionParts = this.getModuleVersionParts(game.modules.get(MODULE.ID).version);
 
     if (coreModuleVersionParts.major !== requiredCoreModuleVersionParts.major
-      || coreModuleVersionParts.minor !== requiredCoreModuleVersionParts.minor
+      || (requiredCoreModuleVersionParts.minor && coreModuleVersionParts.minor !== requiredCoreModuleVersionParts.minor)
       || (requiredCoreModuleVersionParts.patch && coreModuleVersionParts.patch !== requiredCoreModuleVersionParts.patch)
     ) {
-      const requiredVersion = `${requiredCoreModuleVersionParts.major}.${requiredCoreModuleVersionParts.minor}.${requiredCoreModuleVersionParts.patch ?? "X"}`;
+      const requiredVersion = `${requiredCoreModuleVersionParts.major}.${requiredCoreModuleVersionParts.minor ?? "X"}.${requiredCoreModuleVersionParts.patch ?? "X"}`;
       const installedVersion = game.modules.get(MODULE.ID).version;
       ui.notifications.error(
         `The installed Token Action HUD system module requires Token Action HUD Core module version ${requiredVersion}, but version ${installedVersion} is installed. Install Token Action HUD Core module version ${requiredVersion} to continue using Token Action HUD. Earlier versions of Token Action HUD Core are available on the module's package page on the Foundry VTT site.`,
