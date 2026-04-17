@@ -465,6 +465,34 @@
         display: grid;
         width: 100%;
       }
+      [data-part="action"].tah-drop-action-before,
+      [data-part="action"].tah-drop-action-after {
+        position: relative;
+        &::after {
+          background: var(--color-warm-1, #ee9b3a);
+          border-radius: 2px;
+          content: "";
+          height: 3px;
+          left: 10%;
+          pointer-events: none;
+          position: absolute;
+          width: 80%;
+          z-index: 100;
+        }
+      }
+      [data-part="action"].tah-drop-action-before::after {
+        top: 0;
+        left: 10%;
+        right: auto;
+        transform: translateY(-50%);
+      }
+      [data-part="action"].tah-drop-action-after::after {
+        bottom: 0;
+        top: auto;
+        left: 10%;
+        right: auto;
+        transform: translateY(50%);
+      }
     }
   }
 }

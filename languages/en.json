@@ -36,7 +36,7 @@
     "tokenActionHud.form.group.characterCount.hint": "Shorten action names in this group to a maximum number of characters. For example, a limit of 3 displays \"Strength\" as \"Str\".",
     "tokenActionHud.form.group.characterCount.label": "Characters per Word",
     "tokenActionHud.form.group.characterCount.placeholder": "No limit",
-    "tokenActionHud.form.group.collapse.hint": "Collapse this group",
+    "tokenActionHud.form.group.collapse.hint": "Collapse this group.",
     "tokenActionHud.form.group.collapse.label": "Collapse Group",
     "tokenActionHud.form.group.content.label": "Group Content",
     "tokenActionHud.form.group.customWidth.hint": "Set a custom width in pixels for this group. Leave blank to size automatically.",

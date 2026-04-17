@@ -1200,7 +1200,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     const target = this.#findNearestActionSibling(source, ev.clientX, ev.clientY);
     if (!target) return;
     const rect = target.getBoundingClientRect();
-    const before = ev.clientX < rect.left + (rect.width / 2);
+    const before = this.isDocked
+      ? ev.clientY < rect.top + (rect.height / 2)
+      : ev.clientX < rect.left + (rect.width / 2);
     this.#clearDropIndicators();
     target.classList.add(before ? "tah-drop-action-before" : "tah-drop-action-after");
   }
