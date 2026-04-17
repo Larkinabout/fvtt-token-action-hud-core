@@ -173,11 +173,11 @@ export class AddActionApp extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   static async open({ groupHandler, actionHandler, parentNestId, parentLevel, anchorElement }) {
     const groupData = { nestId: parentNestId, level: parentLevel };
-    const allTags = actionHandler.getAvailableActionsAsTags();
-    const selected = actionHandler.getSelectedActionsAsTags(groupData) ?? [];
-    const selectedIds = new Set(selected.map(t => t.id));
+    const allActions = actionHandler.getAvailableActions();
+    const selected = actionHandler.getSelectedActions(groupData) ?? [];
+    const selectedIds = new Set(selected.map(a => a.id));
     // Show only actions not already in the group.
-    const available = allTags.filter(t => !selectedIds.has(t.id));
+    const available = allActions.filter(a => !selectedIds.has(a.id));
 
     const onSelect = async chosen => {
       const newEntry = {

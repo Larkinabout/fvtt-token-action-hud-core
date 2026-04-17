@@ -185,7 +185,7 @@ export class AddSubgroupApp extends HandlebarsApplicationMixin(ApplicationV2) {
    * @param {HTMLElement} options.anchorElement
    */
   static async open({ groupHandler, parentNestId, parentLevel, position, anchorElement }) {
-    const available = await groupHandler.getAvailableGroupAsTags({ nestId: parentNestId, level: parentLevel });
+    const available = await groupHandler.getAvailableGroups({ nestId: parentNestId, level: parentLevel });
 
     const onSelect = async chosen => {
       const allChildren = Object.values(groupHandler.groups)

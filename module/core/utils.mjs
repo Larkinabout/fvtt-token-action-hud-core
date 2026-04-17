@@ -5,8 +5,8 @@ import { CSS_STYLE, CUSTOM_STYLE, MODULE } from "./constants.mjs";
  */
 export class Logger {
   /**
-   * Log an info message to the console. If 'notify' is true, also send a notification
-   * @param {string} message The message
+   * Log an info message to the console. If 'notify' is true, also send a notification.
+   * @param {string} message
    * @param {boolean} notify Whether to send a notification
    */
   static info(message, notify = false) {
@@ -17,8 +17,8 @@ export class Logger {
   /* -------------------------------------------- */
 
   /**
-   * Log an error message to the console. If 'notify' is true, also send a notification
-   * @param {string} message The message
+   * Log an error message to the console. If 'notify' is true, also send a notification.
+   * @param {string} message
    * @param {boolean} notify Whether to send a notification
    */
   static error(message, notify = false) {
@@ -29,9 +29,9 @@ export class Logger {
   /* -------------------------------------------- */
 
   /**
-   * Log a debug message and, optionally, data to the console
-   * @param {string} message   The message
-   * @param {object|null} data The data
+   * Log a debug message and, optionally, data to the console.
+   * @param {string} message
+   * @param {object|null} data
    */
   static debug(message, data = null) {
     const isDebug = game.tokenActionHud?.setting?.debug ?? Utils.getSetting("debug");
@@ -76,11 +76,16 @@ export class Timer {
  * A class of helper functions.
  */
 export class Utils {
+
+  /* -------------------------------------------- */
+  /* HELPERS                                      */
+  /* -------------------------------------------- */
+
   /**
-   * Whether the user is allowed to use the HUD
+   * Whether the user is allowed to use the HUD.
    * @public
-   * @param {number} userRole     The user's role
-   * @param {number} allowSetting The 'allow' setting value
+   * @param {number} userRole
+   * @param {number} allowSetting Allow setting value
    * @returns {boolean} Whether the user is allowed to use the HUD
    */
   static checkAllow(userRole, allowSetting) {
@@ -90,9 +95,9 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Capitalize the first letter of every word
-   * @param {string} value The string
-   * @returns {string}     The capitalized string
+   * Capitalize the first letter of every word.
+   * @param {string} value
+   * @returns {string} Capitalized value
    */
   static capitalize(value) {
     return value.replace(
@@ -104,11 +109,11 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Foundry VTT's deepClone function wrapped here to avoid code error highlighting due to missing definition
+   * Foundry VTT's deepClone function wrapped here to avoid code error highlighting due to missing definition.
    * @public
-   * @param {object} original The original object
-   * @param {object} options  The options
-   * @returns {object}        The cloned object
+   * @param {object} original Original object
+   * @param {object} options
+   * @returns {object} Cloned object
    */
   static deepClone(original, options) {
     // eslint-disable-next-line no-undef
@@ -116,13 +121,15 @@ export class Utils {
   }
 
   /* -------------------------------------------- */
+  /* GETTERS                                      */
+  /* -------------------------------------------- */
 
   /**
-   * Get actor from the token or actor
+   * Get actor from the token or actor.
    * @public
-   * @param {string} actorId The actor id
-   * @param {string} tokenId The token id
-   * @returns {object}       The actor
+   * @param {string} actorId
+   * @param {string} tokenId
+   * @returns {object} Actor
    */
   static getActor(actorId, tokenId) {
     let token = null;
@@ -132,9 +139,9 @@ export class Utils {
   }
 
   /**
-   * Get closest group to the event target
-   * @param {object} event The event
-   * @returns {object}     The closest group element
+   * Get closest group to the event target.
+   * @param {Event} event
+   * @returns {object} Closest group element
    */
   static getClosestGroupElement(event) {
     if (!event) return null;
@@ -144,9 +151,9 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get actors of controlled tokens
+   * Get actors of controlled tokens.
    * @public
-   * @returns {Array} The actors
+   * @returns {Array} List of actors
    */
   static getControlledActors() {
     const tokens = game.canvas.tokens?.controlled ?? [];
@@ -156,10 +163,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get status effect from actor based on the status ID
-   * @param {object} actor    The actor
-   * @param {string} statusId The status ID
-   * @returns {object}        The status effect
+   * Get status effect from actor based on the status ID.
+   * @param {object} actor
+   * @param {string} statusId
+   * @returns {object} Status effect
    */
   static getStatusEffect(actor, statusId) {
     return actor.effects.find(effect => effect.statuses.every(status => status === statusId));
@@ -168,11 +175,11 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get image from the entity
+   * Get image from the entity.
    * @public
-   * @param {object} entity       The entity, e.g., actor, item
-   * @param {Array} defaultImages Any default images to exclude
-   * @returns {string}            The image URL
+   * @param {object} entity Actor, item
+   * @param {Array} defaultImages List of default images to exclude
+   * @returns {string} Image URL
    */
   static getImage(entity, defaultImages = []) {
     defaultImages.push("icons/svg/mystery-man.svg");
@@ -188,11 +195,11 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get item from the actor
+   * Get item from the actor.
    * @public
-   * @param {object} actor  The actor
-   * @param {string} itemId The item id
-   * @returns {object}      The item
+   * @param {object} actor
+   * @param {string} itemId
+   * @returns {object} Item
    */
   static getItem(actor, itemId) {
     return actor.items.get(itemId);
@@ -201,10 +208,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get token
+   * Get token.
    * @public
-   * @param {string} tokenId The token id
-   * @returns {object}       The token
+   * @param {string} tokenId
+   * @returns {object} Token
    */
   static getToken(tokenId) {
     return canvas.tokens.placeables.find(token => token.id === tokenId);
@@ -213,9 +220,9 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get controlled tokens
+   * Get controlled tokens.
    * @public
-   * @returns {Array} The controlled tokens
+   * @returns {Array} List of controlled tokens
    */
   static getControlledTokens() {
     return game.canvas.tokens?.controlled ?? [];
@@ -224,9 +231,9 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get first controlled tokens
+   * Get first controlled tokens.
    * @public
-   * @returns {object|null} The first controlled token
+   * @returns {object|null} First controlled token
    */
   static getFirstControlledToken() {
     const controlledToken = game.canvas.tokens.controlled[0];
@@ -243,13 +250,15 @@ export class Utils {
   }
 
   /* -------------------------------------------- */
+  /* SETTINGS / FLAGS                             */
+  /* -------------------------------------------- */
 
   /**
-   * Get setting value
+   * Get setting value.
    * @public
-   * @param {string} key               The setting key
-   * @param {string=null} defaultValue The setting default value
-   * @returns {*}                      The setting value
+   * @param {string} key Setting key
+   * @param {string=null} defaultValue Setting default value
+   * @returns {*} Setting value
    */
   static getSetting(key, defaultValue = null) {
     let value = defaultValue ?? null;
@@ -264,10 +273,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Set setting value
+   * Set setting value.
    * @public
-   * @param {string} key   The setting key
-   * @param {string} value The setting value
+   * @param {string} key Setting key
+   * @param {string} value Setting value
    */
   static async setSetting(key, value) {
     if (game.settings.settings.get(`${MODULE.ID}.${key}`)) {
@@ -281,10 +290,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get module actor flag
+   * Get module actor flag.
    * @public
-   * @param {string} key The flag key
-   * @returns {*}        The flag value
+   * @param {string} key Flag key
+   * @returns {*} Flag value
    */
   static getActorFlag(key) {
     return game.tokenActionHud.actor.getFlag(MODULE.ID, key);
@@ -293,10 +302,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Set module actor flag
+   * Set module actor flag.
    * @public
-   * @param {string} key The flag key
-   * @param {*} value    The flag value
+   * @param {string} key Flag key
+   * @param {*} value Flag value
    */
   static async setActorFlag(key, value) {
     await game.tokenActionHud.actor.setFlag(MODULE.ID, key, value);
@@ -305,9 +314,9 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Unset module actor flag
+   * Unset module actor flag.
    * @public
-   * @param {string} key The flag key
+   * @param {string} key Flag key
    */
   static async unsetActorFlag(key) {
     await game.tokenActionHud.actor.unsetFlag(MODULE.ID, key);
@@ -316,10 +325,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get module user flag
+   * Get module user flag.
    * @public
-   * @param {string} key The flag key
-   * @returns {*}        The flag value
+   * @param {string} key Flag key
+   * @returns {*}  Flag value
    */
   static getUserFlag(key) {
     return game.user.getFlag(MODULE.ID, key);
@@ -328,10 +337,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Set module user flag
+   * Set module user flag.
    * @public
-   * @param {string} key The flag key
-   * @param {*} value    The flag value
+   * @param {string} key Flag key
+   * @param {*} value Flag value
    */
   static async setUserFlag(key, value) {
     await game.user.setFlag(MODULE.ID, key, value);
@@ -340,21 +349,23 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Unset module user flag
+   * Unset module user flag.
    * @public
-   * @param {string} key The flag key
+   * @param {string} key Flag key
    */
   static async unsetUserFlag(key) {
     await game.user.unsetFlag(MODULE.ID, key);
   }
 
   /* -------------------------------------------- */
+  /* ENVIRONMENT                                  */
+  /* -------------------------------------------- */
 
   /**
-   * Language translation
+   * Language translation.
    * @public
-   * @param {string} toTranslate The value to translate
-   * @returns {string}           The translated value
+   * @param {string} toTranslate Value to translate
+   * @returns {string} Translated value
    */
   static i18n(toTranslate) {
     return game.i18n.localize(toTranslate);
@@ -363,7 +374,7 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Whether a GM is active
+   * Whether a GM is active.
    * @public
    * @returns {boolean} Whether a GM is active
    */
@@ -374,10 +385,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Whether the given module is active
+   * Whether the given module is active.
    * @public
-   * @param {string} moduleId The module id
-   * @returns {boolean}       Whether the given module is active
+   * @param {string} moduleId
+   * @returns {boolean} Whether the given module is active
    */
   static isModuleActive(moduleId) {
     const module = game.modules.get(moduleId);
@@ -387,10 +398,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get the given module's title
+   * Get the given module's title.
    * @public
-   * @param {string} moduleId The module id
-   * @returns {string}        The module title
+   * @param {string} moduleId
+   * @returns {string} Module title
    */
   static getModuleTitle(moduleId) {
     return game.modules.get(moduleId)?.title ?? "";
@@ -399,10 +410,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get the given module's version
+   * Get the given module's version.
    * @public
-   * @param {string} moduleId The module id
-   * @returns {string}        The module version
+   * @param {string} moduleId
+   * @returns {string} Module version
    */
   static getModuleVersion(moduleId) {
     return game.modules.get(moduleId)?.version ?? "";
@@ -411,9 +422,9 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Humanize keybinding
-   * @param {object} key The keybinding key
-   * @returns {string}   The humanized keybinding
+   * Humanize keybinding.
+   * @param {object} key Keybinding key
+   * @returns {string} Humanized keybinding
    */
   static humanizeBinding(key) {
     const keyboardManager = foundry?.helpers?.interaction?.KeyboardManager ?? KeyboardManager;
@@ -428,12 +439,14 @@ export class Utils {
   }
 
   /* -------------------------------------------- */
+  /* MATHS                                        */
+  /* -------------------------------------------- */
 
   /**
-   * Get the median
+   * Get the median.
    * @public
-   * @param {Array} numbers The array of numbers
-   * @returns {number}      The median
+   * @param {Array} numbers List of numbers
+   * @returns {number} Median
    */
   static median(numbers) {
     const mid = Math.floor(numbers.length / 2);
@@ -444,9 +457,9 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get upper quartile average
-   * @param {Array} numbers The numbers
-   * @returns {number}      The upper quartile average
+   * Get upper quartile average.
+   * @param {Array} numbers List of numbers
+   * @returns {number} Upper quartile average
    */
   static getUpperQuartileAverage(numbers) {
     const sortedNumbers = numbers.slice().sort((a, b) => a - b);
@@ -470,9 +483,9 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get modifier (e.g., +5) from number
-   * @param {number} num The number
-   * @returns {string}   The modifier
+   * Get modifier (e.g., +5) from number.
+   * @param {number} num
+   * @returns {string} Modifier
    */
   static getModifier(num) {
     if (!num && num !== 0) return "";
@@ -481,12 +494,14 @@ export class Utils {
   }
 
   /* -------------------------------------------- */
+  /* SORTING                                      */
+  /* -------------------------------------------- */
 
   /**
-   * Sort items
+   * Sort items.
    * @public
-   * @param {object} items The items
-   * @returns {object}     The sorted items
+   * @param {object} items
+   * @returns {object} Sorted items
    */
   static sortItems(items) {
     return new Map([...items.entries()].sort((a, b) => a[1].sort.localeCompare(b[1].sort)));
@@ -495,21 +510,23 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Sort items by name
+   * Sort items by name.
    * @public
-   * @param {object} items The items
-   * @returns {object}     The sorted items
+   * @param {object} items
+   * @returns {object} Sorted items
    */
   static sortItemsByName(items) {
     return new Map([...items.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name)));
   }
 
   /* -------------------------------------------- */
+  /* CSS                                          */
+  /* -------------------------------------------- */
 
   /**
-   * Enable stylesheet based on setting and disable all other stylesheets
+   * Enable stylesheet based on setting and disable all other stylesheets.
    * @public
-   * @param {string} style The 'style' setting value
+   * @param {string} style Style setting value
    */
   static switchCSS(style) {
     const tahElement = document.querySelector("#token-action-hud-app");
@@ -537,7 +554,7 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Apply saved custom style CSS properties to the HUD element
+   * Apply saved custom style CSS properties to the HUD element.
    * @public
    * @param {HTMLElement} element HUD element
    */
@@ -553,7 +570,7 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Remove custom style CSS properties from the HUD element
+   * Remove custom style CSS properties from the HUD element.
    * @public
    * @param {HTMLElement} element HUD element
    */
@@ -564,9 +581,11 @@ export class Utils {
   }
 
   /* -------------------------------------------- */
+  /* HANDLEBARS                                   */
+  /* -------------------------------------------- */
 
   /**
-   * Register Handlebar helpers
+   * Register Handlebar helpers.
    * @public
    */
   static registerHandlebars() {
@@ -597,12 +616,14 @@ export class Utils {
   }
 
   /* -------------------------------------------- */
+  /* VERSIONING                                   */
+  /* -------------------------------------------- */
 
   /**
-   * Get the major, minor and patch parts of the module version
+   * Get the major, minor and patch parts of the module version.
    * @public
-   * @param {string} moduleVersion The module version
-   * @returns {object|null}        The module version parts
+   * @param {string} moduleVersion
+   * @returns {object|null} Module version parts
    */
   static getModuleVersionParts(moduleVersion) {
     if (!moduleVersion) {
@@ -620,10 +641,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Whether the system module is compatible with the core module version
+   * Whether the system module is compatible with the core module version.
    * @public
-   * @param {string} requiredCoreModuleVersion The required core module version
-   * @returns {boolean}                        Whether the system module is compatible with the core module version
+   * @param {string} requiredCoreModuleVersion
+   * @returns {boolean} Whether the system module is compatible with the core module version
    */
   static isSystemModuleCompatible(requiredCoreModuleVersion) {
     if (!requiredCoreModuleVersion) return true;
@@ -648,13 +669,15 @@ export class Utils {
   }
 
   /* -------------------------------------------- */
+  /* GROUP TRAVERSAL                              */
+  /* -------------------------------------------- */
 
   /**
-   * Get nested groups by criteria
+   * Get nested groups by criteria.
    * @public
-   * @param {object} groups The groups
-   * @param {object} data   The search data
-   * @returns {object|null} The nested groups
+   * @param {object} groups
+   * @param {object} data Search data
+   * @returns {object|null} Nested groups
    */
   static getNestedGroups(groups, data = {}) {
     let order = 0;
@@ -680,11 +703,11 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Get group by nest ID
+   * Get group by nest ID.
    * @public
-   * @param {object} groups The groups
-   * @param {string} data   The search data
-   * @returns {object|null} The group
+   * @param {object} groups
+   * @param {string} data Search data
+   * @returns {object|null} Group
    */
   static async getGroupByNestId(groups, data = {}) {
     const nestId = (typeof data === "string" ? data : data?.nestId);
@@ -697,10 +720,10 @@ export class Utils {
     /* -------------------------------------------- */
 
     /**
-     * Find group
-     * @param {object} groups The groups
-     * @param {Array} parts   The nestId parts
-     * @returns {object}      The group
+     * Find group.
+     * @param {object} groups
+     * @param {Array} parts nestId parts
+     * @returns {object} Group
      */
     async function findGroup(groups, parts) {
       if (!groups) return null;
@@ -726,10 +749,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Delete group by nest id
+   * Delete group by nest ID.
    * @public
-   * @param {object} groups The groups
-   * @param {string} data   The search data
+   * @param {object} groups
+   * @param {string} data Search data
    */
   static async deleteGroupByNestId(groups, data = {}) {
     const nestId = (typeof data === "string" ? data : data?.nestId);
@@ -742,9 +765,9 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Find and delete a group
-   * @param {object} groups The groups
-   * @param {Array} parts   The nestId parts
+   * Find and delete a group.
+   * @param {object} groups
+   * @param {Array} parts nestId parts
    */
   static async findAndDeleteGroup(groups, parts) {
     groups = (Array.isArray(groups)) ? groups : Object.values(groups);
@@ -765,10 +788,10 @@ export class Utils {
   /* -------------------------------------------- */
 
   /**
-   * Delete groups by id
+   * Delete groups by ID
    * @public
-   * @param {object} groups The groups
-   * @param {string} data   The search data
+   * @param {object} groups
+   * @param {string} data Search data
    */
   static async deleteGroupsById(groups, data = {}) {
     const id = (typeof data === "string" ? data : data?.id);

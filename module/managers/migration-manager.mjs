@@ -2,7 +2,7 @@ import { MODULE } from "../core/constants.mjs";
 import { Logger, Utils } from "../core/utils.mjs";
 
 /**
- * Manages migrations between module versions
+ * Manages migrations between module versions.
  */
 export class MigrationManager {
   constructor(dataHandler, socket) {
@@ -13,7 +13,7 @@ export class MigrationManager {
   /* -------------------------------------------- */
 
   /**
-   * Initialise migrations
+   * Initialise migrations.
    * @public
    */
   async init() {
@@ -39,7 +39,7 @@ export class MigrationManager {
   /* -------------------------------------------- */
 
   /**
-   * Unset old flags
+   * Unset old flags.
    * @private
    * @returns {boolean} Whether the old flags were unset
    */
@@ -79,7 +79,7 @@ export class MigrationManager {
   /* -------------------------------------------- */
 
   /**
-   * Migrate files to storage
+   * Migrate files to storage.
    * @returns {boolean} Whether the files were migrated to storage
    */
   async #migrateFiles() {

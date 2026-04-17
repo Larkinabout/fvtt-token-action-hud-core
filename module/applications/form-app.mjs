@@ -83,10 +83,10 @@ export class FormApp extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Handle form submission
-   * @param {object} event    The event
-   * @param {object} form     The form
-   * @param {object} formData The form data
+   * Handle form submission.
+   * @param {Event} event
+   * @param {object} form
+   * @param {object} formData
    */
   static async submit(event, form, formData) {
     await this.submit(formData.object);

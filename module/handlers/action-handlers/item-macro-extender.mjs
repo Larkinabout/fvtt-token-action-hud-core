@@ -13,7 +13,7 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
   /* -------------------------------------------- */
 
   /**
-   * Extend the action list
+   * Extend the action list.
    * @override
    */
   extendActionHandler() {
@@ -35,10 +35,10 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
   /* -------------------------------------------- */
 
   /**
-   * Add group actions
+   * Add group actions.
    * @private
-   * @param {Array} items     The items
-   * @param {object} group    The group
+   * @param {Array} items
+   * @param {object} group
    * @param {boolean} replace Whether to replace the action or not
    */
   #addGroupActions(items, group, replace) {
@@ -72,13 +72,13 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
   /* -------------------------------------------- */
 
   /**
-   * Create item macro action
+   * Create item macro action.
    * @private
-   * @param {object} item            The item
-   * @param {object} existingAction  The existing action
-   * @param {object} actionToReplace The action to replace
-   * @param {boolean} replace        Whether to replace the action or not
-   * @returns {object}               The item macro action
+   * @param {object} item
+   * @param {object} existingAction
+   * @param {object} actionToReplace
+   * @param {boolean} replace Whether to replace the action or not
+   * @returns {object} Item Macro action
    */
   #createItemMacroAction(item, existingAction, actionToReplace, replace) {
     const action = (replace) ? actionToReplace : Utils.deepClone(existingAction);
@@ -106,10 +106,10 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
   /* -------------------------------------------- */
 
   /**
-   * Add actions to the group
+   * Add actions to the group.
    * @private
-   * @param {object} actions The actions
-   * @param {object} group   The group
+   * @param {object} actions
+   * @param {object} group
    */
   #addActions(actions, group) {
     actions.forEach(macroAction => {

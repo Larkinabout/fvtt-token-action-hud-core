@@ -16,9 +16,13 @@ export class HudManager {
     this.characterHandler = new CharacterHandler(this);
   }
 
+  /* -------------------------------------------- */
+  /* INITIALISE                             */
+  /* -------------------------------------------- */
+
   /**
    * Initialise the HUD
-   * @param {string} trigger The update trigger
+   * @param {string} trigger Update trigger name (e.g. "controlToken")
    * @returns {boolean} Whether the HUD was initialised
    */
   async init(trigger) {
@@ -33,6 +37,8 @@ export class HudManager {
     return true;
   }
 
+  /* -------------------------------------------- */
+  /* RESET                                        */
   /* -------------------------------------------- */
 
   /**
@@ -59,11 +65,14 @@ export class HudManager {
     this.layoutHandler.hardReset();
   }
 
+  /* -------------------------------------------- */
+  /* BUILD                                        */
+  /* -------------------------------------------- */
+
   /**
    * Build the HUD
    * @private
-   * @param {object} options The options
-   * @returns {object}       The HUD
+   * @param {object} options
    */
   async #buildHud(options) {
     Logger.debug("Building HUD...", { actor: this.actor, token: this.token });
@@ -99,7 +108,7 @@ export class HudManager {
   /**
    * Prepare the HUD
    * @private
-   * @returns {object} The HUD
+   * @returns {object} HUD
    */
   async #prepareHud() {
     Logger.debug("Preparing HUD...", { actor: this.actor, token: this.token });
@@ -119,25 +128,29 @@ export class HudManager {
   }
 
   /* -------------------------------------------- */
+  /* EVENTS                                       */
+  /* -------------------------------------------- */
 
   /**
    * Handle HUD event
-   * @param {string} eventType The event type
-   * @param {object} event     The event
+   * @param {string} eventType Event type (e.g., clickAction)
+   * @param {Event} event
    */
   handleHudEvent(eventType, event) {
     const group = (["groupClick"].includes(eventType)) ? this.getGroup(event) : null;
     const action = (["clickAction", "hoverAction"].includes(eventType)) ? this.getAction(event) : null;
 
-    this.#registerKeyPresses(event);
+    this.#setKeyPresses(event);
     this.#setIsHover(event);
 
     try {
       switch (eventType) {
         case "groupClick":
+          if (Hooks.call("tokenActionHudCoreGroupClick", event, group, this) === false) return;
           this.rollHandler.handleGroupClickCore(event, group);
           break;
         case "clickAction":
+          if (Hooks.call("tokenActionHudCoreActionClick", event, action, this) === false) return;
           this.rollHandler.handleActionClickCore(event, action, this.actionHandler);
           break;
         case "hoverAction":
@@ -149,11 +162,11 @@ export class HudManager {
   }
 
   /**
-   * Registers key presses
+   * Set key presses from the event.
    * @private
-   * @param {object} event The events
+   * @param {Event} event
    */
-  #registerKeyPresses(event) {
+  #setKeyPresses(event) {
     this.#setIsRightClick(event);
     this.#setIsAlt(event);
     this.#setIsCtrl(event);
@@ -163,9 +176,9 @@ export class HudManager {
   /* -------------------------------------------- */
 
   /**
-   * Whether the button was right-clicked
-   * @public
-   * @param {object} event The event
+   * Set `isRightClick` from the event.
+   * @private
+   * @param {Event} event
    */
   #setIsRightClick(event) {
     const button = event?.originalEvent?.button || event.button;
@@ -175,9 +188,9 @@ export class HudManager {
   /* -------------------------------------------- */
 
   /**
-   * Set isAlt based on event
+   * Set `isAlt` from the event.
    * @private
-   * @param {object} event The event
+   * @param {Event} event
    */
   #setIsAlt(event) {
     const keyboardManager = foundry?.helpers?.interaction?.KeyboardManager ?? KeyboardManager;
@@ -195,9 +208,9 @@ export class HudManager {
   /* -------------------------------------------- */
 
   /**
-   * Set isCtrl based on event
+   * Set `isCtrl` from the event.
    * @private
-   * @param {object} event The event
+   * @param {Event} event
    */
   #setIsCtrl(event) {
     const keyboardManager = foundry?.helpers?.interaction?.KeyboardManager ?? KeyboardManager;
@@ -215,9 +228,9 @@ export class HudManager {
   /* -------------------------------------------- */
 
   /**
-   * Set isShift based on event
+   * Set `isShift` from the event.
    * @private
-   * @param {object} event The event
+   * @param {Event} event
    */
   #setIsShift(event) {
     const keyboardManager = foundry?.helpers?.interaction?.KeyboardManager ?? KeyboardManager;
@@ -235,20 +248,22 @@ export class HudManager {
   /* -------------------------------------------- */
 
   /**
-   * Set isHover based on event
+   * Set `isHover` based on event.
    * @private
-   * @param {object} event The event
+   * @param {Event} event
    */
   #setIsHover(event) {
     this.isHover = ["mouseenter", "mouseover", "pointerenter"].includes(event.type);
   }
 
   /* -------------------------------------------- */
+  /* LOOKUPS                                      */
+  /* -------------------------------------------- */
 
   /**
    * Get the group from the nest ID
-   * @param {object} event The event
-   * @returns {object}     The group
+   * @param {Event} event
+   * @returns {object} Group
    */
   getGroup(event) {
     const groupElement = Utils.getClosestGroupElement(event);
@@ -260,8 +275,8 @@ export class HudManager {
 
   /**
    * Get the action from the action ID on the button
-   * @param {object} event  The event
-   * @returns {object}      The action
+   * @param {Event} event
+   * @returns {object} Action
    */
   getAction(event) {
     if (!event) return {};
@@ -273,11 +288,13 @@ export class HudManager {
   }
 
   /* -------------------------------------------- */
+  /* STATE                                        */
+  /* -------------------------------------------- */
 
   /**
-   * Whether the hud is enabled for the current user
+   * Whether the HUD is enabled for the current user
    * @private
-   * @returns {boolean} Whether the hud is enabled for the current user
+   * @returns {boolean}
    */
   get isHudEnabled() {
     if (!Utils.getSetting("enable")) return false;
@@ -286,7 +303,7 @@ export class HudManager {
   }
 
   /* -------------------------------------------- */
-  /* Shortcuts to CharacterHandler properties     */
+  /* CHARACTER SHORTCUTS                          */
   /* -------------------------------------------- */
 
   get characterName() {

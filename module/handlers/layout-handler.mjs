@@ -11,8 +11,12 @@ export class LayoutHandler {
     this.customLayout = null;
   }
 
+  /* -------------------------------------------- */
+  /* INITIALISE                                   */
+  /* -------------------------------------------- */
+
   /**
-   * Initialise the HUD layout
+   * Initialise the HUD layout.
    */
   async init() {
     await Promise.all([
@@ -24,26 +28,7 @@ export class LayoutHandler {
   /* -------------------------------------------- */
 
   /**
-   * Soft reset variables
-   */
-  softReset() {
-    this.defaultLayout = null;
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Hard reset variables
-   */
-  hardReset() {
-    this.softReset();
-    this.customLayout = null;
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Set the default layout
+   * Set the default layout.
    * @private
    */
   async #setDefaultLayout() {
@@ -56,7 +41,7 @@ export class LayoutHandler {
   /* -------------------------------------------- */
 
   /**
-   * Set custom layout
+   * Set custom layout.
    * @private
    */
   async #setCustomLayout() {
@@ -66,9 +51,32 @@ export class LayoutHandler {
   }
 
   /* -------------------------------------------- */
+  /* RESET                                        */
+  /* -------------------------------------------- */
 
   /**
-   * Export layout to file
+   * Soft reset variables.
+   */
+  softReset() {
+    this.defaultLayout = null;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Hard reset variables.
+   */
+  hardReset() {
+    this.softReset();
+    this.customLayout = null;
+  }
+
+  /* -------------------------------------------- */
+  /* EXPORT                                       */
+  /* -------------------------------------------- */
+
+  /**
+   * Export layout to file.
    * @public
    */
   async exportLayout() {
@@ -78,8 +86,12 @@ export class LayoutHandler {
     }
   }
 
+  /* -------------------------------------------- */
+  /* STATE                                        */
+  /* -------------------------------------------- */
+
   /**
-   * Get the layout
+   * Get the layout.
    * @returns {object} The layout
    */
   get layout() {

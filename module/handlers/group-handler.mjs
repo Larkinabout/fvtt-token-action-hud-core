@@ -17,6 +17,10 @@ export class GroupHandler {
     this.userGroups = {};
   }
 
+  /* -------------------------------------------- */
+  /* CHARACTER SHORTCUTS                          */
+  /* -------------------------------------------- */
+
   get actor() {
     return this.hudManager?.actor;
   }
@@ -33,8 +37,12 @@ export class GroupHandler {
     return this.hudManager?.tokens;
   }
 
+  /* -------------------------------------------- */
+  /* INITIALISE                                   */
+  /* -------------------------------------------- */
+
   /**
-   * Initialise the groups
+   * Initialise the groups.
    */
   async init() {
     this.#setDefaultGroups();
@@ -47,29 +55,7 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Soft reset variables
-   */
-  softReset() {
-    this.defaultGroups = {};
-    this.groups = null;
-    this.groups = {};
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Hard reset variables
-   */
-  hardReset() {
-    this.softReset();
-    this.actorGroups = {};
-    this.userGroups = {};
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Set the default groups
+   * Set the default groups.
    * @private
    */
   #setDefaultGroups() {
@@ -83,7 +69,7 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Set the saved groups from the actor flag
+   * Set the saved groups from the actor flag.
    * @private
    */
   async #setSavedActorGroups() {
@@ -115,7 +101,7 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Set the saved groups from the user flag
+   * Set the saved groups from the user flag.
    * @private
    */
   async #setSavedUserGroups() {
@@ -149,12 +135,39 @@ export class GroupHandler {
     Logger.debug("Groups retrieved from user", { userGroups: this.userGroups, user });
   }
 
+
+  /* -------------------------------------------- */
+  /* RESET                                        */
+  /* -------------------------------------------- */
+
+  /**
+   * Soft reset variables.
+   */
+  softReset() {
+    this.defaultGroups = {};
+    this.groups = null;
+    this.groups = {};
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Hard reset variables.
+   */
+  hardReset() {
+    this.softReset();
+    this.actorGroups = {};
+    this.userGroups = {};
+  }
+
+  /* -------------------------------------------- */
+  /* PREPARE                                      */
   /* -------------------------------------------- */
 
   /**
    * Prepare groups in the HUD.
-   * @param {object} hud The HUD
-   * @returns {object}   The prepared groups
+   * @param {object} hud
+   * @returns {object} Prepared groups
    */
   async prepareGroups(hud) {
     const isDocked = !!CSS_STYLE[Utils.getSetting("style")]?.isDocked;
@@ -224,16 +237,18 @@ export class GroupHandler {
   }
 
   /* -------------------------------------------- */
+  /* LOOKUPS                                      */
+  /* -------------------------------------------- */
 
   /**
-   * Get first matching group
+   * Get first matching group.
    * @public
-   * @param {object} [data = {}]   The group data
-   * @param {string} [data.nestId] The nested group ID
-   * @param {string} [data.id]     The group ID
-   * @param {number} [data.level]  The group level
-   * @param {string} [data.type]   The group type
-   * @returns {Array}              The group
+   * @param {object} [data = {}] Group data
+   * @param {string} [data.nestId] Nested group ID
+   * @param {string} [data.id] Group ID
+   * @param {number} [data.level] Group level
+   * @param {string} [data.type] Group type
+   * @returns {Array} Group
    */
   getGroup({ nestId, id, level, type } = {}) {
     if (nestId) return this.groups[nestId];
@@ -248,15 +263,15 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get matching groups
+   * Get matching groups.
    * @public
-   * @param {object}  [data = {}]     The group data
-   * @param {string}  [data.nestId]   The nested group ID
-   * @param {string}  [data.id]       The group ID
-   * @param {number}  [data.level]    The group level
-   * @param {string}  [data.type]     The group type
+   * @param {object} [data = {}] Group data
+   * @param {string} [data.nestId] Nested group ID
+   * @param {string} [data.id] Group ID
+   * @param {number} [data.level] Group level
+   * @param {string} [data.type] Group type
    * @param {boolean} [data.selected] Whether the group is selected
-   * @returns {Array}                 The matching groups
+   * @returns {Array} List of matching groups
    */
   getGroups({ nestId, id, level, type, selected } = {}) {
     return Object.values(this.groups).filter(group =>
@@ -271,14 +286,14 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get matching actor-related groups
+   * Get matching actor-related groups.
    * @public
-   * @param {object}  [data = {}]   The group data
-   * @param {string}  [data.nestId] The nested group ID
-   * @param {string}  [data.id]     The group ID
-   * @param {number}  [data.level]  The group level
-   * @param {string}  [data.type]   The group type
-   * @returns {Array}               The groups
+   * @param {object} [data = {}] Group data
+   * @param {string} [data.nestId] Nested group ID
+   * @param {string} [data.id] Group ID
+   * @param {number} [data.level] Group level
+   * @param {string} [data.type] Group type
+   * @returns {Array} List of groups
    */
   getActorGroups({ nestId, id, level, type } = {}) {
     return Object.values(this.actorGroups).filter(group =>
@@ -292,14 +307,14 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get matching user-related groups
+   * Get matching user-related groups.
    * @public
-   * @param {object}  [data = {}]   The group data
-   * @param {string}  [data.nestId] The nested group ID
-   * @param {string}  [data.id]     The group ID
-   * @param {number}  [data.level]  The group level
-   * @param {string}  [data.type]   The group type
-   * @returns {Array}               The groups
+   * @param {object} [data = {}] Group data
+   * @param {string} [data.nestId] Nested group ID
+   * @param {string} [data.id] Group ID
+   * @param {number} [data.level] Group level
+   * @param {string} [data.type] Group type
+   * @returns {Array} List of groups
    */
   getUserGroups({ nestId, id, level, type } = {}) {
     return Object.values(this.userGroups).filter(group =>
@@ -313,8 +328,8 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get group IDs
-   * @returns {Array} The group IDs
+   * Get group IDs.
+   * @returns {Array} List of group IDs
    */
   getGroupIds() {
     return Object.values(this.groups).map(group => group.id);
@@ -323,23 +338,25 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get group settings
+   * Get group settings.
    * @public
-   * @param {object} [groupData={}] The group data
-   * @returns {object|null}         The group settings
+   * @param {object} [groupData={}]
+   * @returns {object|null} Group settings
    */
   getGroupSettings(groupData = {}) {
     return this.getGroup(groupData)?.settings ?? null;
   }
 
   /* -------------------------------------------- */
+  /* CREATE / UPDATE                              */
+  /* -------------------------------------------- */
 
   /**
-   * Create group
+   * Create group.
    * @public
-   * @param {object} groupData The group data
+   * @param {object} groupData
    * @param {boolean} keepData Whether to keep the data
-   * @returns {object}         The group
+   * @returns {object} Created group
    */
   createGroup(groupData, keepData = false) {
     const groupDataClone = Utils.deepClone(groupData);
@@ -450,6 +467,8 @@ export class GroupHandler {
   }
 
   /* -------------------------------------------- */
+  /* SAVE                                         */
+  /* -------------------------------------------- */
 
   /**
    * Save group settings
@@ -542,18 +561,18 @@ export class GroupHandler {
   /**
    * Get reduced groups data for saving to flags
    * @private
-   * @param {object}  data          The group data
-   * @param {string}  data.id       The group ID
-   * @param {string}  data.name     The group name
-   * @param {string}  data.listName The list name for the group
-   * @param {number}  data.level    The group level
-   * @param {number}  data.order    The order of the group
+   * @param {object} data Group data
+   * @param {string} data.id Group ID
+   * @param {string} data.name Group name
+   * @param {string} data.listName List name for the group
+   * @param {number} data.level Group level
+   * @param {number} data.order Order of the group
    * @param {boolean} data.selected Whether the group is selected
-   * @param {object}  data.settings The group settings
-   * @param {string}  data.type     The group type
-   * @param {Array}   data.actions  The list of actions for the group (if `keepActions` is true)
-   * @param {boolean} keepActions   Whether to keep action data
-   * @returns {object}              The reduced group data
+   * @param {object} data.settings Group settings
+   * @param {string} data.type Group type
+   * @param {Array}  data.actions List of actions for the group (if `keepActions` is true)
+   * @param {boolean} keepActions  Whether to keep action data
+   * @returns {object} Reduced group data
    */
   #getReducedGroupData({ id, name, listName, level, order, selected, settings, type, actions }, keepActions = false) {
     const data = { id, name, listName, level, order, selected, settings, type };
@@ -566,54 +585,56 @@ export class GroupHandler {
   }
 
   /* -------------------------------------------- */
+  /* AVAILABLE CHOICES                            */
+  /* -------------------------------------------- */
 
   /**
-   * Get available groups as Tagify entries
+   * Get available groups.
    * @public
-   * @param {object} groupData The group data
-   * @returns {object}         The groups
+   * @param {object} groupData
+   * @returns {Array} List of groups
    */
-  async getAvailableGroupAsTags(groupData) {
-    const derivedGroups = await this.#getDerivedGroupsAsTags(groupData);
-    const systemGroups = await this.#getSystemGroupsAsTags();
-    const compendiumGroups = await this.#getCompendiumGroupsAsTags();
-    const macroGroups = await this.#getMacroGroupsAsTags();
+  async getAvailableGroups(groupData) {
+    const derivedGroups = await this.#getDerivedGroups(groupData);
+    const systemGroups = await this.#getSystemGroups();
+    const compendiumGroups = await this.#getCompendiumGroups();
+    const macroGroups = await this.#getMacroGroups();
     return [...derivedGroups, ...systemGroups, ...compendiumGroups, ...macroGroups];
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Get derived groups as Tagify entries
+   * Get derived groups.
    * @private
-   * @param {object} data        The group data
-   * @param {object} data.nestId The group nest ID
-   * @returns {object}           The derived groups
+   * @param {object} data
+   * @param {string} data.nestId
+   * @returns {Array} List of derived groups
    */
-  #getDerivedGroupsAsTags({ nestId }) {
+  #getDerivedGroups({ nestId }) {
     const derivedGroups = this.getGroups({ nestId, type: GROUP_TYPE.SYSTEM_DERIVED });
-    return derivedGroups?.map(group => this.#toTagify(group)) ?? [];
+    return derivedGroups?.map(group => this.#toChoice(group)) ?? [];
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Get system groups as Tagify entries
+   * Get system groups.
    * @private
-   * @returns {object} The system groups
+   * @returns {Array} List of system groups
    */
-  #getSystemGroupsAsTags() {
-    return Object.values(this.defaultGroups).map(group => this.#toTagify(group));
+  #getSystemGroups() {
+    return Object.values(this.defaultGroups).map(group => this.#toChoice(group));
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Get compendium groups as Tagify entries
+   * Get compendium groups.
    * @private
-   * @returns {object} The compendium groups
+   * @returns {Array} List of compendium groups
    */
-  #getCompendiumGroupsAsTags() {
+  #getCompendiumGroups() {
     const packs = game.packs.filter(pack =>
       COMPENDIUM_PACK_TYPES.includes(pack.documentName)
             && (foundry.utils.isNewerVersion(game.version, "10") ? pack.visible : (!pack.private || game.user.isGM))
@@ -626,16 +647,18 @@ export class GroupHandler {
         type: "core"
       };
     });
-    return groups.map(group => this.#toTagify(group));
+    return groups.map(group => this.#toChoice(group));
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Get macro groups as Tagify entries
+   * Get macro groups.
    * @private
-   * @returns {object} The macro groups
+   * @returns {Array} List of macro groups
    */
-  #getMacroGroupsAsTags() {
-    return [this.#toTagify({
+  #getMacroGroups() {
+    return [this.#toChoice({
       id: "macros",
       listName: `${game.i18n.localize("tokenActionHud.group")}: ${game.i18n.localize("tokenActionHud.macros")}`,
       name: game.i18n.localize("tokenActionHud.macros"),
@@ -643,11 +666,27 @@ export class GroupHandler {
     })];
   }
 
+
   /**
-   * Add group to the HUD
+   * Convert a group into a popover choice.
+   * @private
+   * @param {object} groupData
+   * @returns {{id: string, name: string, listName: string, type: string}}
+   */
+  #toChoice(groupData) {
+    const { id, name, type, listName } = groupData;
+    return { id, name, listName: listName ?? name, type };
+  }
+
+  /* -------------------------------------------- */
+  /* MUTATIONS                                    */
+  /* -------------------------------------------- */
+
+  /**
+   * Add group to the HUD.
    * @public
-   * @param {object} groupData         The group data
-   * @param {object} parentGroupData   The parent group data
+   * @param {object} groupData
+   * @param {object} parentGroupData
    * @param {boolean} [update = false] Whether to update an existing group
    */
   addGroup(groupData, parentGroupData, update = false) {
@@ -701,10 +740,10 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Update group in the HUD
+   * Update group in the HUD.
    * @public
-   * @param {object} groupData                The group data
-   * @param {object} [parentGroupData = null] The parent group data
+   * @param {object} groupData
+   * @param {object} [parentGroupData = null]
    */
   updateGroup(groupData, parentGroupData = null) {
     groupData.type = groupData?.type ?? "system-derived";
@@ -739,9 +778,9 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Remove group from HUD
+   * Remove group from HUD.
    * @public
-   * @param {object} groupData The group data
+   * @param {object} groupData
    */
   removeGroup(groupData) {
     if (!groupData?.nestId && groupData?.id) {
@@ -762,9 +801,9 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Add info to group in the HUD
+   * Add info to group in the HUD.
    * @public
-   * @param {string} groupData The group data
+   * @param {string} groupData
    */
   addGroupInfo(groupData) {
     const groupId = groupData?.id;
@@ -784,7 +823,7 @@ export class GroupHandler {
   /* -------------------------------------------- */
 
   /**
-   * Set property to indicate whether a group has actions within it
+   * Set property to indicate whether a group has actions within it.
    * @public
    */
   setHasActions() {
@@ -795,18 +834,5 @@ export class GroupHandler {
         group.hasActions = false;
       }
     });
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Convert a group into a Tagify entry
-   * @private
-   * @param {object} groupData The group data
-   * @returns {object}         The Tagify entry
-   */
-  #toTagify(groupData) {
-    const { id, name, type, listName } = groupData;
-    return { id, name, type, value: listName ?? name };
   }
 }

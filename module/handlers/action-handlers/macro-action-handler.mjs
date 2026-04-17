@@ -10,6 +10,8 @@ export class MacroActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* RESET                                        */
+  /* -------------------------------------------- */
 
   /**
    * Clear cached macro actions.
@@ -19,9 +21,11 @@ export class MacroActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* BUILD                                        */
+  /* -------------------------------------------- */
 
   /**
-   * Build macro actions
+   * Build macro actions.
    * @override
    */
   async buildActions() {
@@ -40,9 +44,9 @@ export class MacroActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get actions
+   * Get actions.
    * @private
-   * @returns {object} The actions
+   * @returns {object} Actions
    */
   async #getActions() {
     const actionType = "macro";
@@ -62,12 +66,14 @@ export class MacroActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* HELPERS                                      */
+  /* -------------------------------------------- */
 
   /**
-   * Check if the user has permission for the macro
+   * Check if the user has permission for the macro.
    * @private
-   * @param {object} macro The macro
-   * @returns {boolean}    Whether the user has permission
+   * @param {object} macro
+   * @returns {boolean} Whether the user has permission
    */
   #hasPermission(macro) {
     const { ownership } = macro;
@@ -77,10 +83,10 @@ export class MacroActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get list name
-   * @param {string} actionType The action type
-   * @param {string} name       The action name
-   * @returns {string}          The list name
+   * Get list name.
+   * @param {string} actionType
+   * @param {string} name Action name
+   * @returns {string} List name
    */
   #getListName(actionType, name) {
     const actionTypeName = `${game.i18n.localize(ACTION_TYPE[actionType])}: ` ?? "";

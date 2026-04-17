@@ -1,11 +1,10 @@
 import { Utils } from "../core/utils.mjs";
 
-
 /**
- * Get tooltip based on module setting
- * @param {object|string} tooltip The tooltip
- * @param {string} name           The name
- * @returns {object}              The tooltip
+ * Get tooltip based on module setting.
+ * @param {object|string} tooltip
+ * @param {string} name
+ * @returns {object} Tooltip
  */
 export function getTooltip(tooltip, name) {
   const setting = game.tokenActionHud?.setting?.tooltips ?? Utils.getSetting("tooltips");

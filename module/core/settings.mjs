@@ -4,9 +4,9 @@ import { CUSTOM_STYLE, MODULE } from "./constants.mjs";
 import { Logger, Utils } from "./utils.mjs";
 
 /**
- * When a module setting is changed, update the HUD settings
- * @param {string} key The setting key
- * @param {*} value    The setting value
+ * When a module setting is changed, update the HUD settings.
+ * @param {string} key Setting key
+ * @param {*} value Setting value
  */
 function onChangeFunction(key, value) {
   if (game.tokenActionHud) game.tokenActionHud.updateCachedSettings(key, value);
@@ -33,9 +33,9 @@ Hooks.on("init", async () => {
 
 /**
  * Register module settings
- * @param {class} systemManager The system manager
- * @param {Array} rollHandlers  The available roll handlers
- * @param {object} styles       The styles
+ * @param {SystemManager} systemManager
+ * @param {Array} rollHandlers List of available roll handlers
+ * @param {object} styles Styles
  */
 export const registerSettingsCore = function(systemManager, rollHandlers, styles) {
   game.settings.registerMenu(MODULE.ID, "customStyle", {
@@ -207,7 +207,7 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
     }
   });
 
-   /* -------------------------------------------- */
+  /* -------------------------------------------- */
 
   game.settings.register(MODULE.ID, "direction", {
     name: game.i18n.localize("tokenActionHud.settings.direction.name"),
@@ -401,7 +401,7 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
   setTooltipDelay(tooltipDelay);
 
   /**
-   * Set the tooltip delay
+   * Set the tooltip delay.
    * @param {number} ms Delay amount in milliseconds
    */
   function setTooltipDelay(ms) {
@@ -470,7 +470,7 @@ export const registerSettingsCore = function(systemManager, rollHandlers, styles
 /* -------------------------------------------- */
 
 /**
- * Register color settings
+ * Register color settings.
  */
 function registerCustomStyleSettings() {
   for (const [key, value] of Object.entries(CUSTOM_STYLE)) {

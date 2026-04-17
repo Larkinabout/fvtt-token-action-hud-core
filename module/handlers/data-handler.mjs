@@ -13,8 +13,12 @@ export class DataHandler {
     this.socket = socket;
   }
 
+  /* -------------------------------------------- */
+  /* INITIALISE                                   */
+  /* -------------------------------------------- */
+
   /**
-   * Initialise the data handler
+   * Initialise the data handler.
    */
   async init() {
     await this.#createDirectories();
@@ -27,7 +31,7 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Whether persistent storage can be used
+   * Whether persistent storage can be used.
    * @returns {boolean} Whether persistent storage can be used
    */
   get isPersistentStorage() {
@@ -37,7 +41,7 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Create directories for storage of files
+   * Create directories for storage of files.
    * @private
    */
   async #createDirectories() {
@@ -65,10 +69,12 @@ export class DataHandler {
   }
 
   /* -------------------------------------------- */
+  /* PATHS                                        */
+  /* -------------------------------------------- */
 
   /**
-   * Get base path to the layout files
-   * @returns {string} The path
+   * Get base path to the layout files.
+   * @returns {string} Storage path
    */
   get path() {
     return (this.isPersistentStorage)
@@ -79,9 +85,9 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get file parts
-   * @param {string} file The file
-   * @returns {object}    The file parts
+   * Get file parts.
+   * @param {string} file
+   * @returns {object} File parts
    */
   getFileParts(file) {
     const parts = file.split("/");
@@ -94,7 +100,7 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Whether the module directory is set to private
+   * Whether the module directory is set to private.
    * @returns {boolean} Whether the module directory is set to private
    */
   async isPrivate() {
@@ -114,8 +120,8 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get file paths as GM
-   * @returns {object} The file paths
+   * Get file paths as GM.
+   * @returns {object} File paths
    */
   async getFilePathsAsGm() {
     if ((!game.user.hasPermission("FILES_BROWSE") || this.private) && !Utils.isGmActive()) {
@@ -134,8 +140,8 @@ export class DataHandler {
   }
 
   /**
-   * Get file paths using socket
-   * @returns {Array} The file paths
+   * Get file paths using socket.
+   * @returns {Array} File paths
    */
   static async getFilePathsWithSocket() {
     return await game.tokenActionHud?.dataHandler?.getFilePaths() ?? [];
@@ -144,8 +150,8 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get file paths
-   * @returns {Array} The file paths
+   * Get file paths.
+   * @returns {Array} File paths
    */
   async getFilePaths() {
     const [actorFiles, userFiles] = await Promise.all([
@@ -157,9 +163,11 @@ export class DataHandler {
   }
 
   /* -------------------------------------------- */
+  /* SAVE DATA                                    */
+  /* -------------------------------------------- */
 
   /**
-   * Whether the user can save data
+   * Whether the user can save data.
    * @returns {boolean} Whether the user can save data
    */
   get canSaveData() {
@@ -169,11 +177,11 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Save data the GM
+   * Save data the GM.
    * @public
-   * @param {string} type The type: actor or user
-   * @param {string} id   The actor or user id
-   * @param {object} data The data
+   * @param {string} type Actor or user
+   * @param {string} id Actor or user ID
+   * @param {object} data Data to save
    */
   async saveDataAsGm(type, id, data) {
     if (game.user.hasPermission("FILES_UPLOAD") && !this.private) {
@@ -197,10 +205,10 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Save data
-   * @param {string} type The type: actor or user
-   * @param {string} id   The actor or user id
-   * @param {object} data The data
+   * Save data.
+   * @param {string} type Actor or user
+   * @param {string} id Actor or user ID
+   * @param {object} data Data to save
    */
   async saveData(type, id, data) {
     try {
@@ -229,9 +237,11 @@ export class DataHandler {
   }
 
   /* -------------------------------------------- */
+  /* GET DATA                                     */
+  /* -------------------------------------------- */
 
   /**
-   * Whether the user can get data
+   * Whether the user can get data.
    * @returns {boolean} Whether the user can get data
    */
   get canGetData() {
@@ -241,10 +251,10 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get data as GM
+   * Get data as GM.
    * @public
-   * @param {object} options The options: file, type, id
-   * @returns {object}       The data
+   * @param {object} options { file, type, id }
+   * @returns {object} Retrieved data
    */
   async getDataAsGm(options) {
     try {
@@ -273,9 +283,9 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get data
-   * @param {string} options The options: file, type, id
-   * @returns {object}       The data
+   * Get data.
+   * @param {string} options { file, type, id }
+   * @returns {object} Retrieved data
    */
   async getData(options) {
     const { id, file } = options;
@@ -311,10 +321,10 @@ export class DataHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get data
-   * @param {string} type The type: actor or user
-   * @param {string} id   The actor or user id
-   * @returns {object}    The data
+   * Get data.
+   * @param {string} type Actor or user
+   * @param {string} id Actor or user ID
+   * @returns {object} Retrieved data
    */
   async getDataMigrate(type, id) {
     const folderPath = `${MODULE.ID}/${game.world.id}/${type}`;

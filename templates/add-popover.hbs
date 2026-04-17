@@ -4,8 +4,8 @@
     <ul class="tah-add-popover-list">
         {{#each available}}
         <li class="tah-add-popover-item" data-index="{{@index}}" data-id="{{id}}"
-            data-type="{{type}}" data-list-name="{{value}}" data-name="{{name}}" tabindex="0">
-            <span class="tah-add-popover-name">{{value}}</span>
+            data-type="{{type}}" data-list-name="{{listName}}" data-name="{{name}}" tabindex="0">
+            <span class="tah-add-popover-name">{{listName}}</span>
         </li>
         {{/each}}
         <li class="tah-add-popover-item tah-add-popover-custom tah-hidden" data-custom="true" tabindex="0">

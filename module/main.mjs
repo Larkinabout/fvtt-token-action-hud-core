@@ -8,9 +8,10 @@ import { registerApi } from "./core/api.mjs";
 
 let systemManager;
 
-/**
- * Register hooks
- */
+/* -------------------------------------------- */
+/* HOOKS                                        */
+/* -------------------------------------------- */
+
 Hooks.once("socketlib.ready", registerSocket);
 Hooks.on("ready", registerApi);
 Hooks.on("tokenActionHudSystemReady", registerCoreModule);
@@ -19,9 +20,11 @@ Hooks.on("renderHotbar", (_, html) => addContextMenuListener(html, foundry.utils
 Hooks.on("renderSceneNavigation", (_, html) => addContextMenuListener(html, foundry.utils.isNewerVersion(game.version, "12.999") ? "li.ui-control" : "li.scene.nav-item"));
 
 /* -------------------------------------------- */
+/* REGISTRATION                                 */
+/* -------------------------------------------- */
 
 /**
- * Register the core module
+ * Register the core module.
  * @param {object} systemModule The system module
  */
 async function registerCoreModule(systemModule) {
@@ -51,7 +54,7 @@ async function registerCoreModule(systemModule) {
 /* -------------------------------------------- */
 
 /**
- * Register the TokenActionHud application
+ * Register the HUD.
  */
 async function registerHud() {
   // Get socket
@@ -79,7 +82,7 @@ async function registerHud() {
 /* -------------------------------------------- */
 
 /**
- * Notify GM if the Color Picker is not active
+ * Notify GM if the Color Picker is not active.
  */
 function checkColorPicker() {
   if (game.user.isGM && !game.modules.get("color-picker")?.active && Utils.getSetting("startup") === false) {
@@ -89,9 +92,11 @@ function checkColorPicker() {
 }
 
 /* -------------------------------------------- */
+/* HOOK HANDLERS                                */
+/* -------------------------------------------- */
 
 /**
- * Register HUD-related hooks
+ * Register HUD-related hooks.
  */
 function registerHudHooks() {
   Hooks.on("renderTokenActionHud", () => game.tokenActionHud.postRender());
@@ -109,9 +114,9 @@ function registerHudHooks() {
 /* -------------------------------------------- */
 
 /**
- * Handle hook events
- * @param {object} hookData The hook data
- * @param {string} hookName The hook name
+ * Handle hook events.
+ * @param {object} hookData
+ * @param {string} hookName
  */
 function handleHookEvent(hookData, hookName) {
   if (!validateHookData(hookData, hookName)) return;
@@ -121,10 +126,10 @@ function handleHookEvent(hookData, hookName) {
 /* -------------------------------------------- */
 
 /**
- * Validate hook data
- * @param {object} hookData The hook data
- * @param {string} hookName The hook name
- * @returns {boolean}
+ * Validate hook data.
+ * @param {object} hookData
+ * @param {string} hookName
+ * @returns {boolean} Whether the hook is valid
  */
 function validateHookData(hookData, hookName) {
   if (!game.tokenActionHud) return false;
@@ -160,8 +165,8 @@ function validateHookData(hookData, hookName) {
 /* -------------------------------------------- */
 
 /**
- * Validate compendium hook
- * @param {string} id The compendium ID
+ * Validate compendium hook.
+ * @param {string} id Compendium ID
  * @returns {boolean} Whether the compendium hook is valid
  */
 function validateCompendium(id) {
@@ -172,14 +177,15 @@ function validateCompendium(id) {
 }
 
 /* -------------------------------------------- */
+/* CONTEXT MENU / Z-INDEX                       */
+/* -------------------------------------------- */
 
 /**
- * Add context menu listeners
- * @param {object} html     The HTML
- * @param {string} selector The selector for the HTML element
+ * Add context menu listeners.
+ * @param {object} html
+ * @param {string} selector
  */
 function addContextMenuListener(html, selector) {
-  // Supports both v12 and v13
   const htmlElement = html[0] ?? html;
   const element = htmlElement.querySelector(selector);
   if (element) element.addEventListener("contextmenu", sendHudToBottom);
@@ -188,7 +194,7 @@ function addContextMenuListener(html, selector) {
 /* -------------------------------------------- */
 
 /**
- * Send HUD to bottom
+ * Send HUD to bottom.
  */
 function sendHudToBottom() {
   if (game.tokenActionHud?.element) {

@@ -9,8 +9,8 @@ export class RollHandlerExtender extends RollHandler {
   }
 
   /**
-   * Pre-handle action event
-   * @param {object} event        The event
+   * Pre-handle action event.
+   * @param {Event} event
    * @param {string} buttonValue  The button value
    * @param {class} actionHandler The ActionHandler instance
    * @returns {boolean}
@@ -24,7 +24,7 @@ export class RollHandlerExtender extends RollHandler {
   /**
    * Handle action click
    * @override
-   * @param {object} event        The click event
+   * @param {Event} event        The click event
    * @param {string} buttonValue  The button value
    * @param {class} actionHandler The ActionHandler instance
    * @returns {boolean}
