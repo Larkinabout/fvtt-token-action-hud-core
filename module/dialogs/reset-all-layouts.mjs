@@ -1,7 +1,7 @@
 import { Logger, Utils } from "../core/utils.mjs";
 
 /**
- * Reset all layouts confirmation dialog
+ * Reset all layouts confirmation dialog.
  * @public
  */
 export async function resetAllLayoutsDialog() {
@@ -24,7 +24,7 @@ export async function resetAllLayoutsDialog() {
 /* -------------------------------------------- */
 
 /**
- * Reset HUD layouts for everyone
+ * Reset HUD layouts for everyone.
  * @public
  */
 async function resetAllLayouts() {

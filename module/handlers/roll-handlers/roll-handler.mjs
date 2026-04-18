@@ -36,7 +36,7 @@ export class RollHandler {
   /**
    * Handle action events
    * @public
-   * @param {object} event The event
+   * @param {Event} event The event
    * @param {object} action The action
    * @param {class} actionHandler The ActionHandler instance
    */
@@ -93,7 +93,7 @@ export class RollHandler {
   /**
    * Overide for the TAH system module
    * @override
-   * @param {object} event       The event
+   * @param {Event} event       The event
    * @param {string} buttonValue The button value
    */
   handleActionClick(event, buttonValue) {}
@@ -102,7 +102,7 @@ export class RollHandler {
 
   /**
    * Handle action hover events
-   * @param {object} event  The event
+   * @param {Event} event  The event
    * @param {object} action The action
    */
   async handleActionHoverCore(event, action) {
@@ -128,7 +128,7 @@ export class RollHandler {
   /**
    * Overide for the TAH system module
    * @override
-   * @param {object} event       The event
+   * @param {Event} event       The event
    * @param {string} buttonValue The button value
    */
   handleActionHover(event, buttonValue) {}
@@ -137,7 +137,7 @@ export class RollHandler {
 
   /**
    * Handle group click events
-   * @param {object} event The event
+   * @param {Event} event The event
    * @param {group} group  The nest ID
    */
   async handleGroupClickCore(event, group) {
@@ -151,7 +151,7 @@ export class RollHandler {
   /**
    * Overide for the TAH system module
    * @override
-   * @param {object} event The event
+   * @param {Event} event The event
    * @param {object} group The group
    */
   handleGroupClick(event, group) {}
@@ -173,7 +173,7 @@ export class RollHandler {
   /**
    * Get button value
    * @private
-   * @param {object} event  The event
+   * @param {Event} event  The event
    * @returns {string}      The button value
    */
   #getButtonValue(event) {

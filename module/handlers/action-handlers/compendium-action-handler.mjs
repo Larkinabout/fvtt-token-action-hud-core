@@ -18,9 +18,11 @@ export class CompendiumActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* BUILD                                        */
+  /* -------------------------------------------- */
 
   /**
-   * Build compendium actions
+   * Build compendium actions.
    */
   async buildActions() {
     if (!Utils.getSetting("enableCompendiumActions")) return;
@@ -47,8 +49,8 @@ export class CompendiumActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Set compendium actions into the compendiumActions map
-   * @param {string} packId The pack id
+   * Set compendium actions into the compendiumActions map.
+   * @param {string} packId
    */
   async #setActions(packId) {
     const pack = game.packs.get(packId);
@@ -71,11 +73,13 @@ export class CompendiumActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* HELPERS                                      */
+  /* -------------------------------------------- */
 
   /**
-   * Get compendium action type based on document name
-   * @param {string} documentName The pack document name
-   * @returns {string}            The compendium action type
+   * Get compendium action type based on document name.
+   * @param {string} documentName
+   * @returns {string} Compendium action type
    */
   #getCompendiumActionType(documentName) {
     switch (documentName) {
@@ -89,11 +93,11 @@ export class CompendiumActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get on click function
-   * @param {string} actionType The action type
-   * @param {object} pack       The compendium pack
-   * @param {string} documentId The document ID
-   * @returns {Function}        The function
+   * Get on click function.
+   * @param {string} actionType
+   * @param {object} pack
+   * @param {string} documentId
+   * @returns {Function}
    */
   #getOnClick(actionType, pack, documentId) {
     switch (actionType) {
@@ -107,10 +111,10 @@ export class CompendiumActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get on click function for compendium journal entry
-   * @param {object} pack       The pack
-   * @param {string} documentId The document ID
-   * @returns {Function}        The function
+   * Get on click function for compendium journal entry.
+   * @param {object} pack
+   * @param {string} documentId
+   * @returns {Function}
    */
   #getOnClickEntry(pack, documentId) {
     return async () => {
@@ -121,10 +125,10 @@ export class CompendiumActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get on click function for compendium macro
-   * @param {object} pack       The pack
-   * @param {string} documentId The document ID
-   * @returns {Function}        The function
+   * Get on click function for compendium macro.
+   * @param {object} pack
+   * @param {string} documentId
+   * @returns {Function}
    */
   #getOnClickFunction(pack, documentId) {
     return async () => {
@@ -135,21 +139,23 @@ export class CompendiumActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get the group ID from the pack ID
-   * @param {string} packId The pack id
-   * @returns {string}      The group id
+   * Get the group ID from the pack ID.
+   * @param {string} packId
+   * @returns {string} Group ID
    */
   #getGroupId(packId) {
     return packId.replace(".", "-");
   }
 
   /* -------------------------------------------- */
+  /* LOOKUPS                                      */
+  /* -------------------------------------------- */
 
   /**
-   * Whether the compendium is linked
+   * Whether the compendium is linked.
    * @public
-   * @param {string} packId The pack id
-   * @returns {boolean}     Whether the compendium is linked
+   * @param {string} packId
+   * @returns {boolean} Whether the compendium is linked
    */
   isLinkedCompendium(packId) {
     return (this.packIds.length)

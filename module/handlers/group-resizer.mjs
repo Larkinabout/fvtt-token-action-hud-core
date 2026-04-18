@@ -11,9 +11,11 @@ export class GroupResizer {
     this.spacing = 10;
   }
 
+  /* -------------------------------------------- */
+
   /**
-   * Resize the groups element
-   * @param {object} groupElement The group element
+   * Resize the groups element.
+   * @param {object} groupElement
    */
   async resizeGroup(groupElement) {
     if (!groupElement) return;
@@ -34,9 +36,9 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Set variables
+   * Set variables.
    * @private
-   * @param {object} groupElement The group element
+   * @param {object} groupElement
    */
   async #setVariables(groupElement) {
     this.#resetVariables();
@@ -57,7 +59,7 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Reset variables
+   * Reset variables.
    * @private
    */
   #resetVariables() {
@@ -79,7 +81,7 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Reset groups elements
+   * Reset groups elements.
    */
   #resetGroupsElements() {
     const level1GroupElement = this.groupElement.closest('[data-part="group"]');
@@ -91,13 +93,14 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Get the grid width
+   * Get the grid width.
    * @private
    */
   async #getGridWidth() {
     // Reset action elements
     const emptyStyle = { display: "", gridTemplateColumns: "", width: "" };
     await this.#resetCSS(this.actionsElements, emptyStyle);
+    this.actionsElements.forEach(el => el.classList.remove("tah-actions-grid"));
 
     const actionWidths = [];
     const actionWidthsForMedian = [];
@@ -131,9 +134,9 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Resize the actions element into the grid format
+   * Resize the actions element into the grid format.
    * @private
-   * @param {object} actionsElement   The actions element
+   * @param {object} actionsElement
    * @param {number} groupCustomWidth The group custom width
    */
   async #resizeGrid(actionsElement, groupCustomWidth) {
@@ -150,19 +153,21 @@ export class GroupResizer {
       : (actions.length <= this.minCols) ? actions.length : squaredCols;
     // Apply maxHeight and width styles to content
     const style = { display: "grid", gridTemplateColumns: `repeat(${cols}, ${this.gridWidth}px)` };
+    actionsElement.classList.add("tah-actions-grid");
     await this.#assignCSS(actionsElement, style);
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Resize the actions element
+   * Resize the actions element.
    * @private
-   * @param {object} actionsElement   The actions element
-   * @param {number} groupCustomWidth The group custom width
+   * @param {object} actionsElement
+   * @param {number} groupCustomWidth
    */
   async #resize(actionsElement, groupCustomWidth) {
     if (!actionsElement) return;
+    actionsElement.classList.remove("tah-actions-grid");
 
     let width = 500;
 
@@ -213,9 +218,9 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Get available content width
+   * Get available content width.
    * @private
-   * @returns {number} The available content width
+   * @returns {number} Available content width
    */
   #getAvailableWidth() {
     const customWidth = this.settings?.customWidth;
@@ -239,7 +244,7 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Get subgroups element
+   * Get subgroups element.
    * @private
    */
   async #setSubgroupsElement() {
@@ -255,7 +260,7 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Get subgroup elements
+   * Get subgroup elements.
    * @private
    */
   #setSubgroupElementArr() {
@@ -266,7 +271,7 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Set the width
+   * Set the width.
    */
   async #setWidth() {
     this.actionsElements = this.groupElement.querySelectorAll('[data-part="actions"]');
@@ -305,7 +310,7 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Set the height
+   * Set the height.
    * @private
    */
   async #setHeight() {
@@ -322,9 +327,9 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Get available height
+   * Get available height.
    * @private
-   * @returns {number} The available height
+   * @returns {number} Available height
    */
   #getAvailableHeight() {
     const windowHeight = canvas.screenDimensions[1] || window.innerHeight;
@@ -356,7 +361,7 @@ export class GroupResizer {
         uiTopBottom = document.querySelector("#ui-bottom");
       }
     } else if (foundry.utils.isNewerVersion(game.version, "12.999")) {
-      uiTopBottom = document.querySelector("scene-navigation-active");
+      uiTopBottom = document.querySelector("#scene-navigation-active");
     } else {
       uiTopBottom = document.querySelector("#ui-top");
     }
@@ -370,10 +375,10 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Assign CSS
+   * Assign CSS.
    * @private
-   * @param {object} element The DOM element
-   * @param {object} style   The style
+   * @param {object} element
+   * @param {object} style
    */
   async #assignCSS(element, style) {
     if (!element) return;
@@ -385,10 +390,10 @@ export class GroupResizer {
   /* -------------------------------------------- */
 
   /**
-   * Reset CSS
+   * Reset CSS.
    * @private
-   * @param {Array} elements The DOM elements
-   * @param {object} style   The style
+   * @param {Array} elements List of DOM elements
+   * @param {object} style
    */
   async #resetCSS(elements, style) {
     for (const element of elements) {

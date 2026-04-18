@@ -8,7 +8,7 @@ import { RollHandler } from "./roll-handler.mjs";
 export class PreRollHandler extends RollHandler {
   /**
    * Pre-handle action event
-   * @param {object} event        The event
+   * @param {Event} event        The event
    * @param {string} buttonValue  The button value
    * @param {class} actionHandler The ActionHandler instance
    * @returns {boolean}

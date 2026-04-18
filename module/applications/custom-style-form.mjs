@@ -21,14 +21,15 @@ export class CustomStyleForm extends HandlebarsApplicationMixin(ApplicationV2) {
       handler: CustomStyleForm.submit
     },
     position: {
-      width: 600,
+      width: 540,
       height: 680
     },
     tag: "form",
     window: {
       minimizable: true,
       resizable: true,
-      title: "tokenActionHud.settings.customStyle.form.title"
+      title: "tokenActionHud.settings.customStyle.form.title",
+      icon: "fa-solid fa-palette"
     }
   };
 
@@ -82,9 +83,10 @@ export class CustomStyleForm extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   static async reset() {
+    const tahElement = document.querySelector("#token-action-hud-app");
     for (const [key, value] of Object.entries(CUSTOM_STYLE)) {
       Utils.setSetting(key, value.default);
-      document.querySelector(":root").style.setProperty(value.cssProperty, value.default);
+      tahElement?.style.setProperty(value.cssProperty, value.default);
     }
     this.render(true);
   }
@@ -93,12 +95,13 @@ export class CustomStyleForm extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static async submit(event, form, formData) {
     const isCustom = Utils.getSetting("style") === "custom";
+    const tahElement = document.querySelector("#token-action-hud-app");
     for (const [key, value] of Object.entries(formData.object)) {
       const customStyle = CUSTOM_STYLE[key];
       if (value !== this.context[key]) {
         Utils.setSetting(key, value);
-        if (isCustom) {
-          document.querySelector(":root").style.setProperty(customStyle.cssProperty, value);
+        if (isCustom && tahElement) {
+          tahElement.style.setProperty(customStyle.cssProperty, value);
         }
       }
     }

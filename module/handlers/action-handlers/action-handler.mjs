@@ -22,9 +22,11 @@ export class ActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* RESET                                        */
+  /* -------------------------------------------- */
 
   /**
-   * Soft reset variables
+   * Soft reset variables.
    */
   softReset() {
     this.genericActionHandler = new GenericActionHandler(this);
@@ -33,10 +35,12 @@ export class ActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* PREPARE                                      */
+  /* -------------------------------------------- */
 
   /**
-   * Prepare actions
-   * @param {object} groups The HUD groups
+   * Prepare actions.
+   * @param {object} groups HUD groups
    */
   prepareActions(groups) {
     for (const group of Object.values(groups)) {
@@ -50,9 +54,11 @@ export class ActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* BUILD                                        */
+  /* -------------------------------------------- */
 
   /**
-   * Build actions
+   * Build actions.
    */
   async buildActionsCore() {
     await Promise.all([
@@ -69,7 +75,7 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Build system-specific actions
+   * Build system-specific actions.
    * @private
    */
   async #buildSystemActionsCore() {
@@ -82,16 +88,16 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Placeholder function for the system module
+   * Placeholder function for the system module.
    * @override
-   * @param {Array} groupIds The group IDs
+   * @param {Array} groupIds List of group IDs
    */
   async buildSystemActions(groupIds) {}
 
   /* -------------------------------------------- */
 
   /**
-   * Build compendium-specific actions
+   * Build compendium-specific actions.
    * @private
    */
   async #buildCompendiumActionsCore() {
@@ -103,7 +109,7 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Build generic actions
+   * Build generic actions.
    * @private
    */
   #buildGenericActionsCore() {
@@ -115,7 +121,7 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Build macro-specific actions
+   * Build macro-specific actions.
    * @private
    */
   async #buildMacroActionsCore() {
@@ -127,7 +133,7 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Build extended actions
+   * Build extended actions.
    * @private
    */
   async #buildExtendedActionsCore() {
@@ -139,7 +145,7 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Update non-preset actions
+   * Update non-preset actions.
    * @private
    */
   #updateNonPresetActions() {
@@ -159,7 +165,7 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Set character limit for action names based on the 'Character per Word' setting
+   * Set character limit for action names based on the 'Character per Word' setting.
    * @private
    */
   #setCharacterLimit() {
@@ -176,8 +182,8 @@ export class ActionHandler {
 
         const subgroupCharacterCount = subgroup?.settings?.characterCount;
         const characterCount = (subgroupCharacterCount >= 0)
-          ? groupCharacterCount
-          : subgroupCharacterCount;
+          ? subgroupCharacterCount
+          : groupCharacterCount;
 
         // Exit if character limit is not defined
         if ((!characterCount && characterCount !== 0) || characterCount < 0) continue;
@@ -201,22 +207,44 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Get actions by ID
+   * Whether actions should be sorted.
+   * @private
+   * @param {object} group
+   * @returns {boolean}
+   */
+  #shouldSortActions(group) {
+    if (group?.settings?.sort !== undefined) return !!group.settings.sort;
+    const topLevelNestId = group?.nestId?.split("_")[0];
+    if (topLevelNestId && topLevelNestId !== group.nestId) {
+      const topLevelGroup = this.groupHandler.getGroup({ nestId: topLevelNestId });
+      if (topLevelGroup?.settings?.sort !== undefined) return !!topLevelGroup.settings.sort;
+    }
+    return !!Utils.getSetting("sortActions");
+  }
+
+  /* -------------------------------------------- */
+  /* LOOKUPS                                      */
+  /* -------------------------------------------- */
+
+  /**
+   * Get actions by ID.
    * @public
-   * @param {object} actionData The action data
-   * @returns {Array}           The actions
+   * @param {object} actionData
+   * @returns {Array} List of actions
    */
   getActions(actionData) {
     return this.actions.filter(action => action.id === actionData.id);
   }
 
   /* -------------------------------------------- */
+  /* CREATE / UPDATE                              */
+  /* -------------------------------------------- */
 
   /**
-   * Create action
+   * Create action object.
    * @public
-   * @param {object} actionData The action data
-   * @returns {object}          The action
+   * @param {object} actionData
+   * @returns {object} Action
    */
   createAction(actionData) {
     const fullName = actionData.fullName ?? actionData.name;
@@ -266,10 +294,10 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Add actions to the HUD
+   * Add actions to the HUD.
    * @public
-   * @param {object} actionsData The actions data
-   * @param {object} groupData   The group data
+   * @param {object} actionsData
+   * @param {object} groupData
    */
   addActions(actionsData, groupData) {
     if (!actionsData.length) return;
@@ -317,26 +345,23 @@ export class ActionHandler {
         if (!existingAction) reorderedActions.push(this.createAction({ ...action, isPreset: true }));
       });
 
-      // Sort actions alphabetically
-      if (
-        groupData?.settings?.sort
-        || (typeof groupData?.settings?.sort === "undefined" && Utils.getSetting("sortActions"))
-      ) {
-        reorderedActions.sort((a, b) => a.name.localeCompare(b.name));
-      }
-
       // Add actions to group
       group.actions.push(...reorderedActions);
+
+      // Sort actions
+      if (this.#shouldSortActions(group)) {
+        group.actions.sort((a, b) => a.name.localeCompare(b.name));
+      }
     }
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Update actions
+   * Update actions.
    * @public
-   * @param {Array} actionsData The actions data
-   * @param {object} groupData  The group data
+   * @param {Array} actionsData
+   * @param {object} groupData
    */
   updateActions(actionsData, groupData) {
     const group = this.groupHandler.getGroup(groupData);
@@ -371,9 +396,8 @@ export class ActionHandler {
       }
     }
 
-    // Sort actions alphabetically
-    if (groupData?.settings?.sort
-      || (typeof groupData?.settings?.sort === "undefined" && Utils.getSetting("sortActions"))) {
+    // Sort actions
+    if (this.#shouldSortActions(group)) {
       reorderedActions.sort((a, b) => a.name.localeCompare(b.name));
     }
 
@@ -384,9 +408,9 @@ export class ActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Add to available actions
+   * Add to available actions.
    * @private
-   * @param {Array} actions The actions
+   * @param {Array} actions List of actions
    */
   #addToAvailableActions(actions) {
     for (const [actionId, action] of actions) {
@@ -397,40 +421,57 @@ export class ActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* AVAILABLE CHOICES                            */
+  /* -------------------------------------------- */
 
   /**
-   * Get available actions as Tagify entries
+   * Get available actions.
    * @public
-   * @returns {Array} The available actions as Tagify entries
+   * @returns {Array} List of available actions
    */
-  getAvailableActionsAsTags() {
+  getAvailableActions() {
     return [...this.availableActions.values()]
-      .map(action => this.#toTagify(action))
-      .sort((a, b) => a.value.localeCompare(b.value));
+      .map(action => this.#toChoice(action))
+      .sort((a, b) => a.listName.localeCompare(b.listName));
   }
 
   /* -------------------------------------------- */
 
   /**
-   * Get selected actions as Tagify entries
+   * Get selected actions.
    * @public
-   * @param {object} groupData The group data
-   * @returns {Array}          The selected actions as Tagify entries
+   * @param {object} groupData
+   * @returns {Array} List of selected actions
    */
-  getSelectedActionsAsTags(groupData) {
+  getSelectedActions(groupData) {
     const group = this.groupHandler.getGroup(groupData);
     if (!group) return [];
     return group.actions
       .filter(action => action.selected === true)
-      .map(action => this.#toTagify(action));
+      .map(action => this.#toChoice(action));
   }
 
+  /* -------------------------------------------- */
+
+  /**
+   * Convert an action into a popover choice.
+   * @private
+   * @param {object} actionData
+   * @returns {{id: string, name: string, listName: string, type: string}}
+   */
+  #toChoice(actionData) {
+    const { id, name, listName } = actionData;
+    return { id, name, listName: listName ?? name, type: "action" };
+  }
+
+  /* -------------------------------------------- */
+  /* EXTENDERS                                    */
   /* -------------------------------------------- */
 
   /**
    * Add action handler extender
    * @public
-   * @param {object} actionHandlerExtender The action handler extender
+   * @param {object} actionHandlerExtender
    */
   addActionHandlerExtender(actionHandlerExtender) {
     Logger.debug("Adding action handler extender...", { actionHandlerExtender });
@@ -441,20 +482,7 @@ export class ActionHandler {
   }
 
   /* -------------------------------------------- */
-
-  /**
-   * Convert an action into a Tagify entry
-   * @private
-   * @param {object} actionData The action data
-   * @returns {object}          The Tagify entry
-   */
-  #toTagify(actionData) {
-    const { id, name, listName } = actionData;
-    return { id, name, type: "action", value: listName ?? name };
-  }
-
-  /* -------------------------------------------- */
-  /* Shortcuts to the HudManager properties       */
+  /* SHORTCUTS                                    */
   /* -------------------------------------------- */
 
   /**

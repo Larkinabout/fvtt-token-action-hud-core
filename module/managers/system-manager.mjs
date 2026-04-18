@@ -12,7 +12,7 @@ export class SystemManager {
   }
 
   /* -------------------------------------------- */
-  /*  Methods for system modules to override      */
+  /*  METHODS TO OVERRIDE                         */
   /* -------------------------------------------- */
 
   getActionHandler() {}
@@ -30,6 +30,8 @@ export class SystemManager {
   registerStyles() {}
 
   /* -------------------------------------------- */
+  /*  INITIALISE                                  */
+  /* -------------------------------------------- */
 
   /**
    * Initialise the system manager
@@ -42,11 +44,13 @@ export class SystemManager {
 
 
   /* -------------------------------------------- */
+  /*  REGISTER                                    */
+  /* -------------------------------------------- */
 
   /**
    * Register defaults
    * @private
-   * @returns {Array} The defaults
+   * @returns {Array} Default HUD layout and subgroups
    */
   async #registerDefaultsCore() {
     const defaults = await this.registerDefaults() ?? [];
@@ -87,8 +91,8 @@ export class SystemManager {
   /**
    * Initialise the action handler
    * @public
-   * @param {class} hudManager The HudManager instance
-   * @returns {class}          The ActionHandler instance
+   * @param {HudManager} hudManager
+   * @returns {ActionHandler}
    */
   getActionHandlerCore(hudManager) {
     const actionHandler = this.getActionHandler();
@@ -112,8 +116,8 @@ export class SystemManager {
   /**
    * Add action handler extensions
    * @public
-   * @param {class} groupHandler The GroupHandler instance
-   * @param {class} actionHandler The ActionHandler instance
+   * @param {GroupHandler} groupHandler
+   * @param {ActionHandler} actionHandler
    */
   #addActionHandlerExtenders(groupHandler, actionHandler) {
     if (Utils.isModuleActive("itemacro") && !Utils.isModuleActive("midi-qol")) {
@@ -128,8 +132,8 @@ export class SystemManager {
   /**
    * Get the roll handler
    * @public
-   * @param {class} hudManager The HudManager instance
-   * @returns {class}          The RollHandler instance
+   * @param {HudManager} hudManager
+   * @returns {RolHandler}
    */
   getRollHandlerCore(hudManager) {
     let rollHandlerId = Utils.getSetting("rollHandler");
@@ -156,7 +160,7 @@ export class SystemManager {
   /**
    * Add roll handler extensions
    * @public
-   * @param {class} rollHandler The roll handler
+   * @param {RollHandler} rollHandler
    */
   #addRollHandlerExtenders(rollHandler) {
     Hooks.callAll("tokenActionHudCoreAddRollHandlerExtenders", rollHandler);
@@ -166,8 +170,8 @@ export class SystemManager {
 
   /**
    * Add handler
-   * @param {Array} choices The choices
-   * @param {string} id     The module id
+   * @param {Array} choices
+   * @param {string} id Module ID
    */
   static addHandler(choices, id) {
     if (Utils.isModuleActive(id)) {

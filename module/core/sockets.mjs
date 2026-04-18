@@ -5,7 +5,7 @@ import { TokenActionHud } from "../applications/token-action-hud.mjs";
 let socket;
 
 /**
- * Register socket with socketlib module
+ * Register socket with socketlib module.
  */
 export function registerSocket() {
   socket = socketlib.registerModule(MODULE.ID);
@@ -15,8 +15,10 @@ export function registerSocket() {
   socket.register("reset", TokenActionHud.resetLayoutWithSocket);
 }
 
+/* -------------------------------------------- */
+
 /**
- * Whether the socketlib module is active
+ * Whether the socketlib module is active.
  * @returns {boolean} Whether the socketlib module is active
  */
 export function isSocketlibActive() {
@@ -26,10 +28,11 @@ export function isSocketlibActive() {
   return false;
 }
 
+/* -------------------------------------------- */
 
 /**
- * Get the socket
- * @returns {object} The socket
+ * Get the socket.
+ * @returns {object} Socket
  */
 export function getSocket() {
   return socket;

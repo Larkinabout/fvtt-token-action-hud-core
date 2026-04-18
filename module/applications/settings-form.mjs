@@ -28,8 +28,8 @@ export class TahSettingsForm extends HandlebarsApplicationMixin(ApplicationV2) {
       handler: TahSettingsForm.submit
     },
     position: {
-      width: 600,
-      height: 800
+      width: 540,
+      height: "auto"
     },
     tag: "form",
     window: {
@@ -127,7 +127,8 @@ export class TahSettingsFormLayout extends TahSettingsForm {
 
   static DEFAULT_OPTIONS = {
     window: {
-      title: "tokenActionHud.settings.layout.form.title"
+      title: "tokenActionHud.settings.layout.form.title",
+      icon: "fa-solid fa-table-cells-large"
     }
   };
 }

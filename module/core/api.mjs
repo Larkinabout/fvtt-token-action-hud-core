@@ -9,7 +9,7 @@ import { SystemManager } from "../managers/system-manager.mjs";
 import { Logger, Timer, Utils } from "./utils.mjs";
 
 /**
- * Register the API
+ * Register the API.
  */
 export function registerApi() {
   const module = game.modules.get(MODULE.ID);

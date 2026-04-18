@@ -5,6 +5,80 @@
   .tah-hidden {
     display: none !important;
   }
+
+  /* -------------------------------------------- */
+  /* Drag-to-reorder                              */
+  /* -------------------------------------------- */
+  [data-part="group"][draggable="true"],
+  [data-part="subgroup"][draggable="true"],
+  [data-part="action"][draggable="true"] {
+    cursor: grab;
+    &.tah-dragging {
+      cursor: grabbing;
+      opacity: 0.2;
+    }
+  }
+
+  [data-part="action"][draggable="true"] .tah-action-button,
+  [data-part="subgroup"][draggable="true"] .tah-subgroup-button,
+  [data-part="subgroup"][draggable="true"] .tah-list-subgroup-title,
+  [data-part="group"][draggable="true"] .tah-group-button {
+    cursor: grab;
+  }
+
+  [data-part="action"][draggable="true"].tah-dragging .tah-action-button,
+  [data-part="subgroup"][draggable="true"].tah-dragging .tah-subgroup-button,
+  [data-part="subgroup"][draggable="true"].tah-dragging .tah-list-subgroup-title,
+  [data-part="group"][draggable="true"].tah-dragging .tah-group-button {
+    cursor: grabbing;
+  }
+
+  [data-part="action"].tah-drop-action-before,
+  [data-part="action"].tah-drop-action-after {
+    position: relative;
+    &::after {
+      background: var(--color-warm-1, #ee9b3a);
+      border-radius: 2px;
+      content: "";
+      height: 80%;
+      pointer-events: none;
+      position: absolute;
+      top: 10%;
+      width: 3px;
+      z-index: 100;
+    }
+  }
+
+  [data-part="action"].tah-drop-action-before::after {
+    left: calc(var(--tah-gap, 5px) * -0.5 - 1.5px);
+  }
+
+  [data-part="action"].tah-drop-action-after::after {
+    right: calc(var(--tah-gap, 5px) * -0.5 - 1.5px);
+  }
+
+  .tah-add-group-button,
+  .tah-add-subgroup-button {
+    .tah-drop-icon { display: none; }
+  }
+
+  .tah-groups.tah-drag-active {
+    .tah-add-group-button,
+    .tah-add-subgroup-button {
+      opacity: 0.5;
+      .tah-add-icon { display: none; }
+      &.tah-drop-indicator {
+        background: var(--color-warm-1, #ee9b3a);
+        border-color: var(--color-warm-1, #ee9b3a);
+        opacity: 1;
+        .tah-drop-icon {
+          color: var(--color-cool-5, #0b0a13);
+          display: inline-block;
+        }
+      }
+    }
+  }
+
   #tah-character-name {
     color: var(--tah-character-name-color);
     font-size: @font-size;
@@ -14,11 +88,16 @@
     width: max-content;
     z-index: 1;
   }
+
   &:hover {
     #tah-collapse-expand>#tah-collapse-hud,
     >#tah-buttons {
       display: flex;
     }
+  }
+
+  .tah-groups.tah-unlocked~#tah-buttons {
+    display: flex;
   }
   #tah-collapse-expand {
     left: -20px;
@@ -51,6 +130,19 @@
     height: var(--tah-button-height);
     position: relative;
     z-index: 1;
+    #tah-drag-hud {
+      cursor: move;
+      &:focus,
+      &:focus-visible,
+      &.focus {
+        border-color: transparent;
+        box-shadow: none;
+        outline: none;
+      }
+    }
+  }
+  #tah-buttons:has(#tah-drag-hud:not(.tah-hidden)) {
+    display: flex;
   }
   /* -------------------------------------------- */
   /* Box Button                                   */
@@ -68,9 +160,14 @@
     height: var(--tah-button-height);
     margin: 0;
     min-width: var(--tah-button-min-width);
+    overflow: hidden;
     padding: 0;
     position: relative;
     text-shadow: var(--tah-button-text-shadow);
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
     &.tah-group-button {
       background: var(--tah-button-background);
     }
@@ -110,7 +207,10 @@
       box-shadow: var(--tah-button-active-box-shadow);
       color: var(--tah-button-active-text-color);
       &.activeText>.tah-button-content:after {
-        content: "*";
+        content: "\f00c"; // fa-check
+        font-family: "Font Awesome 7 Pro", "Font Awesome 6 Pro";
+        font-weight: 900;
+        margin-left: 0.25rem;
       }
     }
     /* -------------------------------------------- */
@@ -161,21 +261,6 @@
         }
       }
     }
-    
-    /* -------------------------------------------- */
-    /*  Edit Group Icon                             */
-    /* -------------------------------------------- */
-    >.tah-edit-group-icon {
-      font-size: @tah-edit-group-icon-font-size;
-      position: absolute;
-      right: 0px;
-      top: @tah-edit-group-icon-top;
-      visibility: hidden;
-    }
-    &:hover:not(.disable-edit)>.tah-edit-group-icon {
-      visibility: visible;
-    }
-    /* -------------------------------------------- */
   }
   /* -------------------------------------------- */
   /* Icon Button                                  */
@@ -189,6 +274,7 @@
     &:hover,
     &:focus {
       box-shadow: none;
+      outline: none;
       >i {
         color: var(--tah-icon-hover-color);
         text-shadow: var(--tah-icon-hover-text-shadow);
@@ -208,17 +294,120 @@
   /* -------------------------------------------- */
   /* Groups                                       */
   /* -------------------------------------------- */
+  .tah-groups.tah-unlocked .tah-collapse-icon,
+  .tah-groups.tah-unlocked .tah-expand-icon {
+    display: none;
+  }
+
+  .tah-groups.tah-unlocked [data-part="subgroup"] {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px dashed var(--tah-text-primary-color, #fff);
+    border-radius: var(--tah-border-radius);
+    padding: 1rem;
+  }
+
+  .tah-groups.tah-unlocked .tah-add-subgroup-button {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .tah-groups.tah-unlocked [data-part="subgroup"] .tah-add-action-button,
+  .tah-groups.tah-unlocked [data-part="subgroup"] .tah-add-subgroup-button:not(.tah-drop-indicator) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .tah-groups.tah-unlocked .tah-button-box:not(.disabled):hover {
+    background-color: var(--tah-button-background-color);
+    border: 1px dashed var(--tah-text-primary-color, #fff);
+    box-shadow: var(--tah-button-box-shadow);
+    color: var(--tah-button-text-color);
+    .tah-info {
+      color: inherit;
+      &.tah-spotlight { color: inherit; }
+    }
+  }
+
   .tah-groups {
     display: flex;
     filter: @tah-groups-filter;
     gap: var(--tah-gap);
+    .tah-add-group-button {
+      align-items: center;
+      align-self: center;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px dashed var(--tah-text-primary-color, #fff);
+      border-radius: 4px;
+      color: var(--tah-text-primary-color, #fff);
+      cursor: pointer;
+      display: inline-flex;
+      height: var(--tah-button-height);
+      justify-content: center;
+      margin: 0;
+      opacity: 0.7;
+      padding: 0;
+      width: 24px;
+      &:hover {
+        border-color: var(--tah-text-hover-primary-color, #fff);
+        color: var(--tah-text-hover-primary-color, #fff);
+        opacity: 1;
+      }
+    }
+    .tah-add-action-button {
+      align-items: center;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px dashed var(--tah-text-primary-color, #fff);
+      border-radius: 4px;
+      box-sizing: border-box;
+      color: var(--tah-text-primary-color, #fff);
+      cursor: pointer;
+      display: inline-flex;
+      height: var(--tah-button-height);
+      justify-content: center;
+      margin: 0;
+      min-width: 32px;
+      opacity: 0.6;
+      padding: 0 6px;
+      &:hover {
+        border-color: var(--tah-text-hover-primary-color, #fff);
+        color: var(--tah-text-hover-primary-color, #fff);
+        opacity: 1;
+      }
+    }
+
+    .tah-add-subgroup-button {
+      align-items: center;
+      align-self: stretch;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px dashed var(--tah-text-primary-color, #fff);
+      border-radius: 4px;
+      box-sizing: border-box;
+      color: var(--tah-text-primary-color, #fff);
+      cursor: pointer;
+      display: flex;
+      flex: 1 1 auto;
+      height: 24px;
+      justify-content: center;
+      margin: 2px 0;
+      min-height: 24px;
+      min-width: 80px;
+      opacity: 0.6;
+      padding: 0;
+      width: 100%;
+      &:hover {
+        border-color: var(--tah-text-hover-primary-color, #fff);
+        color: var(--tah-text-hover-primary-color, #fff);
+        opacity: 1;
+      }
+    }
+
     .tah-tab-group>.tah-subgroups-container>.tah-subgroups {
       background: var(--tah-subgroups-background);
       left: @tah-subgroups-container-left;
     }
+
     .tah-tab-subgroup>.tah-subgroups-container>.tah-subgroups {
       left: -10px;
     }
+
     .tah-tab-groups {
       width: max-content;
       >.tah-tab-subgroup>.tah-subgroups>.tah-actions {
@@ -226,6 +415,7 @@
         border-radius: var(--tah-border-radius);
       }
     }
+
     .tah-tab-group,
     .tah-tab-subgroup {
       >.tah-subgroups-container {
@@ -261,19 +451,23 @@
         }
       }
     }
+
     .tah-subgroups-container {
       display: none;
       position: absolute;
     }
+
     .tah-subgroups {
       display: flex;
       flex-direction: column;
       gap: var(--tah-gap);
-      width: max-content;
+      min-width: max-content;
+      width: 100%;
       &.expand-down {
         flex-direction: column;
       }
     }
+
     .tah-list-subgroups {
       background: var(--tah-background-color);
       border-radius: var(--tah-border-radius);
@@ -296,11 +490,13 @@
         flex-direction: row;
       }
     }
+
     .tah-tab-subgroups {
       display: flex;
       gap: var(--tah-gap);
       position: relative;
     }
+
     .tah-list-subgroup {
       display: flex;
       flex-direction: column;
@@ -323,11 +519,8 @@
           >.tah-expand-icon:not(.tah-hidden) {
             visibility: visible;
           }
-          &:not(.disable-edit)>.tah-edit-icon {
-            visibility: visible;
-          }
           >i {
-            color: var(--tah-list-subgroup-title-hover-icon-color);
+            bottom: 1px;
           }
         }
         >i {
@@ -336,9 +529,6 @@
           pointer-events: none;
           position: relative;
           visibility: hidden;
-          &.tah-collapse-icon {
-            bottom: 1px;
-          }
         }
         .tah-info {
           background: var(--tah-button-background-color);
@@ -358,6 +548,7 @@
         }
       }
     }
+
     .tah-tab-subgroup {
       >.tah-tab-subgroup>.tah-subgroups>.tah-actions {
         background: var(--tah-background-color);
@@ -367,29 +558,53 @@
     &.tah-unlocked .tah-subgroup>.tah-list-subgroup>.tah-subgroups>.tah-list-subgroups {
       padding-left: 10px;
     }
+
     .tah-subgroup[data-show-title="false"] {
-      >.tah-list-subgroup>.tah-subgroups>.tah-list-subgroups>.tah-subgroup:not([data-show-title="false"]) {
-        padding-left: 0px;
-      }
       >div>.tah-list-subgroup-title>.tah-list-subgroup-title-text {
         color: var(--tah-text-disabled-color);
       }
     }
+    &:not(.tah-unlocked) .tah-subgroup[data-show-title="false"]>.tah-list-subgroup>.tah-subgroups>.tah-list-subgroups>.tah-subgroup:not([data-show-title="false"]) {
+      padding-left: 0px;
+    }
+
     .tah-subgroup:not([data-show-title="false"])[data-has-image="false"]>.tah-list-subgroup>.tah-subgroups>.tah-list-subgroups>.tah-subgroup:not([data-show-title="false"])[data-has-image="false"] {
       padding-left: 10px;
     }
+
     /* -------------------------------------------- */
     /* Actions                                      */
     /* -------------------------------------------- */
     >.tah-actions {
       margin-top: 5px;
     }
+
     .tah-actions {
       align-items: center;
       display: flex;
       flex-flow: row wrap;
       gap: var(--tah-gap);
       width: 100%;
+      &.tah-actions-grid {
+        align-items: stretch;
+        .tah-action,
+        .tah-action-button {
+          width: 100%;
+        }
+      }
     }
   }
+}
+
+/* -------------------------------------------- */
+/* Group/Subgroup context menu                  */
+/* -------------------------------------------- */
+#context-menu menu.context-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#context-menu li.context-item.tah-context-delete {
+  color: var(--color-warm-2, #c9593f);
 }

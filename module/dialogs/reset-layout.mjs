@@ -1,7 +1,7 @@
 import { Logger, Utils } from "../core/utils.mjs";
 
 /**
- * Reset layout confirmation dialog
+ * Reset layout confirmation dialog.
  * @public
  */
 export async function resetLayoutDialog() {
@@ -24,7 +24,7 @@ export async function resetLayoutDialog() {
 /* -------------------------------------------- */
 
 /**
- * Reset user layout
+ * Reset user layout.
  */
 async function resetLayout() {
   if (!game?.tokenActionHud) return;

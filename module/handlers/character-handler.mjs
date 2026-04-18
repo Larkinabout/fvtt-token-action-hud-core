@@ -9,7 +9,7 @@ export class CharacterHandler {
   }
 
   /**
-   * Initialise Character Handler
+   * Initialise Character Handler.
    */
   init() {
     this.previousActorId = this.actor?.id;
@@ -19,7 +19,7 @@ export class CharacterHandler {
   /* -------------------------------------------- */
 
   /**
-   * Whether there is a character
+   * Whether there is a character.
    * @returns {boolean} Whether there is a character
    */
   get isCharacter() {
@@ -29,7 +29,7 @@ export class CharacterHandler {
   /* -------------------------------------------- */
 
   /**
-   * Whether there is multiple tokens
+   * Whether there is multiple tokens.
    * @returns {boolean} Whether there is multiple tokens
    */
   get isMultipleTokens() {
@@ -40,7 +40,7 @@ export class CharacterHandler {
   /* -------------------------------------------- */
 
   /**
-   * Whether the current actor is the same actor
+   * Whether the current actor is the same actor.
    * @returns {boolean} Whether the current actor is the same actor
    */
   get isSameActor() {
@@ -50,7 +50,7 @@ export class CharacterHandler {
   /* -------------------------------------------- */
 
   /**
-   * Set character based on controlled tokens
+   * Set character based on controlled tokens.
    * @private
    */
   setCharacter() {
@@ -66,7 +66,7 @@ export class CharacterHandler {
   /* -------------------------------------------- */
 
   /**
-   * Reset actor and token properties
+   * Reset actor and token properties.
    */
   resetCharacter() {
     this.token = null;
@@ -78,8 +78,8 @@ export class CharacterHandler {
   /* -------------------------------------------- */
 
   /**
-   * Handle multiple controlled tokens
-   * @param {*} controlledTokens
+   * Handle multiple controlled tokens.
+   * @param {Array} controlledTokens List of controlled tokens
    */
   #handleMultipleTokens(controlledTokens) {
     this.characterName = game.i18n.localize("tokenActionHud.multiple");
@@ -96,9 +96,9 @@ export class CharacterHandler {
   /* -------------------------------------------- */
 
   /**
-   * Handle a single controlled token
+   * Handle a single controlled token.
    * @private
-   * @param {Array} controlledTokens The controlled tokens
+   * @param {Array} controlledTokens List of controlled tokens
    */
   #handleSingleToken(controlledTokens) {
     const character = { token: null, actor: null };
@@ -125,10 +125,10 @@ export class CharacterHandler {
   /* -------------------------------------------- */
 
   /**
-   * Whether the character is a valid selection for the current user
+   * Whether the character is a valid selection for the current user,
    * @private
-   * @param {object} [token = {}] The token
-   * @returns {boolean}           Whether the character is a valid selection for the current user
+   * @param {object} [token = {}]
+   * @returns {boolean} Whether the character is a valid selection for the current user
    */
   #isValidCharacter(token = {}) {
     return game.user.isGM || token.actor?.testUserPermission(game.user, "OWNER");

@@ -18,23 +18,43 @@
             <i class="tah-collapse-icon{{~#if (tokenActionHudCoreTrue settings.collapse)}} tah-hidden{{~/if}} fa fa-chevron-down"></i>
             <i class="tah-expand-icon{{~#if (tokenActionHudCoreTrue settings.collapse)}}{{else}} tah-hidden{{~/if}} fa fa-chevron-up"></i>
             {{~/if}}
-            <i class="tah-edit-icon fa fa-pen-to-square" aria-hidden="true"></i>
         </div>
         <div class="tah-subgroups{{~#if (tokenActionHudCoreTrue settings.collapse)}} tah-hidden{{~/if~}}" data-part="subgroups">
-            {{~#if (tokenActionHudCoreTrue hasActions)~}}
             <div class="tah-actions{{~#if actionsClass}} {{actionsClass}}{{~/if~}}" data-part="actions">
                 {{#each actions}}
                     {{>"modules/token-action-hud-core/templates/action.hbs"}}
                 {{/each}}
+                <button type="button" class="tah-add-action-button tah-hidden"
+                        data-part="addActionButton" data-action="addAction"
+                        data-parent-nest-id="{{nestId}}" data-parent-level="{{level}}"
+                        aria-label="{{localize 'tokenActionHud.addAction.label'}}"
+                        data-tooltip="{{localize 'tokenActionHud.addAction.label'}}">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
             </div>
-            {{~/if~}}
-            {{~#if (tokenActionHudCoreTrue groups.lists.length)~}}
             <div class="tah-list-subgroups" data-part="listSubgroups">
                 {{#each groups.lists}}
+                    <button type="button" class="tah-add-subgroup-button tah-hidden"
+                            data-part="addSubgroupButton" data-action="addSubgroup"
+                            data-parent-nest-id="{{../nestId}}" data-parent-level="{{../level}}"
+                            data-position="{{@index}}"
+                            aria-label="{{localize 'tokenActionHud.addSubgroup.label'}}"
+                            data-tooltip="{{localize 'tokenActionHud.addSubgroup.label'}}">
+                        <i class="tah-add-icon fa-solid fa-plus"></i>
+                        <i class="tah-drop-icon fa-solid fa-arrow-down-to-line"></i>
+                    </button>
                     {{>"modules/token-action-hud-core/templates/list-subgroup.hbs" collapsibleSubgroups=../collapsibleSubgroups categoryId=../id}}
                 {{/each}}
+                <button type="button" class="tah-add-subgroup-button tah-hidden"
+                        data-part="addSubgroupButton" data-action="addSubgroup"
+                        data-parent-nest-id="{{nestId}}" data-parent-level="{{level}}"
+                        data-position="{{#if groups.lists.length}}{{groups.lists.length}}{{else}}0{{/if}}"
+                        aria-label="{{localize 'tokenActionHud.addSubgroup.label'}}"
+                            data-tooltip="{{localize 'tokenActionHud.addSubgroup.label'}}">
+                    <i class="tah-add-icon fa-solid fa-plus"></i>
+                    <i class="tah-drop-icon fa-solid fa-arrow-down-to-line"></i>
+                </button>
             </div>
-            {{~/if~}}
             {{~#if (tokenActionHudCoreTrue groups.tabs.length)~}}
             <div class="tah-tab-subgroups" data-part="tabSubgroups">
                 {{#each groups.tabs}}

@@ -12,9 +12,11 @@ export class GenericActionHandler {
   }
 
   /* -------------------------------------------- */
+  /* BUILD                                        */
+  /* -------------------------------------------- */
 
   /**
-   * Build generic actions
+   * Build generic actions.
    * @public
    */
   buildActions() {
@@ -24,7 +26,7 @@ export class GenericActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Build utilities
+   * Build utilities.
    * @private
    */
   #buildUtilities() {
@@ -38,7 +40,7 @@ export class GenericActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Build utilities for a single token
+   * Build utilities for a single token.
    * @private
    */
   #buildSingleTokenUtilities() {
@@ -88,7 +90,7 @@ export class GenericActionHandler {
   /* -------------------------------------------- */
 
   /**
-   * Build utilities for multiple tokens
+   * Build utilities for multiple tokens.
    * @private
    */
   #buildMultipleTokenUtilities() {
