@@ -262,9 +262,9 @@ export class ActionHandler {
 
     return {
       id: actionData.id,
-      name: actionData.name,
+      name: actionData.name ?? actionData.id ?? "",
       fullName,
-      listName: actionData.listName || actionData.name,
+      listName: actionData.listName || actionData.name || actionData.id || "",
       ...(actionData.onClick && { onClick: actionData.onClick }),
       ...(actionData.onHover && { onClick: actionData.onHover }),
       ...(actionData.encodedValue && { encodedValue: actionData.encodedValue }),
@@ -350,7 +350,7 @@ export class ActionHandler {
 
       // Sort actions
       if (this.#shouldSortActions(group)) {
-        group.actions.sort((a, b) => a.name.localeCompare(b.name));
+        group.actions.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
       }
     }
   }
@@ -398,7 +398,7 @@ export class ActionHandler {
 
     // Sort actions
     if (this.#shouldSortActions(group)) {
-      reorderedActions.sort((a, b) => a.name.localeCompare(b.name));
+      reorderedActions.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
     }
 
     // Replace group actions
