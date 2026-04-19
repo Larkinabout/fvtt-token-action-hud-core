@@ -353,7 +353,13 @@ export class GroupResizer {
         }
       }
 
-      return Math.max(windowHeight - contentTop - siblingsHeight - this.spacing, 100);
+      const hotbar = foundry.utils.isNewerVersion(game.version, "12.999")
+        ? document.querySelector("#hotbar")
+        : document.querySelector("#ui-bottom");
+      const hotbarTop = hotbar?.getBoundingClientRect().top ?? windowHeight;
+      const bottomBlocker = Math.max(0, windowHeight - hotbarTop);
+
+      return Math.max(windowHeight - contentTop - siblingsHeight - bottomBlocker - this.spacing, 100);
     } else if (this.tokenActionHud.direction === "down") {
       if (foundry.utils.isNewerVersion(game.version, "12.999")) {
         uiTopBottom = document.querySelector("#hotbar");

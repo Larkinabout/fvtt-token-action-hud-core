@@ -274,6 +274,7 @@ export class ActionHandler {
       ...(actionData.icon2 && { icon2: actionData.icon2 }),
       ...(actionData.icon3 && { icon3: actionData.icon3 }),
       ...(actionData.img && { img: actionData.img }),
+      ...(actionData.hasContextMenu && { hasContextMenu: actionData.hasContextMenu }),
       info1: infoProps(actionData.info1),
       info2: infoProps(actionData.info2),
       info3: infoProps(actionData.info3),

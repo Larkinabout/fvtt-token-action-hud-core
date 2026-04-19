@@ -313,13 +313,18 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   #attachRootListeners() {
     this.element.addEventListener("contextmenu", ev => {
-      if (!this.isUnlocked) return;
-      if (!Utils.getSetting("enableCustomization")) return;
-
-      if (ev.target.closest("[data-part=\"actionButton\"]")) {
-        this._actionContextMenu?._onActivate(ev);
+      const actionButton = ev.target.closest("[data-part=\"actionButton\"]");
+      if (actionButton) {
+        const isEditing = this.isUnlocked && Utils.getSetting("enableCustomization");
+        const actionOptsIn = actionButton.dataset.hasContextMenu === "true";
+        if (isEditing || actionOptsIn) {
+          this._actionContextMenu?._onActivate(ev);
+        }
         return;
       }
+
+      if (!this.isUnlocked) return;
+      if (!Utils.getSetting("enableCustomization")) return;
 
       if (ev.target.closest("[data-part=\"groupButton\"], [data-part=\"listSubgroupTitle\"], [data-part=\"subgroup\"]")) {
         this._groupContextMenu?._onActivate(ev);
@@ -923,6 +928,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
         label: "tokenActionHud.contextMenu.delete",
         icon: "<i class=\"fa-solid fa-trash\"></i>",
         classes: "tah-context-delete",
+        visible: () => this.isUnlocked,
         onClick: (event, target) => this.#confirmDeleteAction(target)
       }
     ];
@@ -1398,8 +1404,16 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       return;
     }
 
+    if (event.button === 2) {
+      const button = event.target?.closest?.("[data-part=\"actionButton\"]");
+      if (button?.dataset?.hasContextMenu === "true") {
+        button.blur?.();
+        return;
+      }
+    }
+
     this.hudManager.handleHudEvent("clickAction", event);
-    event.currentTarget.blur();
+    event.currentTarget?.blur?.();
   }
 
   /* -------------------------------------------- */
