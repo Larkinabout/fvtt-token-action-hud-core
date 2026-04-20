@@ -282,7 +282,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     if (!Utils.getSetting("clickOpenCategory")) {
       // When a category button is hovered over...
       const hoverToggle = ev => {
-        if (this.isUnlocked) return;
+        if (this.isUnlocked && ev.type !== "pointerenter") return;
         this.toggleGroup(ev);
       };
       elements.tabSubgroupArr.forEach(element => {
@@ -953,16 +953,43 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this._groupContextMenu = new ContextMenu(
       this.element,
       "[data-part=\"groupButton\"], [data-part=\"listSubgroupTitle\"], [data-part=\"subgroup\"]",
-      groupItems,
+      this.#prepareContextMenuItems(groupItems),
       sharedOptions
     );
 
     this._actionContextMenu = new ContextMenu(
       this.element,
       "[data-part=\"actionButton\"]",
-      actionItems,
+      this.#prepareContextMenuItems(actionItems),
       sharedOptions
     );
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Prepare context menu items.
+   * @private
+   * @param {Array} items
+   * @returns {Array} Context menu items
+   */
+  #prepareContextMenuItems(items) {
+    if (foundry.utils.isNewerVersion(game.version, "13.999")) return items;
+
+    // V13 ContextMenu uses `name`, `callback`, `condition`
+    return items.map(item => {
+      const out = { ...item };
+      if (item.label && !item.name) out.name = item.label;
+      if (item.onClick && !item.callback) {
+        out.callback = (target, event) => item.onClick(event, target);
+      }
+      if (item.visible !== undefined && item.condition === undefined) {
+        out.condition = typeof item.visible === "function"
+          ? target => item.visible(target)
+          : item.visible;
+      }
+      return out;
+    });
   }
 
   /* -------------------------------------------- */

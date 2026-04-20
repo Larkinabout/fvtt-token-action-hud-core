@@ -14,4 +14,6 @@ styles/tah-foundry-vtt-light.css
 styles/tah-high-contrast.css
 styles/tah-pathfinder.css
 symlink.bat
+symlink_v13.bat
 token-action-hud-core.lock
+
