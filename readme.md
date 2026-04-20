@@ -42,6 +42,7 @@ Token Action HUD Core requires a companion Token Action HUD system module to be 
 - [Token Action HUD Castles & Crusades](https://foundryvtt.com/packages/fvtt-token-action-hud-castles-and-crusades)
 - [Token Action HUD CoC7](https://foundryvtt.com/packages/token-action-coc-7)
 - [Token Action HUD COF1e](https://foundryvtt.com/packages/fvtt-token-action-hud-cof1e)
+- [Token Action HUD CO2e](https://foundryvtt.com/packages/token-action-hud-co2e)
 - [Token Action HUD for Coriolis](https://foundryvtt.com/packages/token-action-hud-coriolis)
 - [Token Action HUD Crucible](https://foundryvtt.com/packages/token-action-hud-crucible)
 - [Token Action HUD CypherSystem](https://foundryvtt.com/packages/token-action-hud-cyphersystem)
