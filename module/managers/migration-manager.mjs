@@ -69,8 +69,8 @@ export class MigrationManager {
       }
 
       return true;
-    } catch(err) {
-      Logger.debug(err.message, err);
+    } catch(error) {
+      Logger.error("Failed to unset old flags", false, error);
 
       return false;
     }
@@ -100,8 +100,9 @@ export class MigrationManager {
       }
       Logger.info("Successfully migrated files to persistent storage", true);
       return true;
-    } catch{
+    } catch(error) {
       Logger.info("Failed to migrate files to persistent storage", true);
+      Logger.error("Failed to migrate files to persistent storage", false, error);
       return false;
     }
   }

@@ -1,6 +1,6 @@
 import { ActionHandlerExtender } from "./action-handler-extender.mjs";
 import { DELIMITER, ITEM_MACRO_ICON } from "../../core/constants.mjs";
-import { Utils } from "../../core/utils.mjs";
+import { Logger, Utils } from "../../core/utils.mjs";
 
 /**
  * Handler for building actions related to the Item Macro module.
@@ -94,8 +94,8 @@ export class ItemMacroActionHandlerExtender extends ActionHandlerExtender {
     action.onClick = () => {
       try {
         item.executeMacro();
-      } catch(err) {
-        Logger.debug("ItemMacro Error", err);
+      } catch(error) {
+        Logger.error("ItemMacro Error", false, error);
         return false;
       }
     };

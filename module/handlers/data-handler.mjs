@@ -232,7 +232,7 @@ export class DataHandler {
         Logger.debug(`Failed to save data to: ${fileName}\nReason: ${response.error || "Unknown error"}`);
       }
     } catch(error) {
-      Logger.error(`An error occurred while saving data for ${id}.json: ${error.message}`);
+      Logger.error(`An error occurred while saving data for ${id}.json`, false, error);
     }
   }
 
@@ -269,7 +269,7 @@ export class DataHandler {
 
       return data;
     } catch(error) {
-      Logger.error(`An error occurred while getting data: ${error.message}`);
+      Logger.error("An error occurred while getting data", false, error);
       return null;
     }
   }
@@ -313,7 +313,7 @@ export class DataHandler {
       if (!text) return null;
       return JSON.parse(text);
     } catch(error) {
-      console.error(error);
+      Logger.error(`An error occurred while reading ${foundFile}`, false, error);
       return null;
     }
   }
@@ -343,7 +343,7 @@ export class DataHandler {
             }
           })
           .catch(error => {
-            console.error(error);
+            Logger.error(`An error occurred while reading ${foundFilePath}`, false, error);
           });
       } else {
         return null;

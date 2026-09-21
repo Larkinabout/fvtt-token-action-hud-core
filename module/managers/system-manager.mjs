@@ -139,7 +139,7 @@ export class SystemManager {
     let rollHandlerId = Utils.getSetting("rollHandler");
 
     if (!(rollHandlerId === "core" || Utils.isModuleActive(rollHandlerId))) {
-      Logger.error(rollHandlerId, game.i18n.localize("tokenActionHud.handlerNotFound"));
+      Logger.error(`${rollHandlerId} ${game.i18n.localize("tokenActionHud.handlerNotFound")}`);
       rollHandlerId = "core";
       Utils.setSetting("rollHandler", rollHandlerId);
     }
