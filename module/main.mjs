@@ -17,7 +17,7 @@ Hooks.on("ready", registerApi);
 Hooks.on("tokenActionHudSystemReady", registerCoreModule);
 Hooks.on("tokenActionHudCoreReady", registerHud);
 Hooks.on("renderHotbar", (_, html) => addContextMenuListener(html, foundry.utils.isNewerVersion(game.version, "12.999") ? "li.slot" : "li.macro"));
-Hooks.on("renderSceneNavigation", (_, html) => addContextMenuListener(html, foundry.utils.isNewerVersion(game.version, "12.999") ? "li.ui-control" : "li.scene.nav-item"));
+Hooks.on("renderSceneNavigation", (_, html) => addContextMenuListener(html, foundry.utils.isNewerVersion(game.version, "12.999") ? ".scene" : "li.scene.nav-item"));
 
 /* -------------------------------------------- */
 /* REGISTRATION                                 */
@@ -187,8 +187,8 @@ function validateCompendium(id) {
  */
 function addContextMenuListener(html, selector) {
   const htmlElement = html[0] ?? html;
-  const element = htmlElement.querySelector(selector);
-  if (element) element.addEventListener("contextmenu", sendHudToBottom);
+  const elements = htmlElement.querySelectorAll(selector);
+  elements.forEach(element => element.addEventListener("contextmenu", sendHudToBottom));
 }
 
 /* -------------------------------------------- */
