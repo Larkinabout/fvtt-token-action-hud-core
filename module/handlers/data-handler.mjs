@@ -186,6 +186,7 @@ export class DataHandler {
   async saveDataAsGm(type, id, data) {
     if (game.user.hasPermission("FILES_UPLOAD") && !this.private) {
       await this.saveData(type, id, data);
+      return;
     }
 
     if (!Utils.isGmActive()) {
@@ -227,6 +228,7 @@ export class DataHandler {
       if (response.path) {
         if (!this.fileMap.has(id)) {
           this.fileMap.set(id, response.path);
+          this.socket.executeForOthers("setFilePath", id, response.path);
         }
       } else {
         Logger.debug(`Failed to save data to: ${fileName}\nReason: ${response.error || "Unknown error"}`);
@@ -234,6 +236,17 @@ export class DataHandler {
     } catch(error) {
       Logger.error(`An error occurred while saving data for ${id}.json`, false, error);
     }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Add a file saved by another user to the file map.
+   * @param {string} id Actor or user ID
+   * @param {string} path
+   */
+  static setFilePathWithSocket(id, path) {
+    game.tokenActionHud?.dataHandler?.fileMap?.set(id, path);
   }
 
   /* -------------------------------------------- */

@@ -13,6 +13,7 @@ export function registerSocket() {
   socket.register("getFilePaths", DataHandler.getFilePathsWithSocket);
   socket.register("getData", DataHandler.getDataWithSocket);
   socket.register("saveData", DataHandler.saveDataWithSocket);
+  socket.register("setFilePath", DataHandler.setFilePathWithSocket);
   socket.register("reset", TokenActionHud.resetLayoutWithSocket);
 }
 
