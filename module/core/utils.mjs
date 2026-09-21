@@ -20,10 +20,12 @@ export class Logger {
    * Log an error message to the console. If 'notify' is true, also send a notification.
    * @param {string} message
    * @param {boolean} notify Whether to send a notification
+   * @param {Error|object|null} data
    */
-  static error(message, notify = false) {
+  static error(message, notify = false, data = null) {
     if (notify) ui.notifications.error(`Token Action HUD | ${message}`, { permanent: true });
-    else console.error(`Token Action HUD Error | ${message}`);
+    if (data) console.error(`Token Action HUD Error | ${message}`, data);
+    else if (!notify) console.error(`Token Action HUD Error | ${message}`);
   }
 
   /* -------------------------------------------- */

@@ -84,7 +84,7 @@ export class RollHandler {
       // If the action was not yet handled, call the default method
       this.handleActionClick(event, buttonValue);
     } catch(error) {
-      Logger.error("Error handling action click event", { error, event, action });
+      Logger.error("Error handling action click event", false, error);
     }
   }
 

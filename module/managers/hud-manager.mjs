@@ -157,7 +157,7 @@ export class HudManager {
           this.rollHandler.handleActionHoverCore(event, action);
       }
     } catch(error) {
-      Logger.error(event);
+      Logger.error(`Error handling HUD event '${eventType}'`, false, error);
     }
   }
 
