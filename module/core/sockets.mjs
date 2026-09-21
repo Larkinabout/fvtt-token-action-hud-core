@@ -1,4 +1,5 @@
 import { MODULE } from "./constants.mjs";
+import { Logger } from "./utils.mjs";
 import { DataHandler } from "../handlers/data-handler.mjs";
 import { TokenActionHud } from "../applications/token-action-hud.mjs";
 
