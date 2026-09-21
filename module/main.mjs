@@ -145,7 +145,8 @@ function validateHookData(hookData, hookName) {
       return game.tokenActionHud.isControlledActor(hookData[0]?.actor);
     case "deleteCompendium":
     case "updateCompendium":
-      return validateCompendium(hookData.source?.metadata?.id);
+      clearCompendiumCache(hookData[0]?.metadata?.id);
+      return false;
     case "createItem":
     case "deleteItem":
     case "updateItem":
@@ -165,15 +166,13 @@ function validateHookData(hookData, hookName) {
 /* -------------------------------------------- */
 
 /**
- * Validate compendium hook.
+ * Clear the cached compendium actions when a compendium shown on the HUD changes.
  * @param {string} id Compendium ID
- * @returns {boolean} Whether the compendium hook is valid
  */
-function validateCompendium(id) {
-  const compendiumHandler = game.tokenActionHud.hudManager.actionHandler.compendiumActionHandler;
-  if (!compendiumHandler.isLinkedCompendium(id)) return false;
+function clearCompendiumCache(id) {
+  const compendiumHandler = game.tokenActionHud.hudManager?.actionHandler?.compendiumActionHandler;
+  if (!compendiumHandler?.isLinkedCompendium?.(id)) return;
   compendiumHandler.compendiumActions = new Map();
-  return true;
 }
 
 /* -------------------------------------------- */
