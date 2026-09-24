@@ -270,17 +270,24 @@ export class DataHandler {
    * @returns {object} Retrieved data
    */
   async getDataAsGm(options) {
+    const canGetLocally = game.user.hasPermission("FILES_BROWSE") && (!!options.file || !this.private);
+    const isGmActive = Utils.isGmActive();
+
+    if (!canGetLocally && !isGmActive) {
+      Logger.info("Cannot get data without a GM present", false);
+      return;
+    }
+
     try {
-      if ((!game.user.hasPermission("FILES_BROWSE") || this.private) && !Utils.isGmActive()) {
-        Logger.info("Cannot get data without a GM present", false);
-        return;
+      if (canGetLocally) {
+        try {
+          return await this.getData(options);
+        } catch(error) {
+          if (!isGmActive) throw error;
+          Logger.debug(`Could not get data directly, asking the GM instead: ${error.message}`);
+        }
       }
-
-      const data = (game.user.hasPermission("FILES_BROWSE"))
-        ? await this.getData(options)
-        : await this.socket.executeAsGM("getData", options);
-
-      return data;
+      return await this.socket.executeAsGM("getData", options);
     } catch(error) {
       Logger.error("An error occurred while getting data", false, error);
       return null;
