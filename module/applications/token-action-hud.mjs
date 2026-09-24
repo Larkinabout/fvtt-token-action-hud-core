@@ -12,6 +12,8 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
  * Token Action HUD application.
  */
 export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
+  #isContextMenuOpen = false;
+
   #tooltipElement = null;
 
   #tooltipTimeout = null;
@@ -287,6 +289,10 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       // When a category button is hovered over...
       const hoverToggle = ev => {
         if (this.isUnlocked && ev.type !== "pointerenter") return;
+        if (this.#isContextMenuOpen) {
+          if (ev.type === "pointerleave") return;
+          if (!ev.currentTarget.contains(ui.context?.target)) ui.context?.close();
+        }
         this.toggleGroup(ev);
       };
       elements.tabSubgroupArr.forEach(element => {
@@ -983,7 +989,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   #setupContextMenus() {
     const ContextMenu = foundry.applications.ux.ContextMenu.implementation;
-    const sharedOptions = { fixed: true, eventName: "tah-never", jQuery: false };
+    const sharedOptions = {
+      fixed: true,
+      eventName: "tah-never",
+      jQuery: false,
+      onOpen: () => { this.#isContextMenuOpen = true; },
+      onClose: () => this.#onContextMenuClose()
+    };
 
     const groupItems = this.#buildGroupContextMenuItems();
     Hooks.callAll("tokenActionHudCoreGroupContextMenu", groupItems, this.hudManager);
@@ -1004,6 +1016,25 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       this.#prepareContextMenuItems(actionItems),
       sharedOptions
     );
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Close any hovered group the pointer is no longer over once the context menu has gone.
+   * @private
+   */
+  #onContextMenuClose() {
+    this.#isContextMenuOpen = false;
+    if (Utils.getSetting("clickOpenCategory") || this.isUnlocked) return;
+
+    setTimeout(() => {
+      if (this.#isContextMenuOpen) return;
+      for (const groupId of this.openGroups) {
+        const group = this.element?.querySelector(`#${groupId}`);
+        if (group && !group.matches(":hover")) this.toggleGroup(null, group);
+      }
+    }, 50);
   }
 
   /* -------------------------------------------- */
