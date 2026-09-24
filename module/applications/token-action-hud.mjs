@@ -1772,9 +1772,12 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    * Reset current actor's HUD data
    */
   async resetActorData() {
+    const actorId = this.hudManager.actor?.id;
+    if (!actorId) return;
+
     Logger.debug("Resetting actor data...");
 
-    await this.dataHandler.saveDataAsGm("actor", this.hudManager.actor.id, {});
+    await this.dataHandler.saveDataAsGm("actor", actorId, {});
 
     Logger.debug("Actor data reset");
 
@@ -1845,9 +1848,12 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     await this.dataHandler.saveDataAsGm("user", game.userId, {});
     Logger.debug("User data reset");
 
-    Logger.debug("Resetting actor data...");
-    await this.dataHandler.saveDataAsGm("actor", this.hudManager.actor.id, {});
-    Logger.debug("Actor data reset");
+    const actorId = this.hudManager.actor?.id;
+    if (actorId) {
+      Logger.debug("Resetting actor data...");
+      await this.dataHandler.saveDataAsGm("actor", actorId, {});
+      Logger.debug("Actor data reset");
+    }
 
     this.hudManager.hardResetHud();
     const trigger = { trigger: { type: "method", name: "TokenActionHud#resetUserAndActorData" } };
