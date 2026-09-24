@@ -12,6 +12,10 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
  * Token Action HUD application.
  */
 export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
+  #tooltipElement = null;
+
+  #tooltipTimeout = null;
+
   constructor(systemManager, dataHandler, socket) {
     super();
     this.systemManager = systemManager;
@@ -337,6 +341,43 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     this.element.addEventListener("dragleave", this.#onDragLeave.bind(this));
     this.element.addEventListener("drop", this.#onDrop.bind(this));
     this.element.addEventListener("dragend", this.#onDragEnd.bind(this));
+    this.element.addEventListener("pointerenter", this.#onTooltipEnter.bind(this), { capture: true, passive: true });
+    this.element.addEventListener("pointerleave", this.#onTooltipLeave.bind(this), { capture: true, passive: true });
+  }
+
+  /* -------------------------------------------- */
+  /* TOOLTIPS                                     */
+  /* -------------------------------------------- */
+
+  /**
+   * Apply the Tooltip Delay setting to a hovered HUD element.
+   * @param {PointerEvent} event
+   */
+  #onTooltipEnter(event) {
+    const element = event.target;
+    if (element.dataset?.tooltip === undefined) return;
+    if (!element.closest("[data-tooltip-class~=\"tah-tooltip\"]")) return;
+    if (game.tooltip.tooltip.classList.contains("active")) return;
+
+    game.tooltip.clearPending();
+    clearTimeout(this.#tooltipTimeout);
+    this.#tooltipElement = element;
+    this.#tooltipTimeout = setTimeout(() => {
+      this.#tooltipElement = null;
+      game.tooltip.activate(element);
+    }, Utils.getSetting("tooltipDelay") ?? 1500);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Cancel a waiting tooltip when the pointer leaves its element.
+   * @param {PointerEvent} event
+   */
+  #onTooltipLeave(event) {
+    if (event.target !== this.#tooltipElement) return;
+    clearTimeout(this.#tooltipTimeout);
+    this.#tooltipElement = null;
   }
 
   /* -------------------------------------------- */
