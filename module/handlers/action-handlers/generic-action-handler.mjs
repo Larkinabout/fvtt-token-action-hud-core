@@ -61,7 +61,7 @@ export class GenericActionHandler {
 
       }
     };
-    actionsData.push(toggleCombatAction);
+    if (!this.#isExcluded(toggleCombatId)) actionsData.push(toggleCombatAction);
 
     // Build Toggle Visibility action
     if (game.user.isGM) {
@@ -78,7 +78,7 @@ export class GenericActionHandler {
           await token.document.update({ hidden: !isHidden });
         }
       };
-      actionsData.push(toggleVisibilityAction);
+      if (!this.#isExcluded(toggleVisibilityId)) actionsData.push(toggleVisibilityAction);
     }
 
     const groupData = { id: "token", type: GROUP_TYPE.SYSTEM };
@@ -112,7 +112,7 @@ export class GenericActionHandler {
         }
       }
     };
-    actionsData.push(toggleCombatAction);
+    if (!this.#isExcluded(toggleCombatId)) actionsData.push(toggleCombatAction);
 
     // Toggle Visibility
     if (game.user.isGM) {
@@ -131,12 +131,24 @@ export class GenericActionHandler {
           }
         }
       };
-      actionsData.push(toggleVisibilityAction);
+      if (!this.#isExcluded(toggleVisibilityId)) actionsData.push(toggleVisibilityAction);
     }
 
     const groupData = { id: "token", type: GROUP_TYPE.SYSTEM };
 
     // Add actions to HUD
     this.actionHandler.addActions(actionsData, groupData);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the system module has excluded the generic action.
+   * @private
+   * @param {string} actionId
+   * @returns {boolean}
+   */
+  #isExcluded(actionId) {
+    return this.actionHandler.isGenericActionExcluded?.(actionId) === true;
   }
 }

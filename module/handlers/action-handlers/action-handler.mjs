@@ -19,6 +19,7 @@ export class ActionHandler {
     this.availableActions = new Map();
     this.delimiter = DELIMITER;
     this.actionHandlerExtenders = [];
+    this.excludedGenericActions = [];
   }
 
   /* -------------------------------------------- */
@@ -93,6 +94,18 @@ export class ActionHandler {
    * @param {Array} groupIds List of group IDs
    */
   async buildSystemActions(groupIds) {}
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether a generic action is left off the HUD.
+   * The system module can list IDs in excludedGenericActions or override this to decide per actor.
+   * @param {string} actionId
+   * @returns {boolean}
+   */
+  isGenericActionExcluded(actionId) {
+    return this.excludedGenericActions.includes(actionId);
+  }
 
   /* -------------------------------------------- */
 
