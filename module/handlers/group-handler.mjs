@@ -110,8 +110,9 @@ export class GroupHandler {
 
     const getUserGroups = data => {
       const userGroups = Object.keys(data).length ? data : layout;
-      for (const group of Object.entries(userGroups)) {
-        group[1].nestId = group[0];
+      for (const [nestId, group] of Object.entries(userGroups)) {
+        group.nestId = nestId;
+        this.#refreshGroupName(group);
       }
       return userGroups;
     };
@@ -133,6 +134,24 @@ export class GroupHandler {
     const savedUserData = await this.dataHandler.getDataAsGm({ type: "user", id: user.id }) ?? {};
     this.userGroups = getUserGroups(savedUserData);
     Logger.debug("Groups retrieved from user", { userGroups: this.userGroups, user });
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Replace a saved group name with the system module's current one, so a group renamed by the
+   * system or shown in a different language is not stuck with the old text. A name typed by the
+   * user in the edit form is kept.
+   * @private
+   * @param {object} group
+   */
+  #refreshGroupName(group) {
+    if (group.settings?.name) return;
+    const defaultGroup = this.layoutHandler.defaultLayout?.[group.nestId]
+      ?? ((group.type === GROUP_TYPE.SYSTEM) ? this.defaultGroups[group.id] : null);
+    if (!defaultGroup?.name) return;
+    group.name = defaultGroup.name;
+    group.listName = defaultGroup.listName ?? defaultGroup.name;
   }
 
 

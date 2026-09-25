@@ -47,12 +47,14 @@ export class FormAppHelper {
         const group = groupHandler.getGroup({ nestId });
         if (!group) return;
         const newName = (formData?.name ?? "").trim();
-        if (newName) {
+        const renamed = newName && newName !== group.name;
+        if (renamed) {
           group.name = newName;
           group.listName = newName;
         }
         group.settings = {
           ...group.settings,
+          ...(renamed && { name: newName }),
           characterCount: formData?.characterCount,
           customWidth: formData?.customWidth,
           grid: formData?.grid,
@@ -154,12 +156,14 @@ export class FormAppHelper {
         const group = groupHandler.getGroup({ nestId });
         if (!group) return;
         const newName = (formData?.name ?? "").trim();
-        if (newName) {
+        const renamed = newName && newName !== group.name;
+        if (renamed) {
           group.name = newName;
           group.listName = newName;
         }
         group.settings = {
           ...group.settings,
+          ...(renamed && { name: newName }),
           characterCount: formData?.characterCount,
           collapse: formData?.collapse,
           customWidth: formData?.customWidth,
