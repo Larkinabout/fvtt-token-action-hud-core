@@ -9,6 +9,7 @@ data-part="group" data-group-type="tab" data-nest-id="{{nestId}}" data-level="{{
             {{~#if icon1~}}<div class="tah-icon">{{{icon1}}}</div>{{~/if~}}
             {{~#if icon2~}}<div class="tah-icon">{{{icon2}}}</div>{{~/if~}}
             {{~#if icon3~}}<div class="tah-icon">{{{icon3}}}</div>{{~/if~}}
+            {{~#each icons~}}{{~#if this~}}<div class="tah-icon">{{{this}}}</div>{{~/if~}}{{~/each~}}
             {{~#if settings.showTitle~}}<div class="tah-button-text">{{tokenActionHudCoreCap name}}</div>{{~/if~}}
             {{~#if info1.text~}}<div class="tah-info tah-info1{{~#if info1.class}} {{info1.class}}{{~/if~}}" data-tooltip="{{~#if info1.title}}{{info1.title}}{{~else~}}{{info1.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info1.text}}</div>{{~/if~}}
             {{~#if info2.text~}}<div class="tah-info tah-info2{{~#if info2.class}} {{info2.class}}{{~/if~}}" data-tooltip="{{~#if info2.title}}{{info2.title}}{{~else~}}{{info2.text}}{{~/if}}" data-tooltip-class="tah-tooltip">{{info2.text}}</div>{{~/if~}}

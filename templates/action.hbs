@@ -14,6 +14,7 @@
             {{~#if icon1~}}<div class="tah-icon">{{{icon1}}}</div>{{~/if~}}
             {{~#if icon2~}}<div class="tah-icon">{{{icon2}}}</div>{{~/if~}}
             {{~#if icon3~}}<div class="tah-icon">{{{icon3}}}</div>{{~/if~}}
+            {{~#each icons~}}{{~#if this~}}<div class="tah-icon">{{{this}}}</div>{{~/if~}}{{~/each~}}
             {{~#if name~}}<div class="tah-button-text">{{~#if useRawHtmlName}}{{{name}}}{{~else~}}{{name}}{{~/if~}}</div>{{~/if~}}
             <div class="tah-info-container">
                 {{~#if info1.icon~}} <div class="tah-info tah-info1{{~#if info1.class}} {{info1.class}}{{~/if}}" {{~#if info1.title}}data-tooltip="{{info1.title}}"{{~/if}}>{{{info1.icon}}}</div>

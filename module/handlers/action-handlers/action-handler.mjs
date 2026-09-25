@@ -269,7 +269,7 @@ export class ActionHandler {
       ...(actionData.onHover && { onClick: actionData.onHover }),
       ...(actionData.encodedValue && { encodedValue: actionData.encodedValue }),
       ...(actionData.cssClass && { cssClass: actionData.cssClass }),
-      icons: actionData.icons || {},
+      ...(actionData.icons && { icons: actionData.icons }),
       ...(actionData.icon1 && { icon1: actionData.icon1 }),
       ...(actionData.icon2 && { icon2: actionData.icon2 }),
       ...(actionData.icon3 && { icon3: actionData.icon3 }),
