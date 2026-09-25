@@ -77,6 +77,10 @@
     padding: 1rem;
 }
 
+#token-action-hud .tah-action-button .tah-info[data-tooltip] {
+    pointer-events: auto;
+}
+
 .locked-tooltip.tah-tooltip,
 .tah-tooltip,
 #tooltip:has(.tah-tooltip-wrapper) {
