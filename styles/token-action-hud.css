@@ -81,6 +81,10 @@
     pointer-events: auto;
 }
 
+#token-action-hud button.active {
+    outline: none;
+}
+
 .locked-tooltip.tah-tooltip,
 .tah-tooltip,
 #tooltip:has(.tah-tooltip-wrapper) {
