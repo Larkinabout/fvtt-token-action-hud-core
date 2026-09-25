@@ -16,9 +16,9 @@
   [data-part="group"][draggable="true"],
   [data-part="subgroup"][draggable="true"],
   [data-part="action"][draggable="true"] {
-    cursor: grab;
+    cursor: var(--cursor-pointer, pointer);
     &.tah-dragging {
-      cursor: grabbing;
+      cursor: var(--cursor-grab-down, grabbing);
       opacity: 0.2;
     }
   }
@@ -27,14 +27,14 @@
   [data-part="subgroup"][draggable="true"] .tah-subgroup-button,
   [data-part="subgroup"][draggable="true"] .tah-list-subgroup-title,
   [data-part="group"][draggable="true"] .tah-group-button {
-    cursor: grab;
+    cursor: var(--cursor-pointer, pointer);
   }
 
   [data-part="action"][draggable="true"].tah-dragging .tah-action-button,
   [data-part="subgroup"][draggable="true"].tah-dragging .tah-subgroup-button,
   [data-part="subgroup"][draggable="true"].tah-dragging .tah-list-subgroup-title,
   [data-part="group"][draggable="true"].tah-dragging .tah-group-button {
-    cursor: grabbing;
+    cursor: var(--cursor-grab-down, grabbing);
   }
 
   [data-part="action"].tah-drop-action-before,
@@ -164,6 +164,7 @@
     height: var(--tah-button-height);
     margin: 0;
     min-width: var(--tah-button-min-width);
+    outline-offset: -1px;
     overflow: hidden;
     padding: 0;
     position: relative;
@@ -322,7 +323,8 @@
 
   .tah-groups.tah-unlocked .tah-button-box:not(.disabled):hover {
     background-color: var(--tah-button-background-color);
-    border: 1px dashed var(--tah-text-primary-color, #fff);
+    border-color: transparent;
+    outline: 1px dashed var(--tah-text-primary-color, #fff);
     box-shadow: var(--tah-button-box-shadow);
     color: var(--tah-button-text-color);
     .tah-info {
@@ -431,16 +433,16 @@
           position: relative;
         }
         &.expand-down {
-          top: calc(100% - 10px);
-          padding-top: 13px;
+          top: 100%;
+          padding-top: 3px;
           >.tah-subgroups {
             padding: @tah-subgroups-container-expand-down-tah-subgroups-padding;
           }
         }
         &.expand-up {
-          bottom: calc(100% - 7px);
+          bottom: 100%;
           flex-direction: column-reverse;
-          padding-bottom: 10px;
+          padding-bottom: 3px;
           >.tah-subgroups {
             padding: @tah-subgroups-container-expand-up-tah-subgroups-padding;
             >.tah-list-subgroups {
