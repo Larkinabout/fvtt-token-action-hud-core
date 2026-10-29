@@ -230,6 +230,12 @@ export class GroupResizer {
       return customWidth;
     }
 
+    if (this.tokenActionHud.isRightAligned) {
+      const uiLeftColumn = document.querySelector("#ui-left-column-1");
+      const uiLeftColumnRight = uiLeftColumn?.getBoundingClientRect().right ?? 0;
+      return Math.floor(this.subgroupsElementRect.right - uiLeftColumnRight - this.spacing);
+    }
+
     const windowWidth = canvas.screenDimensions[0] || window.innerWidth;
     const contentLeft = this.subgroupsElementRect.left;
     const uiRight = document.querySelector("#ui-right");

@@ -601,6 +601,38 @@
       }
     }
   }
+
+  /* -------------------------------------------- */
+  /* Right alignment                              */
+  /* -------------------------------------------- */
+  &.tah-right-aligned {
+    flex-direction: row-reverse;
+
+    #tah-collapse-expand {
+      left: auto;
+      right: -20px;
+    }
+
+    .tah-groups {
+      .tah-tab-group,
+      .tah-tab-subgroup {
+        position: relative;
+        >.tah-subgroups-container {
+          right: 0;
+        }
+      }
+
+      .tah-tab-group>.tah-subgroups-container>.tah-subgroups {
+        left: auto;
+        right: @tah-subgroups-container-left;
+      }
+
+      .tah-tab-subgroup>.tah-subgroups-container>.tah-subgroups {
+        left: auto;
+        right: -10px;
+      }
+    }
+  }
 }
 
 /* -------------------------------------------- */

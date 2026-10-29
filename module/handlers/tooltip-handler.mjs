@@ -30,7 +30,7 @@ export function getTooltip(tooltip, name) {
     const styles = game.tokenActionHud.systemManager.styles;
     const style = styles[game.tokenActionHud.setting.style] ?? styles.foundryVTT;
 
-    if (["center-right", "right"].includes(style?.dockPosition)) {
+    if (["center-right", "right"].includes(style?.dockPosition) || game.tokenActionHud.isRightAligned) {
       direction = "LEFT";
     }
   }

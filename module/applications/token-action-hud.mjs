@@ -57,6 +57,8 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       lockHud: TokenActionHud.lockHud,
       unlockHud: TokenActionHud.unlockHud,
       editHud: TokenActionHud.editHud,
+      alignHudRight: TokenActionHud.alignHudRight,
+      alignHudLeft: TokenActionHud.alignHudLeft,
       addGroup: TokenActionHud.addGroup,
       addSubgroup: TokenActionHud.addSubgroup,
       addAction: TokenActionHud.addAction
@@ -105,14 +107,18 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     const styleClass = foundry.utils.isNewerVersion(game.version, "12.999") && ["dockedLeft", "dockedCenterRight", "dockedRight"].includes(styleKey)
       ? `${styleData.class}-v13`
       : styleData.class;
+    const isRightAligned = this.isRightAligned;
+    const collapseIcon = styleData.collapseIcon ?? "fa-caret-left";
+    const expandIcon = styleData.expandIcon ?? "fa-caret-right";
     const context = {
       hud: this.hudManager.hud,
       id: "token-action-hud",
       style: styleClass ?? "",
       scale: this.scale,
+      isRightAligned,
       background: "#00000000",
-      collapseIcon: styleData.collapseIcon ?? "fa-caret-left",
-      expandIcon: styleData.expandIcon ?? "fa-caret-right",
+      collapseIcon: isRightAligned ? expandIcon : collapseIcon,
+      expandIcon: isRightAligned ? collapseIcon : expandIcon,
       collapsibleSubgroups: Utils.getSetting("collapsibleSubgroups")
     };
 
@@ -253,7 +259,9 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       collapseHudButton: this.element.querySelector("[data-part=\"collapseHudButton\"]"),
       expandHudButton: this.element.querySelector("[data-part=\"expandHudButton\"]"),
       unlockButton: this.element.querySelector("[data-part=\"unlockHudButton\"]"),
-      lockButton: this.element.querySelector("[data-part=\"lockHudButton\"]")
+      lockButton: this.element.querySelector("[data-part=\"lockHudButton\"]"),
+      alignHudRightButton: this.element.querySelector("[data-part=\"alignHudRightButton\"]"),
+      alignHudLeftButton: this.element.querySelector("[data-part=\"alignHudLeftButton\"]")
     };
   }
 
@@ -621,11 +629,15 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     const { unlockButton, lockButton, editHudButton, subgroupArr, groupButtonArr,
       addGroupButtonArr, addSubgroupButtonArr, addActionButtonArr, groups, listSubgroupsArr,
       tabSubgroupArr, listSubgroupTitleArr } = this.elements;
+    const { alignHudRightButton, alignHudLeftButton } = this.elements;
 
     // Toggle button visibiltiy
     unlockButton.classList.toggle("tah-hidden", isUnlocking);
     lockButton.classList.toggle("tah-hidden", !isUnlocking);
     editHudButton.classList.toggle("tah-hidden", !isUnlocking);
+    const showAlignButtons = isUnlocking && !this.isDocked;
+    alignHudRightButton.classList.toggle("tah-hidden", !showAlignButtons || this.isRightAligned);
+    alignHudLeftButton.classList.toggle("tah-hidden", !showAlignButtons || !this.isRightAligned);
 
     // Toggle class for styling when unlocked/locked
     groups.classList.toggle("tah-unlocked", isUnlocking);
@@ -688,7 +700,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   #updateTooltipsState(isUnlockedOverride) {
     const isUnlocked = isUnlockedOverride ?? this.isUnlocked;
-    const keepSelector = "[data-part=\"addGroupButton\"], [data-part=\"addSubgroupButton\"], [data-part=\"addActionButton\"]";
+    const keepSelector = "[data-part=\"addGroupButton\"], [data-part=\"addSubgroupButton\"], [data-part=\"addActionButton\"], [data-part=\"alignHudRightButton\"], [data-part=\"alignHudLeftButton\"]";
     if (isUnlocked) {
       this.element.querySelectorAll("[data-tooltip]").forEach(el => {
         if (el.matches(keepSelector)) return;
@@ -701,6 +713,45 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
         el.removeAttribute("data-tooltip-disabled");
       });
     }
+  }
+
+  /* -------------------------------------------- */
+  /* ALIGN HUD                                    */
+  /* -------------------------------------------- */
+
+  /**
+   * When the 'Align HUD Right' button is clicked, align the HUD to the right.
+   */
+  static alignHudRight() {
+    this.toggleHudAlignment("right");
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * When the 'Align HUD Left' button is clicked, align the HUD to the left.
+   */
+  static alignHudLeft() {
+    this.toggleHudAlignment("left");
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Anchor the undocked HUD by its left or right edge, keeping the groups in place.
+   * @param {string} alignment "left" or "right"
+   */
+  async toggleHudAlignment(alignment) {
+    const isRightAligning = alignment === "right";
+    const groupsRect = this.elements.groups.getBoundingClientRect();
+    const top = this.element.offsetTop;
+    const position = isRightAligning
+      ? { top, right: Math.round(window.innerWidth - groupsRect.right) }
+      : { top, left: Math.round(groupsRect.left) };
+    await Utils.setUserFlag("position", position);
+    await Utils.setUserFlag("isRightAligned", isRightAligning);
+    const trigger = { trigger: { type: "method", name: "TokenActionHud#toggleHudAlignment" } };
+    this.update(trigger);
   }
 
   /* -------------------------------------------- */
@@ -1539,6 +1590,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Get the main element
     const element = this.element;
+    const side = this.isRightAligned ? "right" : "left";
 
     const clientX = event.clientX ?? event.changedTouches[0].clientX;
     const clientY = event.clientY ?? event.changedTouches[0].clientY;
@@ -1549,9 +1601,11 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
     let pos3 = clientX;
     let pos4 = clientY;
     const originalElementTop = element.offsetTop;
-    const originalElementLeft = element.offsetLeft;
+    const originalElementSide = (side === "right")
+      ? window.innerWidth - element.offsetLeft - element.offsetWidth
+      : element.offsetLeft;
     let newElementTop = originalElementTop;
-    let newElementLeft = originalElementLeft;
+    let newElementSide = originalElementSide;
 
     /**
      * Mouse movement event handler.
@@ -1569,13 +1623,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       if (pos1 === pos3 && pos2 === pos4) return;
 
       newElementTop = newElementTop - pos2;
-      newElementLeft = newElementLeft - pos1;
+      newElementSide = (side === "right") ? newElementSide + pos1 : newElementSide - pos1;
 
       this.topPos = newElementTop;
 
       // Apply styles
       requestAnimationFrame(() => {
-        Object.assign(element.style, { left: `${newElementLeft}px`, top: `${newElementTop}px` });
+        Object.assign(element.style, { [side]: `${newElementSide}px`, top: `${newElementTop}px` });
       });
     };
 
@@ -1594,14 +1648,14 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
       element.ontouchend = null;
 
       // If position has not changed, do not update
-      if (newElementTop === originalElementTop && newElementLeft === originalElementLeft) return;
+      if (newElementTop === originalElementTop && newElementSide === originalElementSide) return;
 
       this.topPos = newElementTop;
 
       this.#applyDirection();
 
       // Save the new position to the user's flags
-      this.hudPosition = { top: newElementTop, left: newElementLeft };
+      this.hudPosition = { top: newElementTop, [side]: newElementSide };
     };
 
     // Bind mouse move and touch move events
@@ -1638,6 +1692,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   #setDockedPosition() {
     this.element.style.top = 0;
     this.element.style.left = 0;
+    this.element.style.right = null;
 
     const interfaceElement = document.querySelector("#interface");
     const dockPosition = this.systemManager.styles[this.setting.style]?.dockPosition;
@@ -1702,11 +1757,20 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
           this.topPos = this.hudPosition.top < 5 || this.hudPosition.top > window.innerHeight + 5
             ? HUD.DEFAULT_TOP_POS
             : this.hudPosition.top ?? HUD.DEFAULT_TOP_POS;
-          this.leftPos = this.hudPosition.left < 5 || this.hudPosition.left > window.innerWidth + 5
-            ? HUD.DEFAULT_LEFT_POS
-            : this.hudPosition.left ?? HUD.DEFAULT_LEFT_POS;
           this.element.style.top = `${this.topPos}px`;
-          this.element.style.left = `${this.leftPos}px`;
+          if (this.isRightAligned) {
+            const rightPos = this.hudPosition.right < 5 || this.hudPosition.right > window.innerWidth + 5
+              ? HUD.DEFAULT_RIGHT_POS
+              : this.hudPosition.right ?? HUD.DEFAULT_RIGHT_POS;
+            this.element.style.left = null;
+            this.element.style.right = `${rightPos}px`;
+          } else {
+            this.leftPos = this.hudPosition.left < 5 || this.hudPosition.left > window.innerWidth + 5
+              ? HUD.DEFAULT_LEFT_POS
+              : this.hudPosition.left ?? HUD.DEFAULT_LEFT_POS;
+            this.element.style.right = null;
+            this.element.style.left = `${this.leftPos}px`;
+          }
           resolve();
         } else {
           setTimeout(check, 10);
@@ -1722,12 +1786,13 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
   /* -------------------------------------------- */
 
   /**
-   * Reset the position of the HUD
+   * Reset the position and alignment of the HUD
    * @public
    */
   async resetPosition() {
     Logger.debug("Resetting position...");
     this.hudPosition = { top: HUD.DEFAULT_TOP_POS, left: HUD.DEFAULT_LEFT_POS };
+    if (Utils.getUserFlag("isRightAligned")) await Utils.setUserFlag("isRightAligned", false);
   }
 
   /* -------------------------------------------- */
@@ -2103,7 +2168,7 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /**
    * Get HUD position.
-   * @returns {object} {top, left}
+   * @returns {object} {top, left}, or {top, right} when the HUD is aligned to the right
    */
   get hudPosition() {
     return Utils.getUserFlag("position");
@@ -2113,11 +2178,11 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /**
    * Set HUD position.
-   * @param {object} obj {top, left}
+   * @param {object} obj {top, left}, or {top, right} when the HUD is aligned to the right
    */
   set hudPosition(obj) {
     Utils.setUserFlag("position", obj);
-    Logger.debug(`Position set to x: ${obj.top}px, y: ${obj.left}px`);
+    Logger.debug("Position set", obj);
   }
 
   /* -------------------------------------------- */
@@ -2171,6 +2236,16 @@ export class TokenActionHud extends HandlebarsApplicationMixin(ApplicationV2) {
 
   set isUnlocked(bool) {
     Utils.setUserFlag("isUnlocked", bool);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Whether the undocked HUD is aligned to the right.
+   * @returns {boolean} Whether the undocked HUD is aligned to the right
+   */
+  get isRightAligned() {
+    return !this.isDocked && Utils.getUserFlag("isRightAligned") === true;
   }
 
   /* -------------------------------------------- */

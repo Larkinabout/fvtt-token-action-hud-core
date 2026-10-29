@@ -1,5 +1,5 @@
 
-<div id="{{id}}" class="{{style}}" style="transform: scale({{scale}}); transform-origin: top left;">
+<div id="{{id}}" class="{{style}}{{#if isRightAligned}} tah-right-aligned{{/if}}" style="transform: scale({{scale}}); transform-origin: top {{#if isRightAligned}}right{{else}}left{{/if}};">
 {{~#if hud.actorId~}}
 {{~#if hud.name~}}
 <div id="tah-character-name" data-part="characterName">{{hud.name}}</div>
@@ -44,6 +44,12 @@
     </button>
     <button id="tah-edit-hud" class="tah-button-icon tah-hidden" data-part="editHudButton" data-action="editHud" data-tooltip="{{localize "tokenActionHud.editHud"}}">
         <i class="fa fa-pen-to-square"></i>
+    </button>
+    <button id="tah-align-hud-right" class="tah-button-icon tah-hidden" data-part="alignHudRightButton" data-action="alignHudRight" data-tooltip="{{localize "tokenActionHud.alignHudRight"}}">
+        <i class="fa fa-align-right"></i>
+    </button>
+    <button id="tah-align-hud-left" class="tah-button-icon tah-hidden" data-part="alignHudLeftButton" data-action="alignHudLeft" data-tooltip="{{localize "tokenActionHud.alignHudLeft"}}">
+        <i class="fa fa-align-left"></i>
     </button>
 </div>
 {{/unless}}

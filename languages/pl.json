@@ -7,6 +7,8 @@
     "tokenActionHud.addSubgroup.noResults": "Nie znaleziono żadnych podgrup.",
     "tokenActionHud.addSubgroup.placeholder": "Szukaj...",
     "tokenActionHud.addToCombat": "Dodaj do walki",
+    "tokenActionHud.alignHudLeft": "Wyrównaj HUD do lewej",
+    "tokenActionHud.alignHudRight": "Wyrównaj HUD do prawej",
     "tokenActionHud.cancel": "Anuluj",
     "tokenActionHud.collapseExpandHud": "Zwiń / Rozwiń HUD",
     "tokenActionHud.collapseHud": "Zwiń HUD",

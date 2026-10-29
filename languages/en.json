@@ -7,6 +7,8 @@
     "tokenActionHud.addSubgroup.noResults": "No subgroups match.",
     "tokenActionHud.addSubgroup.placeholder": "Search...",
     "tokenActionHud.addToCombat": "Add to Combat",
+    "tokenActionHud.alignHudLeft": "Align HUD Left",
+    "tokenActionHud.alignHudRight": "Align HUD Right",
     "tokenActionHud.cancel": "Cancel",
     "tokenActionHud.collapseExpandHud": "Collapse/Expand HUD",
     "tokenActionHud.collapseHud": "Collapse HUD",
